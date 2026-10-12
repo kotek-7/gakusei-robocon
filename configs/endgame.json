@@ -1,0 +1,130 @@
+{
+  "state": {
+    "t": 174,
+    "earth_stock": [
+      18,
+      16
+    ],
+    "sky_stock": 9,
+    "buffer": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    "transfers": [
+      3,
+      6
+    ],
+    "towers": [
+      {
+        "earth": [
+          0,
+          0
+        ],
+        "sky": 0
+      },
+      {
+        "earth": [],
+        "sky": -1
+      },
+      {
+        "earth": [],
+        "sky": -1
+      },
+      {
+        "earth": [],
+        "sky": -1
+      },
+      {
+        "earth": [],
+        "sky": -1
+      },
+      {
+        "earth": [],
+        "sky": -1
+      },
+      {
+        "earth": [
+          1,
+          1
+        ],
+        "sky": 1
+      },
+      {
+        "earth": [
+          1,
+          1
+        ],
+        "sky": 1
+      },
+      {
+        "earth": [],
+        "sky": -1
+      },
+      {
+        "earth": [],
+        "sky": -1
+      }
+    ],
+    "mandate": [
+      false,
+      true
+    ],
+    "mandate_at": [
+      null,
+      174
+    ],
+    "mustika": "ground",
+    "mustika_at": null,
+    "jobs": [
+      null,
+      null,
+      null,
+      null
+    ],
+    "trace": []
+  },
+  "performances": [
+    {
+      "name": "reference",
+      "transfer": 12,
+      "collect": 2,
+      "mixed": 4,
+      "ascent": 10,
+      "earth": 12,
+      "second": 3,
+      "sky": 10,
+      "flip": 1,
+      "upper": 1,
+      "mustika_tr": 16,
+      "mustika_br": 20,
+      "success": 1.0,
+      "recovery": 8
+    },
+    {
+      "name": "reference",
+      "transfer": 12,
+      "collect": 2,
+      "mixed": 4,
+      "ascent": 10,
+      "earth": 12,
+      "second": 3,
+      "sky": 10,
+      "flip": 1,
+      "upper": 1,
+      "mustika_tr": 16,
+      "mustika_br": 20,
+      "success": 1.0,
+      "recovery": 8
+    }
+  ],
+  "active_robots": [
+    1,
+    3
+  ]
+}

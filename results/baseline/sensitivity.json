@@ -1,0 +1,1151 @@
+{
+  "baseline": {
+    "name": "reference",
+    "transfer": 12,
+    "collect": 2,
+    "mixed": 4,
+    "ascent": 10,
+    "earth": 12,
+    "second": 3,
+    "sky": 10,
+    "flip": 6,
+    "upper": 8,
+    "mustika_tr": 16,
+    "mustika_br": 20,
+    "success": 1.0,
+    "recovery": 8
+  },
+  "selected": [
+    "PUS-M1Q0-F0-skyfirst",
+    "SPU-M1Q1-F120-balanced",
+    "PUS-M0-F120-skyfirst"
+  ],
+  "scope": "fixed three policies, 108 opponents, both priorities; one factor at a time; not necessary or sufficient real-robot bounds",
+  "results": [
+    {
+      "group": "TR搬送",
+      "scale": 0.5,
+      "seconds": {
+        "transfer": 6,
+        "collect": 1,
+        "mixed": 2
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -240,
+      "mean_margin": 307.22,
+      "wins": 196,
+      "matches": 216,
+      "missions": 186,
+      "earliest_mustika": 123
+    },
+    {
+      "group": "TR搬送",
+      "scale": 0.5,
+      "seconds": {
+        "transfer": 6,
+        "collect": 1,
+        "mixed": 2
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -310,
+      "mean_margin": 229.81,
+      "wins": 178,
+      "matches": 216,
+      "missions": 178,
+      "earliest_mustika": 102
+    },
+    {
+      "group": "TR搬送",
+      "scale": 0.5,
+      "seconds": {
+        "transfer": 6,
+        "collect": 1,
+        "mixed": 2
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -240,
+      "mean_margin": 51.2,
+      "wins": 138,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "TR搬送",
+      "scale": 0.75,
+      "seconds": {
+        "transfer": 9,
+        "collect": 2,
+        "mixed": 3
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -310,
+      "mean_margin": 232.69,
+      "wins": 178,
+      "matches": 216,
+      "missions": 174,
+      "earliest_mustika": 112
+    },
+    {
+      "group": "TR搬送",
+      "scale": 0.75,
+      "seconds": {
+        "transfer": 9,
+        "collect": 2,
+        "mixed": 3
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -330,
+      "mean_margin": 172.87,
+      "wins": 145,
+      "matches": 216,
+      "missions": 142,
+      "earliest_mustika": 109
+    },
+    {
+      "group": "TR搬送",
+      "scale": 0.75,
+      "seconds": {
+        "transfer": 9,
+        "collect": 2,
+        "mixed": 3
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -270,
+      "mean_margin": -0.83,
+      "wins": 98,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "TR搬送",
+      "scale": 1.0,
+      "seconds": {
+        "transfer": 12,
+        "collect": 2,
+        "mixed": 4
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -260,
+      "mean_margin": 167.11,
+      "wins": 158,
+      "matches": 216,
+      "missions": 140,
+      "earliest_mustika": 108
+    },
+    {
+      "group": "TR搬送",
+      "scale": 1.0,
+      "seconds": {
+        "transfer": 12,
+        "collect": 2,
+        "mixed": 4
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -200,
+      "mean_margin": 145.44,
+      "wins": 145,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 114
+    },
+    {
+      "group": "TR搬送",
+      "scale": 1.0,
+      "seconds": {
+        "transfer": 12,
+        "collect": 2,
+        "mixed": 4
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -200,
+      "mean_margin": -15.6,
+      "wins": 96,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "TR搬送",
+      "scale": 1.25,
+      "seconds": {
+        "transfer": 15,
+        "collect": 2,
+        "mixed": 5
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -360,
+      "mean_margin": 148.26,
+      "wins": 163,
+      "matches": 216,
+      "missions": 159,
+      "earliest_mustika": 120
+    },
+    {
+      "group": "TR搬送",
+      "scale": 1.25,
+      "seconds": {
+        "transfer": 15,
+        "collect": 2,
+        "mixed": 5
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -365,
+      "mean_margin": 101.48,
+      "wins": 152,
+      "matches": 216,
+      "missions": 152,
+      "earliest_mustika": 117
+    },
+    {
+      "group": "TR搬送",
+      "scale": 1.25,
+      "seconds": {
+        "transfer": 15,
+        "collect": 2,
+        "mixed": 5
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -360,
+      "mean_margin": -66.57,
+      "wins": 66,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "TR搬送",
+      "scale": 1.5,
+      "seconds": {
+        "transfer": 18,
+        "collect": 3,
+        "mixed": 6
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -370,
+      "mean_margin": 52.66,
+      "wins": 128,
+      "matches": 216,
+      "missions": 120,
+      "earliest_mustika": 120
+    },
+    {
+      "group": "TR搬送",
+      "scale": 1.5,
+      "seconds": {
+        "transfer": 18,
+        "collect": 3,
+        "mixed": 6
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -385,
+      "mean_margin": 47.96,
+      "wins": 132,
+      "matches": 216,
+      "missions": 140,
+      "earliest_mustika": 111
+    },
+    {
+      "group": "TR搬送",
+      "scale": 1.5,
+      "seconds": {
+        "transfer": 18,
+        "collect": 3,
+        "mixed": 6
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -390,
+      "mean_margin": -114.98,
+      "wins": 30,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "BR建設",
+      "scale": 0.5,
+      "seconds": {
+        "earth": 6,
+        "second": 2,
+        "sky": 5
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -140,
+      "mean_margin": 366.3,
+      "wins": 202,
+      "matches": 216,
+      "missions": 195,
+      "earliest_mustika": 108
+    },
+    {
+      "group": "BR建設",
+      "scale": 0.5,
+      "seconds": {
+        "earth": 6,
+        "second": 2,
+        "sky": 5
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -280,
+      "mean_margin": 286.02,
+      "wins": 190,
+      "matches": 216,
+      "missions": 184,
+      "earliest_mustika": 102
+    },
+    {
+      "group": "BR建設",
+      "scale": 0.5,
+      "seconds": {
+        "earth": 6,
+        "second": 2,
+        "sky": 5
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -170,
+      "mean_margin": 121.16,
+      "wins": 164,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "BR建設",
+      "scale": 0.75,
+      "seconds": {
+        "earth": 9,
+        "second": 2,
+        "sky": 8
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -270,
+      "mean_margin": 261.25,
+      "wins": 191,
+      "matches": 216,
+      "missions": 182,
+      "earliest_mustika": 110
+    },
+    {
+      "group": "BR建設",
+      "scale": 0.75,
+      "seconds": {
+        "earth": 9,
+        "second": 2,
+        "sky": 8
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -280,
+      "mean_margin": 192.5,
+      "wins": 156,
+      "matches": 216,
+      "missions": 150,
+      "earliest_mustika": 105
+    },
+    {
+      "group": "BR建設",
+      "scale": 0.75,
+      "seconds": {
+        "earth": 9,
+        "second": 2,
+        "sky": 8
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -270,
+      "mean_margin": 33.84,
+      "wins": 122,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "BR建設",
+      "scale": 1.0,
+      "seconds": {
+        "earth": 12,
+        "second": 3,
+        "sky": 10
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -260,
+      "mean_margin": 167.11,
+      "wins": 158,
+      "matches": 216,
+      "missions": 140,
+      "earliest_mustika": 108
+    },
+    {
+      "group": "BR建設",
+      "scale": 1.0,
+      "seconds": {
+        "earth": 12,
+        "second": 3,
+        "sky": 10
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -200,
+      "mean_margin": 145.44,
+      "wins": 145,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 114
+    },
+    {
+      "group": "BR建設",
+      "scale": 1.0,
+      "seconds": {
+        "earth": 12,
+        "second": 3,
+        "sky": 10
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -200,
+      "mean_margin": -15.6,
+      "wins": 96,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "BR建設",
+      "scale": 1.25,
+      "seconds": {
+        "earth": 15,
+        "second": 4,
+        "sky": 12
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -380,
+      "mean_margin": 138.47,
+      "wins": 168,
+      "matches": 216,
+      "missions": 156,
+      "earliest_mustika": 130
+    },
+    {
+      "group": "BR建設",
+      "scale": 1.25,
+      "seconds": {
+        "earth": 15,
+        "second": 4,
+        "sky": 12
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -330,
+      "mean_margin": 69.68,
+      "wins": 134,
+      "matches": 216,
+      "missions": 134,
+      "earliest_mustika": 110
+    },
+    {
+      "group": "BR建設",
+      "scale": 1.25,
+      "seconds": {
+        "earth": 15,
+        "second": 4,
+        "sky": 12
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -380,
+      "mean_margin": -87.41,
+      "wins": 46,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "BR建設",
+      "scale": 1.5,
+      "seconds": {
+        "earth": 18,
+        "second": 4,
+        "sky": 15
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -320,
+      "mean_margin": 51.16,
+      "wins": 142,
+      "matches": 216,
+      "missions": 118,
+      "earliest_mustika": 127
+    },
+    {
+      "group": "BR建設",
+      "scale": 1.5,
+      "seconds": {
+        "earth": 18,
+        "second": 4,
+        "sky": 15
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -370,
+      "mean_margin": 23.33,
+      "wins": 128,
+      "matches": 216,
+      "missions": 128,
+      "earliest_mustika": 122
+    },
+    {
+      "group": "BR建設",
+      "scale": 1.5,
+      "seconds": {
+        "earth": 18,
+        "second": 4,
+        "sky": 15
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -390,
+      "mean_margin": -158.66,
+      "wins": 42,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 0.5,
+      "seconds": {
+        "upper": 4
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -230,
+      "mean_margin": 294.98,
+      "wins": 186,
+      "matches": 216,
+      "missions": 175,
+      "earliest_mustika": 108
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 0.5,
+      "seconds": {
+        "upper": 4
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -265,
+      "mean_margin": 189.1,
+      "wins": 148,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 114
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 0.5,
+      "seconds": {
+        "upper": 4
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -270,
+      "mean_margin": 63.84,
+      "wins": 148,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 0.75,
+      "seconds": {
+        "upper": 6
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -270,
+      "mean_margin": 242.75,
+      "wins": 175,
+      "matches": 216,
+      "missions": 171,
+      "earliest_mustika": 108
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 0.75,
+      "seconds": {
+        "upper": 6
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -300,
+      "mean_margin": 158.77,
+      "wins": 148,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 114
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 0.75,
+      "seconds": {
+        "upper": 6
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -270,
+      "mean_margin": 27.45,
+      "wins": 132,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 1.0,
+      "seconds": {
+        "upper": 8
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -260,
+      "mean_margin": 167.11,
+      "wins": 158,
+      "matches": 216,
+      "missions": 140,
+      "earliest_mustika": 108
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 1.0,
+      "seconds": {
+        "upper": 8
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -200,
+      "mean_margin": 145.44,
+      "wins": 145,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 114
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 1.0,
+      "seconds": {
+        "upper": 8
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -200,
+      "mean_margin": -15.6,
+      "wins": 96,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 1.25,
+      "seconds": {
+        "upper": 10
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -350,
+      "mean_margin": 164.33,
+      "wins": 157,
+      "matches": 216,
+      "missions": 151,
+      "earliest_mustika": 108
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 1.25,
+      "seconds": {
+        "upper": 10
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -280,
+      "mean_margin": 122.62,
+      "wins": 146,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 114
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 1.25,
+      "seconds": {
+        "upper": 10
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -350,
+      "mean_margin": -58.94,
+      "wins": 80,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 1.5,
+      "seconds": {
+        "upper": 12
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -350,
+      "mean_margin": 107.75,
+      "wins": 161,
+      "matches": 216,
+      "missions": 151,
+      "earliest_mustika": 108
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 1.5,
+      "seconds": {
+        "upper": 12
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -280,
+      "mean_margin": 107.22,
+      "wins": 146,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 114
+    },
+    {
+      "group": "L2追加時間",
+      "scale": 1.5,
+      "seconds": {
+        "upper": 12
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -350,
+      "mean_margin": -106.11,
+      "wins": 38,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "Sky反転",
+      "scale": 0.5,
+      "seconds": {
+        "flip": 3
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -260,
+      "mean_margin": 213.36,
+      "wins": 165,
+      "matches": 216,
+      "missions": 145,
+      "earliest_mustika": 109
+    },
+    {
+      "group": "Sky反転",
+      "scale": 0.5,
+      "seconds": {
+        "flip": 3
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -265,
+      "mean_margin": 181.37,
+      "wins": 148,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 110
+    },
+    {
+      "group": "Sky反転",
+      "scale": 0.5,
+      "seconds": {
+        "flip": 3
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -190,
+      "mean_margin": 40.79,
+      "wins": 124,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "Sky反転",
+      "scale": 0.75,
+      "seconds": {
+        "flip": 4
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -270,
+      "mean_margin": 213.87,
+      "wins": 157,
+      "matches": 216,
+      "missions": 141,
+      "earliest_mustika": 108
+    },
+    {
+      "group": "Sky反転",
+      "scale": 0.75,
+      "seconds": {
+        "flip": 4
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -300,
+      "mean_margin": 168.17,
+      "wins": 147,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 111
+    },
+    {
+      "group": "Sky反転",
+      "scale": 0.75,
+      "seconds": {
+        "flip": 4
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -215,
+      "mean_margin": 5.79,
+      "wins": 106,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "Sky反転",
+      "scale": 1.0,
+      "seconds": {
+        "flip": 6
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -260,
+      "mean_margin": 167.11,
+      "wins": 158,
+      "matches": 216,
+      "missions": 140,
+      "earliest_mustika": 108
+    },
+    {
+      "group": "Sky反転",
+      "scale": 1.0,
+      "seconds": {
+        "flip": 6
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -200,
+      "mean_margin": 145.44,
+      "wins": 145,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 114
+    },
+    {
+      "group": "Sky反転",
+      "scale": 1.0,
+      "seconds": {
+        "flip": 6
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -200,
+      "mean_margin": -15.6,
+      "wins": 96,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "Sky反転",
+      "scale": 1.25,
+      "seconds": {
+        "flip": 8
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -375,
+      "mean_margin": 148.61,
+      "wins": 150,
+      "matches": 216,
+      "missions": 142,
+      "earliest_mustika": 112
+    },
+    {
+      "group": "Sky反転",
+      "scale": 1.25,
+      "seconds": {
+        "flip": 8
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -315,
+      "mean_margin": 107.73,
+      "wins": 146,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 116
+    },
+    {
+      "group": "Sky反転",
+      "scale": 1.25,
+      "seconds": {
+        "flip": 8
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -340,
+      "mean_margin": -55.65,
+      "wins": 82,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "Sky反転",
+      "scale": 1.5,
+      "seconds": {
+        "flip": 9
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -395,
+      "mean_margin": 143.43,
+      "wins": 158,
+      "matches": 216,
+      "missions": 150,
+      "earliest_mustika": 114
+    },
+    {
+      "group": "Sky反転",
+      "scale": 1.5,
+      "seconds": {
+        "flip": 9
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -355,
+      "mean_margin": 86.11,
+      "wins": 141,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 102
+    },
+    {
+      "group": "Sky反転",
+      "scale": 1.5,
+      "seconds": {
+        "flip": 9
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -340,
+      "mean_margin": -45.0,
+      "wins": 80,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 0.5,
+      "seconds": {
+        "mustika_tr": 8,
+        "mustika_br": 10
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -260,
+      "mean_margin": 193.89,
+      "wins": 164,
+      "matches": 216,
+      "missions": 163,
+      "earliest_mustika": 92
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 0.5,
+      "seconds": {
+        "mustika_tr": 8,
+        "mustika_br": 10
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -200,
+      "mean_margin": 155.74,
+      "wins": 145,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 89
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 0.5,
+      "seconds": {
+        "mustika_tr": 8,
+        "mustika_br": 10
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -200,
+      "mean_margin": -15.6,
+      "wins": 96,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 0.75,
+      "seconds": {
+        "mustika_tr": 12,
+        "mustika_br": 15
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -260,
+      "mean_margin": 192.96,
+      "wins": 164,
+      "matches": 216,
+      "missions": 163,
+      "earliest_mustika": 103
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 0.75,
+      "seconds": {
+        "mustika_tr": 12,
+        "mustika_br": 15
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -200,
+      "mean_margin": 151.74,
+      "wins": 145,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 94
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 0.75,
+      "seconds": {
+        "mustika_tr": 12,
+        "mustika_br": 15
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -200,
+      "mean_margin": -15.6,
+      "wins": 96,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 1.0,
+      "seconds": {
+        "mustika_tr": 16,
+        "mustika_br": 20
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -260,
+      "mean_margin": 167.11,
+      "wins": 158,
+      "matches": 216,
+      "missions": 140,
+      "earliest_mustika": 108
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 1.0,
+      "seconds": {
+        "mustika_tr": 16,
+        "mustika_br": 20
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -200,
+      "mean_margin": 145.44,
+      "wins": 145,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 114
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 1.0,
+      "seconds": {
+        "mustika_tr": 16,
+        "mustika_br": 20
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -200,
+      "mean_margin": -15.6,
+      "wins": 96,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 1.25,
+      "seconds": {
+        "mustika_tr": 20,
+        "mustika_br": 25
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -260,
+      "mean_margin": 154.12,
+      "wins": 154,
+      "matches": 216,
+      "missions": 136,
+      "earliest_mustika": 117
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 1.25,
+      "seconds": {
+        "mustika_tr": 20,
+        "mustika_br": 25
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -200,
+      "mean_margin": 133.4,
+      "wins": 145,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 119
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 1.25,
+      "seconds": {
+        "mustika_tr": 20,
+        "mustika_br": 25
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -200,
+      "mean_margin": -15.6,
+      "wins": 96,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 1.5,
+      "seconds": {
+        "mustika_tr": 24,
+        "mustika_br": 30
+      },
+      "policy": "PUS-M1Q0-F0-skyfirst",
+      "worst_margin": -260,
+      "mean_margin": 101.2,
+      "wins": 154,
+      "matches": 216,
+      "missions": 136,
+      "earliest_mustika": 128
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 1.5,
+      "seconds": {
+        "mustika_tr": 24,
+        "mustika_br": 30
+      },
+      "policy": "SPU-M1Q1-F120-balanced",
+      "worst_margin": -200,
+      "mean_margin": 98.68,
+      "wins": 145,
+      "matches": 216,
+      "missions": 144,
+      "earliest_mustika": 124
+    },
+    {
+      "group": "Mustika搬送奉納",
+      "scale": 1.5,
+      "seconds": {
+        "mustika_tr": 24,
+        "mustika_br": 30
+      },
+      "policy": "PUS-M0-F120-skyfirst",
+      "worst_margin": -200,
+      "mean_margin": -15.6,
+      "wins": 96,
+      "matches": 216,
+      "missions": 0,
+      "earliest_mustika": null
+    }
+  ]
+}

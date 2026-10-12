@@ -1,0 +1,1 @@
+import {build} from 'esbuild';import {mkdir,copyFile} from 'node:fs/promises';await mkdir('dist',{recursive:true});await build({entryPoints:['src/app.js','src/worker.js'],bundle:true,format:'esm',outdir:'dist',minify:true});await copyFile('index.html','dist/index.html');await copyFile('src/style.css','dist/style.css');

@@ -1,0 +1,1421 @@
+{
+  "model": "macro-v3-qualification-choice",
+  "rule_source": {
+    "checked_date": "2026-10-12",
+    "local_file": "rulebook/Robocon_2027_Rulebook_v1-1.pdf",
+    "local_sha256": "f30391eac735191fabd7939a1f61b60a525ed84a89be1df17d4e21d8aa8bede2",
+    "official_url": "https://aburobocon2027.id/download/728/?tmstv=1787554332",
+    "official_sha256": "f30391eac735191fabd7939a1f61b60a525ed84a89be1df17d4e21d8aa8bede2",
+    "identical": true,
+    "news": "https://aburobocon2027.id/news/",
+    "faq": "https://aburobocon2027.id/technical/",
+    "note": "Filename says v1-1; cover says V1.0. October 6 correction: combined robot weight <=60kg. FAQ To Be Confirmed."
+  },
+  "python": "3.12.3",
+  "source_sha256": {
+    "abu2027/__init__.py": "f65ce05038167ccef073eb7a5ef1ec84f89af0a768b13ed9ef55e4785eae855b",
+    "abu2027/experiment.py": "65fb934a413c8ecb65945ca550445e2513c9075996564f3b2b2fe0b8bb85b13d",
+    "abu2027/explore.py": "0e9cba2fddb09c54047091bd4abdb8d585a71af9aa8d1364ee169ee2ac5d7eca",
+    "abu2027/game.py": "a8a5d751d9f1c5b3b2edcead075fc62bd44aeb02df6e97b6f4c83eebbaa1dfe5",
+    "abu2027/model.py": "b9f2fc0325df35d1cdb87554c564954183863753c7994ee9572eab20adeeb7f7",
+    "abu2027/search.py": "ed3778b4313ce3987b462ad295ee3336252b41954f5f809fb3515497713bd8dc",
+    "abu2027/sensitivity.py": "d191db00578cfc3a9928b75824e1f907e0748ffabcfeaa29fdccfcdfab0f6204"
+  },
+  "profiles": [
+    {
+      "name": "fast",
+      "transfer": 8,
+      "collect": 1,
+      "mixed": 3,
+      "ascent": 7,
+      "earth": 8,
+      "second": 2,
+      "sky": 7,
+      "flip": 4,
+      "upper": 5,
+      "mustika_tr": 11,
+      "mustika_br": 14,
+      "success": 1.0,
+      "recovery": 8
+    },
+    {
+      "name": "reference",
+      "transfer": 12,
+      "collect": 2,
+      "mixed": 4,
+      "ascent": 10,
+      "earth": 12,
+      "second": 3,
+      "sky": 10,
+      "flip": 6,
+      "upper": 8,
+      "mustika_tr": 16,
+      "mustika_br": 20,
+      "success": 1.0,
+      "recovery": 8
+    },
+    {
+      "name": "slow",
+      "transfer": 18,
+      "collect": 3,
+      "mixed": 6,
+      "ascent": 15,
+      "earth": 18,
+      "second": 5,
+      "sky": 15,
+      "flip": 9,
+      "upper": 12,
+      "mustika_tr": 24,
+      "mustika_br": 30,
+      "success": 1.0,
+      "recovery": 8
+    }
+  ],
+  "policies": [
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": false,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "PSU-M0-F0-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": false,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "PSU-M0-F0-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": false,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "PSU-M0-F120-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": false,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "PSU-M0-F120-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": false,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "PSU-M0-F181-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": false,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "PSU-M0-F181-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "PSU-M1Q0-F0-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "PSU-M1Q0-F0-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "PSU-M1Q0-F120-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "PSU-M1Q0-F120-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "PSU-M1Q0-F181-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "PSU-M1Q0-F181-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "PSU-M1Q1-F0-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "PSU-M1Q1-F0-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "PSU-M1Q1-F120-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "PSU-M1Q1-F120-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "PSU-M1Q1-F181-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "S",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "PSU-M1Q1-F181-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": false,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "PUS-M0-F0-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": false,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "PUS-M0-F0-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": false,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "PUS-M0-F120-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": false,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "PUS-M0-F120-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": false,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "PUS-M0-F181-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": false,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "PUS-M0-F181-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "PUS-M1Q0-F0-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "PUS-M1Q0-F0-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "PUS-M1Q0-F120-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "PUS-M1Q0-F120-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "PUS-M1Q0-F181-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "PUS-M1Q0-F181-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "PUS-M1Q1-F0-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "PUS-M1Q1-F0-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "PUS-M1Q1-F120-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "PUS-M1Q1-F120-skyfirst"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "PUS-M1Q1-F181-balanced"
+    },
+    {
+      "order": [
+        "P",
+        "U",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "PUS-M1Q1-F181-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": false,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "SPU-M0-F0-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": false,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "SPU-M0-F0-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": false,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "SPU-M0-F120-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": false,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "SPU-M0-F120-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": false,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "SPU-M0-F181-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": false,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "SPU-M0-F181-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "SPU-M1Q0-F0-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "SPU-M1Q0-F0-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "SPU-M1Q0-F120-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "SPU-M1Q0-F120-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "SPU-M1Q0-F181-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "SPU-M1Q0-F181-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "SPU-M1Q1-F0-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "SPU-M1Q1-F0-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "SPU-M1Q1-F120-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "SPU-M1Q1-F120-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "SPU-M1Q1-F181-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "P",
+        "U"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "SPU-M1Q1-F181-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": false,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "SUP-M0-F0-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": false,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "SUP-M0-F0-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": false,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "SUP-M0-F120-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": false,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "SUP-M0-F120-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": false,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "SUP-M0-F181-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": false,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "SUP-M0-F181-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "SUP-M1Q0-F0-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "SUP-M1Q0-F0-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "SUP-M1Q0-F120-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "SUP-M1Q0-F120-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "SUP-M1Q0-F181-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "SUP-M1Q0-F181-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "SUP-M1Q1-F0-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "SUP-M1Q1-F0-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "SUP-M1Q1-F120-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "SUP-M1Q1-F120-skyfirst"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "SUP-M1Q1-F181-balanced"
+    },
+    {
+      "order": [
+        "S",
+        "U",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "SUP-M1Q1-F181-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": false,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "UPS-M0-F0-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": false,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "UPS-M0-F0-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": false,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "UPS-M0-F120-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": false,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "UPS-M0-F120-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": false,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "UPS-M0-F181-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": false,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "UPS-M0-F181-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "UPS-M1Q0-F0-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "UPS-M1Q0-F0-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "UPS-M1Q0-F120-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "UPS-M1Q0-F120-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "UPS-M1Q0-F181-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "UPS-M1Q0-F181-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "UPS-M1Q1-F0-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "UPS-M1Q1-F0-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "UPS-M1Q1-F120-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "UPS-M1Q1-F120-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "UPS-M1Q1-F181-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "P",
+        "S"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "UPS-M1Q1-F181-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": false,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "USP-M0-F0-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": false,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "USP-M0-F0-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": false,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "USP-M0-F120-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": false,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "USP-M0-F120-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": false,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "USP-M0-F181-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": false,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "USP-M0-F181-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "USP-M1Q0-F0-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "USP-M1Q0-F0-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "USP-M1Q0-F120-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "USP-M1Q0-F120-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": false,
+      "name": "USP-M1Q0-F181-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": false,
+      "name": "USP-M1Q0-F181-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "USP-M1Q1-F0-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 0,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "USP-M1Q1-F0-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "USP-M1Q1-F120-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 120,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "USP-M1Q1-F120-skyfirst"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "balanced",
+      "qualify_first": true,
+      "name": "USP-M1Q1-F181-balanced"
+    },
+    {
+      "order": [
+        "U",
+        "S",
+        "P"
+      ],
+      "mission": true,
+      "flip_at": 181,
+      "supply": "skyfirst",
+      "qualify_first": true,
+      "name": "USP-M1Q1-F181-skyfirst"
+    }
+  ],
+  "priorities": [
+    0,
+    1
+  ],
+  "duration": 180,
+  "coverage": "All 108x108 policy pairs at both tie priorities per scenario. NOT all legal match histories or all feedback policies.",
+  "profile_status": "assumed, not measured",
+  "failure_sampling_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
+  ]
+}

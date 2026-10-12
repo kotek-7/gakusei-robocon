@@ -1,0 +1,182 @@
+[
+  {
+    "policy": "SPU-M1Q1-F120-balanced",
+    "action_success_assumption": 1.0,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 0,
+    "mean_margin": -200.0,
+    "min_sample_margin": -200
+  },
+  {
+    "policy": "PUS-M1Q0-F120-skyfirst",
+    "action_success_assumption": 1.0,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 0,
+    "mean_margin": -110.0,
+    "min_sample_margin": -110
+  },
+  {
+    "policy": "PUS-M0-F120-skyfirst",
+    "action_success_assumption": 1.0,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 0,
+    "mean_margin": -110.0,
+    "min_sample_margin": -110
+  },
+  {
+    "policy": "PSU-M1Q1-F120-skyfirst",
+    "action_success_assumption": 1.0,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 80,
+    "mean_margin": 290.0,
+    "min_sample_margin": 290
+  },
+  {
+    "policy": "PUS-M1Q1-F120-balanced",
+    "action_success_assumption": 1.0,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 80,
+    "mean_margin": 300.0,
+    "min_sample_margin": 300
+  },
+  {
+    "policy": "SPU-M1Q1-F120-balanced",
+    "action_success_assumption": 0.95,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 0,
+    "mean_margin": -274.38,
+    "min_sample_margin": -495
+  },
+  {
+    "policy": "PUS-M1Q0-F120-skyfirst",
+    "action_success_assumption": 0.95,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 0,
+    "mean_margin": -186.62,
+    "min_sample_margin": -410
+  },
+  {
+    "policy": "PUS-M0-F120-skyfirst",
+    "action_success_assumption": 0.95,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 0,
+    "mean_margin": -186.62,
+    "min_sample_margin": -410
+  },
+  {
+    "policy": "PSU-M1Q1-F120-skyfirst",
+    "action_success_assumption": 0.95,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 55,
+    "mean_margin": 68.44,
+    "min_sample_margin": -360
+  },
+  {
+    "policy": "PUS-M1Q1-F120-balanced",
+    "action_success_assumption": 0.95,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 58,
+    "mean_margin": 143.81,
+    "min_sample_margin": -380
+  },
+  {
+    "policy": "SPU-M1Q1-F120-balanced",
+    "action_success_assumption": 0.9,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 0,
+    "mean_margin": -339.0,
+    "min_sample_margin": -575
+  },
+  {
+    "policy": "PUS-M1Q0-F120-skyfirst",
+    "action_success_assumption": 0.9,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 0,
+    "mean_margin": -241.31,
+    "min_sample_margin": -435
+  },
+  {
+    "policy": "PUS-M0-F120-skyfirst",
+    "action_success_assumption": 0.9,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 0,
+    "mean_margin": -241.31,
+    "min_sample_margin": -435
+  },
+  {
+    "policy": "PSU-M1Q1-F120-skyfirst",
+    "action_success_assumption": 0.9,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 40,
+    "mean_margin": -67.75,
+    "min_sample_margin": -470
+  },
+  {
+    "policy": "PUS-M1Q1-F120-balanced",
+    "action_success_assumption": 0.9,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 41,
+    "mean_margin": 2.38,
+    "min_sample_margin": -410
+  },
+  {
+    "policy": "SPU-M1Q1-F120-balanced",
+    "action_success_assumption": 0.8,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 0,
+    "mean_margin": -423.06,
+    "min_sample_margin": -620
+  },
+  {
+    "policy": "PUS-M1Q0-F120-skyfirst",
+    "action_success_assumption": 0.8,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 0,
+    "mean_margin": -327.75,
+    "min_sample_margin": -480
+  },
+  {
+    "policy": "PUS-M0-F120-skyfirst",
+    "action_success_assumption": 0.8,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 0,
+    "mean_margin": -327.81,
+    "min_sample_margin": -480
+  },
+  {
+    "policy": "PSU-M1Q1-F120-skyfirst",
+    "action_success_assumption": 0.8,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 21,
+    "mean_margin": -243.38,
+    "min_sample_margin": -510
+  },
+  {
+    "policy": "PUS-M1Q1-F120-balanced",
+    "action_success_assumption": 0.8,
+    "opponent": "PSU-M1Q0-F0-skyfirst",
+    "n": 80,
+    "sample_wins": 13,
+    "mean_margin": -229.44,
+    "min_sample_margin": -560
+  }
+]

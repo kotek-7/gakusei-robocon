@@ -1,0 +1,11 @@
+{
+  "checked_date": "2026-10-12",
+  "local_file": "rulebook/Robocon_2027_Rulebook_v1-1.pdf",
+  "local_sha256": "f30391eac735191fabd7939a1f61b60a525ed84a89be1df17d4e21d8aa8bede2",
+  "official_url": "https://aburobocon2027.id/download/728/?tmstv=1787554332",
+  "official_sha256": "f30391eac735191fabd7939a1f61b60a525ed84a89be1df17d4e21d8aa8bede2",
+  "identical": true,
+  "news": "https://aburobocon2027.id/news/",
+  "faq": "https://aburobocon2027.id/technical/",
+  "note": "Filename says v1-1; cover says V1.0. October 6 correction: combined robot weight <=60kg. FAQ To Be Confirmed."
+}

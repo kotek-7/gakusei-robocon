@@ -1,0 +1,5 @@
+[
+  {"name":"fast", "transfer":8, "collect":1, "mixed":3, "ascent":7, "earth":8, "second":2, "sky":7, "flip":4, "upper":5, "mustika_tr":11, "mustika_br":14},
+  {"name":"reference", "transfer":12, "collect":2, "mixed":4, "ascent":10, "earth":12, "second":3, "sky":10, "flip":6, "upper":8, "mustika_tr":16, "mustika_br":20},
+  {"name":"slow", "transfer":18, "collect":3, "mixed":6, "ascent":15, "earth":18, "second":5, "sky":15, "flip":9, "upper":12, "mustika_tr":24, "mustika_br":30}
+]

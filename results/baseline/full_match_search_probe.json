@@ -1,0 +1,38 @@
+{
+  "complete": false,
+  "states": 500,
+  "edges": 31485,
+  "terminal_states_by_winner": {
+    "1": 40,
+    "-1": 52
+  },
+  "terminal_scores": [
+    [
+      425,
+      415
+    ],
+    [
+      465,
+      415
+    ],
+    [
+      465,
+      495
+    ],
+    [
+      505,
+      415
+    ]
+  ],
+  "pending_stack": 30975,
+  "horizon": 180,
+  "priority": 0,
+  "active_robots": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "max_states": 500,
+  "meaning": "reachable abstract states; not history counts or optimal strategy"
+}

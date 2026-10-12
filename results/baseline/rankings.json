@@ -1,0 +1,5432 @@
+[
+  {
+    "red_perf": "fast",
+    "blue_perf": "fast",
+    "ranking": [
+      {
+        "policy": "PUS-M1Q1-F0-balanced",
+        "min_margin": -210,
+        "mean_margin": 369.07,
+        "wins": 210,
+        "matches": 216,
+        "missions": 207,
+        "earliest_mustika": 70,
+        "earliest_unlock": 35
+      },
+      {
+        "policy": "PUS-M1Q1-F0-skyfirst",
+        "min_margin": -220,
+        "mean_margin": 314.44,
+        "wins": 196,
+        "matches": 216,
+        "missions": 190,
+        "earliest_mustika": 71,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "PUS-M1Q0-F0-balanced",
+        "min_margin": -260,
+        "mean_margin": 322.82,
+        "wins": 192,
+        "matches": 216,
+        "missions": 180,
+        "earliest_mustika": 70,
+        "earliest_unlock": 35
+      },
+      {
+        "policy": "PUS-M0-F0-balanced",
+        "min_margin": -260,
+        "mean_margin": 78.7,
+        "wins": 146,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 35
+      },
+      {
+        "policy": "PUS-M1Q1-F120-balanced",
+        "min_margin": -270,
+        "mean_margin": 318.98,
+        "wins": 210,
+        "matches": 216,
+        "missions": 207,
+        "earliest_mustika": 67,
+        "earliest_unlock": 35
+      },
+      {
+        "policy": "PSU-M1Q0-F0-balanced",
+        "min_margin": -270,
+        "mean_margin": 306.39,
+        "wins": 200,
+        "matches": 216,
+        "missions": 192,
+        "earliest_mustika": 70,
+        "earliest_unlock": 35
+      },
+      {
+        "policy": "PSU-M1Q1-F0-balanced",
+        "min_margin": -270,
+        "mean_margin": 291.48,
+        "wins": 192,
+        "matches": 216,
+        "missions": 185,
+        "earliest_mustika": 70,
+        "earliest_unlock": 35
+      },
+      {
+        "policy": "SPU-M1Q0-F0-balanced",
+        "min_margin": -270,
+        "mean_margin": 252.08,
+        "wins": 188,
+        "matches": 216,
+        "missions": 174,
+        "earliest_mustika": 67,
+        "earliest_unlock": 36
+      },
+      {
+        "policy": "SPU-M1Q1-F0-balanced",
+        "min_margin": -270,
+        "mean_margin": 252.08,
+        "wins": 188,
+        "matches": 216,
+        "missions": 174,
+        "earliest_mustika": 67,
+        "earliest_unlock": 36
+      },
+      {
+        "policy": "PSU-M0-F0-balanced",
+        "min_margin": -270,
+        "mean_margin": 28.84,
+        "wins": 116,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 35
+      },
+      {
+        "policy": "SUP-M1Q0-F0-balanced",
+        "min_margin": -290,
+        "mean_margin": 263.06,
+        "wins": 176,
+        "matches": 216,
+        "missions": 158,
+        "earliest_mustika": 69,
+        "earliest_unlock": 36
+      },
+      {
+        "policy": "SUP-M1Q1-F0-balanced",
+        "min_margin": -290,
+        "mean_margin": 263.06,
+        "wins": 176,
+        "matches": 216,
+        "missions": 158,
+        "earliest_mustika": 69,
+        "earliest_unlock": 36
+      },
+      {
+        "policy": "PSU-M1Q0-F0-skyfirst",
+        "min_margin": -310,
+        "mean_margin": 287.69,
+        "wins": 192,
+        "matches": 216,
+        "missions": 184,
+        "earliest_mustika": 71,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "PSU-M0-F0-skyfirst",
+        "min_margin": -310,
+        "mean_margin": 9.07,
+        "wins": 108,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "SPU-M1Q0-F0-skyfirst",
+        "min_margin": -320,
+        "mean_margin": 206.81,
+        "wins": 170,
+        "matches": 216,
+        "missions": 156,
+        "earliest_mustika": 71,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "SPU-M1Q1-F0-skyfirst",
+        "min_margin": -320,
+        "mean_margin": 206.81,
+        "wins": 170,
+        "matches": 216,
+        "missions": 156,
+        "earliest_mustika": 71,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "SPU-M1Q1-F120-skyfirst",
+        "min_margin": -320,
+        "mean_margin": 173.24,
+        "wins": 170,
+        "matches": 216,
+        "missions": 156,
+        "earliest_mustika": 74,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "SUP-M0-F0-balanced",
+        "min_margin": -320,
+        "mean_margin": 35.46,
+        "wins": 100,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 36
+      },
+      {
+        "policy": "SPU-M0-F0-skyfirst",
+        "min_margin": -320,
+        "mean_margin": 9.68,
+        "wins": 116,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "PSU-M1Q1-F0-skyfirst",
+        "min_margin": -330,
+        "mean_margin": 312.31,
+        "wins": 206,
+        "matches": 216,
+        "missions": 202,
+        "earliest_mustika": 71,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "PUS-M1Q0-F0-skyfirst",
+        "min_margin": -330,
+        "mean_margin": 285.0,
+        "wins": 184,
+        "matches": 216,
+        "missions": 172,
+        "earliest_mustika": 71,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "PSU-M1Q1-F120-balanced",
+        "min_margin": -330,
+        "mean_margin": 256.53,
+        "wins": 192,
+        "matches": 216,
+        "missions": 185,
+        "earliest_mustika": 67,
+        "earliest_unlock": 35
+      },
+      {
+        "policy": "PUS-M0-F0-skyfirst",
+        "min_margin": -330,
+        "mean_margin": 41.85,
+        "wins": 124,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "SPU-M0-F0-balanced",
+        "min_margin": -330,
+        "mean_margin": 7.92,
+        "wins": 114,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 36
+      },
+      {
+        "policy": "USP-M1Q0-F0-skyfirst",
+        "min_margin": -340,
+        "mean_margin": 224.49,
+        "wins": 159,
+        "matches": 216,
+        "missions": 128,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "USP-M1Q1-F0-skyfirst",
+        "min_margin": -340,
+        "mean_margin": 224.49,
+        "wins": 159,
+        "matches": 216,
+        "missions": 128,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "UPS-M1Q0-F0-skyfirst",
+        "min_margin": -340,
+        "mean_margin": 216.3,
+        "wins": 159,
+        "matches": 216,
+        "missions": 128,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "UPS-M1Q1-F0-skyfirst",
+        "min_margin": -340,
+        "mean_margin": 216.3,
+        "wins": 159,
+        "matches": 216,
+        "missions": 128,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "SPU-M1Q1-F120-balanced",
+        "min_margin": -340,
+        "mean_margin": 191.62,
+        "wins": 170,
+        "matches": 216,
+        "missions": 152,
+        "earliest_mustika": 67,
+        "earliest_unlock": 36
+      },
+      {
+        "policy": "PSU-M1Q1-F120-skyfirst",
+        "min_margin": -350,
+        "mean_margin": 266.57,
+        "wins": 206,
+        "matches": 216,
+        "missions": 202,
+        "earliest_mustika": 74,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "USP-M1Q0-F0-balanced",
+        "min_margin": -350,
+        "mean_margin": 236.06,
+        "wins": 149,
+        "matches": 216,
+        "missions": 132,
+        "earliest_mustika": 78,
+        "earliest_unlock": 45
+      },
+      {
+        "policy": "USP-M1Q1-F0-balanced",
+        "min_margin": -350,
+        "mean_margin": 236.06,
+        "wins": 149,
+        "matches": 216,
+        "missions": 132,
+        "earliest_mustika": 78,
+        "earliest_unlock": 45
+      },
+      {
+        "policy": "UPS-M1Q0-F0-balanced",
+        "min_margin": -350,
+        "mean_margin": 230.93,
+        "wins": 149,
+        "matches": 216,
+        "missions": 132,
+        "earliest_mustika": 78,
+        "earliest_unlock": 45
+      },
+      {
+        "policy": "UPS-M1Q1-F0-balanced",
+        "min_margin": -350,
+        "mean_margin": 230.93,
+        "wins": 149,
+        "matches": 216,
+        "missions": 132,
+        "earliest_mustika": 78,
+        "earliest_unlock": 45
+      },
+      {
+        "policy": "PSU-M1Q0-F120-balanced",
+        "min_margin": -350,
+        "mean_margin": 165.42,
+        "wins": 166,
+        "matches": 216,
+        "missions": 141,
+        "earliest_mustika": 94,
+        "earliest_unlock": 65
+      },
+      {
+        "policy": "PUS-M1Q0-F120-balanced",
+        "min_margin": -350,
+        "mean_margin": 76.3,
+        "wins": 126,
+        "matches": 216,
+        "missions": 81,
+        "earliest_mustika": 104,
+        "earliest_unlock": 75
+      },
+      {
+        "policy": "SPU-M1Q0-F120-skyfirst",
+        "min_margin": -350,
+        "mean_margin": 61.57,
+        "wins": 138,
+        "matches": 216,
+        "missions": 108,
+        "earliest_mustika": 97,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "USP-M0-F0-balanced",
+        "min_margin": -350,
+        "mean_margin": 53.33,
+        "wins": 104,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 45
+      },
+      {
+        "policy": "UPS-M0-F0-balanced",
+        "min_margin": -350,
+        "mean_margin": 45.6,
+        "wins": 103,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 45
+      },
+      {
+        "policy": "PUS-M0-F120-balanced",
+        "min_margin": -350,
+        "mean_margin": -22.64,
+        "wins": 87,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 75
+      },
+      {
+        "policy": "UPS-M1Q0-F120-balanced",
+        "min_margin": -360,
+        "mean_margin": 103.61,
+        "wins": 123,
+        "matches": 216,
+        "missions": 86,
+        "earliest_mustika": 97,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "UPS-M0-F120-balanced",
+        "min_margin": -360,
+        "mean_margin": 4.12,
+        "wins": 101,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "PSU-M0-F120-balanced",
+        "min_margin": -360,
+        "mean_margin": -35.97,
+        "wins": 83,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 65
+      },
+      {
+        "policy": "UPS-M1Q1-F120-balanced",
+        "min_margin": -370,
+        "mean_margin": 209.17,
+        "wins": 157,
+        "matches": 216,
+        "missions": 132,
+        "earliest_mustika": 75,
+        "earliest_unlock": 45
+      },
+      {
+        "policy": "UPS-M1Q0-F120-skyfirst",
+        "min_margin": -370,
+        "mean_margin": 66.3,
+        "wins": 123,
+        "matches": 216,
+        "missions": 82,
+        "earliest_mustika": 105,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "USP-M0-F0-skyfirst",
+        "min_margin": -370,
+        "mean_margin": 41.11,
+        "wins": 113,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "UPS-M0-F0-skyfirst",
+        "min_margin": -370,
+        "mean_margin": 40.51,
+        "wins": 116,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "UPS-M0-F120-skyfirst",
+        "min_margin": -370,
+        "mean_margin": -12.45,
+        "wins": 97,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "PUS-M1Q1-F120-skyfirst",
+        "min_margin": -380,
+        "mean_margin": 288.84,
+        "wins": 204,
+        "matches": 216,
+        "missions": 198,
+        "earliest_mustika": 74,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "PSU-M1Q0-F120-skyfirst",
+        "min_margin": -390,
+        "mean_margin": 62.45,
+        "wins": 130,
+        "matches": 216,
+        "missions": 99,
+        "earliest_mustika": 102,
+        "earliest_unlock": 73
+      },
+      {
+        "policy": "PSU-M0-F120-skyfirst",
+        "min_margin": -390,
+        "mean_margin": -64.49,
+        "wins": 73,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 73
+      },
+      {
+        "policy": "SPU-M0-F120-skyfirst",
+        "min_margin": -390,
+        "mean_margin": -84.49,
+        "wins": 69,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "SPU-M1Q0-F120-balanced",
+        "min_margin": -400,
+        "mean_margin": 104.95,
+        "wins": 143,
+        "matches": 216,
+        "missions": 118,
+        "earliest_mustika": 80,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "SPU-M0-F120-balanced",
+        "min_margin": -400,
+        "mean_margin": -50.93,
+        "wins": 78,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "SUP-M1Q0-F120-skyfirst",
+        "min_margin": -410,
+        "mean_margin": 71.94,
+        "wins": 122,
+        "matches": 216,
+        "missions": 94,
+        "earliest_mustika": 95,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "PUS-M1Q0-F120-skyfirst",
+        "min_margin": -410,
+        "mean_margin": 66.48,
+        "wins": 130,
+        "matches": 216,
+        "missions": 87,
+        "earliest_mustika": 109,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "USP-M1Q0-F120-skyfirst",
+        "min_margin": -410,
+        "mean_margin": 43.56,
+        "wins": 112,
+        "matches": 216,
+        "missions": 72,
+        "earliest_mustika": 105,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "USP-M0-F120-skyfirst",
+        "min_margin": -410,
+        "mean_margin": -23.98,
+        "wins": 86,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "PUS-M0-F120-skyfirst",
+        "min_margin": -410,
+        "mean_margin": -34.31,
+        "wins": 92,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "SUP-M0-F120-skyfirst",
+        "min_margin": -410,
+        "mean_margin": -54.12,
+        "wins": 74,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "USP-M1Q1-F120-skyfirst",
+        "min_margin": -420,
+        "mean_margin": 220.46,
+        "wins": 171,
+        "matches": 216,
+        "missions": 144,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "USP-M1Q1-F120-balanced",
+        "min_margin": -420,
+        "mean_margin": 199.77,
+        "wins": 157,
+        "matches": 216,
+        "missions": 132,
+        "earliest_mustika": 75,
+        "earliest_unlock": 45
+      },
+      {
+        "policy": "SUP-M1Q1-F120-balanced",
+        "min_margin": -420,
+        "mean_margin": 175.09,
+        "wins": 170,
+        "matches": 216,
+        "missions": 152,
+        "earliest_mustika": 77,
+        "earliest_unlock": 36
+      },
+      {
+        "policy": "UPS-M1Q1-F120-skyfirst",
+        "min_margin": -430,
+        "mean_margin": 225.56,
+        "wins": 171,
+        "matches": 216,
+        "missions": 144,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "SUP-M1Q0-F0-skyfirst",
+        "min_margin": -440,
+        "mean_margin": 241.76,
+        "wins": 170,
+        "matches": 216,
+        "missions": 156,
+        "earliest_mustika": 72,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "SUP-M1Q1-F0-skyfirst",
+        "min_margin": -440,
+        "mean_margin": 241.76,
+        "wins": 170,
+        "matches": 216,
+        "missions": 156,
+        "earliest_mustika": 72,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "SUP-M0-F0-skyfirst",
+        "min_margin": -440,
+        "mean_margin": 21.16,
+        "wins": 98,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "SUP-M1Q1-F120-skyfirst",
+        "min_margin": -460,
+        "mean_margin": 186.11,
+        "wins": 168,
+        "matches": 216,
+        "missions": 156,
+        "earliest_mustika": 72,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "SUP-M1Q0-F120-balanced",
+        "min_margin": -460,
+        "mean_margin": 76.85,
+        "wins": 133,
+        "matches": 216,
+        "missions": 106,
+        "earliest_mustika": 89,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "SUP-M0-F120-balanced",
+        "min_margin": -460,
+        "mean_margin": -63.66,
+        "wins": 76,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "USP-M1Q0-F120-balanced",
+        "min_margin": -510,
+        "mean_margin": 76.76,
+        "wins": 115,
+        "matches": 216,
+        "missions": 80,
+        "earliest_mustika": 97,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "USP-M0-F120-balanced",
+        "min_margin": -510,
+        "mean_margin": -18.75,
+        "wins": 94,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "USP-M1Q1-F181-balanced",
+        "min_margin": -640,
+        "mean_margin": -109.63,
+        "wins": 71,
+        "matches": 216,
+        "missions": 132,
+        "earliest_mustika": 75,
+        "earliest_unlock": 45
+      },
+      {
+        "policy": "USP-M1Q0-F181-balanced",
+        "min_margin": -640,
+        "mean_margin": -232.87,
+        "wins": 49,
+        "matches": 216,
+        "missions": 70,
+        "earliest_mustika": 97,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "USP-M1Q1-F181-skyfirst",
+        "min_margin": -650,
+        "mean_margin": -75.6,
+        "wins": 76,
+        "matches": 216,
+        "missions": 144,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PUS-M1Q1-F181-balanced",
+        "min_margin": -650,
+        "mean_margin": -86.3,
+        "wins": 59,
+        "matches": 216,
+        "missions": 207,
+        "earliest_mustika": 67,
+        "earliest_unlock": 35
+      },
+      {
+        "policy": "PUS-M1Q1-F181-skyfirst",
+        "min_margin": -650,
+        "mean_margin": -106.02,
+        "wins": 61,
+        "matches": 216,
+        "missions": 198,
+        "earliest_mustika": 74,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "SUP-M1Q0-F181-skyfirst",
+        "min_margin": -650,
+        "mean_margin": -254.81,
+        "wins": 43,
+        "matches": 216,
+        "missions": 86,
+        "earliest_mustika": 95,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "USP-M1Q0-F181-skyfirst",
+        "min_margin": -650,
+        "mean_margin": -258.7,
+        "wins": 37,
+        "matches": 216,
+        "missions": 66,
+        "earliest_mustika": 105,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "USP-M0-F181-balanced",
+        "min_margin": -650,
+        "mean_margin": -331.67,
+        "wins": 31,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "USP-M0-F181-skyfirst",
+        "min_margin": -650,
+        "mean_margin": -339.44,
+        "wins": 29,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "UPS-M1Q1-F181-skyfirst",
+        "min_margin": -670,
+        "mean_margin": -96.53,
+        "wins": 75,
+        "matches": 216,
+        "missions": 144,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PSU-M1Q1-F181-balanced",
+        "min_margin": -690,
+        "mean_margin": -161.34,
+        "wins": 60,
+        "matches": 216,
+        "missions": 185,
+        "earliest_mustika": 67,
+        "earliest_unlock": 35
+      },
+      {
+        "policy": "SUP-M1Q1-F181-skyfirst",
+        "min_margin": -700,
+        "mean_margin": -133.24,
+        "wins": 60,
+        "matches": 216,
+        "missions": 156,
+        "earliest_mustika": 72,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "UPS-M1Q1-F181-balanced",
+        "min_margin": -700,
+        "mean_margin": -134.35,
+        "wins": 67,
+        "matches": 216,
+        "missions": 132,
+        "earliest_mustika": 75,
+        "earliest_unlock": 45
+      },
+      {
+        "policy": "SUP-M1Q1-F181-balanced",
+        "min_margin": -700,
+        "mean_margin": -146.94,
+        "wins": 61,
+        "matches": 216,
+        "missions": 152,
+        "earliest_mustika": 77,
+        "earliest_unlock": 36
+      },
+      {
+        "policy": "SUP-M1Q0-F181-balanced",
+        "min_margin": -700,
+        "mean_margin": -235.56,
+        "wins": 46,
+        "matches": 216,
+        "missions": 94,
+        "earliest_mustika": 89,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "SUP-M0-F181-balanced",
+        "min_margin": -700,
+        "mean_margin": -360.37,
+        "wins": 18,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "PSU-M1Q1-F181-skyfirst",
+        "min_margin": -710,
+        "mean_margin": -142.78,
+        "wins": 47,
+        "matches": 216,
+        "missions": 202,
+        "earliest_mustika": 74,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "PSU-M1Q0-F181-balanced",
+        "min_margin": -710,
+        "mean_margin": -242.78,
+        "wins": 41,
+        "matches": 216,
+        "missions": 141,
+        "earliest_mustika": 94,
+        "earliest_unlock": 65
+      },
+      {
+        "policy": "UPS-M1Q0-F181-balanced",
+        "min_margin": -710,
+        "mean_margin": -255.56,
+        "wins": 49,
+        "matches": 216,
+        "missions": 74,
+        "earliest_mustika": 97,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "UPS-M1Q0-F181-skyfirst",
+        "min_margin": -710,
+        "mean_margin": -280.97,
+        "wins": 36,
+        "matches": 216,
+        "missions": 73,
+        "earliest_mustika": 105,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "UPS-M0-F181-balanced",
+        "min_margin": -710,
+        "mean_margin": -354.17,
+        "wins": 25,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "UPS-M0-F181-skyfirst",
+        "min_margin": -710,
+        "mean_margin": -368.8,
+        "wins": 20,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "SUP-M0-F181-skyfirst",
+        "min_margin": -710,
+        "mean_margin": -376.02,
+        "wins": 15,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "PSU-M0-F181-balanced",
+        "min_margin": -710,
+        "mean_margin": -439.63,
+        "wins": 5,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 65
+      },
+      {
+        "policy": "SPU-M1Q1-F181-skyfirst",
+        "min_margin": -750,
+        "mean_margin": -236.9,
+        "wins": 41,
+        "matches": 216,
+        "missions": 156,
+        "earliest_mustika": 74,
+        "earliest_unlock": 43
+      },
+      {
+        "policy": "SPU-M1Q1-F181-balanced",
+        "min_margin": -760,
+        "mean_margin": -221.94,
+        "wins": 51,
+        "matches": 216,
+        "missions": 152,
+        "earliest_mustika": 67,
+        "earliest_unlock": 36
+      },
+      {
+        "policy": "SPU-M1Q0-F181-balanced",
+        "min_margin": -760,
+        "mean_margin": -296.16,
+        "wins": 41,
+        "matches": 216,
+        "missions": 118,
+        "earliest_mustika": 80,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "PUS-M1Q0-F181-balanced",
+        "min_margin": -760,
+        "mean_margin": -320.46,
+        "wins": 27,
+        "matches": 216,
+        "missions": 81,
+        "earliest_mustika": 104,
+        "earliest_unlock": 75
+      },
+      {
+        "policy": "PUS-M0-F181-balanced",
+        "min_margin": -760,
+        "mean_margin": -409.54,
+        "wins": 9,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 75
+      },
+      {
+        "policy": "PUS-M1Q0-F181-skyfirst",
+        "min_margin": -770,
+        "mean_margin": -337.59,
+        "wins": 24,
+        "matches": 216,
+        "missions": 87,
+        "earliest_mustika": 109,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "SPU-M1Q0-F181-skyfirst",
+        "min_margin": -770,
+        "mean_margin": -346.39,
+        "wins": 25,
+        "matches": 216,
+        "missions": 108,
+        "earliest_mustika": 97,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "PUS-M0-F181-skyfirst",
+        "min_margin": -770,
+        "mean_margin": -439.81,
+        "wins": 5,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "SPU-M0-F181-balanced",
+        "min_margin": -770,
+        "mean_margin": -450.23,
+        "wins": 3,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "PSU-M1Q0-F181-skyfirst",
+        "min_margin": -820,
+        "mean_margin": -349.35,
+        "wins": 20,
+        "matches": 216,
+        "missions": 99,
+        "earliest_mustika": 102,
+        "earliest_unlock": 73
+      },
+      {
+        "policy": "PSU-M0-F181-skyfirst",
+        "min_margin": -820,
+        "mean_margin": -461.2,
+        "wins": 4,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 73
+      },
+      {
+        "policy": "SPU-M0-F181-skyfirst",
+        "min_margin": -820,
+        "mean_margin": -478.24,
+        "wins": 4,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 56
+      }
+    ]
+  },
+  {
+    "red_perf": "reference",
+    "blue_perf": "reference",
+    "ranking": [
+      {
+        "policy": "SPU-M1Q1-F120-balanced",
+        "min_margin": -200,
+        "mean_margin": 145.44,
+        "wins": 145,
+        "matches": 216,
+        "missions": 144,
+        "earliest_mustika": 114,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "PUS-M1Q0-F120-skyfirst",
+        "min_margin": -200,
+        "mean_margin": 6.06,
+        "wins": 110,
+        "matches": 216,
+        "missions": 18,
+        "earliest_mustika": 147,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "PUS-M0-F120-skyfirst",
+        "min_margin": -200,
+        "mean_margin": -15.6,
+        "wins": 96,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "PSU-M1Q1-F120-skyfirst",
+        "min_margin": -210,
+        "mean_margin": 279.86,
+        "wins": 207,
+        "matches": 216,
+        "missions": 207,
+        "earliest_mustika": 112,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "PUS-M1Q1-F120-balanced",
+        "min_margin": -230,
+        "mean_margin": 257.22,
+        "wins": 201,
+        "matches": 216,
+        "missions": 201,
+        "earliest_mustika": 121,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PUS-M1Q0-F0-skyfirst",
+        "min_margin": -260,
+        "mean_margin": 167.11,
+        "wins": 158,
+        "matches": 216,
+        "missions": 140,
+        "earliest_mustika": 108,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "PUS-M1Q0-F0-balanced",
+        "min_margin": -280,
+        "mean_margin": 209.03,
+        "wins": 182,
+        "matches": 216,
+        "missions": 180,
+        "earliest_mustika": 104,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PUS-M1Q0-F120-balanced",
+        "min_margin": -280,
+        "mean_margin": 45.86,
+        "wins": 119,
+        "matches": 216,
+        "missions": 105,
+        "earliest_mustika": 162,
+        "earliest_unlock": 113
+      },
+      {
+        "policy": "PUS-M0-F0-balanced",
+        "min_margin": -280,
+        "mean_margin": 42.5,
+        "wins": 134,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PUS-M0-F120-balanced",
+        "min_margin": -280,
+        "mean_margin": 31.02,
+        "wins": 106,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 113
+      },
+      {
+        "policy": "SPU-M1Q0-F0-balanced",
+        "min_margin": -295,
+        "mean_margin": 166.81,
+        "wins": 171,
+        "matches": 216,
+        "missions": 166,
+        "earliest_mustika": 105,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "SPU-M1Q1-F0-balanced",
+        "min_margin": -295,
+        "mean_margin": 166.81,
+        "wins": 171,
+        "matches": 216,
+        "missions": 166,
+        "earliest_mustika": 105,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "PUS-M0-F0-skyfirst",
+        "min_margin": -295,
+        "mean_margin": -4.07,
+        "wins": 96,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "SPU-M0-F0-balanced",
+        "min_margin": -295,
+        "mean_margin": -15.09,
+        "wins": 95,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "PUS-M1Q1-F0-balanced",
+        "min_margin": -300,
+        "mean_margin": 291.85,
+        "wins": 201,
+        "matches": 216,
+        "missions": 201,
+        "earliest_mustika": 104,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PUS-M1Q1-F181-skyfirst",
+        "min_margin": -310,
+        "mean_margin": 74.17,
+        "wins": 195,
+        "matches": 216,
+        "missions": 195,
+        "earliest_mustika": 112,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "SUP-M1Q0-F0-balanced",
+        "min_margin": -315,
+        "mean_margin": 127.31,
+        "wins": 157,
+        "matches": 216,
+        "missions": 150,
+        "earliest_mustika": 103,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "SUP-M1Q1-F0-balanced",
+        "min_margin": -315,
+        "mean_margin": 127.31,
+        "wins": 157,
+        "matches": 216,
+        "missions": 150,
+        "earliest_mustika": 103,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "PSU-M1Q1-F120-balanced",
+        "min_margin": -330,
+        "mean_margin": 299.79,
+        "wins": 211,
+        "matches": 216,
+        "missions": 211,
+        "earliest_mustika": 121,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PSU-M1Q1-F0-balanced",
+        "min_margin": -330,
+        "mean_margin": 280.42,
+        "wins": 211,
+        "matches": 216,
+        "missions": 211,
+        "earliest_mustika": 104,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PSU-M1Q1-F0-skyfirst",
+        "min_margin": -330,
+        "mean_margin": 258.8,
+        "wins": 207,
+        "matches": 216,
+        "missions": 207,
+        "earliest_mustika": 108,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "PSU-M1Q0-F0-balanced",
+        "min_margin": -330,
+        "mean_margin": 247.18,
+        "wins": 190,
+        "matches": 216,
+        "missions": 190,
+        "earliest_mustika": 104,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "SPU-M1Q0-F120-balanced",
+        "min_margin": -330,
+        "mean_margin": 92.34,
+        "wins": 127,
+        "matches": 216,
+        "missions": 114,
+        "earliest_mustika": 132,
+        "earliest_unlock": 72
+      },
+      {
+        "policy": "PSU-M1Q0-F120-balanced",
+        "min_margin": -330,
+        "mean_margin": 84.56,
+        "wins": 131,
+        "matches": 216,
+        "missions": 123,
+        "earliest_mustika": 146,
+        "earliest_unlock": 97
+      },
+      {
+        "policy": "PSU-M0-F0-balanced",
+        "min_margin": -330,
+        "mean_margin": 12.87,
+        "wins": 112,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "SUP-M0-F0-balanced",
+        "min_margin": -330,
+        "mean_margin": -31.27,
+        "wins": 79,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "PSU-M0-F120-balanced",
+        "min_margin": -330,
+        "mean_margin": -48.06,
+        "wins": 72,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 97
+      },
+      {
+        "policy": "SPU-M0-F120-balanced",
+        "min_margin": -330,
+        "mean_margin": -66.3,
+        "wins": 68,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 72
+      },
+      {
+        "policy": "UPS-M1Q0-F0-balanced",
+        "min_margin": -335,
+        "mean_margin": 169.81,
+        "wins": 151,
+        "matches": 216,
+        "missions": 142,
+        "earliest_mustika": 118,
+        "earliest_unlock": 69
+      },
+      {
+        "policy": "UPS-M1Q1-F0-balanced",
+        "min_margin": -335,
+        "mean_margin": 169.44,
+        "wins": 151,
+        "matches": 216,
+        "missions": 142,
+        "earliest_mustika": 118,
+        "earliest_unlock": 69
+      },
+      {
+        "policy": "USP-M1Q0-F0-balanced",
+        "min_margin": -335,
+        "mean_margin": 168.24,
+        "wins": 151,
+        "matches": 216,
+        "missions": 142,
+        "earliest_mustika": 118,
+        "earliest_unlock": 69
+      },
+      {
+        "policy": "USP-M1Q1-F0-balanced",
+        "min_margin": -335,
+        "mean_margin": 167.87,
+        "wins": 151,
+        "matches": 216,
+        "missions": 142,
+        "earliest_mustika": 118,
+        "earliest_unlock": 69
+      },
+      {
+        "policy": "UPS-M1Q1-F120-balanced",
+        "min_margin": -335,
+        "mean_margin": 151.74,
+        "wins": 161,
+        "matches": 216,
+        "missions": 142,
+        "earliest_mustika": 121,
+        "earliest_unlock": 69
+      },
+      {
+        "policy": "USP-M1Q1-F120-balanced",
+        "min_margin": -335,
+        "mean_margin": 149.88,
+        "wins": 161,
+        "matches": 216,
+        "missions": 142,
+        "earliest_mustika": 121,
+        "earliest_unlock": 69
+      },
+      {
+        "policy": "SUP-M1Q0-F120-balanced",
+        "min_margin": -335,
+        "mean_margin": 37.55,
+        "wins": 106,
+        "matches": 216,
+        "missions": 94,
+        "earliest_mustika": 133,
+        "earliest_unlock": 72
+      },
+      {
+        "policy": "UPS-M1Q0-F120-balanced",
+        "min_margin": -335,
+        "mean_margin": 7.87,
+        "wins": 109,
+        "matches": 216,
+        "missions": 67,
+        "earliest_mustika": 153,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "USP-M1Q0-F120-balanced",
+        "min_margin": -335,
+        "mean_margin": 5.6,
+        "wins": 107,
+        "matches": 216,
+        "missions": 67,
+        "earliest_mustika": 153,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "UPS-M0-F0-balanced",
+        "min_margin": -335,
+        "mean_margin": -2.57,
+        "wins": 101,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 69
+      },
+      {
+        "policy": "USP-M0-F0-balanced",
+        "min_margin": -335,
+        "mean_margin": -4.33,
+        "wins": 101,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 69
+      },
+      {
+        "policy": "UPS-M0-F120-balanced",
+        "min_margin": -335,
+        "mean_margin": -48.43,
+        "wins": 91,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "USP-M0-F120-balanced",
+        "min_margin": -335,
+        "mean_margin": -48.7,
+        "wins": 93,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "SUP-M0-F120-balanced",
+        "min_margin": -335,
+        "mean_margin": -60.46,
+        "wins": 58,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 72
+      },
+      {
+        "policy": "PUS-M1Q1-F120-skyfirst",
+        "min_margin": -340,
+        "mean_margin": 240.28,
+        "wins": 197,
+        "matches": 216,
+        "missions": 195,
+        "earliest_mustika": 112,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "PSU-M1Q0-F0-skyfirst",
+        "min_margin": -350,
+        "mean_margin": 220.9,
+        "wins": 181,
+        "matches": 216,
+        "missions": 181,
+        "earliest_mustika": 108,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "USP-M1Q1-F120-skyfirst",
+        "min_margin": -350,
+        "mean_margin": 105.65,
+        "wins": 143,
+        "matches": 216,
+        "missions": 126,
+        "earliest_mustika": 126,
+        "earliest_unlock": 83
+      },
+      {
+        "policy": "UPS-M1Q1-F120-skyfirst",
+        "min_margin": -350,
+        "mean_margin": 105.37,
+        "wins": 143,
+        "matches": 216,
+        "missions": 126,
+        "earliest_mustika": 126,
+        "earliest_unlock": 83
+      },
+      {
+        "policy": "PSU-M1Q1-F181-skyfirst",
+        "min_margin": -350,
+        "mean_margin": 81.62,
+        "wins": 207,
+        "matches": 216,
+        "missions": 207,
+        "earliest_mustika": 112,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "PSU-M1Q0-F120-skyfirst",
+        "min_margin": -350,
+        "mean_margin": 7.82,
+        "wins": 123,
+        "matches": 216,
+        "missions": 75,
+        "earliest_mustika": 166,
+        "earliest_unlock": 111
+      },
+      {
+        "policy": "PSU-M0-F0-skyfirst",
+        "min_margin": -350,
+        "mean_margin": -2.31,
+        "wins": 100,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "PSU-M0-F120-skyfirst",
+        "min_margin": -350,
+        "mean_margin": -43.66,
+        "wins": 88,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 111
+      },
+      {
+        "policy": "UPS-M1Q0-F120-skyfirst",
+        "min_margin": -350,
+        "mean_margin": -45.42,
+        "wins": 64,
+        "matches": 216,
+        "missions": 58,
+        "earliest_mustika": 167,
+        "earliest_unlock": 118
+      },
+      {
+        "policy": "USP-M1Q0-F120-skyfirst",
+        "min_margin": -350,
+        "mean_margin": -46.81,
+        "wins": 64,
+        "matches": 216,
+        "missions": 58,
+        "earliest_mustika": 167,
+        "earliest_unlock": 118
+      },
+      {
+        "policy": "USP-M0-F120-skyfirst",
+        "min_margin": -350,
+        "mean_margin": -67.04,
+        "wins": 63,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 118
+      },
+      {
+        "policy": "UPS-M0-F120-skyfirst",
+        "min_margin": -350,
+        "mean_margin": -67.73,
+        "wins": 61,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 118
+      },
+      {
+        "policy": "PUS-M1Q1-F181-balanced",
+        "min_margin": -355,
+        "mean_margin": 104.91,
+        "wins": 201,
+        "matches": 216,
+        "missions": 201,
+        "earliest_mustika": 121,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PUS-M1Q1-F0-skyfirst",
+        "min_margin": -360,
+        "mean_margin": 239.26,
+        "wins": 189,
+        "matches": 216,
+        "missions": 187,
+        "earliest_mustika": 108,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "USP-M1Q0-F0-skyfirst",
+        "min_margin": -360,
+        "mean_margin": 121.3,
+        "wins": 150,
+        "matches": 216,
+        "missions": 132,
+        "earliest_mustika": 126,
+        "earliest_unlock": 83
+      },
+      {
+        "policy": "USP-M1Q1-F0-skyfirst",
+        "min_margin": -360,
+        "mean_margin": 121.3,
+        "wins": 150,
+        "matches": 216,
+        "missions": 132,
+        "earliest_mustika": 126,
+        "earliest_unlock": 83
+      },
+      {
+        "policy": "UPS-M1Q0-F0-skyfirst",
+        "min_margin": -360,
+        "mean_margin": 121.02,
+        "wins": 150,
+        "matches": 216,
+        "missions": 132,
+        "earliest_mustika": 126,
+        "earliest_unlock": 83
+      },
+      {
+        "policy": "UPS-M1Q1-F0-skyfirst",
+        "min_margin": -360,
+        "mean_margin": 121.02,
+        "wins": 150,
+        "matches": 216,
+        "missions": 132,
+        "earliest_mustika": 126,
+        "earliest_unlock": 83
+      },
+      {
+        "policy": "USP-M0-F0-skyfirst",
+        "min_margin": -360,
+        "mean_margin": -16.44,
+        "wins": 102,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 83
+      },
+      {
+        "policy": "UPS-M0-F0-skyfirst",
+        "min_margin": -360,
+        "mean_margin": -19.77,
+        "wins": 98,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 83
+      },
+      {
+        "policy": "SPU-M1Q1-F120-skyfirst",
+        "min_margin": -390,
+        "mean_margin": 109.81,
+        "wins": 140,
+        "matches": 216,
+        "missions": 140,
+        "earliest_mustika": 112,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "SPU-M1Q0-F0-skyfirst",
+        "min_margin": -390,
+        "mean_margin": 100.93,
+        "wins": 140,
+        "matches": 216,
+        "missions": 140,
+        "earliest_mustika": 108,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "SPU-M1Q1-F0-skyfirst",
+        "min_margin": -390,
+        "mean_margin": 100.93,
+        "wins": 140,
+        "matches": 216,
+        "missions": 140,
+        "earliest_mustika": 108,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "SPU-M1Q0-F120-skyfirst",
+        "min_margin": -390,
+        "mean_margin": 47.18,
+        "wins": 109,
+        "matches": 216,
+        "missions": 100,
+        "earliest_mustika": 131,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "SPU-M0-F0-skyfirst",
+        "min_margin": -390,
+        "mean_margin": -46.71,
+        "wins": 92,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "SPU-M0-F120-skyfirst",
+        "min_margin": -390,
+        "mean_margin": -68.98,
+        "wins": 81,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "SUP-M1Q1-F120-balanced",
+        "min_margin": -395,
+        "mean_margin": 115.35,
+        "wins": 147,
+        "matches": 216,
+        "missions": 144,
+        "earliest_mustika": 115,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "SUP-M1Q0-F0-skyfirst",
+        "min_margin": -395,
+        "mean_margin": 80.32,
+        "wins": 142,
+        "matches": 216,
+        "missions": 138,
+        "earliest_mustika": 110,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "SUP-M1Q1-F0-skyfirst",
+        "min_margin": -395,
+        "mean_margin": 80.32,
+        "wins": 142,
+        "matches": 216,
+        "missions": 138,
+        "earliest_mustika": 110,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "SUP-M0-F0-skyfirst",
+        "min_margin": -395,
+        "mean_margin": -69.44,
+        "wins": 60,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "SPU-M1Q1-F181-balanced",
+        "min_margin": -400,
+        "mean_margin": -58.7,
+        "wins": 100,
+        "matches": 216,
+        "missions": 144,
+        "earliest_mustika": 114,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "PUS-M1Q0-F181-skyfirst",
+        "min_margin": -410,
+        "mean_margin": -187.82,
+        "wins": 15,
+        "matches": 216,
+        "missions": 27,
+        "earliest_mustika": 147,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "PUS-M0-F181-skyfirst",
+        "min_margin": -410,
+        "mean_margin": -221.48,
+        "wins": 6,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "SPU-M1Q0-F181-skyfirst",
+        "min_margin": -420,
+        "mean_margin": -145.65,
+        "wins": 82,
+        "matches": 216,
+        "missions": 90,
+        "earliest_mustika": 131,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "SPU-M1Q1-F181-skyfirst",
+        "min_margin": -425,
+        "mean_margin": -61.53,
+        "wins": 120,
+        "matches": 216,
+        "missions": 140,
+        "earliest_mustika": 112,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "PSU-M1Q1-F181-balanced",
+        "min_margin": -430,
+        "mean_margin": 73.63,
+        "wins": 159,
+        "matches": 216,
+        "missions": 211,
+        "earliest_mustika": 121,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PSU-M1Q0-F181-balanced",
+        "min_margin": -430,
+        "mean_margin": -102.94,
+        "wins": 71,
+        "matches": 216,
+        "missions": 123,
+        "earliest_mustika": 158,
+        "earliest_unlock": 97
+      },
+      {
+        "policy": "SPU-M1Q0-F181-balanced",
+        "min_margin": -430,
+        "mean_margin": -130.56,
+        "wins": 78,
+        "matches": 216,
+        "missions": 102,
+        "earliest_mustika": 132,
+        "earliest_unlock": 72
+      },
+      {
+        "policy": "PSU-M0-F181-balanced",
+        "min_margin": -430,
+        "mean_margin": -231.25,
+        "wins": 7,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 97
+      },
+      {
+        "policy": "PUS-M1Q0-F181-balanced",
+        "min_margin": -435,
+        "mean_margin": -101.55,
+        "wins": 73,
+        "matches": 216,
+        "missions": 105,
+        "earliest_mustika": 166,
+        "earliest_unlock": 113
+      },
+      {
+        "policy": "PUS-M0-F181-balanced",
+        "min_margin": -435,
+        "mean_margin": -206.99,
+        "wins": 16,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 113
+      },
+      {
+        "policy": "SPU-M0-F181-balanced",
+        "min_margin": -440,
+        "mean_margin": -254.63,
+        "wins": 5,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 72
+      },
+      {
+        "policy": "SUP-M1Q1-F120-skyfirst",
+        "min_margin": -445,
+        "mean_margin": 84.31,
+        "wins": 146,
+        "matches": 216,
+        "missions": 140,
+        "earliest_mustika": 110,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "SUP-M1Q0-F120-skyfirst",
+        "min_margin": -465,
+        "mean_margin": -9.35,
+        "wins": 98,
+        "matches": 216,
+        "missions": 82,
+        "earliest_mustika": 129,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "SUP-M0-F120-skyfirst",
+        "min_margin": -465,
+        "mean_margin": -96.02,
+        "wins": 57,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "PSU-M1Q0-F181-skyfirst",
+        "min_margin": -475,
+        "mean_margin": -161.06,
+        "wins": 69,
+        "matches": 216,
+        "missions": 75,
+        "earliest_mustika": 172,
+        "earliest_unlock": 111
+      },
+      {
+        "policy": "PSU-M0-F181-skyfirst",
+        "min_margin": -475,
+        "mean_margin": -236.9,
+        "wins": 6,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 111
+      },
+      {
+        "policy": "SPU-M0-F181-skyfirst",
+        "min_margin": -475,
+        "mean_margin": -253.19,
+        "wins": 8,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "UPS-M1Q1-F181-balanced",
+        "min_margin": -485,
+        "mean_margin": -31.09,
+        "wins": 88,
+        "matches": 216,
+        "missions": 144,
+        "earliest_mustika": 121,
+        "earliest_unlock": 69
+      },
+      {
+        "policy": "UPS-M1Q1-F181-skyfirst",
+        "min_margin": -505,
+        "mean_margin": -62.04,
+        "wins": 87,
+        "matches": 216,
+        "missions": 124,
+        "earliest_mustika": 126,
+        "earliest_unlock": 83
+      },
+      {
+        "policy": "USP-M1Q1-F181-skyfirst",
+        "min_margin": -505,
+        "mean_margin": -66.02,
+        "wins": 87,
+        "matches": 216,
+        "missions": 124,
+        "earliest_mustika": 126,
+        "earliest_unlock": 83
+      },
+      {
+        "policy": "UPS-M1Q0-F181-balanced",
+        "min_margin": -505,
+        "mean_margin": -202.45,
+        "wins": 35,
+        "matches": 216,
+        "missions": 68,
+        "earliest_mustika": 164,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "UPS-M0-F181-balanced",
+        "min_margin": -505,
+        "mean_margin": -273.8,
+        "wins": 21,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "USP-M1Q1-F181-balanced",
+        "min_margin": -535,
+        "mean_margin": -39.98,
+        "wins": 88,
+        "matches": 216,
+        "missions": 144,
+        "earliest_mustika": 121,
+        "earliest_unlock": 69
+      },
+      {
+        "policy": "SUP-M1Q1-F181-skyfirst",
+        "min_margin": -545,
+        "mean_margin": -106.3,
+        "wins": 89,
+        "matches": 216,
+        "missions": 140,
+        "earliest_mustika": 110,
+        "earliest_unlock": 67
+      },
+      {
+        "policy": "UPS-M1Q0-F181-skyfirst",
+        "min_margin": -550,
+        "mean_margin": -242.45,
+        "wins": 39,
+        "matches": 216,
+        "missions": 54,
+        "earliest_mustika": 163,
+        "earliest_unlock": 118
+      },
+      {
+        "policy": "UPS-M0-F181-skyfirst",
+        "min_margin": -550,
+        "mean_margin": -297.69,
+        "wins": 15,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 118
+      },
+      {
+        "policy": "SUP-M1Q1-F181-balanced",
+        "min_margin": -555,
+        "mean_margin": -91.81,
+        "wins": 67,
+        "matches": 216,
+        "missions": 144,
+        "earliest_mustika": 115,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "SUP-M1Q0-F181-balanced",
+        "min_margin": -565,
+        "mean_margin": -174.47,
+        "wins": 49,
+        "matches": 216,
+        "missions": 94,
+        "earliest_mustika": 133,
+        "earliest_unlock": 72
+      },
+      {
+        "policy": "USP-M1Q0-F181-balanced",
+        "min_margin": -565,
+        "mean_margin": -221.39,
+        "wins": 35,
+        "matches": 216,
+        "missions": 68,
+        "earliest_mustika": 159,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "SUP-M0-F181-balanced",
+        "min_margin": -565,
+        "mean_margin": -280.53,
+        "wins": 22,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 72
+      },
+      {
+        "policy": "USP-M0-F181-balanced",
+        "min_margin": -565,
+        "mean_margin": -296.3,
+        "wins": 23,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "SUP-M1Q0-F181-skyfirst",
+        "min_margin": -600,
+        "mean_margin": -228.47,
+        "wins": 62,
+        "matches": 216,
+        "missions": 82,
+        "earliest_mustika": 129,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "SUP-M0-F181-skyfirst",
+        "min_margin": -600,
+        "mean_margin": -321.85,
+        "wins": 11,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "USP-M1Q0-F181-skyfirst",
+        "min_margin": -605,
+        "mean_margin": -267.13,
+        "wins": 39,
+        "matches": 216,
+        "missions": 54,
+        "earliest_mustika": 163,
+        "earliest_unlock": 118
+      },
+      {
+        "policy": "USP-M0-F181-skyfirst",
+        "min_margin": -605,
+        "mean_margin": -322.96,
+        "wins": 18,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 118
+      }
+    ]
+  },
+  {
+    "red_perf": "slow",
+    "blue_perf": "slow",
+    "ranking": [
+      {
+        "policy": "PUS-M0-F120-balanced",
+        "min_margin": 0,
+        "mean_margin": 74.4,
+        "wins": 204,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 153
+      },
+      {
+        "policy": "PUS-M1Q0-F120-balanced",
+        "min_margin": 0,
+        "mean_margin": 74.4,
+        "wins": 204,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 153
+      },
+      {
+        "policy": "PUS-M0-F181-balanced",
+        "min_margin": -40,
+        "mean_margin": 21.81,
+        "wins": 126,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 171
+      },
+      {
+        "policy": "PUS-M1Q0-F181-balanced",
+        "min_margin": -40,
+        "mean_margin": 21.81,
+        "wins": 126,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 171
+      },
+      {
+        "policy": "PSU-M1Q1-F0-balanced",
+        "min_margin": -50,
+        "mean_margin": 112.04,
+        "wins": 179,
+        "matches": 216,
+        "missions": 66,
+        "earliest_mustika": 157,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PSU-M1Q1-F120-balanced",
+        "min_margin": -50,
+        "mean_margin": 76.16,
+        "wins": 151,
+        "matches": 216,
+        "missions": 30,
+        "earliest_mustika": 180,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PSU-M1Q1-F120-skyfirst",
+        "min_margin": -70,
+        "mean_margin": 85.65,
+        "wins": 152,
+        "matches": 216,
+        "missions": 72,
+        "earliest_mustika": 163,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "PSU-M1Q1-F0-skyfirst",
+        "min_margin": -70,
+        "mean_margin": 72.87,
+        "wins": 146,
+        "matches": 216,
+        "missions": 60,
+        "earliest_mustika": 163,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "PUS-M0-F0-balanced",
+        "min_margin": -90,
+        "mean_margin": 93.19,
+        "wins": 200,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PUS-M1Q1-F0-balanced",
+        "min_margin": -95,
+        "mean_margin": 62.55,
+        "wins": 154,
+        "matches": 216,
+        "missions": 36,
+        "earliest_mustika": 157,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PUS-M1Q1-F120-balanced",
+        "min_margin": -95,
+        "mean_margin": 31.48,
+        "wins": 154,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PUS-M1Q0-F0-balanced",
+        "min_margin": -100,
+        "mean_margin": 123.75,
+        "wins": 202,
+        "matches": 216,
+        "missions": 36,
+        "earliest_mustika": 157,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PUS-M1Q0-F0-skyfirst",
+        "min_margin": -110,
+        "mean_margin": 67.82,
+        "wins": 140,
+        "matches": 216,
+        "missions": 60,
+        "earliest_mustika": 163,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "PUS-M0-F0-skyfirst",
+        "min_margin": -110,
+        "mean_margin": 16.25,
+        "wins": 140,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "PUS-M0-F120-skyfirst",
+        "min_margin": -110,
+        "mean_margin": 8.1,
+        "wins": 128,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 139
+      },
+      {
+        "policy": "PUS-M1Q0-F120-skyfirst",
+        "min_margin": -110,
+        "mean_margin": 8.1,
+        "wins": 128,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 139
+      },
+      {
+        "policy": "PUS-M0-F181-skyfirst",
+        "min_margin": -110,
+        "mean_margin": -39.86,
+        "wins": 12,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 157
+      },
+      {
+        "policy": "PUS-M1Q0-F181-skyfirst",
+        "min_margin": -110,
+        "mean_margin": -39.86,
+        "wins": 12,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 157
+      },
+      {
+        "policy": "PSU-M1Q0-F0-balanced",
+        "min_margin": -120,
+        "mean_margin": 73.66,
+        "wins": 162,
+        "matches": 216,
+        "missions": 36,
+        "earliest_mustika": 157,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PSU-M0-F0-balanced",
+        "min_margin": -120,
+        "mean_margin": 43.66,
+        "wins": 162,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PSU-M0-F120-balanced",
+        "min_margin": -120,
+        "mean_margin": 31.44,
+        "wins": 152,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 141
+      },
+      {
+        "policy": "PSU-M1Q0-F120-balanced",
+        "min_margin": -120,
+        "mean_margin": 31.44,
+        "wins": 152,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 141
+      },
+      {
+        "policy": "PUS-M1Q1-F120-skyfirst",
+        "min_margin": -130,
+        "mean_margin": 73.7,
+        "wins": 137,
+        "matches": 216,
+        "missions": 72,
+        "earliest_mustika": 163,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "PUS-M1Q1-F0-skyfirst",
+        "min_margin": -130,
+        "mean_margin": 59.72,
+        "wins": 125,
+        "matches": 216,
+        "missions": 60,
+        "earliest_mustika": 163,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "PUS-M1Q1-F181-balanced",
+        "min_margin": -130,
+        "mean_margin": -24.72,
+        "wins": 86,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PSU-M0-F181-balanced",
+        "min_margin": -130,
+        "mean_margin": -27.55,
+        "wins": 78,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 147
+      },
+      {
+        "policy": "PSU-M1Q0-F181-balanced",
+        "min_margin": -130,
+        "mean_margin": -27.55,
+        "wins": 78,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 147
+      },
+      {
+        "policy": "UPS-M1Q0-F0-balanced",
+        "min_margin": -140,
+        "mean_margin": 114.81,
+        "wins": 178,
+        "matches": 216,
+        "missions": 48,
+        "earliest_mustika": 178,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "UPS-M1Q1-F0-balanced",
+        "min_margin": -140,
+        "mean_margin": 114.81,
+        "wins": 178,
+        "matches": 216,
+        "missions": 48,
+        "earliest_mustika": 178,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "UPS-M1Q1-F120-balanced",
+        "min_margin": -140,
+        "mean_margin": 114.81,
+        "wins": 178,
+        "matches": 216,
+        "missions": 48,
+        "earliest_mustika": 178,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "USP-M1Q0-F0-balanced",
+        "min_margin": -140,
+        "mean_margin": 114.81,
+        "wins": 178,
+        "matches": 216,
+        "missions": 48,
+        "earliest_mustika": 178,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "USP-M1Q1-F0-balanced",
+        "min_margin": -140,
+        "mean_margin": 114.81,
+        "wins": 178,
+        "matches": 216,
+        "missions": 48,
+        "earliest_mustika": 178,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "USP-M1Q1-F120-balanced",
+        "min_margin": -140,
+        "mean_margin": 114.81,
+        "wins": 178,
+        "matches": 216,
+        "missions": 48,
+        "earliest_mustika": 178,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "UPS-M0-F120-balanced",
+        "min_margin": -140,
+        "mean_margin": 89.31,
+        "wins": 176,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 139
+      },
+      {
+        "policy": "USP-M0-F120-balanced",
+        "min_margin": -140,
+        "mean_margin": 89.31,
+        "wins": 176,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 139
+      },
+      {
+        "policy": "UPS-M1Q0-F120-balanced",
+        "min_margin": -140,
+        "mean_margin": 88.61,
+        "wins": 174,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 139
+      },
+      {
+        "policy": "USP-M1Q0-F120-balanced",
+        "min_margin": -140,
+        "mean_margin": 88.61,
+        "wins": 174,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 139
+      },
+      {
+        "policy": "UPS-M0-F0-balanced",
+        "min_margin": -140,
+        "mean_margin": 84.03,
+        "wins": 160,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "USP-M0-F0-balanced",
+        "min_margin": -140,
+        "mean_margin": 84.03,
+        "wins": 160,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "PSU-M1Q0-F0-skyfirst",
+        "min_margin": -140,
+        "mean_margin": 59.21,
+        "wins": 126,
+        "matches": 216,
+        "missions": 60,
+        "earliest_mustika": 163,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "UPS-M1Q1-F181-balanced",
+        "min_margin": -140,
+        "mean_margin": 32.04,
+        "wins": 134,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "USP-M1Q1-F181-balanced",
+        "min_margin": -140,
+        "mean_margin": 32.04,
+        "wins": 134,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "PSU-M0-F0-skyfirst",
+        "min_margin": -140,
+        "mean_margin": 7.64,
+        "wins": 126,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "UPS-M0-F120-skyfirst",
+        "min_margin": -140,
+        "mean_margin": 3.66,
+        "wins": 92,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 160
+      },
+      {
+        "policy": "UPS-M1Q0-F120-skyfirst",
+        "min_margin": -140,
+        "mean_margin": 3.66,
+        "wins": 92,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 160
+      },
+      {
+        "policy": "USP-M0-F120-skyfirst",
+        "min_margin": -140,
+        "mean_margin": 3.66,
+        "wins": 92,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 160
+      },
+      {
+        "policy": "USP-M1Q0-F120-skyfirst",
+        "min_margin": -140,
+        "mean_margin": 3.66,
+        "wins": 92,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 160
+      },
+      {
+        "policy": "UPS-M0-F0-skyfirst",
+        "min_margin": -140,
+        "mean_margin": 3.47,
+        "wins": 114,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 125
+      },
+      {
+        "policy": "USP-M0-F0-skyfirst",
+        "min_margin": -140,
+        "mean_margin": 3.47,
+        "wins": 114,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 125
+      },
+      {
+        "policy": "UPS-M1Q1-F120-skyfirst",
+        "min_margin": -140,
+        "mean_margin": 1.62,
+        "wins": 106,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 125
+      },
+      {
+        "policy": "USP-M1Q1-F120-skyfirst",
+        "min_margin": -140,
+        "mean_margin": 1.62,
+        "wins": 106,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 125
+      },
+      {
+        "policy": "UPS-M1Q0-F0-skyfirst",
+        "min_margin": -140,
+        "mean_margin": 0.88,
+        "wins": 114,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 125
+      },
+      {
+        "policy": "UPS-M1Q1-F0-skyfirst",
+        "min_margin": -140,
+        "mean_margin": 0.88,
+        "wins": 114,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 125
+      },
+      {
+        "policy": "USP-M1Q0-F0-skyfirst",
+        "min_margin": -140,
+        "mean_margin": 0.88,
+        "wins": 114,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 125
+      },
+      {
+        "policy": "USP-M1Q1-F0-skyfirst",
+        "min_margin": -140,
+        "mean_margin": 0.88,
+        "wins": 114,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 125
+      },
+      {
+        "policy": "PSU-M0-F120-skyfirst",
+        "min_margin": -140,
+        "mean_margin": -0.51,
+        "wins": 114,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 139
+      },
+      {
+        "policy": "PSU-M1Q0-F120-skyfirst",
+        "min_margin": -140,
+        "mean_margin": -0.51,
+        "wins": 114,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 139
+      },
+      {
+        "policy": "PSU-M1Q1-F181-balanced",
+        "min_margin": -140,
+        "mean_margin": -44.49,
+        "wins": 74,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PSU-M0-F181-skyfirst",
+        "min_margin": -140,
+        "mean_margin": -52.55,
+        "wins": 18,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 168
+      },
+      {
+        "policy": "PSU-M1Q0-F181-skyfirst",
+        "min_margin": -140,
+        "mean_margin": -52.55,
+        "wins": 18,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 168
+      },
+      {
+        "policy": "PUS-M1Q1-F181-skyfirst",
+        "min_margin": -145,
+        "mean_margin": 39.31,
+        "wins": 136,
+        "matches": 216,
+        "missions": 72,
+        "earliest_mustika": 169,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "USP-M0-F181-balanced",
+        "min_margin": -150,
+        "mean_margin": -28.19,
+        "wins": 50,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 157
+      },
+      {
+        "policy": "USP-M1Q0-F181-balanced",
+        "min_margin": -150,
+        "mean_margin": -28.19,
+        "wins": 50,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 157
+      },
+      {
+        "policy": "UPS-M0-F181-balanced",
+        "min_margin": -150,
+        "mean_margin": -28.47,
+        "wins": 50,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 157
+      },
+      {
+        "policy": "UPS-M1Q0-F181-balanced",
+        "min_margin": -150,
+        "mean_margin": -28.47,
+        "wins": 50,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 157
+      },
+      {
+        "policy": "PSU-M1Q1-F181-skyfirst",
+        "min_margin": -160,
+        "mean_margin": 3.61,
+        "wins": 87,
+        "matches": 216,
+        "missions": 72,
+        "earliest_mustika": 169,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "UPS-M1Q1-F181-skyfirst",
+        "min_margin": -160,
+        "mean_margin": -49.12,
+        "wins": 60,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 125
+      },
+      {
+        "policy": "USP-M1Q1-F181-skyfirst",
+        "min_margin": -160,
+        "mean_margin": -49.12,
+        "wins": 60,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 125
+      },
+      {
+        "policy": "UPS-M0-F181-skyfirst",
+        "min_margin": -160,
+        "mean_margin": -51.71,
+        "wins": 46,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 178
+      },
+      {
+        "policy": "UPS-M1Q0-F181-skyfirst",
+        "min_margin": -160,
+        "mean_margin": -51.71,
+        "wins": 46,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 178
+      },
+      {
+        "policy": "USP-M0-F181-skyfirst",
+        "min_margin": -160,
+        "mean_margin": -51.71,
+        "wins": 46,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 178
+      },
+      {
+        "policy": "USP-M1Q0-F181-skyfirst",
+        "min_margin": -160,
+        "mean_margin": -51.71,
+        "wins": 46,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 178
+      },
+      {
+        "policy": "SPU-M1Q0-F0-balanced",
+        "min_margin": -240,
+        "mean_margin": 28.61,
+        "wins": 136,
+        "matches": 216,
+        "missions": 54,
+        "earliest_mustika": 158,
+        "earliest_unlock": 81
+      },
+      {
+        "policy": "SPU-M1Q1-F0-balanced",
+        "min_margin": -240,
+        "mean_margin": 28.61,
+        "wins": 136,
+        "matches": 216,
+        "missions": 54,
+        "earliest_mustika": 158,
+        "earliest_unlock": 81
+      },
+      {
+        "policy": "SPU-M0-F0-balanced",
+        "min_margin": -240,
+        "mean_margin": 2.73,
+        "wins": 122,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 81
+      },
+      {
+        "policy": "SPU-M1Q1-F120-balanced",
+        "min_margin": -250,
+        "mean_margin": -6.16,
+        "wins": 121,
+        "matches": 216,
+        "missions": 26,
+        "earliest_mustika": 172,
+        "earliest_unlock": 81
+      },
+      {
+        "policy": "SPU-M0-F120-balanced",
+        "min_margin": -250,
+        "mean_margin": -15.3,
+        "wins": 114,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "SPU-M1Q1-F120-skyfirst",
+        "min_margin": -250,
+        "mean_margin": -16.2,
+        "wins": 93,
+        "matches": 216,
+        "missions": 48,
+        "earliest_mustika": 163,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "SPU-M1Q0-F120-balanced",
+        "min_margin": -250,
+        "mean_margin": -20.88,
+        "wins": 113,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "SPU-M1Q0-F0-skyfirst",
+        "min_margin": -250,
+        "mean_margin": -21.71,
+        "wins": 93,
+        "matches": 216,
+        "missions": 48,
+        "earliest_mustika": 163,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "SPU-M1Q1-F0-skyfirst",
+        "min_margin": -250,
+        "mean_margin": -21.71,
+        "wins": 93,
+        "matches": 216,
+        "missions": 48,
+        "earliest_mustika": 163,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "SPU-M0-F120-skyfirst",
+        "min_margin": -250,
+        "mean_margin": -39.31,
+        "wins": 88,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 130
+      },
+      {
+        "policy": "SPU-M1Q0-F120-skyfirst",
+        "min_margin": -250,
+        "mean_margin": -43.38,
+        "wins": 80,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 130
+      },
+      {
+        "policy": "SPU-M0-F0-skyfirst",
+        "min_margin": -250,
+        "mean_margin": -48.38,
+        "wins": 89,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "SUP-M1Q1-F120-skyfirst",
+        "min_margin": -260,
+        "mean_margin": -20.14,
+        "wins": 92,
+        "matches": 216,
+        "missions": 48,
+        "earliest_mustika": 166,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "SUP-M1Q0-F0-skyfirst",
+        "min_margin": -260,
+        "mean_margin": -26.53,
+        "wins": 90,
+        "matches": 216,
+        "missions": 48,
+        "earliest_mustika": 166,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "SUP-M1Q1-F0-skyfirst",
+        "min_margin": -260,
+        "mean_margin": -26.53,
+        "wins": 90,
+        "matches": 216,
+        "missions": 48,
+        "earliest_mustika": 166,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "SUP-M0-F120-skyfirst",
+        "min_margin": -260,
+        "mean_margin": -37.04,
+        "wins": 87,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 130
+      },
+      {
+        "policy": "SUP-M1Q0-F120-skyfirst",
+        "min_margin": -260,
+        "mean_margin": -40.0,
+        "wins": 87,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 130
+      },
+      {
+        "policy": "SUP-M0-F0-skyfirst",
+        "min_margin": -260,
+        "mean_margin": -49.63,
+        "wins": 83,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "SUP-M1Q1-F181-balanced",
+        "min_margin": -260,
+        "mean_margin": -83.61,
+        "wins": 38,
+        "matches": 216,
+        "missions": 18,
+        "earliest_mustika": 173,
+        "earliest_unlock": 81
+      },
+      {
+        "policy": "SUP-M1Q1-F181-skyfirst",
+        "min_margin": -295,
+        "mean_margin": -78.89,
+        "wins": 68,
+        "matches": 216,
+        "missions": 48,
+        "earliest_mustika": 166,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "SPU-M1Q1-F181-balanced",
+        "min_margin": -300,
+        "mean_margin": -115.05,
+        "wins": 38,
+        "matches": 216,
+        "missions": 18,
+        "earliest_mustika": 172,
+        "earliest_unlock": 81
+      },
+      {
+        "policy": "SPU-M1Q1-F181-skyfirst",
+        "min_margin": -305,
+        "mean_margin": -77.96,
+        "wins": 72,
+        "matches": 216,
+        "missions": 48,
+        "earliest_mustika": 169,
+        "earliest_unlock": 101
+      },
+      {
+        "policy": "SUP-M1Q0-F0-balanced",
+        "min_margin": -320,
+        "mean_margin": -9.72,
+        "wins": 78,
+        "matches": 216,
+        "missions": 18,
+        "earliest_mustika": 155,
+        "earliest_unlock": 81
+      },
+      {
+        "policy": "SUP-M1Q1-F0-balanced",
+        "min_margin": -320,
+        "mean_margin": -9.72,
+        "wins": 78,
+        "matches": 216,
+        "missions": 18,
+        "earliest_mustika": 155,
+        "earliest_unlock": 81
+      },
+      {
+        "policy": "SUP-M0-F0-balanced",
+        "min_margin": -320,
+        "mean_margin": -12.2,
+        "wins": 84,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 81
+      },
+      {
+        "policy": "SUP-M0-F181-balanced",
+        "min_margin": -325,
+        "mean_margin": -115.65,
+        "wins": 22,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "SUP-M1Q0-F181-balanced",
+        "min_margin": -325,
+        "mean_margin": -120.72,
+        "wins": 21,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "SUP-M0-F120-balanced",
+        "min_margin": -330,
+        "mean_margin": -30.42,
+        "wins": 88,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "SUP-M1Q1-F120-balanced",
+        "min_margin": -330,
+        "mean_margin": -33.56,
+        "wins": 74,
+        "matches": 216,
+        "missions": 18,
+        "earliest_mustika": 173,
+        "earliest_unlock": 81
+      },
+      {
+        "policy": "SUP-M1Q0-F120-balanced",
+        "min_margin": -330,
+        "mean_margin": -36.37,
+        "wins": 84,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "SPU-M0-F181-balanced",
+        "min_margin": -365,
+        "mean_margin": -140.65,
+        "wins": 14,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "SPU-M1Q0-F181-balanced",
+        "min_margin": -365,
+        "mean_margin": -146.57,
+        "wins": 13,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "SPU-M0-F181-skyfirst",
+        "min_margin": -385,
+        "mean_margin": -142.78,
+        "wins": 10,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 130
+      },
+      {
+        "policy": "SPU-M1Q0-F181-skyfirst",
+        "min_margin": -385,
+        "mean_margin": -147.36,
+        "wins": 9,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 130
+      },
+      {
+        "policy": "SUP-M0-F181-skyfirst",
+        "min_margin": -395,
+        "mean_margin": -136.48,
+        "wins": 8,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 130
+      },
+      {
+        "policy": "SUP-M1Q0-F181-skyfirst",
+        "min_margin": -395,
+        "mean_margin": -139.72,
+        "wins": 8,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 130
+      }
+    ]
+  },
+  {
+    "red_perf": "fast",
+    "blue_perf": "reference",
+    "ranking": [
+      {
+        "policy": "PUS-M1Q0-F0-balanced",
+        "min_margin": 400,
+        "mean_margin": 635.32,
+        "wins": 216,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 81,
+        "earliest_unlock": 52
+      },
+      {
+        "policy": "PUS-M1Q1-F120-balanced",
+        "min_margin": 350,
+        "mean_margin": 620.56,
+        "wins": 216,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 89,
+        "earliest_unlock": 58
+      },
+      {
+        "policy": "PSU-M1Q1-F120-balanced",
+        "min_margin": 350,
+        "mean_margin": 566.48,
+        "wins": 216,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 86,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "PSU-M1Q0-F120-balanced",
+        "min_margin": 330,
+        "mean_margin": 562.96,
+        "wins": 216,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 94,
+        "earliest_unlock": 65
+      },
+      {
+        "policy": "PUS-M1Q1-F0-balanced",
+        "min_margin": 320,
+        "mean_margin": 603.24,
+        "wins": 216,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 89,
+        "earliest_unlock": 58
+      },
+      {
+        "policy": "PUS-M1Q1-F120-skyfirst",
+        "min_margin": 320,
+        "mean_margin": 569.4,
+        "wins": 216,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 97,
+        "earliest_unlock": 58
+      },
+      {
+        "policy": "PSU-M1Q1-F0-balanced",
+        "min_margin": 310,
+        "mean_margin": 546.39,
+        "wins": 216,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 83,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "PSU-M1Q0-F0-skyfirst",
+        "min_margin": 310,
+        "mean_margin": 544.72,
+        "wins": 216,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 89,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PUS-M1Q1-F0-skyfirst",
+        "min_margin": 300,
+        "mean_margin": 574.77,
+        "wins": 216,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 93,
+        "earliest_unlock": 58
+      },
+      {
+        "policy": "PSU-M1Q0-F0-balanced",
+        "min_margin": 290,
+        "mean_margin": 558.61,
+        "wins": 216,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 81,
+        "earliest_unlock": 52
+      },
+      {
+        "policy": "PSU-M1Q1-F0-skyfirst",
+        "min_margin": 240,
+        "mean_margin": 519.81,
+        "wins": 216,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 84,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PSU-M1Q1-F120-skyfirst",
+        "min_margin": 210,
+        "mean_margin": 535.0,
+        "wins": 216,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 84,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PUS-M1Q0-F120-balanced",
+        "min_margin": 165,
+        "mean_margin": 602.41,
+        "wins": 216,
+        "matches": 216,
+        "missions": 204,
+        "earliest_mustika": 104,
+        "earliest_unlock": 75
+      },
+      {
+        "policy": "UPS-M1Q0-F0-balanced",
+        "min_margin": 70,
+        "mean_margin": 580.32,
+        "wins": 216,
+        "matches": 216,
+        "missions": 192,
+        "earliest_mustika": 86,
+        "earliest_unlock": 60
+      },
+      {
+        "policy": "UPS-M1Q1-F0-balanced",
+        "min_margin": 70,
+        "mean_margin": 580.32,
+        "wins": 216,
+        "matches": 216,
+        "missions": 192,
+        "earliest_mustika": 86,
+        "earliest_unlock": 60
+      },
+      {
+        "policy": "UPS-M1Q1-F120-balanced",
+        "min_margin": 70,
+        "mean_margin": 529.58,
+        "wins": 216,
+        "matches": 216,
+        "missions": 168,
+        "earliest_mustika": 86,
+        "earliest_unlock": 60
+      },
+      {
+        "policy": "UPS-M1Q0-F120-balanced",
+        "min_margin": 70,
+        "mean_margin": 415.28,
+        "wins": 216,
+        "matches": 216,
+        "missions": 112,
+        "earliest_mustika": 97,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "UPS-M0-F0-balanced",
+        "min_margin": 70,
+        "mean_margin": 336.3,
+        "wins": 216,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 60
+      },
+      {
+        "policy": "SUP-M1Q1-F120-balanced",
+        "min_margin": 60,
+        "mean_margin": 554.12,
+        "wins": 216,
+        "matches": 216,
+        "missions": 200,
+        "earliest_mustika": 78,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "SPU-M1Q1-F120-balanced",
+        "min_margin": 45,
+        "mean_margin": 521.9,
+        "wins": 216,
+        "matches": 216,
+        "missions": 200,
+        "earliest_mustika": 80,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "PSU-M1Q0-F120-skyfirst",
+        "min_margin": 40,
+        "mean_margin": 526.67,
+        "wins": 216,
+        "matches": 216,
+        "missions": 204,
+        "earliest_mustika": 102,
+        "earliest_unlock": 73
+      },
+      {
+        "policy": "USP-M1Q0-F120-balanced",
+        "min_margin": 40,
+        "mean_margin": 409.49,
+        "wins": 216,
+        "matches": 216,
+        "missions": 106,
+        "earliest_mustika": 97,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "UPS-M0-F120-balanced",
+        "min_margin": 40,
+        "mean_margin": 275.6,
+        "wins": 216,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "USP-M0-F120-balanced",
+        "min_margin": 40,
+        "mean_margin": 273.43,
+        "wins": 216,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "USP-M1Q0-F0-balanced",
+        "min_margin": 30,
+        "mean_margin": 577.22,
+        "wins": 216,
+        "matches": 216,
+        "missions": 192,
+        "earliest_mustika": 86,
+        "earliest_unlock": 60
+      },
+      {
+        "policy": "USP-M1Q1-F0-balanced",
+        "min_margin": 30,
+        "mean_margin": 577.22,
+        "wins": 216,
+        "matches": 216,
+        "missions": 192,
+        "earliest_mustika": 86,
+        "earliest_unlock": 60
+      },
+      {
+        "policy": "USP-M1Q1-F120-balanced",
+        "min_margin": 30,
+        "mean_margin": 527.55,
+        "wins": 216,
+        "matches": 216,
+        "missions": 168,
+        "earliest_mustika": 86,
+        "earliest_unlock": 60
+      },
+      {
+        "policy": "USP-M0-F0-balanced",
+        "min_margin": 30,
+        "mean_margin": 341.99,
+        "wins": 216,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 60
+      },
+      {
+        "policy": "UPS-M1Q0-F120-skyfirst",
+        "min_margin": 25,
+        "mean_margin": 426.2,
+        "wins": 216,
+        "matches": 216,
+        "missions": 128,
+        "earliest_mustika": 105,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "UPS-M0-F120-skyfirst",
+        "min_margin": 20,
+        "mean_margin": 254.44,
+        "wins": 216,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "PUS-M1Q0-F0-skyfirst",
+        "min_margin": -10,
+        "mean_margin": 569.86,
+        "wins": 215,
+        "matches": 216,
+        "missions": 213,
+        "earliest_mustika": 89,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PUS-M1Q0-F120-skyfirst",
+        "min_margin": -10,
+        "mean_margin": 548.29,
+        "wins": 214,
+        "matches": 216,
+        "missions": 201,
+        "earliest_mustika": 124,
+        "earliest_unlock": 83
+      },
+      {
+        "policy": "SUP-M1Q0-F0-balanced",
+        "min_margin": -10,
+        "mean_margin": 531.02,
+        "wins": 212,
+        "matches": 216,
+        "missions": 192,
+        "earliest_mustika": 78,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "SUP-M1Q1-F0-balanced",
+        "min_margin": -10,
+        "mean_margin": 531.02,
+        "wins": 212,
+        "matches": 216,
+        "missions": 192,
+        "earliest_mustika": 78,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "SPU-M1Q0-F0-skyfirst",
+        "min_margin": -30,
+        "mean_margin": 486.9,
+        "wins": 210,
+        "matches": 216,
+        "missions": 204,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "SPU-M1Q1-F0-skyfirst",
+        "min_margin": -30,
+        "mean_margin": 486.9,
+        "wins": 210,
+        "matches": 216,
+        "missions": 204,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "USP-M1Q0-F120-skyfirst",
+        "min_margin": -30,
+        "mean_margin": 417.31,
+        "wins": 214,
+        "matches": 216,
+        "missions": 128,
+        "earliest_mustika": 105,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "SPU-M1Q0-F120-skyfirst",
+        "min_margin": -30,
+        "mean_margin": 386.67,
+        "wins": 191,
+        "matches": 216,
+        "missions": 142,
+        "earliest_mustika": 94,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "PUS-M0-F0-balanced",
+        "min_margin": -30,
+        "mean_margin": 338.45,
+        "wins": 214,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 52
+      },
+      {
+        "policy": "PUS-M0-F120-balanced",
+        "min_margin": -30,
+        "mean_margin": 272.41,
+        "wins": 212,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 75
+      },
+      {
+        "policy": "USP-M0-F120-skyfirst",
+        "min_margin": -30,
+        "mean_margin": 252.18,
+        "wins": 214,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "SPU-M0-F120-skyfirst",
+        "min_margin": -30,
+        "mean_margin": 190.46,
+        "wins": 189,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "SPU-M0-F0-skyfirst",
+        "min_margin": -40,
+        "mean_margin": 232.36,
+        "wins": 186,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PSU-M0-F120-skyfirst",
+        "min_margin": -40,
+        "mean_margin": 219.68,
+        "wins": 208,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 73
+      },
+      {
+        "policy": "SUP-M1Q0-F0-skyfirst",
+        "min_margin": -50,
+        "mean_margin": 506.9,
+        "wins": 209,
+        "matches": 216,
+        "missions": 196,
+        "earliest_mustika": 83,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "SUP-M1Q1-F0-skyfirst",
+        "min_margin": -50,
+        "mean_margin": 506.9,
+        "wins": 209,
+        "matches": 216,
+        "missions": 196,
+        "earliest_mustika": 83,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "SUP-M1Q0-F120-balanced",
+        "min_margin": -50,
+        "mean_margin": 414.35,
+        "wins": 196,
+        "matches": 216,
+        "missions": 134,
+        "earliest_mustika": 89,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "PUS-M0-F0-skyfirst",
+        "min_margin": -50,
+        "mean_margin": 293.73,
+        "wins": 208,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PSU-M0-F0-balanced",
+        "min_margin": -50,
+        "mean_margin": 275.9,
+        "wins": 212,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 52
+      },
+      {
+        "policy": "SUP-M0-F0-skyfirst",
+        "min_margin": -50,
+        "mean_margin": 253.52,
+        "wins": 195,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "PSU-M0-F120-balanced",
+        "min_margin": -50,
+        "mean_margin": 252.5,
+        "wins": 212,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 65
+      },
+      {
+        "policy": "SUP-M0-F120-balanced",
+        "min_margin": -50,
+        "mean_margin": 245.93,
+        "wins": 196,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "PUS-M0-F120-skyfirst",
+        "min_margin": -50,
+        "mean_margin": 236.85,
+        "wins": 206,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 83
+      },
+      {
+        "policy": "SPU-M1Q0-F0-balanced",
+        "min_margin": -55,
+        "mean_margin": 510.46,
+        "wins": 208,
+        "matches": 216,
+        "missions": 200,
+        "earliest_mustika": 77,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "SPU-M1Q1-F0-balanced",
+        "min_margin": -55,
+        "mean_margin": 510.46,
+        "wins": 208,
+        "matches": 216,
+        "missions": 200,
+        "earliest_mustika": 77,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "SPU-M1Q0-F120-balanced",
+        "min_margin": -70,
+        "mean_margin": 431.99,
+        "wins": 205,
+        "matches": 216,
+        "missions": 148,
+        "earliest_mustika": 86,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "SUP-M1Q0-F120-skyfirst",
+        "min_margin": -70,
+        "mean_margin": 389.81,
+        "wins": 196,
+        "matches": 216,
+        "missions": 134,
+        "earliest_mustika": 95,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "SPU-M0-F120-balanced",
+        "min_margin": -70,
+        "mean_margin": 227.87,
+        "wins": 199,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "SUP-M0-F120-skyfirst",
+        "min_margin": -70,
+        "mean_margin": 212.59,
+        "wins": 193,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "PUS-M1Q1-F181-balanced",
+        "min_margin": -70,
+        "mean_margin": 172.22,
+        "wins": 174,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 89,
+        "earliest_unlock": 58
+      },
+      {
+        "policy": "PSU-M1Q1-F181-skyfirst",
+        "min_margin": -70,
+        "mean_margin": 155.37,
+        "wins": 176,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 84,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PSU-M1Q1-F181-balanced",
+        "min_margin": -70,
+        "mean_margin": 149.86,
+        "wins": 176,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 86,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "UPS-M1Q0-F0-skyfirst",
+        "min_margin": -80,
+        "mean_margin": 567.96,
+        "wins": 210,
+        "matches": 216,
+        "missions": 200,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "UPS-M1Q1-F0-skyfirst",
+        "min_margin": -80,
+        "mean_margin": 567.96,
+        "wins": 210,
+        "matches": 216,
+        "missions": 200,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "USP-M1Q0-F0-skyfirst",
+        "min_margin": -80,
+        "mean_margin": 561.2,
+        "wins": 208,
+        "matches": 216,
+        "missions": 200,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "USP-M1Q1-F0-skyfirst",
+        "min_margin": -80,
+        "mean_margin": 561.2,
+        "wins": 208,
+        "matches": 216,
+        "missions": 200,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "UPS-M1Q1-F120-skyfirst",
+        "min_margin": -80,
+        "mean_margin": 554.91,
+        "wins": 210,
+        "matches": 216,
+        "missions": 192,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "USP-M1Q1-F120-skyfirst",
+        "min_margin": -80,
+        "mean_margin": 545.6,
+        "wins": 208,
+        "matches": 216,
+        "missions": 192,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "USP-M0-F0-skyfirst",
+        "min_margin": -80,
+        "mean_margin": 305.07,
+        "wins": 208,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "UPS-M0-F0-skyfirst",
+        "min_margin": -80,
+        "mean_margin": 302.2,
+        "wins": 210,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "SUP-M0-F0-balanced",
+        "min_margin": -80,
+        "mean_margin": 268.19,
+        "wins": 198,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "PSU-M0-F0-skyfirst",
+        "min_margin": -80,
+        "mean_margin": 244.88,
+        "wins": 196,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "PUS-M1Q1-F181-skyfirst",
+        "min_margin": -90,
+        "mean_margin": 168.15,
+        "wins": 183,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 97,
+        "earliest_unlock": 58
+      },
+      {
+        "policy": "PSU-M1Q0-F181-balanced",
+        "min_margin": -90,
+        "mean_margin": 160.32,
+        "wins": 182,
+        "matches": 216,
+        "missions": 216,
+        "earliest_mustika": 94,
+        "earliest_unlock": 65
+      },
+      {
+        "policy": "SPU-M0-F0-balanced",
+        "min_margin": -95,
+        "mean_margin": 246.25,
+        "wins": 198,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "SUP-M1Q1-F120-skyfirst",
+        "min_margin": -130,
+        "mean_margin": 509.81,
+        "wins": 206,
+        "matches": 216,
+        "missions": 188,
+        "earliest_mustika": 83,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "SPU-M1Q1-F120-skyfirst",
+        "min_margin": -170,
+        "mean_margin": 480.6,
+        "wins": 208,
+        "matches": 216,
+        "missions": 196,
+        "earliest_mustika": 84,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "UPS-M1Q1-F181-balanced",
+        "min_margin": -380,
+        "mean_margin": 141.2,
+        "wins": 170,
+        "matches": 216,
+        "missions": 168,
+        "earliest_mustika": 86,
+        "earliest_unlock": 60
+      },
+      {
+        "policy": "SUP-M1Q1-F181-skyfirst",
+        "min_margin": -400,
+        "mean_margin": 128.33,
+        "wins": 159,
+        "matches": 216,
+        "missions": 188,
+        "earliest_mustika": 83,
+        "earliest_unlock": 54
+      },
+      {
+        "policy": "SPU-M1Q1-F181-skyfirst",
+        "min_margin": -410,
+        "mean_margin": 108.98,
+        "wins": 163,
+        "matches": 216,
+        "missions": 196,
+        "earliest_mustika": 84,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "USP-M1Q1-F181-balanced",
+        "min_margin": -420,
+        "mean_margin": 140.14,
+        "wins": 167,
+        "matches": 216,
+        "missions": 168,
+        "earliest_mustika": 86,
+        "earliest_unlock": 60
+      },
+      {
+        "policy": "PUS-M1Q0-F181-skyfirst",
+        "min_margin": -430,
+        "mean_margin": 152.18,
+        "wins": 176,
+        "matches": 216,
+        "missions": 201,
+        "earliest_mustika": 124,
+        "earliest_unlock": 83
+      },
+      {
+        "policy": "PSU-M1Q0-F181-skyfirst",
+        "min_margin": -430,
+        "mean_margin": 132.92,
+        "wins": 170,
+        "matches": 216,
+        "missions": 204,
+        "earliest_mustika": 102,
+        "earliest_unlock": 73
+      },
+      {
+        "policy": "UPS-M1Q1-F181-skyfirst",
+        "min_margin": -435,
+        "mean_margin": 178.24,
+        "wins": 196,
+        "matches": 216,
+        "missions": 192,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "SPU-M1Q1-F181-balanced",
+        "min_margin": -435,
+        "mean_margin": 119.54,
+        "wins": 176,
+        "matches": 216,
+        "missions": 200,
+        "earliest_mustika": 80,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "USP-M1Q1-F181-skyfirst",
+        "min_margin": -440,
+        "mean_margin": 165.05,
+        "wins": 198,
+        "matches": 216,
+        "missions": 192,
+        "earliest_mustika": 82,
+        "earliest_unlock": 53
+      },
+      {
+        "policy": "SUP-M1Q1-F181-balanced",
+        "min_margin": -440,
+        "mean_margin": 116.67,
+        "wins": 139,
+        "matches": 216,
+        "missions": 200,
+        "earliest_mustika": 78,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "USP-M1Q0-F181-balanced",
+        "min_margin": -445,
+        "mean_margin": -32.82,
+        "wins": 100,
+        "matches": 216,
+        "missions": 91,
+        "earliest_mustika": 97,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "UPS-M1Q0-F181-balanced",
+        "min_margin": -445,
+        "mean_margin": -36.94,
+        "wins": 100,
+        "matches": 216,
+        "missions": 94,
+        "earliest_mustika": 97,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "USP-M0-F181-balanced",
+        "min_margin": -445,
+        "mean_margin": -154.12,
+        "wins": 59,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "SUP-M1Q0-F181-balanced",
+        "min_margin": -460,
+        "mean_margin": -25.88,
+        "wins": 99,
+        "matches": 216,
+        "missions": 119,
+        "earliest_mustika": 89,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "PUS-M1Q0-F181-balanced",
+        "min_margin": -465,
+        "mean_margin": 165.0,
+        "wins": 182,
+        "matches": 216,
+        "missions": 204,
+        "earliest_mustika": 104,
+        "earliest_unlock": 75
+      },
+      {
+        "policy": "UPS-M1Q0-F181-skyfirst",
+        "min_margin": -465,
+        "mean_margin": 5.28,
+        "wins": 109,
+        "matches": 216,
+        "missions": 112,
+        "earliest_mustika": 105,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "USP-M1Q0-F181-skyfirst",
+        "min_margin": -465,
+        "mean_margin": -4.03,
+        "wins": 108,
+        "matches": 216,
+        "missions": 110,
+        "earliest_mustika": 105,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "SUP-M1Q0-F181-skyfirst",
+        "min_margin": -465,
+        "mean_margin": -12.18,
+        "wins": 109,
+        "matches": 216,
+        "missions": 119,
+        "earliest_mustika": 95,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "UPS-M0-F181-skyfirst",
+        "min_margin": -465,
+        "mean_margin": -143.66,
+        "wins": 52,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "USP-M0-F181-skyfirst",
+        "min_margin": -465,
+        "mean_margin": -148.7,
+        "wins": 54,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 76
+      },
+      {
+        "policy": "PSU-M0-F181-balanced",
+        "min_margin": -465,
+        "mean_margin": -161.94,
+        "wins": 42,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 65
+      },
+      {
+        "policy": "SUP-M0-F181-skyfirst",
+        "min_margin": -465,
+        "mean_margin": -182.92,
+        "wins": 47,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "SUP-M0-F181-balanced",
+        "min_margin": -465,
+        "mean_margin": -186.67,
+        "wins": 48,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "PSU-M0-F181-skyfirst",
+        "min_margin": -475,
+        "mean_margin": -165.74,
+        "wins": 45,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 73
+      },
+      {
+        "policy": "SPU-M1Q0-F181-skyfirst",
+        "min_margin": -490,
+        "mean_margin": 4.12,
+        "wins": 125,
+        "matches": 216,
+        "missions": 142,
+        "earliest_mustika": 94,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "SPU-M1Q0-F181-balanced",
+        "min_margin": -490,
+        "mean_margin": 0.05,
+        "wins": 117,
+        "matches": 216,
+        "missions": 148,
+        "earliest_mustika": 86,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "SPU-M0-F181-skyfirst",
+        "min_margin": -490,
+        "mean_margin": -193.61,
+        "wins": 31,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 56
+      },
+      {
+        "policy": "SPU-M0-F181-balanced",
+        "min_margin": -490,
+        "mean_margin": -198.01,
+        "wins": 36,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 48
+      },
+      {
+        "policy": "PUS-M0-F181-skyfirst",
+        "min_margin": -495,
+        "mean_margin": -147.59,
+        "wins": 53,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 83
+      },
+      {
+        "policy": "UPS-M0-F181-balanced",
+        "min_margin": -495,
+        "mean_margin": -162.78,
+        "wins": 54,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 68
+      },
+      {
+        "policy": "PUS-M0-F181-balanced",
+        "min_margin": -495,
+        "mean_margin": -174.81,
+        "wins": 47,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 75
+      }
+    ]
+  },
+  {
+    "red_perf": "slow",
+    "blue_perf": "reference",
+    "ranking": [
+      {
+        "policy": "PUS-M1Q0-F0-balanced",
+        "min_margin": -425,
+        "mean_margin": -122.41,
+        "wins": 64,
+        "matches": 216,
+        "missions": 92,
+        "earliest_mustika": 157,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PUS-M0-F0-balanced",
+        "min_margin": -425,
+        "mean_margin": -172.64,
+        "wins": 24,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PUS-M1Q0-F0-skyfirst",
+        "min_margin": -430,
+        "mean_margin": -149.49,
+        "wins": 35,
+        "matches": 216,
+        "missions": 53,
+        "earliest_mustika": 163,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "PUS-M0-F0-skyfirst",
+        "min_margin": -430,
+        "mean_margin": -190.46,
+        "wins": 4,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "PUS-M1Q1-F0-balanced",
+        "min_margin": -450,
+        "mean_margin": -115.05,
+        "wins": 74,
+        "matches": 216,
+        "missions": 92,
+        "earliest_mustika": 157,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PSU-M1Q0-F0-skyfirst",
+        "min_margin": -450,
+        "mean_margin": -150.6,
+        "wins": 35,
+        "matches": 216,
+        "missions": 53,
+        "earliest_mustika": 163,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "PSU-M1Q1-F0-skyfirst",
+        "min_margin": -450,
+        "mean_margin": -156.44,
+        "wins": 35,
+        "matches": 216,
+        "missions": 53,
+        "earliest_mustika": 163,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "PUS-M1Q1-F120-balanced",
+        "min_margin": -450,
+        "mean_margin": -161.25,
+        "wins": 18,
+        "matches": 216,
+        "missions": 36,
+        "earliest_mustika": 160,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PSU-M0-F0-skyfirst",
+        "min_margin": -450,
+        "mean_margin": -191.57,
+        "wins": 4,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "PSU-M1Q1-F120-skyfirst",
+        "min_margin": -450,
+        "mean_margin": -195.12,
+        "wins": 20,
+        "matches": 216,
+        "missions": 30,
+        "earliest_mustika": 163,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "PUS-M1Q0-F120-skyfirst",
+        "min_margin": -460,
+        "mean_margin": -250.02,
+        "wins": 10,
+        "matches": 216,
+        "missions": 10,
+        "earliest_mustika": 166,
+        "earliest_unlock": 92
+      },
+      {
+        "policy": "PSU-M1Q0-F120-skyfirst",
+        "min_margin": -460,
+        "mean_margin": -251.6,
+        "wins": 10,
+        "matches": 216,
+        "missions": 10,
+        "earliest_mustika": 166,
+        "earliest_unlock": 92
+      },
+      {
+        "policy": "PUS-M0-F120-skyfirst",
+        "min_margin": -460,
+        "mean_margin": -260.86,
+        "wins": 1,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 92
+      },
+      {
+        "policy": "PSU-M0-F120-skyfirst",
+        "min_margin": -460,
+        "mean_margin": -262.43,
+        "wins": 1,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 92
+      },
+      {
+        "policy": "PUS-M0-F181-balanced",
+        "min_margin": -460,
+        "mean_margin": -340.49,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 136
+      },
+      {
+        "policy": "PUS-M1Q0-F181-balanced",
+        "min_margin": -460,
+        "mean_margin": -340.49,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 136
+      },
+      {
+        "policy": "PSU-M1Q1-F0-balanced",
+        "min_margin": -490,
+        "mean_margin": -116.57,
+        "wins": 72,
+        "matches": 216,
+        "missions": 92,
+        "earliest_mustika": 157,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PSU-M1Q0-F0-balanced",
+        "min_margin": -490,
+        "mean_margin": -125.65,
+        "wins": 64,
+        "matches": 216,
+        "missions": 92,
+        "earliest_mustika": 157,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PUS-M1Q1-F0-skyfirst",
+        "min_margin": -490,
+        "mean_margin": -161.25,
+        "wins": 35,
+        "matches": 216,
+        "missions": 53,
+        "earliest_mustika": 163,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "PSU-M1Q1-F120-balanced",
+        "min_margin": -490,
+        "mean_margin": -163.43,
+        "wins": 16,
+        "matches": 216,
+        "missions": 36,
+        "earliest_mustika": 160,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PSU-M0-F0-balanced",
+        "min_margin": -490,
+        "mean_margin": -175.88,
+        "wins": 24,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PUS-M1Q1-F120-skyfirst",
+        "min_margin": -490,
+        "mean_margin": -190.12,
+        "wins": 20,
+        "matches": 216,
+        "missions": 30,
+        "earliest_mustika": 163,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "PSU-M0-F120-balanced",
+        "min_margin": -505,
+        "mean_margin": -253.77,
+        "wins": 1,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 136
+      },
+      {
+        "policy": "PSU-M1Q0-F120-balanced",
+        "min_margin": -505,
+        "mean_margin": -253.77,
+        "wins": 1,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 136
+      },
+      {
+        "policy": "PUS-M1Q1-F181-balanced",
+        "min_margin": -510,
+        "mean_margin": -230.69,
+        "wins": 8,
+        "matches": 216,
+        "missions": 36,
+        "earliest_mustika": 160,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PUS-M0-F120-balanced",
+        "min_margin": -510,
+        "mean_margin": -296.37,
+        "wins": 1,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 136
+      },
+      {
+        "policy": "PUS-M1Q0-F120-balanced",
+        "min_margin": -510,
+        "mean_margin": -296.37,
+        "wins": 1,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 136
+      },
+      {
+        "policy": "SPU-M1Q0-F0-balanced",
+        "min_margin": -530,
+        "mean_margin": -186.25,
+        "wins": 42,
+        "matches": 216,
+        "missions": 74,
+        "earliest_mustika": 154,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "SPU-M1Q1-F0-balanced",
+        "min_margin": -530,
+        "mean_margin": -191.85,
+        "wins": 42,
+        "matches": 216,
+        "missions": 74,
+        "earliest_mustika": 154,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "SPU-M1Q1-F120-balanced",
+        "min_margin": -530,
+        "mean_margin": -200.93,
+        "wins": 30,
+        "matches": 216,
+        "missions": 82,
+        "earliest_mustika": 157,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "SPU-M0-F0-balanced",
+        "min_margin": -530,
+        "mean_margin": -247.45,
+        "wins": 24,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "SPU-M0-F120-balanced",
+        "min_margin": -530,
+        "mean_margin": -295.14,
+        "wins": 2,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "SPU-M1Q0-F120-balanced",
+        "min_margin": -530,
+        "mean_margin": -298.29,
+        "wins": 2,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "UPS-M1Q1-F120-skyfirst",
+        "min_margin": -540,
+        "mean_margin": -240.86,
+        "wins": 14,
+        "matches": 216,
+        "missions": 4,
+        "earliest_mustika": 176,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "USP-M1Q1-F120-skyfirst",
+        "min_margin": -540,
+        "mean_margin": -240.86,
+        "wins": 14,
+        "matches": 216,
+        "missions": 4,
+        "earliest_mustika": 176,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "PSU-M1Q1-F181-balanced",
+        "min_margin": -550,
+        "mean_margin": -254.72,
+        "wins": 8,
+        "matches": 216,
+        "missions": 36,
+        "earliest_mustika": 160,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "PSU-M0-F181-balanced",
+        "min_margin": -550,
+        "mean_margin": -384.77,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 136
+      },
+      {
+        "policy": "PSU-M1Q0-F181-balanced",
+        "min_margin": -550,
+        "mean_margin": -384.77,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 136
+      },
+      {
+        "policy": "UPS-M1Q1-F0-balanced",
+        "min_margin": -560,
+        "mean_margin": -170.19,
+        "wins": 42,
+        "matches": 216,
+        "missions": 54,
+        "earliest_mustika": 151,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "USP-M1Q1-F0-balanced",
+        "min_margin": -560,
+        "mean_margin": -170.19,
+        "wins": 42,
+        "matches": 216,
+        "missions": 54,
+        "earliest_mustika": 151,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "UPS-M1Q0-F0-balanced",
+        "min_margin": -560,
+        "mean_margin": -172.41,
+        "wins": 42,
+        "matches": 216,
+        "missions": 54,
+        "earliest_mustika": 151,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "USP-M1Q0-F0-balanced",
+        "min_margin": -560,
+        "mean_margin": -172.41,
+        "wins": 42,
+        "matches": 216,
+        "missions": 54,
+        "earliest_mustika": 151,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "UPS-M0-F0-balanced",
+        "min_margin": -560,
+        "mean_margin": -210.05,
+        "wins": 16,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "USP-M0-F0-balanced",
+        "min_margin": -560,
+        "mean_margin": -210.05,
+        "wins": 16,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "UPS-M1Q1-F120-balanced",
+        "min_margin": -560,
+        "mean_margin": -211.06,
+        "wins": 14,
+        "matches": 216,
+        "missions": 8,
+        "earliest_mustika": 178,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "USP-M1Q1-F120-balanced",
+        "min_margin": -560,
+        "mean_margin": -211.06,
+        "wins": 14,
+        "matches": 216,
+        "missions": 8,
+        "earliest_mustika": 178,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "SPU-M1Q1-F120-skyfirst",
+        "min_margin": -560,
+        "mean_margin": -242.52,
+        "wins": 21,
+        "matches": 216,
+        "missions": 32,
+        "earliest_mustika": 163,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "USP-M0-F120-balanced",
+        "min_margin": -560,
+        "mean_margin": -266.06,
+        "wins": 7,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 122
+      },
+      {
+        "policy": "UPS-M0-F120-balanced",
+        "min_margin": -560,
+        "mean_margin": -266.34,
+        "wins": 7,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 122
+      },
+      {
+        "policy": "USP-M1Q0-F120-balanced",
+        "min_margin": -560,
+        "mean_margin": -266.9,
+        "wins": 7,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 122
+      },
+      {
+        "policy": "UPS-M1Q0-F120-balanced",
+        "min_margin": -560,
+        "mean_margin": -267.18,
+        "wins": 7,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 122
+      },
+      {
+        "policy": "SUP-M1Q1-F120-skyfirst",
+        "min_margin": -560,
+        "mean_margin": -277.66,
+        "wins": 7,
+        "matches": 216,
+        "missions": 12,
+        "earliest_mustika": 166,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "PUS-M1Q1-F181-skyfirst",
+        "min_margin": -560,
+        "mean_margin": -292.59,
+        "wins": 12,
+        "matches": 216,
+        "missions": 30,
+        "earliest_mustika": 166,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "PSU-M1Q1-F181-skyfirst",
+        "min_margin": -560,
+        "mean_margin": -311.48,
+        "wins": 12,
+        "matches": 216,
+        "missions": 30,
+        "earliest_mustika": 166,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "UPS-M1Q0-F0-skyfirst",
+        "min_margin": -570,
+        "mean_margin": -223.33,
+        "wins": 14,
+        "matches": 216,
+        "missions": 13,
+        "earliest_mustika": 164,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "USP-M1Q0-F0-skyfirst",
+        "min_margin": -570,
+        "mean_margin": -223.33,
+        "wins": 14,
+        "matches": 216,
+        "missions": 13,
+        "earliest_mustika": 164,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "UPS-M1Q1-F0-skyfirst",
+        "min_margin": -570,
+        "mean_margin": -223.66,
+        "wins": 14,
+        "matches": 216,
+        "missions": 13,
+        "earliest_mustika": 164,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "USP-M1Q1-F0-skyfirst",
+        "min_margin": -570,
+        "mean_margin": -223.66,
+        "wins": 14,
+        "matches": 216,
+        "missions": 13,
+        "earliest_mustika": 164,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "UPS-M0-F0-skyfirst",
+        "min_margin": -570,
+        "mean_margin": -230.51,
+        "wins": 11,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "USP-M0-F0-skyfirst",
+        "min_margin": -570,
+        "mean_margin": -230.51,
+        "wins": 11,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "SUP-M1Q1-F120-balanced",
+        "min_margin": -570,
+        "mean_margin": -249.26,
+        "wins": 22,
+        "matches": 216,
+        "missions": 82,
+        "earliest_mustika": 154,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "UPS-M0-F120-skyfirst",
+        "min_margin": -570,
+        "mean_margin": -316.04,
+        "wins": 6,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 116
+      },
+      {
+        "policy": "USP-M0-F120-skyfirst",
+        "min_margin": -570,
+        "mean_margin": -316.41,
+        "wins": 6,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 116
+      },
+      {
+        "policy": "UPS-M1Q0-F120-skyfirst",
+        "min_margin": -570,
+        "mean_margin": -316.46,
+        "wins": 4,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 116
+      },
+      {
+        "policy": "USP-M1Q0-F120-skyfirst",
+        "min_margin": -570,
+        "mean_margin": -316.83,
+        "wins": 4,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 116
+      },
+      {
+        "policy": "PUS-M1Q0-F181-skyfirst",
+        "min_margin": -570,
+        "mean_margin": -387.34,
+        "wins": 4,
+        "matches": 216,
+        "missions": 8,
+        "earliest_mustika": 172,
+        "earliest_unlock": 92
+      },
+      {
+        "policy": "PSU-M1Q0-F181-skyfirst",
+        "min_margin": -570,
+        "mean_margin": -393.54,
+        "wins": 4,
+        "matches": 216,
+        "missions": 8,
+        "earliest_mustika": 172,
+        "earliest_unlock": 92
+      },
+      {
+        "policy": "PUS-M0-F181-skyfirst",
+        "min_margin": -570,
+        "mean_margin": -396.88,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 92
+      },
+      {
+        "policy": "PSU-M0-F181-skyfirst",
+        "min_margin": -570,
+        "mean_margin": -403.08,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 92
+      },
+      {
+        "policy": "SUP-M0-F120-balanced",
+        "min_margin": -575,
+        "mean_margin": -330.79,
+        "wins": 4,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "SUP-M1Q0-F120-balanced",
+        "min_margin": -575,
+        "mean_margin": -334.12,
+        "wins": 2,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "SUP-M1Q0-F0-balanced",
+        "min_margin": -580,
+        "mean_margin": -201.81,
+        "wins": 34,
+        "matches": 216,
+        "missions": 74,
+        "earliest_mustika": 154,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "SUP-M1Q1-F0-balanced",
+        "min_margin": -580,
+        "mean_margin": -205.79,
+        "wins": 34,
+        "matches": 216,
+        "missions": 74,
+        "earliest_mustika": 154,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "SPU-M1Q1-F0-skyfirst",
+        "min_margin": -580,
+        "mean_margin": -219.72,
+        "wins": 29,
+        "matches": 216,
+        "missions": 35,
+        "earliest_mustika": 166,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "SPU-M1Q0-F0-skyfirst",
+        "min_margin": -580,
+        "mean_margin": -222.31,
+        "wins": 29,
+        "matches": 216,
+        "missions": 35,
+        "earliest_mustika": 166,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "SPU-M0-F0-skyfirst",
+        "min_margin": -580,
+        "mean_margin": -250.37,
+        "wins": 6,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "SUP-M0-F0-balanced",
+        "min_margin": -580,
+        "mean_margin": -260.6,
+        "wins": 22,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "SUP-M1Q1-F0-skyfirst",
+        "min_margin": -580,
+        "mean_margin": -271.64,
+        "wins": 8,
+        "matches": 216,
+        "missions": 8,
+        "earliest_mustika": 176,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "SUP-M1Q0-F0-skyfirst",
+        "min_margin": -580,
+        "mean_margin": -271.69,
+        "wins": 8,
+        "matches": 216,
+        "missions": 8,
+        "earliest_mustika": 176,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "SUP-M0-F0-skyfirst",
+        "min_margin": -580,
+        "mean_margin": -276.0,
+        "wins": 6,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "SPU-M1Q0-F120-skyfirst",
+        "min_margin": -580,
+        "mean_margin": -289.1,
+        "wins": 10,
+        "matches": 216,
+        "missions": 10,
+        "earliest_mustika": 166,
+        "earliest_unlock": 92
+      },
+      {
+        "policy": "SPU-M0-F120-skyfirst",
+        "min_margin": -580,
+        "mean_margin": -297.75,
+        "wins": 2,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 92
+      },
+      {
+        "policy": "SPU-M1Q1-F181-balanced",
+        "min_margin": -580,
+        "mean_margin": -301.94,
+        "wins": 16,
+        "matches": 216,
+        "missions": 82,
+        "earliest_mustika": 157,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "SUP-M0-F120-skyfirst",
+        "min_margin": -580,
+        "mean_margin": -318.22,
+        "wins": 5,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 110
+      },
+      {
+        "policy": "SUP-M1Q0-F120-skyfirst",
+        "min_margin": -580,
+        "mean_margin": -320.16,
+        "wins": 3,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 110
+      },
+      {
+        "policy": "USP-M1Q1-F181-skyfirst",
+        "min_margin": -590,
+        "mean_margin": -339.79,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "UPS-M1Q1-F181-skyfirst",
+        "min_margin": -590,
+        "mean_margin": -341.09,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "UPS-M1Q1-F181-balanced",
+        "min_margin": -595,
+        "mean_margin": -306.16,
+        "wins": 0,
+        "matches": 216,
+        "missions": 2,
+        "earliest_mustika": 178,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "USP-M1Q1-F181-balanced",
+        "min_margin": -595,
+        "mean_margin": -306.16,
+        "wins": 0,
+        "matches": 216,
+        "missions": 2,
+        "earliest_mustika": 178,
+        "earliest_unlock": 104
+      },
+      {
+        "policy": "SUP-M1Q1-F181-balanced",
+        "min_margin": -595,
+        "mean_margin": -308.33,
+        "wins": 18,
+        "matches": 216,
+        "missions": 82,
+        "earliest_mustika": 154,
+        "earliest_unlock": 80
+      },
+      {
+        "policy": "SPU-M1Q1-F181-skyfirst",
+        "min_margin": -630,
+        "mean_margin": -345.51,
+        "wins": 12,
+        "matches": 216,
+        "missions": 32,
+        "earliest_mustika": 166,
+        "earliest_unlock": 86
+      },
+      {
+        "policy": "SUP-M1Q1-F181-skyfirst",
+        "min_margin": -630,
+        "mean_margin": -385.58,
+        "wins": 0,
+        "matches": 216,
+        "missions": 8,
+        "earliest_mustika": 166,
+        "earliest_unlock": 98
+      },
+      {
+        "policy": "SPU-M0-F181-balanced",
+        "min_margin": -630,
+        "mean_margin": -454.91,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "SPU-M1Q0-F181-balanced",
+        "min_margin": -630,
+        "mean_margin": -458.43,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "USP-M0-F181-balanced",
+        "min_margin": -640,
+        "mean_margin": -411.76,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 122
+      },
+      {
+        "policy": "USP-M1Q0-F181-balanced",
+        "min_margin": -640,
+        "mean_margin": -412.04,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 122
+      },
+      {
+        "policy": "UPS-M0-F181-balanced",
+        "min_margin": -640,
+        "mean_margin": -413.98,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 122
+      },
+      {
+        "policy": "UPS-M1Q0-F181-balanced",
+        "min_margin": -640,
+        "mean_margin": -414.26,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 122
+      },
+      {
+        "policy": "UPS-M0-F181-skyfirst",
+        "min_margin": -650,
+        "mean_margin": -410.02,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 116
+      },
+      {
+        "policy": "UPS-M1Q0-F181-skyfirst",
+        "min_margin": -650,
+        "mean_margin": -410.44,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 116
+      },
+      {
+        "policy": "USP-M0-F181-skyfirst",
+        "min_margin": -650,
+        "mean_margin": -411.69,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 116
+      },
+      {
+        "policy": "USP-M1Q0-F181-skyfirst",
+        "min_margin": -650,
+        "mean_margin": -412.11,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 116
+      },
+      {
+        "policy": "SUP-M0-F181-balanced",
+        "min_margin": -660,
+        "mean_margin": -448.29,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "SUP-M1Q0-F181-balanced",
+        "min_margin": -660,
+        "mean_margin": -451.48,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 109
+      },
+      {
+        "policy": "SPU-M1Q0-F181-skyfirst",
+        "min_margin": -690,
+        "mean_margin": -436.83,
+        "wins": 4,
+        "matches": 216,
+        "missions": 8,
+        "earliest_mustika": 172,
+        "earliest_unlock": 92
+      },
+      {
+        "policy": "SPU-M0-F181-skyfirst",
+        "min_margin": -690,
+        "mean_margin": -444.19,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 92
+      },
+      {
+        "policy": "SUP-M0-F181-skyfirst",
+        "min_margin": -700,
+        "mean_margin": -464.14,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 110
+      },
+      {
+        "policy": "SUP-M1Q0-F181-skyfirst",
+        "min_margin": -700,
+        "mean_margin": -466.09,
+        "wins": 0,
+        "matches": 216,
+        "missions": 0,
+        "earliest_mustika": null,
+        "earliest_unlock": 110
+      }
+    ]
+  }
+]

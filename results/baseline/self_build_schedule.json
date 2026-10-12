@@ -1,0 +1,29 @@
+[
+  {
+    "profile": "fast",
+    "mandate_s": 48,
+    "mustika_s": 73,
+    "score": [
+      420,
+      0
+    ]
+  },
+  {
+    "profile": "reference",
+    "mandate_s": 72,
+    "mustika_s": 108,
+    "score": [
+      420,
+      0
+    ]
+  },
+  {
+    "profile": "slow",
+    "mandate_s": 109,
+    "mustika_s": 163,
+    "score": [
+      420,
+      0
+    ]
+  }
+]
