@@ -5,8 +5,8 @@ const describe = p => `${p.id} ${title(p)} ${modes[p.mode]} ${p.mission ? "ム�
 const signed = n => `${n >= 0 ? "+" : ""}${Math.round(n * 10) / 10}`;
 export function createCatalogPanel(root, plans, onSelect) {
   const q = s => root.querySelector(s), list = q("#list");
-  let selectedId = plans[0].id, results = new Map(), estimates = defaultEstimates(), compared = [], expanded = true, family = "";
-  const openGroups = new Set();
+  let selectedId = plans[0].id, results = new Map(), estimates = defaultEstimates(), compared = [], expanded = false, family = "", page = 0;
+  const pageSize = 20;
   try {
     const saved = JSON.parse(localStorage.getItem("strata-effort-v1"));
     for (const c of capabilities) if (Number.isFinite(saved?.[c.id]) && saved[c.id] >= 0 && saved[c.id] <= 999) estimates[c.id] = saved[c.id];
@@ -14,7 +14,7 @@ export function createCatalogPanel(root, plans, onSelect) {
   function setExpanded(value) {
     expanded = value;
     q("main").classList.toggle("catalog-expanded", value);
-    q("#catalog-toggle").textContent = value ? "3D・計算条件へ" : "工数と得点を比較";
+    q("#catalog-toggle").textContent = value ? "一覧とシミュレーションに戻る" : "工数・得点を分析";
     q("#catalog-toggle").setAttribute("aria-expanded", String(value));
   }
   q("#catalog-toggle").onclick = () => setExpanded(!expanded);
@@ -51,20 +51,25 @@ export function createCatalogPanel(root, plans, onSelect) {
       ${[...groups.values()].sort((a,b) => Number(a.plan.id === selectedId) - Number(b.plan.id === selectedId)).map(r => `<circle cx="${x(r)}" cy="${y(r)}" r="${r.plan.id === selectedId ? 7 : 4}" class="${r.frontier ? "frontier" : ""} ${r.plan.id === selectedId ? "picked" : ""}"><title>作戦 ${r.plan.id}：${r.days}人日 / ${r.scores[0]}点</title></circle>`).join("")}</svg>`;
   }
   function render() {
-    const focus = list.contains(document.activeElement) ? { id: document.activeElement.dataset.id, action: document.activeElement.dataset.action, group: document.activeElement.closest("[data-group]")?.dataset.group } : null;
+    const focus = list.contains(document.activeElement) ? { id: document.activeElement.dataset.id, action: document.activeElement.dataset.action } : null;
     const focusedFamily = q("#family-nav").contains(document.activeElement) ? document.activeElement.dataset.family : null;
     const rows = rankedPlans(plans, results, estimates);
     const filtered = filterRows(rows, { query: q("#search").value, mode: q("#mode").value, mission: q("#mission").value, budget: q("#budget").value, frontier: q("#frontier-only").checked, sort: q("#catalog-sort").value }, describe);
     const items = filtered.filter(r => !family || familyOf(r.plan) === family);
-    const groups = technicalGroups(items), allGroups = technicalGroups(rows);
+    const allGroups = technicalGroups(rows);
     q("#family-nav").innerHTML = [{ id: "", name: "すべて", description: "技術構成から選ぶ" }, ...families].map(f => `<button data-family="${f.id}" aria-pressed="${family === f.id}"><b>${f.name}</b><span>${filtered.filter(r => !f.id || familyOf(r.plan) === f.id).length}案</span><small>${f.description}</small></button>`).join("");
-    q("#count").textContent = `${groups.length}構成 / ${items.length}案`;
+    q("#count").textContent = `${items.length}案`;
+    page = Math.min(page, Math.max(0, Math.ceil(items.length / pageSize) - 1));
+    q("#page-status").textContent = items.length ? `${page * pageSize + 1}–${Math.min((page + 1) * pageSize, items.length)} / ${items.length}案` : "0案";
+    q("#previous-page").disabled = page === 0;
+    q("#next-page").disabled = (page + 1) * pageSize >= items.length;
+    q("#selected-plan").textContent = `表示中：#${selectedId} ${title(plans.find(p => p.id === selectedId))}`;
     q("#catalog-status").textContent = `${results.size} / ${plans.length}案を計算済み${results.size < plans.length ? " · 得点・効率候補は計算済みの範囲" : " · 現在の相手・性能・乱数での結果"}`;
     const recipe = ({ plan: p, days, scores, frontier }) => `<article class="recipe ${p.id === selectedId ? "selected" : ""}">
-      <button class="recipe-select" data-id="${p.id}" data-action="select" aria-pressed="${p.id === selectedId}"><span class="recipe-title"><span class="index">#${String(p.id).padStart(3,"0")}</span><b>${title(p)}</b></span><span class="recipe-description">${modes[p.mode]} · ${p.mission ? "ムスティカ設置あり" : "ムスティカ設置なし"}</span><small>${supplies[p.supply]} · ${ends[p.end]}</small><span class="recipe-metrics"><strong>${days}<small> 人日</small></strong><span>${scores ? `赤 ${scores[0]} / 青 ${scores[1]}` : "得点未計算"}</span>${frontier ? '<span class="frontier-label">効率候補</span>' : ""}</span></button>
+      <button class="recipe-select" data-id="${p.id}" data-action="select" aria-pressed="${p.id === selectedId}"><span class="recipe-title"><span class="index">#${String(p.id).padStart(3,"0")}</span><b>${families.find(f => f.id === familyOf(p)).name}</b></span><span class="recipe-description">${title(p)} · ${modes[p.mode]}</span><small>${supplies[p.supply]} / ${ends[p.end]}</small><span class="recipe-play">${p.id === selectedId ? "シミュレーション表示中" : "この作戦を再生"}</span><span class="recipe-metrics"><strong>${days}<small> 人日</small></strong><span>${scores ? `赤 ${scores[0]} / 青 ${scores[1]}` : "得点未計算"}</span>${frontier ? '<span class="frontier-label">効率候補</span>' : ""}</span></button>
       <button class="compare-add" data-id="${p.id}" data-action="compare" aria-label="作戦 ${p.id}を比較${compared.includes(p.id) ? "から外す" : "に追加"}" aria-pressed="${compared.includes(p.id)}" ${compared.length >= 3 && !compared.includes(p.id) ? "disabled" : ""}>${compared.includes(p.id) ? "比較中" : "比較に追加"}</button></article>`;
-    list.innerHTML = groups.map(g => `<details class="technical-group" data-group="${g.key}" ${openGroups.has(g.key) ? "open" : ""}><summary><span class="group-title">${families.find(f => f.id === g.family).name}<small>${g.name}</small></span><span class="group-stats"><b>${g.days} 人日</b><span>${g.best ? `最高 ${g.maxScore}点` : "得点未計算"}</span><small>${g.rows.length}案${g.frontier ? " · 効率候補あり" : ""}</small></span></summary><div class="group-content"><p>${families.find(f => f.id === g.family).flow}</p><p>同じ技術構成で、積み上げ場所・供給・裏返し時期を変更。${g.best ? `計算済み${g.scored}案の赤得点は ${g.minScore}〜${g.maxScore}点。` : "全案を計算すると有力な運用案を確認できます。"}</p>${g.best ? `<button class="group-best" data-action="select" data-id="${g.best.plan.id}">この構成の最高得点案 #${g.best.plan.id}を確認</button>` : ""}${g.rows.map(recipe).join("")}</div></details>`).join("") || '<p class="empty">該当する作戦がありません。条件を解除するか、得点が必要な場合は全案を計算してください。</p>';
-    if (focus) list.querySelector(focus.id ? `[data-id="${focus.id}"][data-action="${focus.action}"]` : `[data-group="${focus.group}"] > summary`)?.focus({ preventScroll: true });
+    list.innerHTML = items.slice(page * pageSize, (page + 1) * pageSize).map(recipe).join("") || '<p class="empty">条件に合う作戦がありません。</p><button data-action="clear">絞り込みを解除</button>';
+    if (focus) list.querySelector(focus.id ? `[data-id="${focus.id}"][data-action="${focus.action}"]` : "button")?.focus({ preventScroll: true });
     if (focusedFamily !== null) q(`#family-nav [data-family="${focusedFamily}"]`)?.focus({ preventScroll: true });
     q("#tradeoff-chart").innerHTML = chart(items);
     const p = plans.find(p => p.id === selectedId), row = rows.find(r => r.plan.id === selectedId);
@@ -84,37 +89,47 @@ export function createCatalogPanel(root, plans, onSelect) {
       ["省ける技術", r => requirements(first.plan).filter(c => !requirements(r.plan).includes(c)).map(c => c.name).join("、") || "なし"],
     ].map(([name, value]) => `<tr><th scope="row">${name}</th>${chosen.map(r => `<td>${value(r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
   }
-  list.addEventListener("toggle", e => { const key = e.target.dataset.group; if (key) { if (e.target.open) openGroups.add(key); else if (list.contains(e.target)) openGroups.delete(key); } }, true);
-  q("#family-nav").onclick = e => { const button = e.target.closest("[data-family]"); if (button) { family = button.dataset.family; list.scrollTop = 0; render(); } };
+  q("#family-nav").onclick = e => { const button = e.target.closest("[data-family]"); if (button) { family = button.dataset.family; q("#family-select").value = family; page = 0; list.scrollTop = 0; render(); } };
   list.onclick = e => {
     const button = e.target.closest("button[data-id]");
+    if (e.target.closest('[data-action="clear"]')) { q("#clear-filters").click(); return; }
     if (!button) return;
     const id = Number(button.dataset.id);
-    if (button.dataset.action === "select") onSelect(id);
+    if (button.dataset.action === "select") { onSelect(id); if (expanded) setExpanded(false); }
     else { compared = compared.includes(id) ? compared.filter(x => x !== id) : compared.length < 3 ? [...compared, id] : compared; render(); }
   };
   q("#comparison").onclick = e => { const button = e.target.closest("[data-remove]"); if (button) { compared = compared.filter(id => id !== Number(button.dataset.remove)); render(); } };
-  for (const name of ["search", "mode", "mission", "budget", "frontier-only", "catalog-sort"]) q(`#${name}`).oninput = () => { list.scrollTop = 0; render(); };
-  q("#clear-filters").onclick = () => { for (const name of ["search", "mode", "mission", "budget"]) q(`#${name}`).value = ""; q("#frontier-only").checked = false; family = ""; list.scrollTop = 0; render(); };
-  renderEstimates(); setExpanded(true);
+  for (const name of ["search", "mode", "mission", "budget", "frontier-only", "catalog-sort"]) q(`#${name}`).oninput = () => { page = 0; list.scrollTop = 0; render(); };
+  q("#clear-filters").onclick = () => { for (const name of ["search", "mode", "mission", "budget"]) q(`#${name}`).value = ""; q("#frontier-only").checked = false; family = ""; q("#family-select").value = ""; page = 0; list.scrollTop = 0; render(); };
+  q("#family-select").onchange = e => { family = e.target.value; page = 0; list.scrollTop = 0; render(); };
+  q("#previous-page").onclick = () => { page--; list.scrollTop = 0; render(); };
+  q("#next-page").onclick = () => { page++; list.scrollTop = 0; render(); };
+  q("#locate-plan").onclick = () => {
+    q("#clear-filters").click();
+    const rows = filterRows(rankedPlans(plans, results, estimates), { sort: q("#catalog-sort").value }, describe);
+    page = Math.floor(rows.findIndex(r => r.plan.id === selectedId) / pageSize);
+    render(); list.querySelector(`[data-id="${selectedId}"]`)?.scrollIntoView({ block: "nearest" });
+  };
+  renderEstimates(); setExpanded(false);
   return { exportAnalysis() { return { effortUnit: "person-days", effortBasis: "editable planning assumptions, not measured", estimates: { ...estimates }, compared: compared.map(id => ({ plan: plans.find(p => p.id === id), days: effort(plans.find(p => p.id === id), estimates), scores: results.get(id) ?? null })), calculatedPlans: results.size }; }, update(id, nextResults) { selectedId = id; results = nextResults; render(); } };
 }
 export function catalogMarkup(count) {
   return `<aside class="catalog">
-    <div class="paneltitle"><h1>作戦カタログ</h1><span id="count"></span></div>
-    <button id="catalog-toggle" aria-expanded="true">3D・計算条件へ</button>
+    <div class="paneltitle"><h1>作戦一覧</h1><span id="count"></span></div>
     <div class="cataloghead">
-      <p class="catalog-intro">得点の狙い → 技術構成 → 運用案の順に検討。<small>工数は編集可能な仮見積もりです。各構成を開くと、同じ技術で実行できる案を比較できます。</small></p>
+      <p class="catalog-intro">作戦を選ぶと、その場で再生します。</p>
       <input id="search" placeholder="番号・場所・技術で検索" aria-label="作戦を検索">
+      <select id="family-select" aria-label="作戦の狙い"><option value="">すべての狙い</option>${families.map(f => `<option value="${f.id}">${f.name}</option>`).join("")}</select>
+      <details class="advanced-filters"><summary>絞り込み・並べ替え</summary>
       <div class="filters"><select id="mode" aria-label="作戦方式"><option value="">すべての方式</option><option value="build">一から積み上げる</option><option value="reuse">土台を利用</option><option value="flip">上段ブロックを裏返す</option></select><select id="mission" aria-label="ムスティカ設置の有無"><option value="">ムスティカ設置の有無</option><option value="yes">ムスティカを設置する</option><option value="no">ムスティカを設置しない</option></select></div>
-      <div class="filters"><label>工数上限<input id="budget" type="number" min="0" step="0.5" placeholder="指定なし" aria-label="工数上限（人日）"></label><label>並べ替え<select id="catalog-sort"><option value="effort">工数が少ない順</option><option value="score">赤の得点順</option><option value="margin">赤−青の得点差順</option><option value="id">番号順</option></select></label></div>
-      <div class="filter-actions"><label><input id="frontier-only" type="checkbox"> 効率候補のみ</label><button id="clear-filters">条件を解除</button></div>
+      <div class="filters"><label>工数上限<input id="budget" type="number" min="0" step="0.5" placeholder="指定なし" aria-label="工数上限（人日）"></label><label>並べ替え<select id="catalog-sort"><option value="id">作戦番号順</option><option value="effort">工数が少ない順</option><option value="score">赤の得点順</option><option value="margin">赤−青の得点差順</option></select></label></div>
+      <div class="filter-actions"><label><input id="frontier-only" type="checkbox"> 効率候補のみ</label><button id="clear-filters">条件を解除</button></div></details>
     </div>
-    <nav id="family-nav" aria-label="得点の狙いで作戦を分類"></nav><div class="catalog-body"><section class="catalog-results" aria-label="作戦一覧"><p id="catalog-status" role="status"></p><div id="list"></div></section>
+    <nav id="family-nav" aria-label="得点の狙いで作戦を分類"></nav><div class="catalog-body"><section class="catalog-results" aria-label="作戦一覧"><p id="catalog-status" role="status"></p><div class="current-selection"><span id="selected-plan"></span><button id="locate-plan">一覧で表示</button></div><div id="list"></div><div class="list-pagination"><button id="previous-page">前へ</button><span id="page-status" role="status"></span><button id="next-page">次へ</button></div></section>
       <section class="catalog-analysis" aria-label="工数と得点の分析"><h2>工数と得点のトレードオフ</h2><p class="chart-caption">左上ほど少ない工数で高得点。緑は「効率候補」。工数が同等以下・得点が同等以上で、どちらかがより良い案がない候補です。</p><div id="tradeoff-chart"></div><p class="effort-note">得点は現在の条件での単一試合の簡略計算です。勝率ではありません。同じ工数・得点の点は重ねています。</p><div id="plan-detail"></div>
       <details id="effort-settings"><summary>工数の仮見積もりを編集</summary><p>初期値は比較のための仮置きです。設計・製作・調整を含む人日をチームの見積もりに変更してください。共通技術は1回だけ加算します。日程や人数による短縮は計算しません。</p><div id="effort-inputs"></div><button id="reset-estimates">初期値に戻す</button><p>見積もりはこのブラウザに保存されます。得点の計算条件には影響しません。</p></details></section>
     </div>
     <section class="catalog-comparison"><h2>候補を比較 <small>最大3案</small></h2><div id="comparison"></div></section>
-    <div class="explore"><div><span id="explorelabel">同じ条件で全案を計算</span><b id="progress">0 / ${count}</b></div><progress aria-label="作戦の計算進捗" max="${count}" value="0"></progress><button id="explore">全案を計算</button></div>
+    <button id="catalog-toggle" aria-expanded="false">工数・得点を分析</button><div class="explore"><div><span id="explorelabel">同じ条件で全案を計算</span><b id="progress">0 / ${count}</b></div><progress aria-label="作戦の計算進捗" max="${count}" value="0"></progress><button id="explore">全案を計算</button></div>
   </aside>`;
 }

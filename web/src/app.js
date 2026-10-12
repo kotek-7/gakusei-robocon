@@ -30,6 +30,8 @@ try {
 }
 const catalogPanel = createCatalogPanel(root, plans, (id) => {
   session.select(id);
+  playback.seek(0);
+  if (!playback.playing) playback.toggle();
   refreshRun();
 });
 const conditions = createConditionsPanel(root, {
@@ -85,6 +87,7 @@ function draw() {
   );
 }
 function refreshRun() {
+  root.querySelector("#replay-plan-title").textContent = `作戦 #${session.run.plan.id} のシミュレーション`;
   conditions.update(session.run);
   replay.setRun(session.run);
   catalogPanel.update(session.run.plan.id, exploration.results);

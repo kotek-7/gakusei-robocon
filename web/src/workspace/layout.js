@@ -19,7 +19,7 @@ STRATA <small>ABU ROBOCON 2027</small>
 ${catalogMarkup(count)}
 <section class="center">
 <div class="viewportbar">
-<span><b>3D ビュー</b>
+<span><b id="replay-plan-title">シミュレーション</b>
 <small>提供CAD</small>
 </span>
 <div>
