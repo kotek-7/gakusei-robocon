@@ -2,7 +2,7 @@
 import argparse
 import json
 from pathlib import Path
-from .model import State, Tower, Job, Action, Performance, invariant
+from .model import State, Tower, Job, Action, Performance, validate_state
 from .search import exhaustive
 
 
@@ -13,11 +13,14 @@ def load_scenario(path):
     raw['jobs'] = [None if j is None else Job(Action(**j['action']), j['end'], j.get('old_sky',-1))
                    for j in raw.get('jobs',[None]*4)]
     s = State(**raw)
-    invariant(s)
+    validate_state(s)
     perfs = tuple(Performance(**p) for p in data['performances'])
     if len(perfs) != 2:
         raise ValueError('Exactly two performance profiles are required')
-    return s, perfs, data.get('active_robots',[0,1,2,3])
+    active = data.get('active_robots', [0,1,2,3])
+    if not isinstance(active, list) or any(type(r) is not int or r not in range(4) for r in active) or len(set(active)) != len(active):
+        raise ValueError('Active robots must be unique indices in [0, 3]')
+    return s, perfs, active
 
 
 def main():

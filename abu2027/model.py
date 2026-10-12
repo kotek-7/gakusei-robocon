@@ -271,3 +271,54 @@ def invariant(s: State):
     assert sky == 12, sky
     assert s.sky_stock >= 0 and min(s.earth_stock) >= 0
     assert all(min(b) >= 0 for b in s.buffer)
+
+
+def validate_state(s: State):
+    """Validate externally supplied scenarios before search (also under python -O)."""
+    def require(condition, message):
+        if not condition:
+            raise ValueError(message)
+
+    def count(value):
+        return type(value) is int and value >= 0
+
+    require(type(s.t) is int and 0 <= s.t <= 180, 'Time must be an integer in [0, 180]')
+    require(len(s.towers) == len(SPOTS), 'Exactly ten towers are required')
+    require(len(s.jobs) == 4, 'Exactly four robot job slots are required')
+    for values in (s.earth_stock, s.buffer, s.transfers, s.mandate, s.mandate_at):
+        require(len(values) == 2, 'Exactly two teams are required')
+    require(all(type(v) is bool for v in s.mandate), 'Mandates must be booleans')
+    require(count(s.sky_stock) and all(count(v) for v in s.earth_stock + s.transfers), 'Invalid stock or transfer count')
+    require(all(len(b) == 2 and all(count(v) for v in b) for b in s.buffer), 'Invalid buffer')
+    allowed_mustika = {'ground'} | {f'{stage}{team}' for stage in ('tr', 'buffer', 'br', 'placed') for team in range(2)}
+    require(s.mustika in allowed_mustika, 'Invalid Mustika location')
+    if s.mustika != 'ground':
+        require(s.mandate[int(s.mustika[-1])], 'Mustika requires a qualified team')
+    earth = [s.earth_stock[i] + s.buffer[i][0] for i in range(2)]
+    sky = s.sky_stock + sum(b[1] for b in s.buffer)
+    for tower in s.towers:
+        require(len(tower.earth) <= 2 and all(type(o) is int and o in (0, 1) for o in tower.earth), 'Invalid Earth layers')
+        require(type(tower.sky) is int and tower.sky in (-1, 0, 1), 'Invalid Sky owner')
+        require(tower.sky == -1 or len(tower.earth) == 2, 'Sky requires two Earth blocks')
+        for owner in tower.earth:
+            earth[owner] += 1
+        sky += int(tower.sky >= 0)
+    locked = set()
+    for robot, job in enumerate(s.jobs):
+        if job is None:
+            continue
+        a = job.action
+        require(type(job.end) is int and job.end > s.t, 'Pending jobs must end after the scenario time')
+        require(a.kind in ('wait', 'ascent', 'recover', 'transfer', 'earth', 'sky', 'flip', 'mustika_tr', 'mustika_br'), 'Invalid job kind')
+        require(count(a.earth) and count(a.sky), 'Invalid carried count')
+        require(a.earth + a.sky <= (3 if robot % 2 == 0 else 2), 'Carrying limit exceeded')
+        if a.kind in ('earth', 'sky', 'flip'):
+            require(robot % 2 == 1 and 0 <= a.spot < len(SPOTS), 'Invalid builder target')
+            require(SPOTS[a.spot].exclusive in (-1, robot // 2), 'Opponent private spot')
+            require(a.spot not in locked, 'Two jobs reserve the same spot')
+            locked.add(a.spot)
+        if a.kind == 'flip':
+            require(job.old_sky in (0, 1) and s.towers[a.spot].sky == -1, 'A flipped Sky must be held')
+        earth[robot // 2] += a.earth
+        sky += a.sky + int(a.kind == 'flip')
+    require(earth == [20, 20] and sky == 12, 'Object quantities must be conserved')
