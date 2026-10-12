@@ -1,0 +1,242 @@
+@media (max-width: 1150px) {
+  main {
+    grid-template-columns: 235px minmax(350px, 1fr) 245px;
+  }
+  .brand small,
+  .topright > span,
+  .topright .statusdot {
+    display: none;
+  }
+  header {
+    gap: 20px;
+  }
+  .scoreboard {
+    gap: 15px;
+    padding: 9px 15px;
+  }
+  .viewbadge {
+    display: none;
+  }
+  .scoreboard .matchclock {
+    padding: 0 15px;
+  }
+  #qualifications {
+    bottom: 34px;
+  }
+  .inspector section {
+    padding: 13px;
+  }
+  .cataloghead {
+    padding: 16px 12px;
+  }
+}
+@media (max-width: 900px) {
+  main {
+    grid-template-columns: 220px minmax(350px, 1fr);
+  }
+  .inspector {
+    display: none;
+  }
+  .topright {
+    display: none;
+  }
+  footer span:last-child {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  header {
+    padding: 0 10px;
+    height: 52px;
+    gap: 10px;
+  }
+  .brand {
+    font-size: 16px;
+  }
+  nav button {
+    font-size: 10px;
+    padding: 8px;
+  }
+  main {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+  }
+  .center {
+    order: 0;
+    height: 680px;
+  }
+  .catalog {
+    order: 1;
+    height: 450px;
+    border-right: 0;
+  }
+  .inspector {
+    display: block;
+    order: 2;
+  }
+  .cataloghead {
+    padding: 12px;
+  }
+  .cataloghead h1,
+  .cataloghead p {
+    display: none;
+  }
+  .filters {
+    margin-top: 8px;
+  }
+  .scoreboard {
+    top: 15px;
+    gap: 12px;
+  }
+  .scoreboard b {
+    font-size: 21px;
+  }
+  .scoreboard .matchclock {
+    padding: 0 10px;
+  }
+  .scoreboard span {
+    font-size: 8px;
+  }
+  .viewhint {
+    font-size: 8px;
+  }
+  footer {
+    height: auto;
+    min-height: 30px;
+    gap: 10px;
+  }
+  footer span:nth-child(2) {
+    display: none;
+  }
+  .playbar {
+    gap: 6px;
+    padding: 0 8px;
+  }
+  #delta {
+    position: absolute;
+    right: 10px;
+    margin-top: 65px;
+    z-index: 2;
+  }
+  #pin {
+    font-size: 9px;
+  }
+  #timecode {
+    font-size: 9px;
+  }
+}
+@media (max-width: 1100px) {
+  main {
+    grid-template-columns: 250px minmax(0, 1fr);
+    height: auto;
+    min-height: calc(100dvh - 90px);
+  }
+  .center {
+    min-height: 720px;
+  }
+  .catalog {
+    max-height: 850px;
+  }
+  .inspector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column: 1/-1;
+    border-top: 1px solid var(--border);
+  }
+  .inspector .paneltitle {
+    grid-column: 1/-1;
+  }
+  .topright {
+    display: flex;
+    font-size: 0;
+  }
+  .topright button {
+    font-size: 12px;
+  }
+  header {
+    gap: 12px;
+    padding: 10px 14px;
+    height: auto;
+    flex-wrap: wrap;
+  }
+  #qualifications {
+    bottom: 36px;
+  }
+}
+@media (max-width: 650px) {
+  main {
+    display: flex;
+    flex-direction: column;
+  }
+  .center {
+    order: 0;
+    height: 750px;
+  }
+  .catalog {
+    order: 1;
+    height: 520px;
+  }
+  .inspector {
+    display: block;
+    order: 2;
+  }
+  .brand {
+    font-size: 18px;
+  }
+  nav button {
+    font-size: 12px;
+  }
+  button,
+  select {
+    min-height: 44px;
+  }
+  input:not([type="range"]),
+  select {
+    font-size: 16px;
+  }
+  .lane button {
+    min-height: 0;
+  }
+  .playbar {
+    padding: 8px;
+    gap: 8px;
+  }
+  .playbar .spacer {
+    display: none;
+  }
+  #pin {
+    font-size: 12px;
+  }
+  #delta {
+    position: static;
+    margin: 0;
+    width: 100%;
+  }
+  #timecode {
+    font-size: 12px;
+  }
+  .model-note {
+    font-size: 12px;
+  }
+  .viewhint {
+    display: none;
+  }
+  #qualifications {
+    bottom: 12px;
+    left: 12px;
+    right: auto;
+    gap: 12px;
+  }
+  .scoreboard {
+    gap: 10px;
+    padding: 9px 12px;
+  }
+  .scoreboard .matchclock {
+    padding: 0 10px;
+  }
+  .scoreboard > div {
+    gap: 8px;
+  }
+}

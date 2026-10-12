@@ -1,0 +1,26 @@
+.explore {
+  padding: 15px;
+  border-top: 1px solid var(--border);
+  background: #1b252d;
+}
+.explore > div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+}
+.explore b {
+  font-family: monospace;
+  color: var(--accent);
+}
+progress {
+  height: 3px;
+  width: 100%;
+  margin: 12px 0;
+  accent-color: var(--accent);
+}
+.explore button {
+  width: 100%;
+  background: #29423f;
+  border-color: #48746b;
+  color: #abe6d8;
+}

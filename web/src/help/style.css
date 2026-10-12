@@ -1,0 +1,63 @@
+dialog {
+  width: 650px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow: auto;
+  background: #1a242e;
+  color: #ced8df;
+  border: 1px solid #4b626d;
+  border-radius: 8px;
+  padding: 32px;
+  box-shadow: 0 20px 80px #0009;
+}
+
+dialog::backdrop {
+  background: #060d15bb;
+  backdrop-filter: none;
+}
+
+dialog h3 {
+  margin-top: 25px;
+  font-size: 13px;
+}
+
+dialog p {
+  font-size: 12px;
+}
+
+dialog a {
+  color: #84d6c8;
+}
+
+#close {
+  float: right;
+}
+
+dialog li,
+dialog dd {
+  color: #9da9b6;
+  font-size: 12px;
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+
+dialog dt {
+  font-size: 12px;
+  margin-top: 12px;
+}
+
+dialog dd {
+  margin-left: 0;
+}
+
+dialog p,
+dialog li,
+dialog dd,
+dialog dt {
+  font-size: 14px;
+  color: #c2ccd5;
+}
+
+dialog details { border-top: 1px solid var(--border); padding: 16px 0; }
+dialog summary { cursor: pointer; font-size: 14px; font-weight: 600; }
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
