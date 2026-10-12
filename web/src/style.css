@@ -4,3 +4,5 @@
 @import "./help/style.css";
 @import "./conditions/style.css";
 @import "./workspace/responsive.css";
+
+@import "./catalog/list.css";

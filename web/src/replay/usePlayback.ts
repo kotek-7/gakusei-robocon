@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createPlayback } from "./playback";
 export function usePlayback(keyboardEnabled: boolean) {
   const [clock] = useState(() => createPlayback());
@@ -50,8 +50,14 @@ export function usePlayback(keyboardEnabled: boolean) {
     document.addEventListener("keydown", keyboard);
     return () => document.removeEventListener("keydown", keyboard);
   }, [clock, keyboardEnabled]);
+  const restart = useCallback(() => {
+    clock.seek(0);
+    if (!clock.playing) clock.toggle();
+    setSnapshot({ time: clock.time, playing: clock.playing });
+  }, [clock]);
   return {
     ...snapshot,
+    restart,
     seek(value: number) {
       clock.seek(value);
       publish();

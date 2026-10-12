@@ -24,6 +24,7 @@ import { CatalogTree } from "./CatalogTree";
 import { Filters } from "./Filters";
 import { Outlook } from "./Outlook";
 import { PlanDetail } from "./PlanDetail";
+import { StrategyList } from "./StrategyList";
 const plans = canonicalPlans();
 export interface CatalogHandle {
   exportAnalysis(): object;
@@ -81,9 +82,10 @@ export const Catalog = memo(function Catalog({
     ],
   );
   useEffect(() => {
+    if (!expanded) return;
     catalog.calculation.start(input);
     return () => catalog.calculation.reset();
-  }, [input, catalog.calculation]);
+  }, [input, expanded, catalog.calculation]);
   useEffect(() => {
     responses.calculation.reset();
   }, [selected?.id, input, responses.calculation]);
@@ -108,15 +110,16 @@ export const Catalog = memo(function Catalog({
   return (
     <aside className="catalog">
       <div className="catalog-heading">
-        <h1>作戦カタログ</h1>
+        <h1>{expanded ? "作戦の分析" : "作戦一覧"}</h1>
         <button
           id="catalog-toggle"
           aria-expanded={expanded}
           onClick={() => onExpanded(!expanded)}
         >
-          {expanded ? "再生画面へ" : "カタログに戻る"}
+          {expanded ? "一覧と3Dに戻る" : "条件・分析"}
         </button>
       </div>
+      {!expanded && <StrategyList plans={candidates(plans, {}, hardware, estimates)} current={run.plan} onSelect={onSelect} />}
       <div className="catalog-workspace">
         <Filters
           hardware={hardware}

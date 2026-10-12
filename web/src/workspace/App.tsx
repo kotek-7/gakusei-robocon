@@ -13,7 +13,7 @@ import { downloadResult } from "./export.js";
 export function App() {
   const [session] = useState(() => createSession(catalog())),
     [run, setRun] = useState(session.run);
-  const [expanded, setExpanded] = useState(true),
+  const [expanded, setExpanded] = useState(false),
     [helpOpen, setHelpOpen] = useState(false);
   const help = useRef<HTMLDialogElement>(null),
     catalogRef = useRef<CatalogHandle>(null);
@@ -23,8 +23,10 @@ export function App() {
     (plan: Plan) => {
       session.selectPlan(plan);
       setRun(session.run);
+      playback.restart();
+      setExpanded(false);
     },
-    [session],
+    [session, playback.restart],
   );
   return (
     <>
@@ -67,7 +69,7 @@ export function App() {
           onSelect={selectPlan}
         />
         <section className="center">
-          <Viewport frame={frame} time={playback.time} active={!expanded} />
+          <Viewport planId={run.plan.id} frame={frame} time={playback.time} active={!expanded} />
           <Replay
             run={run}
             {...playback}

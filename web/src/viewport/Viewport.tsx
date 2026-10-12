@@ -3,10 +3,12 @@ import type { createScene } from "./scene.js";
 import type { Frame } from "../simulation/types";
 export function Viewport({
   frame,
+  planId,
   time,
   active,
 }: {
   frame: Frame;
+  planId: number;
   time: number;
   active: boolean;
 }) {
@@ -51,7 +53,7 @@ export function Viewport({
     <>
       <div className="viewportbar">
         <span>
-          <b>3D ビュー</b>
+          <b>作戦 #{planId} のシミュレーション</b>
           <small>提供CAD</small>
         </span>
         <div>
