@@ -4,15 +4,14 @@ ABU 2027の作戦を、機体の対応範囲と行動方針から選ぶシミュ
 
 ## 起動
 
-Node.js 22以上を使用します。
+Node.js 22.12以上を使用します。React・TypeScript・Viteによる静的クライアントです。
 
 ```sh
 npm ci
-npm run build
 npm run dev
 ```
 
-通常は http://localhost:4173 を開きます。ソースを編集した後は再ビルドしてください。
+開発時は http://localhost:4173 を開きます。変更は自動反映されます。配信用のビルドは `npm run build`、ビルド結果の確認は `npm run preview`（http://localhost:4183）です。型検査だけなら `npm run typecheck` を使います。
 
 ## カタログを閲覧する
 
@@ -34,4 +33,6 @@ CAD経路上の距離・動作時間・資源・得点を計算します。機�
 
 ## 開発
 
-`npm test` で方策の分割、上位選択と下位条件の関係、活動範囲、資源保存、再現性などを検証します。フィールドCADは `../rulebook/field-2027.step`。変更時は `npm run import:field` を実行します。`npm run validate:catalog` は元の441設定×相手3案×優先順2通りの検証です。
+`npm test` で方策の分割、階層分割、Workerの寿命と保存互換性、活動範囲、資源保存、再現性などを検証します。フィールドCADは `../rulebook/field-2027.step`。変更時は `npm run import:field` を実行します。`npm run validate:catalog` は元の441設定×相手3案×優先順2通りの検証です。
+
+技術の採否、状態の所有者、追加先は[構成と依存方向](ARCHITECTURE.md)を参照してください。

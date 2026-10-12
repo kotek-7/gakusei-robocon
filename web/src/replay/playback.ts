@@ -1,3 +1,4 @@
+import type { Run } from "../simulation/types";
 export function createPlayback(duration = 180) {
   let time = 0,
     playing = false,
@@ -9,7 +10,7 @@ export function createPlayback(duration = 180) {
     get playing() {
       return playing;
     },
-    seek(value) {
+    seek(value: number) {
       if (!Number.isFinite(value)) return;
       time = Math.max(0, Math.min(duration, value));
     },
@@ -17,10 +18,10 @@ export function createPlayback(duration = 180) {
       if (time === duration && !playing) time = 0;
       playing = !playing;
     },
-    setSpeed(value) {
+    setSpeed(value: number) {
       if (Number.isFinite(value) && value > 0) speed = value;
     },
-    tick(elapsed) {
+    tick(elapsed: number) {
       if (playing && Number.isFinite(elapsed) && elapsed >= 0) {
         time = Math.min(duration, time + elapsed * speed);
         if (time === duration) playing = false;
@@ -28,7 +29,7 @@ export function createPlayback(duration = 180) {
     },
   };
 }
-export function frameAt(run, time) {
+export function frameAt(run: Run, time: number) {
   const index = Math.min(run.frames.length - 1, Math.floor(time * 2)),
     frame = run.frames[index],
     next = run.frames[Math.min(run.frames.length - 1, index + 1)],

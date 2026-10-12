@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { catalog } from "../catalog/plans.js";
+import { catalog } from "../catalog/plans.ts";
 import { simulate } from "./engine.js";
 const plans = catalog();
 test("catalog enumerates bounded grammar without duplicate recipes", () => {

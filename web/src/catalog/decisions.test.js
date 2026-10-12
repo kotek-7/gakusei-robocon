@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { catalog } from './plans.js';
-import { opponents, responseGroup, summarize } from './decisions.js';
+import { catalog } from './plans.ts';
+import { opponents, responseGroup } from './decisions.ts';
 import { simulate } from '../simulation/engine.js';
 import { planMovement } from '../simulation/movement.js';
 import { startPosition, transfer, builderTransfer } from '../simulation/field.js';
@@ -21,10 +21,6 @@ test('both access choices reach the transfer area and change distance for each r
   assert(paths[1].route.some(p=>p[1]===.15));
   if(role==='TR')for(const path of paths)assert(path.route.every(p=>p[1]<=.6));
  }
-});
-test('paired score changes are not the difference of independent extrema',()=>{
- const enemy=catalog()[0];const g=summarize([{enemy,before:[100,80],after:[120,90]},{enemy,before:[50,90],after:[40,100]}])[0];
- assert.deepEqual(g.delta,[-10,20]);assert.deepEqual(g.margin,[-60,30]);assert.equal(g.worst.after[0],40);
 });
 test('no-mustika candidate never tries to collect or place it; route selection does not mutate baseline',()=>{
  const baseline=catalog()[0], candidate={...baseline,mission:false,access:{BR:'ramp',TR:'stairs'}};

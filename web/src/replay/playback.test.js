@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createPlayback, frameAt } from "./playback.js";
+import { createPlayback, frameAt } from "./playback.ts";
 test("seek clamps, playback uses speed and pauses at match end", () => {
   const p = createPlayback();
   p.seek(-1);

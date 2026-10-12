@@ -1,3 +1,5 @@
+import type { Plan } from "../simulation/types";
+export type Estimates = Record<string, number>;
 // Planning assumptions, not measured build time. All values are editable person-days.
 export const capabilities = [
   ...[
@@ -6,9 +8,9 @@ export const capabilities = [
     ["tr_stairs", "TRのL1階段対応", 10],
     ["tr_ramp", "TRのL1スロープ対応", 3],
   ].map(([id, name, days]) => ({
-    id,
-    name,
-    days,
+    id: String(id),
+    name: String(name),
+    days: Number(days),
     reason: "設計・製作・走破試験の仮見積もり。",
   })),
   {
@@ -57,7 +59,7 @@ export const capabilities = [
 ];
 export const defaultEstimates = () =>
   Object.fromEntries(capabilities.map((c) => [c.id, c.days]));
-export function requirements(plan) {
+export function requirements(plan: Plan) {
   const flip = plan.mode === "flip" || plan.end !== "expand";
   // The simulator can choose fallback sites; reflections prioritize upper sites.
   return capabilities.filter(
@@ -79,63 +81,10 @@ export function requirements(plan) {
       (c.id === "late" && plan.end === "late" && plan.mode !== "flip"),
   );
 }
-export function effort(plan, estimates) {
+export function effort(plan: Plan, estimates: Estimates) {
   return (
     Math.round(
       requirements(plan).reduce((sum, c) => sum + estimates[c.id], 0) * 10,
     ) / 10
   );
-}
-export function rankedPlans(plans, results, estimates) {
-  const rows = plans.map((plan) => ({
-    plan,
-    days: effort(plan, estimates),
-    scores: results.get(plan.id),
-  }));
-  return rows.map((row) => ({
-    ...row,
-    frontier:
-      !!row.scores &&
-      !rows.some(
-        (other) =>
-          other.scores &&
-          other.days <= row.days &&
-          other.scores[0] >= row.scores[0] &&
-          (other.days < row.days || other.scores[0] > row.scores[0]),
-      ),
-  }));
-}
-export function filterRows(
-  rows,
-  {
-    query = "",
-    mode = "",
-    mission = "",
-    budget = "",
-    frontier = false,
-    sort = "effort",
-  },
-  describe,
-) {
-  return rows
-    .filter(
-      ({ plan, days, frontier: efficient }) =>
-        (!mode || plan.mode === mode) &&
-        (!mission || plan.mission === (mission === "yes")) &&
-        (budget === "" || days <= Number(budget)) &&
-        (!frontier || efficient) &&
-        describe(plan).toLowerCase().includes(query.trim().toLowerCase()),
-    )
-    .sort((a, b) => {
-      if (sort === "score" || sort === "margin") {
-        if (!!a.scores !== !!b.scores) return a.scores ? -1 : 1;
-        if (a.scores) {
-          const metric = (r) =>
-            sort === "score" ? r.scores[0] : r.scores[0] - r.scores[1];
-          const delta = metric(b) - metric(a);
-          if (delta) return delta;
-        }
-      }
-      return (sort === "id" ? 0 : a.days - b.days) || a.plan.id - b.plan.id;
-    });
 }

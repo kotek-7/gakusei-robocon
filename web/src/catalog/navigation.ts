@@ -1,6 +1,23 @@
-import { opponents, flipCondition } from "./decisions.js";
-import { effort } from "./effort.js";
-export const stages = [
+import type { Plan, Access } from "../simulation/types";
+import type { Estimates } from "./effort";
+import type { CatalogResult } from "./protocol";
+export type Dimension = "mission" | "flip" | "reuse" | "zones" | "supply";
+export type Classification = Partial<Record<Dimension, string>>;
+export type CanonicalPlan = Plan & { sourceIds: number[] };
+export interface Hardware {
+  level: "upper" | "lower";
+  BR: Access;
+  TR: Access;
+}
+import { opponents, flipCondition } from "./decisions.ts";
+import { effort } from "./effort.ts";
+export const dimensions: {
+  id: Dimension;
+  label: string;
+  title: string;
+  description?: string;
+  options?: string[][];
+}[] = [
   {
     id: "mission",
     label: "得点の狙い",
@@ -11,11 +28,6 @@ export const stages = [
       ["no", "ブロックの得点に集中", "ムスティカの回収・奉納を行わない。"],
       ["yes", "ムスティカも狙う", "資格を得たら回収・奉納を優先する。"],
     ],
-  },
-  {
-    id: "hardware",
-    label: "活動範囲と登り方",
-    title: "機体の対応範囲を決める",
   },
   {
     id: "flip",
@@ -67,7 +79,7 @@ export const stages = [
     ],
   },
 ];
-export const initialHardware = () => ({
+export const initialHardware = (): Hardware => ({
   level: "upper",
   BR: "stairs",
   TR: "ramp",
@@ -75,14 +87,20 @@ export const initialHardware = () => ({
 export function canonicalPlans() {
   return opponents().map((g) => ({ ...g.plan, sourceIds: g.ids }));
 }
-export function configure(p, h) {
+export function configure(p: CanonicalPlan, h: Hardware): CanonicalPlan {
   return {
     ...p,
     allowedZones: h.level === "upper" ? ["P", "S", "U"] : ["P", "S"],
     access: { BR: h.BR, TR: h.TR },
   };
 }
-export function candidates(plans, answers, h, estimates, budget = "") {
+export function candidates(
+  plans: CanonicalPlan[],
+  answers: Classification,
+  h: Hardware,
+  estimates: Estimates,
+  budget = "",
+) {
   return plans
     .filter(
       (p) =>
@@ -97,15 +115,39 @@ export function candidates(plans, answers, h, estimates, budget = "") {
     .map((p) => configure(p, h))
     .filter((p) => budget === "" || effort(p, estimates) <= Number(budget));
 }
-export function backTo(answers, index) {
-  return Object.fromEntries(
-    stages
-      .slice(0, index)
-      .filter((s) => answers[s.id])
-      .map((s) => [s.id, answers[s.id]]),
-  );
-}
-export function scoreRange(plans, results, key = "scores") {
+export function scoreRange(
+  plans: Plan[],
+  results: Map<number, CatalogResult>,
+  key: "scores" | "margin" = "scores",
+) {
   const values = plans.flatMap((p) => results.get(p.id)?.[key] ?? []);
   return values.length ? [Math.min(...values), Math.max(...values)] : null;
 }
+
+export function valueOf(p: Plan, id: Dimension): string {
+  switch (id) {
+    case "mission":
+      return p.mission ? "yes" : "no";
+    case "reuse":
+      return p.mode === "reuse" ? "yes" : "no";
+    case "flip":
+      return flipCondition(p);
+    case "zones":
+      return p.zones.join("");
+    case "supply":
+      return p.supply;
+  }
+}
+export function groupBy(rows: CanonicalPlan[], id: Dimension) {
+  const groups = new Map<string, CanonicalPlan[]>();
+  for (const p of rows) {
+    const value = valueOf(p, id);
+    if (!groups.has(value)) groups.set(value, []);
+    groups.get(value)!.push(p);
+  }
+  return [...groups];
+}
+export const encode = (path: Classification) =>
+  Object.entries(path)
+    .map(([k, v]) => `${k}=${v}`)
+    .join("/");

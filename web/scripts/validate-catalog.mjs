@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import { catalog } from "../src/catalog/plans.js";
+import { catalog } from "../src/catalog/plans.ts";
 import { simulate } from "../src/simulation/engine.js";
 const plans = catalog(),
   opponents = ["UP", "SP", "SU"].map((z) =>

@@ -4,10 +4,9 @@ import {
   canonicalPlans,
   candidates,
   initialHardware,
-  backTo,
   scoreRange,
-} from "./navigation.js";
-import { defaultEstimates, requirements } from "./effort.js";
+} from "./navigation.ts";
+import { defaultEstimates, requirements } from "./effort.ts";
 import { simulate } from "../simulation/engine.js";
 const plans = canonicalPlans(),
   estimates = defaultEstimates();
@@ -84,20 +83,7 @@ test("L1 restriction applies to fallback building and reflection during simulati
   const invalid = { ...plans[0], mission: true, allowedZones: ["P", "S"] };
   assert.throws(() => simulate(invalid, plans[0]), /activity area/);
 });
-test("returning to a parent removes dependent answers; zero budget is not ignored", () => {
-  assert.deepEqual(
-    backTo(
-      {
-        mission: "no",
-        flip: "always",
-        reuse: "yes",
-        zones: "SP",
-        supply: "earth",
-      },
-      2,
-    ),
-    { mission: "no" },
-  );
+test("zero budget and uncomputed results remain distinct", () => {
   assert.equal(
     candidates(plans, {}, initialHardware(), estimates, "0").length,
     0,
@@ -107,4 +93,15 @@ test("returning to a parent removes dependent answers; zero budget is not ignore
     scoreRange(plans, new Map([[plans[0].id, { scores: [20, 30] }]])),
     [20, 30],
   );
+});
+test('each hierarchical level partitions its parent without losing or duplicating policies', async () => {
+  const {dimensions,groupBy,valueOf}=await import('./navigation.ts');
+  function walk(rows,depth) {
+    if(depth===dimensions.length){assert.equal(rows.length,1);return;}
+    const id=dimensions[depth].id,groups=groupBy(rows,id);
+    assert.equal(new Set(groups.flatMap(([,items])=>items.map(p=>p.id))).size,rows.length);
+    assert.equal(groups.reduce((n,[,items])=>n+items.length,0),rows.length);
+    for(const [value,items] of groups){assert(items.every(p=>valueOf(p,id)===value));walk(items,depth+1);}
+  }
+  walk(plans,0);
 });

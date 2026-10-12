@@ -50,129 +50,15 @@ main.catalog-expanded .catalog {
 #decision-path {
   display: block;
 }
-#decision-path ol {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 20px;
-}
-#decision-path li {
-  margin: 0 0 3px;
-}
-#decision-path li button {
-  text-align: left;
-  display: block;
-  width: 100%;
-  padding: 13px 14px;
-  border-radius: 4px;
-  border: 0;
-  background: transparent;
-}
-#decision-path button span {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-}
-#decision-path button small {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 6px;
-  line-height: 1.6;
-}
-#decision-path li[aria-current] button {
-  background: #203532;
-  color: #94e2d4;
-}
-#decision-path li button:disabled {
-  color: #8a98a5;
-  cursor: default;
-}
-#decision-path li button:disabled small {
-  color: #8995a0;
-}
-#decision-path li button:not(:disabled):hover {
-  background: #25333c;
-}
-#start-over {
-  font-size: 12px;
-  margin-left: 12px;
-  padding: 6px 0;
-  color: var(--muted);
-  border: 0;
-}
 #selection-area {
   min-width: 0;
   padding-top: 8px;
 }
-.selection-title h2 {
-  font-size: 23px;
-  line-height: 1.45;
-  color: #eff3f4;
-  font-weight: 600;
-  margin: 0 0 14px;
-}
-.selection-title p,
 #selection-area > p {
   line-height: 1.8;
   margin: 0 0 28px;
   color: #b4c0cc;
   max-width: 65ch;
-}
-.branch-list {
-  margin-top: 34px;
-}
-.branch {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 16px;
-  text-align: left;
-  padding: 22px 0;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--border);
-  border-radius: 0;
-}
-.branch:first-child {
-  border-top: 1px solid var(--border);
-}
-.branch-main {
-  flex: 1;
-  min-width: 0;
-}
-.branch strong {
-  display: block;
-  font-size: 17px;
-  font-weight: 500;
-  color: #e7edef;
-  line-height: 1.6;
-}
-.branch small {
-  display: block;
-  font-size: 12px;
-  color: #b4c0cc;
-  margin-top: 7px;
-  line-height: 1.7;
-}
-.branch-data {
-  text-align: right;
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-}
-.branch-data small {
-  max-width: 115px;
-}
-.branch-arrow {
-  color: var(--accent);
-  font-size: 24px;
-  padding: 0 8px;
-}
-.branch:hover:not(:disabled) {
-  background: #1b2b2e;
-}
-.branch:disabled {
-  opacity: 0.55;
-  cursor: default;
 }
 .catalog button:active:not(:disabled) {
   background: #304941;
@@ -180,20 +66,6 @@ main.catalog-expanded .catalog {
 .catalog :focus-visible {
   outline: 2px solid #94e2d4;
   outline-offset: 4px;
-}
-#stage-title:focus {
-  outline: 0;
-}
-.selection-bottom {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px;
-  margin-top: 30px;
-}
-.selection-bottom p {
-  font-size: 12px;
-  color: var(--muted);
 }
 #outlook {
   padding: 24px;
@@ -204,22 +76,6 @@ main.catalog-expanded .catalog {
   font-size: 15px;
   margin: 0 0 18px;
   font-weight: 500;
-}
-.scope-count {
-  display: flex;
-  gap: 12px;
-  align-items: baseline;
-  margin-bottom: 24px;
-}
-.scope-count b {
-  font-size: 32px;
-  font-weight: 500;
-  color: #e7edef;
-  font-variant-numeric: tabular-nums;
-}
-.scope-count span {
-  font-size: 12px;
-  color: #b4c0cc;
 }
 .catalog label {
   display: block;
@@ -340,26 +196,6 @@ main.catalog-expanded .catalog {
   font-size: 15px;
   margin-bottom: 14px;
   color: #e7edef;
-}
-.catalog .hardware-choice {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 15px 0;
-}
-.hardware-choice input {
-  margin: 5px 0 0;
-  accent-color: var(--accent);
-}
-.hardware-choice small {
-  display: block;
-  margin-top: 5px;
-  font-size: 12px;
-  color: #b4c0cc;
-  line-height: 1.7;
-}
-.hardware-choice:has(input:disabled) {
-  opacity: 0.6;
 }
 .route-inputs {
   display: grid;
@@ -490,41 +326,12 @@ main.catalog-expanded .catalog {
   #outlook {
     width: 100%;
   }
-  #decision-path ol {
-    display: flex;
-    overflow-x: auto;
-    padding-bottom: 6px;
-    gap: 8px;
-    margin-bottom: 4px;
-  }
-  #decision-path li {
-    flex: 0 0 160px;
-  }
-  #decision-path li button {
-    padding: 10px;
-  }
   #decision-path .effort-settings {
     padding: 10px;
     margin-top: 12px;
   }
   #selection-area {
     padding: 0;
-  }
-  .selection-title h2 {
-    font-size: 21px;
-  }
-  .branch {
-    gap: 10px;
-    padding: 18px 0;
-  }
-  .branch strong {
-    font-size: 16px;
-  }
-  .branch-data {
-    max-width: 92px;
-  }
-  .branch-arrow {
-    padding: 0 2px;
   }
   #outlook {
     padding: 22px;
@@ -534,19 +341,9 @@ main.catalog-expanded .catalog {
   }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .branch,
   #decision-path button {
     transition: background-color 150ms ease;
   }
-}
-/* Keep radio controls independent of the inspector's full-width form inputs. */
-.catalog .hardware-choice input[type="radio"] {
-  flex: 0 0 18px;
-  width: 18px;
-  height: 18px;
-}
-.catalog .hardware-choice > span {
-  flex: 1;
 }
 /* Browse the catalog and adjust independent constraints alongside it. */
 #decision-path h2 {

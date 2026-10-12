@@ -1,6 +1,8 @@
+import type { Request, Result, Match } from "./protocol";
+const postMessage = (data: Result) => self.postMessage(data);
 import { simulate } from "../simulation/engine.js";
-import { opponents } from "./decisions.js";
-onmessage = ({ data }) => {
+import { opponents } from "./decisions.ts";
+self.onmessage = ({ data }: MessageEvent<Request>) => {
   if (data.type === "catalog") {
     for (let i = 0; i < data.plans.length; i++) {
       const plan = data.plans[i],
@@ -19,9 +21,9 @@ onmessage = ({ data }) => {
         total: data.plans.length,
       });
     }
-  } else {
+  } else if (data.type === "responses") {
     const enemies = opponents(),
-      matches = [];
+      matches: Match[] = [];
     for (let i = 0; i < enemies.length; i++) {
       const { plan: enemy, ids } = enemies[i];
       for (const priority of [0, 1])

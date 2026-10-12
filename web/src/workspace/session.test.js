@@ -1,15 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { catalog } from "../catalog/plans.js";
-import { createSession } from "./session.js";
-test("comparison keeps the pinned conditions and export contract", () => {
+import { catalog } from "../catalog/plans.ts";
+import { createSession } from "./session.ts";
+test("selection and performance changes preserve the export contract", () => {
   const session = createSession(catalog());
-  session.pin();
-  let baseline = session.baseline;
   session.changePerformance("speed", 2);
   session.select(50);
-  assert.equal(session.baseline, baseline);
-  assert.equal(baseline.cfg.speed, 1.1);
   assert.equal(session.run.cfg.speed, 2);
   assert.equal(session.run.plan.id, 50);
   assert.deepEqual(Object.keys(session.exportResult()), [
