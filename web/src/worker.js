@@ -1,1 +1,0 @@
-import {catalog,simulate} from './engine.js';onmessage=({data})=>{const a=catalog();for(let i=0;i<a.length;i++){let r=simulate(a[i],data.enemy,data.cfg,false);postMessage({id:a[i].id,scores:r.scores,count:i+1,total:a.length});}};
