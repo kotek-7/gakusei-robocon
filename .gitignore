@@ -1,3 +1,10 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# Browser inspection logs and snapshots
+/.playwright-mcp/
+
+# Local UI captures and regenerated browser simulation results
+/results/*.png
+/results/web-cad/
