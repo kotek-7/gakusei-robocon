@@ -19,7 +19,7 @@ STRATA <small>ABU ROBOCON 2027</small>
 ${catalogMarkup(count)}
 <section class="center">
 <div class="viewportbar">
-<span><b id="replay-plan-title">シミュレーション</b>
+<span><b>3D ビュー</b>
 <small>提供CAD</small>
 </span>
 <div>
@@ -53,7 +53,7 @@ ${playbackMarkup}
 ${inspectorMarkup}
 </main>
 <footer>
-<span>ABU ROBOCON 2027 · 作戦比較</span>
+<span>ABU ROBOCON 2027 · 作戦検討</span>
 <span>SPACE 再生　← → 5秒移動</span>
 </footer>${helpContent}`;
 }

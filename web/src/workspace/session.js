@@ -32,6 +32,11 @@ export function createSession(plans) {
         calculate();
       }
     },
+    selectPlan(plan) {
+      const nextRun = simulate(plan, enemy, cfg);
+      selected = plan;
+      run = nextRun;
+    },
     changePerformance(key, value) {
       if (!["speed", "handling", "success", "seed", "priority"].includes(key))
         throw new TypeError("Unknown performance setting");

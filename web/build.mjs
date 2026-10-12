@@ -4,6 +4,7 @@ await mkdir("dist", { recursive: true });
 await build({
   entryPoints: {
     app: "src/app.js",
+    "catalog-worker": "src/catalog/worker.js",
     worker: "src/exploration/worker.js",
     style: "src/style.css",
   },

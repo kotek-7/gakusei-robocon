@@ -7,7 +7,6 @@ export function createReplayPanel(
   q("#reset").onclick = onReset;
   q("#seek").oninput = (e) => onSeek(+e.target.value);
   q("#speed").onchange = (e) => onSpeed(parseFloat(e.target.value));
-  q("#pin").onclick = onPin;
   for (const id of ["events", "lanes"])
     q("#" + id).onclick = (e) => {
       const button = e.target.closest("[data-time]");
@@ -87,15 +86,7 @@ export function createReplayPanel(
           )
           .join("") ||
         '<p class="empty">この時刻までのイベントはありません。</p>';
-      q("#pin").textContent = baseline
-        ? `作戦 ${baseline.plan.id} が比較基準`
-        : "比較の基準にする";
-      const difference = baseline
-        ? frame.scores[0] - baseline.frames[Math.floor(time * 2)].scores[0]
-        : 0;
-      q("#delta").textContent = baseline
-        ? `赤の得点差 ${difference >= 0 ? "+" : ""}${difference}点`
-        : "";
+
     },
   };
 }
@@ -112,7 +103,7 @@ export const playbackMarkup = `<div class="playbar">
 <span id="timecode">000.0 / 180.0 s</span>
 <div class="spacer">
 </div>
-<button id="pin">比較の基準にする</button>
+
 <span id="delta">
 </span>
 </div>

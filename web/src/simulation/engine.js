@@ -39,6 +39,22 @@ export function simulate(plan, enemy, settings = {}, record = true) {
       typeof p.mission !== "boolean"
     )
       throw new TypeError("Invalid plan");
+  for (const p of [plan, enemy]) {
+    if (
+      p.allowedZones &&
+      (!Array.isArray(p.allowedZones) ||
+        !p.allowedZones.length ||
+        p.allowedZones.some((z) => !["P", "S", "U"].includes(z)) ||
+        p.zones.some((z) => !p.allowedZones.includes(z)) ||
+        (p.mission && !p.allowedZones.includes("U")))
+    )
+      throw new TypeError("Invalid activity area");
+    if (
+      p.access &&
+      [p.access.BR, p.access.TR].some((a) => !["stairs", "ramp"].includes(a))
+    )
+      throw new TypeError("Invalid access route");
+  }
   let seed = cfg.seed;
   const rand = () => {
     seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
@@ -70,6 +86,9 @@ export function simulate(plan, enemy, settings = {}, record = true) {
       id: `${team ? "B" : "R"}-${role}`,
       team,
       role,
+      access:
+        (team === 0 ? plan : enemy).access?.[role] ??
+        (role === "TR" ? "ramp" : "stairs"),
       p: startPosition(team, role),
       from: [],
       to: [],
@@ -128,7 +147,13 @@ export function simulate(plan, enemy, settings = {}, record = true) {
       t = teams[i],
       p = plans[i];
     if (r.role === "BR" && r.p[1] < 0.1) {
-      task(r, "return", buffer(i, r.role), {}, "階段を登る");
+      task(
+        r,
+        "return",
+        buffer(i, r.role),
+        {},
+        r.access === "ramp" ? "スロープを登る" : "階段を登る",
+      );
       return;
     }
     if (r.role === "TR") {
@@ -162,13 +187,22 @@ export function simulate(plan, enemy, settings = {}, record = true) {
     if (p.mission && t.mustika && t.mandate) {
       t.mustika = false;
       r.carry = ["M"];
-      task(r, "placeM", [side(i) * 0.55, 0.9, 0], {}, "中央柱にムスティカを設置");
+      task(
+        r,
+        "placeM",
+        [side(i) * 0.55, 0.9, 0],
+        {},
+        "中央柱にムスティカを設置",
+      );
       return;
     }
     const proximity = (w) =>
       spotApproach(w.id, i).reduce((sum, v, k) => sum + (v - r.p[k]) ** 2, 0);
     const allowed = towers.filter(
-        (w2) => (w2.private < 0 || w2.private === i) && !locked(w2.id),
+        (w2) =>
+          (w2.private < 0 || w2.private === i) &&
+          (!p.allowedZones || p.allowedZones.includes(w2.zone)) &&
+          !locked(w2.id),
       ),
       hasFlips =
         p.mode === "flip" ||
@@ -214,7 +248,13 @@ export function simulate(plan, enemy, settings = {}, record = true) {
     } else {
       t.bufferS--;
       r.carry = ["S"];
-      task(r, "sky", spotApproach(w.id, i), { spot: w.id }, "上段ブロックを積む");
+      task(
+        r,
+        "sky",
+        spotApproach(w.id, i),
+        { spot: w.id },
+        "上段ブロックを積む",
+      );
     }
   }
   function finish(r) {
@@ -405,7 +445,7 @@ export function simulate(plan, enemy, settings = {}, record = true) {
       break;
     }
   return {
-    modelVersion: "cad-corridor-2",
+    modelVersion: "cad-corridor-4-capabilities",
     plan,
     enemy,
     cfg,

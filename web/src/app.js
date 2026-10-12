@@ -4,10 +4,6 @@ import { createConditionsPanel } from "./conditions/panel.js";
 import { createScene } from "./viewport/scene.js";
 import { createPlayback, frameAt } from "./replay/playback.js";
 import { createReplayPanel } from "./replay/panel.js";
-import {
-  createExploration,
-  renderExploration,
-} from "./exploration/controller.js";
 import { mountLayout } from "./workspace/layout.js";
 import { createSession } from "./workspace/session.js";
 import { downloadResult } from "./workspace/export.js";
@@ -28,21 +24,17 @@ try {
   root.querySelector("#viewport").append(note);
   scene = { update() {}, view() {}, dispose() {} };
 }
-const catalogPanel = createCatalogPanel(root, plans, (id) => {
-  session.select(id);
-  playback.seek(0);
-  if (!playback.playing) playback.toggle();
+const catalogPanel = createCatalogPanel(root, plans, (plan) => {
+  session.selectPlan(plan);
   refreshRun();
 });
 const conditions = createConditionsPanel(root, {
   onPerformance(key, value) {
     session.changePerformance(key, value);
-    exploration.invalidate();
     refreshRun();
   },
   onOpponent(key) {
     session.changeOpponent(key);
-    exploration.invalidate();
     refreshRun();
   },
 });
@@ -67,14 +59,6 @@ const replay = createReplayPanel(root, {
     draw();
   },
 });
-const exploration = createExploration({
-  createWorker: () => new Worker("/worker.js", { type: "module" }),
-  onChange(state) {
-    renderExploration(root, state, plans.length);
-    if (state.results.size % 20 === 0 || state.status !== "running")
-      catalogPanel.update(session.run.plan.id, state.results);
-  },
-});
 function draw() {
   const frame = frameAt(session.run, playback.time);
   scene.update(frame);
@@ -87,16 +71,16 @@ function draw() {
   );
 }
 function refreshRun() {
-  root.querySelector("#replay-plan-title").textContent = `作戦 #${session.run.plan.id} のシミュレーション`;
   conditions.update(session.run);
   replay.setRun(session.run);
-  catalogPanel.update(session.run.plan.id, exploration.results);
+  catalogPanel.update(session.run);
   draw();
 }
-root.querySelector("#explore").onclick = () =>
-  exploration.toggle(session.run.enemy, session.run.cfg);
 root.querySelector("#export").onclick = () =>
-  downloadResult({ ...session.exportResult(), catalogAnalysis: catalogPanel.exportAnalysis() });
+  downloadResult({
+    ...session.exportResult(),
+    catalogAnalysis: catalogPanel.exportAnalysis(),
+  });
 root.querySelector("#help").onclick = () =>
   root.querySelector("#modal").showModal();
 root.querySelector("#close").onclick = () =>
@@ -124,13 +108,12 @@ function tick(now) {
   previous = now;
   animation = requestAnimationFrame(tick);
 }
-exploration.invalidate();
 refreshRun();
 animation = requestAnimationFrame(tick);
 window.addEventListener("pagehide", (event) => {
   if (event.persisted) return;
   cancelAnimationFrame(animation);
-  exploration.dispose();
+  catalogPanel.dispose();
   replay.dispose();
   scene.dispose();
 });

@@ -10,7 +10,7 @@ import {
 } from "./field.js";
 const distance = (a, b) => Math.hypot(...a.map((v, i) => v - b[i]));
 // Role-specific corridor graph. Stair edges are kinematic abstractions, not wheel dynamics.
-function network(team, role) {
+function network(team, role, access) {
   const s = side(team),
     nodes = [],
     edges = [];
@@ -40,6 +40,8 @@ function network(team, role) {
     link(outer[0], add(skyApproach(team)));
     link(outer[3], add(earthApproach(team)));
     link(outer[3], add(mustikaApproach(team)));
+  }
+  if (access === "ramp") {
     const ramp = chain([
       [s * 3.5, 0, -3.15],
       [s * 3.5, 0, -2.694],
@@ -56,19 +58,20 @@ function network(team, role) {
       [s * 3.5, 0.3, 2.25],
       [s * 3.5, 0.45, 1.95],
       transfer(team),
-      builderTransfer(team),
-      [s * 2.1, 0.6, 1.3],
-      [s * 2.1, 0.6, 0],
     ]);
     link(outer[1], stair[0]);
     t = stair[5];
+  }
+  if (role === "BR") {
+    const platform = chain([builderTransfer(team), [s * 2.1, 0.6, 1.3], [s * 2.1, 0.6, 0]]);
+    link(t, platform[0]);
     for (const z of [-1, 1]) {
       const lane = chain([
         [s * 2.1, 0.6, z * 2.05],
         [s * 0.55, 0.6, z * 2.05],
         [s * 0.55, 0.6, z * 2.55],
       ]);
-      link(stair[8], lane[0]);
+      link(platform[2], lane[0]);
       link(lane[0], add([s * 2.15, 0.6, z * 2.55]));
     }
     const upper = chain([
@@ -77,7 +80,7 @@ function network(team, role) {
       [s * 1.15, 0.9, 0],
       [s * 0.65, 0.9, 0],
     ]);
-    link(stair[8], upper[0]);
+    link(platform[2], upper[0]);
     const ring = chain([
       [-0.65, 0.9, -0.65],
       [0.65, 0.9, -0.65],
@@ -100,8 +103,10 @@ function network(team, role) {
 }
 const graphs = new Map();
 export function planMovement(r, to) {
-  const key = `${r.team}/${r.role}`;
-  if (!graphs.has(key)) graphs.set(key, network(r.team, r.role));
+  const access = r.access ?? (r.role === "TR" ? "ramp" : "stairs");
+  if (!["ramp", "stairs"].includes(access)) throw new TypeError("Invalid access route");
+  const key = `${r.team}/${r.role}/${access}`;
+  if (!graphs.has(key)) graphs.set(key, network(r.team, r.role, access));
   const { nodes, edges } = graphs.get(key);
   const nearest = (p) =>
     nodes.reduce(
