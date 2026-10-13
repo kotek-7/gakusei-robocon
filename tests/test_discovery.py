@@ -126,3 +126,18 @@ class DiscoveryTest(unittest.TestCase):
                 for g in p.goals(initial(c, v), 0)
             )
         )
+
+    def test_generated_flip_times_completion_at_match_end(self):
+        c = defaults()
+        c["scenario"] = "endgame"
+        c["teams"][0]["speeds"]["flip"] = [0]
+        result = Planner(c, config_at(c, 0)).simulate()
+        flips = [
+            e
+            for _, _, o in result["history"]
+            for e in o["events"]
+            if e["robot"] == 1 and e["action"]["kind"] == "flip"
+        ]
+        self.assertEqual(
+            [(e["phase"], e["t"]) for e in flips], [("start", 178), ("finish", 180)]
+        )
