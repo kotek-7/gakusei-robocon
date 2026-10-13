@@ -14,7 +14,7 @@ class SearchTest(unittest.TestCase):
         self.tmp = TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.c = defaults()
-        self.c["horizon"] = 1
+        self.c["horizon"] = 5
 
     def test_naive_equivalence(self):
         st = Store.create(self.tmp.name, self.c)

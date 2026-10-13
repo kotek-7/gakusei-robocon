@@ -1,4 +1,3 @@
-import type { Model } from "./types";
 const names: Record<string, string> = {
   move: "移動",
   pick: "取得",
@@ -26,7 +25,7 @@ export function actionName(a: {
     a.dest && "→ " + locationName(a.dest),
     a.spot !== undefined && "建設スポット " + a.spot,
     a.objects && "物体 " + a.objects.join(", "),
-    a.seconds !== undefined && a.seconds + "秒",
+    a.seconds !== undefined && `次の動作完了まで（最長${a.seconds}秒）`,
   ]
     .filter(Boolean)
     .join(" ");
@@ -124,43 +123,11 @@ export const phaseNames: Record<string, string> = {
   blocked: "競合で不成立",
 };
 
-// Display compatibility while a pre-update Python process keeps computing.
-const legacyLabels: Record<string, string> = {
-  Sky反転: "スカイブロックを裏返す",
-  "再把持・再配置": "持ち直す・置き直す",
-  Earth取扱い: "アースブロックを扱う",
-  Sky取扱い: "スカイブロックを扱う",
-  Mustika取扱い: "ムスティカを扱う",
-  直接受渡し: "直接受け渡し",
-  "Earth / Sky混載": "アースブロック・スカイブロックの混載",
-  "反転 秒": "裏返す 秒",
-  "受渡し 秒": "受け渡し 秒",
-  Skyの他地点への移設: "スカイブロックの別スポットへの移設",
-  同一物体の再搬送加点: "同じ競技物体への受け渡し得点の再加算",
-  奉納済みMustikaの取り外し: "設置済みムスティカの取り外し",
-  資格の塔数判定: "ムスティカ取得条件のタワー数判定",
-  "数値は仮定。fast / normal / slow は項目別に独立":
-    "数値は仮定。速い／標準／遅いの3段階は項目ごとに独立",
-};
-export function modelDisplayLabels(model: Model): Model {
-  const text = (value: string) => legacyLabels[value] || value;
-  const entries = (values: Record<string, string>) =>
-    Object.fromEntries(Object.entries(values).map(([k, v]) => [k, text(v)]));
-  return {
-    ...model,
-    caps: entries(model.caps),
-    profiles: entries(model.profiles),
-    rules: Object.fromEntries(
-      Object.entries(model.rules).map(([k, v]) => [
-        k,
-        { ...v, label: text(v.label) },
-      ]),
-    ),
-    scope: model.scope.map(text),
-  };
-}
-
 export function structuralEventName(raw: string) {
   const [robot, phase, kind, dest, spot, objects] = JSON.parse(raw);
-  return `${robotNames[robot]} ${actionName({ kind, dest: dest ?? undefined, spot: spot ?? undefined, objects: objects ?? undefined })} ${phaseNames[phase] || phase}`;
+  const resources: Record<string, string> = { E0: "赤のアースブロック", E1: "青のアースブロック", S: "スカイブロック", M: "ムスティカ" };
+  const counts = new Map<string, number>();
+  for (const object of objects || []) counts.set(object, (counts.get(object) || 0) + 1);
+  const description = [...counts].map(([kind, count]) => `${resources[kind] || kind} ×${count}`).join("、");
+  return `${robotNames[robot]} ${actionName({ kind, dest: dest ?? undefined, spot: spot ?? undefined })} ${description} ${phaseNames[phase] || phase}`;
 }

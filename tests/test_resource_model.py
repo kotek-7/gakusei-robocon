@@ -103,3 +103,29 @@ class ResourceModelTest(unittest.TestCase):
         self.c["version"] = "finite-operations-1"
         with self.assertRaises(ValueError):
             validate(self.c)
+
+    def test_classification_groups_travel_and_object_ids_only(self):
+        import json
+        from explorer.search.evaluation import classification
+
+        def event(kind, objects, dest=None):
+            return json.dumps([0, "start", kind, dest, None, objects])
+
+        a = ((event("move", None, "sky0"),), (event("pick", [40, 41]),))
+        b = ((event("move", None, "south0"),), (event("pick", [42, 43]),))
+        self.assertEqual(classification(a), classification(b))
+        self.assertNotEqual(
+            classification(a), classification(((event("pick", [40]),),))
+        )
+
+    def test_late_movement_removed_but_resource_effects_retained(self):
+        self.s["t"] = 179
+        self.s["robots"][0]["pos"] = "sky0"
+        choices = legal(self.s, 0, self.c, self.v)
+        self.assertFalse(any(a["kind"] in ("move", "retry") for a in choices))
+        self.assertTrue(any(a["kind"] == "pick" for a in choices))
+        self.s["objects"][40]["loc"] = "robot0"
+        self.c["rules"]["retry_payload"] = "return"
+        self.assertTrue(
+            any(a["kind"] == "retry" for a in legal(self.s, 0, self.c, self.v))
+        )

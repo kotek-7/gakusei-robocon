@@ -1,6 +1,5 @@
 import {
   competitionName,
-  modelDisplayLabels,
   ruleAssumption,
   glossary,
   phaseNames,
@@ -74,7 +73,7 @@ export function App() {
   useEffect(() => {
     const c = new AbortController();
     api<Model>("model", undefined, c.signal)
-      .then((data) => setModel(modelDisplayLabels(data)))
+      .then((data) => setModel(data))
       .catch((e) => {
         if (!c.signal.aborted)
           setError(

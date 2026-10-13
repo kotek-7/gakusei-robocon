@@ -10,7 +10,7 @@ import json
 from .store import connect, dumps
 from explorer.model.state import scores, winner
 
-CLASS_VERSION = "events-prefix-3-v1"
+CLASS_VERSION = "resource-prefix-3-v2"
 
 
 def token(event, state, with_time):
@@ -45,8 +45,22 @@ def structural(trace):
 
 
 def classification(sig):
-    # Fixed cut: first three non-wait event batches. Stable across all configs.
-    prefix = sig[:3]
+    # Classification ignores travel details; the underlying traces remain intact.
+    groups = []
+    for group in sig:
+        operations = []
+        for raw in group:
+            event = json.loads(raw)
+            if event[2] in ("move", "retry", "wait", "continue"):
+                continue
+            event[5] = sorted(
+                "E0" if i < 20 else "E1" if i < 40 else "S" if i < 52 else "M"
+                for i in (event[5] or [])
+            )
+            operations.append(dumps(event))
+        if operations:
+            groups.append(tuple(sorted(operations)))
+    prefix = tuple(groups[:3])
     encoded = dumps(prefix)
     return "S-" + sha256(encoded.encode()).hexdigest()[:12], prefix
 

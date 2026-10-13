@@ -169,6 +169,17 @@ def legal(s, r, config, v):
         return [action("continue")]
     choices = []
     for a in concrete_legal(s, r, config, v):
+        held = payload(s, r)
+        returns_payload = a["kind"] == "retry" and any(
+            o["kind"] == "M" or config["rules"]["retry_payload"] == "return"
+            for o in held
+        )
+        if (
+            a["kind"] in ("move", "retry")
+            and duration(a, config, v, r) > config["horizon"] - s["t"]
+            and not returns_payload
+        ):
+            continue
         if a["kind"] == "retry" and a["dest"] == s["robots"][r]["pos"]:
             held = payload(s, r)
             if not held or (

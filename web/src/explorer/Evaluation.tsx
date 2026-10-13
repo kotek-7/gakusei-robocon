@@ -204,8 +204,8 @@ export function Evaluation({
         作戦分類 <small>{e.classification}</small>
       </h3>
       <p>
-        待機以外の動作を同時刻ごとにまとめ、先頭{e.cut}
-        組で固定分割。IDは構造から決まり、条件間で共通です。得点や勝敗で分類していません。
+        取得・受け渡し・建設・反転などの物体操作を同時刻ごとにまとめ、先頭{e.cut}
+        組で固定分割。移動・リトライと物体IDの違いは分類に含めません。詳細な移動や時刻は試合展開に残ります。得点や勝敗で分類していません。
       </p>
       <Classification strategies={result.strategies} onSelect={setFilter} />
       {filter && (
