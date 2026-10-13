@@ -898,8 +898,7 @@ button.primary:hover:not(:disabled) {
   border-bottom: 1px solid var(--line);
   background: var(--surface);
 }
-.progress-heading,
-.discovery-counts {
+.progress-heading {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
@@ -972,4 +971,37 @@ button.primary:hover:not(:disabled) {
 @media (max-width: 760px) {
   .tabs { gap: 0; }
   .tabs button { padding-inline: 10px; font-size: 13px; }
+}
+
+.search-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px 24px;
+  margin: 16px 0;
+  font-variant-numeric: tabular-nums;
+}
+.search-metrics dt { color: var(--muted); font-size: 14px; }
+.search-metrics dd { margin: 4px 0 0; font-size: 18px; font-weight: 650; }
+.search-help { border: 0; padding: 0; margin-top: 16px; color: var(--muted); }
+.search-help > summary { font-size: 14px; margin: 0; padding: 8px 0; }
+.search-help dl { margin: 8px 0; }
+.search-help dl > div { display: grid; grid-template-columns: 8em 1fr; gap: 12px; margin: 8px 0; }
+.search-help dd { margin: 0; max-width: 65ch; }
+.discovery-details > summary { list-style: none; }
+.discovery-details > summary::-webkit-details-marker { display: none; }
+.discovery-details > summary:hover { color: var(--accent); }
+.discovery-details > summary::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
+  align-self: center;
+  margin-right: 4px;
+}
+.discovery-details[open] > summary::after { transform: rotate(225deg); }
+@media (max-width: 760px) {
+  .search-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .search-help dl > div { grid-template-columns: 1fr; gap: 4px; }
 }

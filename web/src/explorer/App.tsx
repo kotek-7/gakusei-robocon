@@ -455,9 +455,8 @@ export function App() {
               <span className="disclosure-hint"><span className="when-closed">開く</span><span className="when-open">閉じる</span></span>
             </summary>
             <div className="exact-search-body">
-              <p>移動・待機を含む双方の行動の組合せを調べます。候補探索より細かい分岐を扱うため、試合全体の探索には大量の計算が必要です。</p>
               <div className="exact-search-controls">
-                <label htmlFor="exact-budget">1回の計算上限（行動の組合せ数）
+                <label htmlFor="exact-budget">1回の計算上限（組）
                   <input id="exact-budget" type="number" value={budget} min={1} max={1000000} step={1}
                     onChange={(e) => setBudget(Number(e.target.value))} aria-describedby="exact-budget-help" />
                 </label>
@@ -466,13 +465,17 @@ export function App() {
                   {search.complete ? "全探索済み" : "全探索を続ける"}
                 </button>
               </div>
-              <p id="exact-budget-help" className="progress-note">1〜1,000,000組。上限に達したら保存して中断します。再実行で続きから計算します。秒数や総候補数の指定ではありません。</p>
-              <div className="discovery-counts">
-                <span>{search.nodes.toLocaleString()}局面 / {search.edges.toLocaleString()}遷移</span>
-                <span>展開済み {search.expanded.toLocaleString()}局面</span>
-                <span>探索完了した構成 {search.completeRuns} / {search.totalRuns}</span>
-              </div>
-              <p className="progress-note">候補探索の終了とは別の判定です。発見済みの局面数から、全探索の進捗率は算出できません。</p>
+              <p id="exact-budget-help" className="progress-note">1〜1,000,000組。上限で自動保存・中断。続きから再開できます。</p>
+              <dl className="search-metrics">
+                <div><dt>局面</dt><dd>{search.nodes.toLocaleString()}</dd></div>
+                <div><dt>遷移</dt><dd>{search.edges.toLocaleString()}</dd></div>
+                <div><dt>展開済み局面</dt><dd>{search.expanded.toLocaleString()}</dd></div>
+                <div><dt>探索済み構成</dt><dd>{search.completeRuns} / {search.totalRuns}</dd></div>
+              </dl>
+              <details className="search-help">
+                <summary>全探索の対象・計算量</summary>
+                <p>移動・待機を含む双方の行動の組合せが対象。候補探索より分岐が多く、完了には大量の計算が必要です。候補探索とは別に完了を判定し、進捗率は未算出です。</p>
+              </details>
             </div>
           </details>}
           {search.error && (
