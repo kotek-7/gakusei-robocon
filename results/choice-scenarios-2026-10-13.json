@@ -1,0 +1,7672 @@
+[
+  {
+    "case": "small",
+    "enabled": true,
+    "wallSeconds": 3.0109921869952814,
+    "id": "56f598f4c4264229b8d5dc28511591b5",
+    "config": {
+      "version": "strategy-choices-4",
+      "name": "選択肢検証・small・True",
+      "scenario": "custom",
+      "horizon": 180,
+      "rules": {
+        "retry_payload": "retain",
+        "br_ramp": false,
+        "sky_relocate": false,
+        "repeat_transfer": false,
+        "placed_mustika": false,
+        "conflict": "branch",
+        "mandate": "simultaneous"
+      },
+      "profiles": {
+        "move": [
+          10,
+          0.5,
+          0.3
+        ],
+        "pick": [
+          1,
+          2,
+          4
+        ],
+        "place": [
+          2,
+          4,
+          7
+        ],
+        "flip": [
+          2,
+          4,
+          8
+        ],
+        "handover": [
+          1,
+          2,
+          4
+        ],
+        "retry": [
+          5,
+          10,
+          15
+        ]
+      },
+      "teams": [
+        {
+          "caps": {
+            "ramp": [
+              true
+            ],
+            "stairs1": [
+              true
+            ],
+            "stairs2": [
+              true
+            ],
+            "flip": [
+              true
+            ],
+            "reposition": [
+              true
+            ],
+            "earth": [
+              true
+            ],
+            "sky": [
+              true
+            ],
+            "mustika": [
+              true
+            ],
+            "direct": [
+              true
+            ],
+            "mixed": [
+              true
+            ],
+            "capacity_tr": [
+              0
+            ],
+            "capacity_br": [
+              2
+            ]
+          },
+          "speeds": {
+            "move": [
+              0
+            ],
+            "pick": [
+              1
+            ],
+            "place": [
+              1
+            ],
+            "flip": [
+              1
+            ],
+            "handover": [
+              1
+            ],
+            "retry": [
+              1
+            ]
+          }
+        },
+        {
+          "caps": {
+            "ramp": [
+              true
+            ],
+            "stairs1": [
+              true
+            ],
+            "stairs2": [
+              true
+            ],
+            "flip": [
+              true
+            ],
+            "reposition": [
+              true
+            ],
+            "earth": [
+              true
+            ],
+            "sky": [
+              true
+            ],
+            "mustika": [
+              true
+            ],
+            "direct": [
+              true
+            ],
+            "mixed": [
+              true
+            ],
+            "capacity_tr": [
+              3
+            ],
+            "capacity_br": [
+              2
+            ]
+          },
+          "speeds": {
+            "move": [
+              1
+            ],
+            "pick": [
+              1
+            ],
+            "place": [
+              1
+            ],
+            "flip": [
+              1
+            ],
+            "handover": [
+              1
+            ],
+            "retry": [
+              1
+            ]
+          }
+        }
+      ],
+      "starts": [
+        0
+      ],
+      "layouts": [
+        "stacked"
+      ],
+      "root": {
+        "t": 170,
+        "robots": [
+          {
+            "pos": "transfer0",
+            "job": null,
+            "entered": true,
+            "waited": false
+          },
+          {
+            "pos": "transfer0",
+            "job": null,
+            "entered": true,
+            "waited": false
+          },
+          {
+            "pos": "startA1",
+            "job": null,
+            "entered": false,
+            "waited": false
+          },
+          {
+            "pos": "startB1",
+            "job": null,
+            "entered": false,
+            "waited": false
+          }
+        ],
+        "objects": [
+          {
+            "id": 0,
+            "kind": "E",
+            "owner": 0,
+            "loc": "buffer0",
+            "slot": 0,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 1,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 0,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 2,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 1,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 3,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 1,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 4,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 2,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 5,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 2,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 6,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 3,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 7,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 3,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 8,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 4,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 9,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 4,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 10,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 5,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 11,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 5,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 12,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 6,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 13,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 6,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 14,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 7,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 15,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 7,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 16,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 8,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 17,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 8,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 18,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 9,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 19,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 9,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 20,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 0,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 21,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 0,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 22,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 1,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 23,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 1,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 24,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 2,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 25,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 2,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 26,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 3,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 27,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 3,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 28,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 4,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 29,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 4,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 30,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 5,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 31,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 5,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 32,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 6,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 33,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 6,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 34,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 7,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 35,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 7,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 36,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 8,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 37,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 8,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 38,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 9,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 39,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 9,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 40,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 0,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 41,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 1,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 42,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 2,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 43,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 3,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 44,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 4,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 45,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 5,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 46,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 6,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 47,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 7,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 48,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 8,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 49,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 9,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 50,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 10,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 51,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 11,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 52,
+            "kind": "M",
+            "owner": -1,
+            "loc": "groundBall",
+            "slot": 0,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          }
+        ],
+        "mandate": [
+          false,
+          false
+        ],
+        "ever": [
+          [],
+          []
+        ],
+        "transfer": [
+          0,
+          0
+        ]
+      }
+    },
+    "candidates": 8,
+    "best": {
+      "baseline": {
+        "blocked": [],
+        "milestones": [
+          [
+            "[1,\"finish\",\"place\",null,6,[\"E0\"]]"
+          ]
+        ],
+        "node": 10,
+        "path": [
+          1,
+          3,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "scores": [
+          20,
+          0
+        ],
+        "strategy": "S-a95aac3c77ac"
+      },
+      "id": "P-e559425b22cf",
+      "pending": 2,
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 6
+        }
+      ],
+      "responses": [
+        {
+          "blocked": [],
+          "kind": "procedure",
+          "milestones": [
+            [
+              "[1,\"finish\",\"place\",null,6,[\"E0\"]]"
+            ]
+          ],
+          "node": 10,
+          "opponent": "O-a632e4faa528",
+          "path": [
+            1,
+            3,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "scores": [
+            20,
+            0
+          ],
+          "shared": true,
+          "strategy": "S-a95aac3c77ac"
+        },
+        {
+          "blocked": [],
+          "kind": "procedure",
+          "milestones": [
+            [
+              "[1,\"finish\",\"place\",null,6,[\"E0\"]]"
+            ]
+          ],
+          "node": 10,
+          "opponent": "O-74de8241a2fe",
+          "path": [
+            1,
+            3,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "scores": [
+            20,
+            0
+          ],
+          "shared": true,
+          "strategy": "S-a95aac3c77ac"
+        }
+      ]
+    },
+    "events": [
+      {
+        "action": {
+          "dest": "north0",
+          "edge": 6,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 171
+      },
+      {
+        "action": {
+          "dest": "store0",
+          "edge": 3,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 172
+      },
+      {
+        "action": {
+          "kind": "pick",
+          "objects": [
+            0
+          ]
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 172
+      },
+      {
+        "action": {
+          "dest": "lane0",
+          "edge": 8,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 173
+      },
+      {
+        "action": {
+          "dest": "middle0",
+          "edge": 9,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 174
+      },
+      {
+        "action": {
+          "dest": "upper0",
+          "edge": 10,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 175
+      },
+      {
+        "action": {
+          "dest": "spot6-0",
+          "edge": 18,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 176
+      },
+      {
+        "action": {
+          "kind": "place",
+          "objects": [
+            0
+          ],
+          "spot": 6
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 180
+      }
+    ]
+  },
+  {
+    "case": "direct",
+    "enabled": false,
+    "wallSeconds": 3.012597435998032,
+    "id": "8a8c9cec55a84cefb87160b2767b8bbb",
+    "config": {
+      "version": "strategy-choices-4",
+      "name": "選択肢検証・direct・False",
+      "scenario": "custom",
+      "horizon": 180,
+      "rules": {
+        "retry_payload": "retain",
+        "br_ramp": false,
+        "sky_relocate": false,
+        "repeat_transfer": false,
+        "placed_mustika": false,
+        "conflict": "branch",
+        "mandate": "simultaneous"
+      },
+      "profiles": {
+        "move": [
+          10,
+          0.5,
+          0.3
+        ],
+        "pick": [
+          1,
+          2,
+          4
+        ],
+        "place": [
+          2,
+          4,
+          7
+        ],
+        "flip": [
+          2,
+          4,
+          8
+        ],
+        "handover": [
+          1,
+          2,
+          4
+        ],
+        "retry": [
+          5,
+          10,
+          15
+        ]
+      },
+      "teams": [
+        {
+          "caps": {
+            "ramp": [
+              true
+            ],
+            "stairs1": [
+              true
+            ],
+            "stairs2": [
+              true
+            ],
+            "flip": [
+              true
+            ],
+            "reposition": [
+              true
+            ],
+            "earth": [
+              true
+            ],
+            "sky": [
+              true
+            ],
+            "mustika": [
+              true
+            ],
+            "direct": [
+              false
+            ],
+            "mixed": [
+              true
+            ],
+            "capacity_tr": [
+              3
+            ],
+            "capacity_br": [
+              2
+            ]
+          },
+          "speeds": {
+            "move": [
+              0
+            ],
+            "pick": [
+              1
+            ],
+            "place": [
+              1
+            ],
+            "flip": [
+              1
+            ],
+            "handover": [
+              1
+            ],
+            "retry": [
+              1
+            ]
+          }
+        },
+        {
+          "caps": {
+            "ramp": [
+              true
+            ],
+            "stairs1": [
+              true
+            ],
+            "stairs2": [
+              true
+            ],
+            "flip": [
+              true
+            ],
+            "reposition": [
+              true
+            ],
+            "earth": [
+              true
+            ],
+            "sky": [
+              true
+            ],
+            "mustika": [
+              true
+            ],
+            "direct": [
+              true
+            ],
+            "mixed": [
+              true
+            ],
+            "capacity_tr": [
+              3
+            ],
+            "capacity_br": [
+              2
+            ]
+          },
+          "speeds": {
+            "move": [
+              1
+            ],
+            "pick": [
+              1
+            ],
+            "place": [
+              1
+            ],
+            "flip": [
+              1
+            ],
+            "handover": [
+              1
+            ],
+            "retry": [
+              1
+            ]
+          }
+        }
+      ],
+      "starts": [
+        0
+      ],
+      "layouts": [
+        "stacked"
+      ],
+      "root": {
+        "t": 170,
+        "robots": [
+          {
+            "pos": "transfer0",
+            "job": null,
+            "entered": true,
+            "waited": false
+          },
+          {
+            "pos": "transfer0",
+            "job": null,
+            "entered": true,
+            "waited": false
+          },
+          {
+            "pos": "startA1",
+            "job": null,
+            "entered": false,
+            "waited": false
+          },
+          {
+            "pos": "startB1",
+            "job": null,
+            "entered": false,
+            "waited": false
+          }
+        ],
+        "objects": [
+          {
+            "id": 0,
+            "kind": "E",
+            "owner": 0,
+            "loc": "tower1",
+            "slot": 0,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 1,
+            "kind": "E",
+            "owner": 0,
+            "loc": "robot0",
+            "slot": 0,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 2,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 1,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 3,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 1,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 4,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 2,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 5,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 2,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 6,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 3,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 7,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 3,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 8,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 4,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 9,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 4,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 10,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 5,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 11,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 5,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 12,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 6,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 13,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 6,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 14,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 7,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 15,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 7,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 16,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 8,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 17,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 8,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 18,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 9,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 19,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 9,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 20,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 0,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 21,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 0,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 22,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 1,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 23,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 1,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 24,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 2,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 25,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 2,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 26,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 3,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 27,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 3,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 28,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 4,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 29,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 4,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 30,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 5,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 31,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 5,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 32,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 6,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 33,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 6,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 34,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 7,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 35,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 7,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 36,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 8,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 37,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 8,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 38,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 9,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 39,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 9,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 40,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 0,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 41,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 1,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 42,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 2,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 43,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 3,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 44,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 4,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 45,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 5,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 46,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 6,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 47,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 7,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 48,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 8,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 49,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 9,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 50,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 10,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 51,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 11,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 52,
+            "kind": "M",
+            "owner": -1,
+            "loc": "groundBall",
+            "slot": 0,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          }
+        ],
+        "mandate": [
+          false,
+          false
+        ],
+        "ever": [
+          [],
+          []
+        ],
+        "transfer": [
+          0,
+          0
+        ]
+      }
+    },
+    "candidates": 3,
+    "best": {
+      "baseline": {
+        "blocked": [],
+        "milestones": [],
+        "node": 10,
+        "path": [
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "scores": [
+          20,
+          0
+        ],
+        "strategy": "S-4f53cda18c2b"
+      },
+      "id": "P-8dfe06f3d1d0",
+      "pending": 1,
+      "plan": [],
+      "responses": [
+        {
+          "blocked": [],
+          "kind": "procedure",
+          "milestones": [],
+          "node": 10,
+          "opponent": "O-7bae81d11157",
+          "path": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9
+          ],
+          "scores": [
+            20,
+            0
+          ],
+          "shared": true,
+          "strategy": "S-4f53cda18c2b"
+        }
+      ]
+    },
+    "events": [
+      {
+        "action": {
+          "kind": "drop",
+          "objects": [
+            1
+          ]
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 172
+      },
+      {
+        "action": {
+          "dest": "south0",
+          "edge": 7,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 173
+      },
+      {
+        "action": {
+          "dest": "sky0",
+          "edge": 4,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 174
+      },
+      {
+        "action": {
+          "kind": "pick",
+          "objects": [
+            1
+          ]
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 174
+      },
+      {
+        "action": {
+          "dest": "lane0",
+          "edge": 8,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 175
+      },
+      {
+        "action": {
+          "kind": "pick",
+          "objects": [
+            40
+          ]
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 176
+      },
+      {
+        "action": {
+          "dest": "middle0",
+          "edge": 9,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 176
+      },
+      {
+        "action": {
+          "dest": "south0",
+          "edge": 4,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 177
+      },
+      {
+        "action": {
+          "dest": "lane1-0",
+          "edge": 14,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 177
+      },
+      {
+        "action": {
+          "dest": "transfer0",
+          "edge": 7,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 178
+      },
+      {
+        "action": {
+          "dest": "spot1-0",
+          "edge": 15,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 178
+      },
+      {
+        "action": {
+          "kind": "drop",
+          "objects": [
+            40
+          ]
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 180
+      }
+    ]
+  },
+  {
+    "case": "direct",
+    "enabled": true,
+    "wallSeconds": 3.005161982997379,
+    "id": "8db9f2b6f6c94febbba4bde2df570e34",
+    "config": {
+      "version": "strategy-choices-4",
+      "name": "選択肢検証・direct・True",
+      "scenario": "custom",
+      "horizon": 180,
+      "rules": {
+        "retry_payload": "retain",
+        "br_ramp": false,
+        "sky_relocate": false,
+        "repeat_transfer": false,
+        "placed_mustika": false,
+        "conflict": "branch",
+        "mandate": "simultaneous"
+      },
+      "profiles": {
+        "move": [
+          10,
+          0.5,
+          0.3
+        ],
+        "pick": [
+          1,
+          2,
+          4
+        ],
+        "place": [
+          2,
+          4,
+          7
+        ],
+        "flip": [
+          2,
+          4,
+          8
+        ],
+        "handover": [
+          1,
+          2,
+          4
+        ],
+        "retry": [
+          5,
+          10,
+          15
+        ]
+      },
+      "teams": [
+        {
+          "caps": {
+            "ramp": [
+              true
+            ],
+            "stairs1": [
+              true
+            ],
+            "stairs2": [
+              true
+            ],
+            "flip": [
+              true
+            ],
+            "reposition": [
+              true
+            ],
+            "earth": [
+              true
+            ],
+            "sky": [
+              true
+            ],
+            "mustika": [
+              true
+            ],
+            "direct": [
+              true
+            ],
+            "mixed": [
+              true
+            ],
+            "capacity_tr": [
+              3
+            ],
+            "capacity_br": [
+              2
+            ]
+          },
+          "speeds": {
+            "move": [
+              0
+            ],
+            "pick": [
+              1
+            ],
+            "place": [
+              1
+            ],
+            "flip": [
+              1
+            ],
+            "handover": [
+              1
+            ],
+            "retry": [
+              1
+            ]
+          }
+        },
+        {
+          "caps": {
+            "ramp": [
+              true
+            ],
+            "stairs1": [
+              true
+            ],
+            "stairs2": [
+              true
+            ],
+            "flip": [
+              true
+            ],
+            "reposition": [
+              true
+            ],
+            "earth": [
+              true
+            ],
+            "sky": [
+              true
+            ],
+            "mustika": [
+              true
+            ],
+            "direct": [
+              true
+            ],
+            "mixed": [
+              true
+            ],
+            "capacity_tr": [
+              3
+            ],
+            "capacity_br": [
+              2
+            ]
+          },
+          "speeds": {
+            "move": [
+              1
+            ],
+            "pick": [
+              1
+            ],
+            "place": [
+              1
+            ],
+            "flip": [
+              1
+            ],
+            "handover": [
+              1
+            ],
+            "retry": [
+              1
+            ]
+          }
+        }
+      ],
+      "starts": [
+        0
+      ],
+      "layouts": [
+        "stacked"
+      ],
+      "root": {
+        "t": 170,
+        "robots": [
+          {
+            "pos": "transfer0",
+            "job": null,
+            "entered": true,
+            "waited": false
+          },
+          {
+            "pos": "transfer0",
+            "job": null,
+            "entered": true,
+            "waited": false
+          },
+          {
+            "pos": "startA1",
+            "job": null,
+            "entered": false,
+            "waited": false
+          },
+          {
+            "pos": "startB1",
+            "job": null,
+            "entered": false,
+            "waited": false
+          }
+        ],
+        "objects": [
+          {
+            "id": 0,
+            "kind": "E",
+            "owner": 0,
+            "loc": "tower1",
+            "slot": 0,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 1,
+            "kind": "E",
+            "owner": 0,
+            "loc": "robot0",
+            "slot": 0,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 2,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 1,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 3,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 1,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 4,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 2,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 5,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 2,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 6,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 3,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 7,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 3,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 8,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 4,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 9,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 4,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 10,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 5,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 11,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 5,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 12,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 6,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 13,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 6,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 14,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 7,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 15,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 7,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 16,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 8,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 17,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 8,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 18,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 9,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 19,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 9,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 20,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 0,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 21,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 0,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 22,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 1,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 23,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 1,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 24,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 2,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 25,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 2,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 26,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 3,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 27,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 3,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 28,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 4,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 29,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 4,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 30,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 5,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 31,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 5,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 32,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 6,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 33,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 6,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 34,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 7,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 35,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 7,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 36,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 8,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 37,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 8,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 38,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 9,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 39,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 9,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 40,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 0,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 41,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 1,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 42,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 2,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 43,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 3,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 44,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 4,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 45,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 5,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 46,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 6,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 47,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 7,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 48,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 8,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 49,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 9,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 50,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 10,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 51,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 11,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 52,
+            "kind": "M",
+            "owner": -1,
+            "loc": "groundBall",
+            "slot": 0,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          }
+        ],
+        "mandate": [
+          false,
+          false
+        ],
+        "ever": [
+          [],
+          []
+        ],
+        "transfer": [
+          0,
+          0
+        ]
+      }
+    },
+    "candidates": 3,
+    "best": {
+      "baseline": {
+        "blocked": [],
+        "milestones": [
+          [
+            "[1,\"finish\",\"place\",null,1,[\"E0\"]]"
+          ]
+        ],
+        "node": 9,
+        "path": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "scores": [
+          40,
+          0
+        ],
+        "strategy": "S-245165763e60"
+      },
+      "id": "P-cfea366d97ca",
+      "pending": 0,
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 1
+        }
+      ],
+      "responses": [
+        {
+          "blocked": [],
+          "kind": "procedure",
+          "milestones": [
+            [
+              "[1,\"finish\",\"place\",null,1,[\"E0\"]]"
+            ]
+          ],
+          "node": 9,
+          "opponent": "O-7bae81d11157",
+          "path": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "scores": [
+            40,
+            0
+          ],
+          "shared": true,
+          "strategy": "S-245165763e60"
+        }
+      ]
+    },
+    "events": [
+      {
+        "action": {
+          "kind": "give",
+          "objects": [
+            1
+          ],
+          "partner": 1
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 172
+      },
+      {
+        "action": {
+          "kind": "receive",
+          "objects": [
+            1
+          ],
+          "partner": 0
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 172
+      },
+      {
+        "action": {
+          "dest": "south0",
+          "edge": 7,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 173
+      },
+      {
+        "action": {
+          "dest": "lane0",
+          "edge": 8,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 173
+      },
+      {
+        "action": {
+          "dest": "sky0",
+          "edge": 4,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 174
+      },
+      {
+        "action": {
+          "dest": "middle0",
+          "edge": 9,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 174
+      },
+      {
+        "action": {
+          "dest": "lane1-0",
+          "edge": 14,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 175
+      },
+      {
+        "action": {
+          "kind": "pick",
+          "objects": [
+            40
+          ]
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 176
+      },
+      {
+        "action": {
+          "dest": "spot1-0",
+          "edge": 15,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 176
+      },
+      {
+        "action": {
+          "dest": "south0",
+          "edge": 4,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 177
+      },
+      {
+        "action": {
+          "dest": "transfer0",
+          "edge": 7,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 178
+      },
+      {
+        "action": {
+          "kind": "drop",
+          "objects": [
+            40
+          ]
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 180
+      },
+      {
+        "action": {
+          "kind": "place",
+          "objects": [
+            1
+          ],
+          "spot": 1
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 180
+      }
+    ]
+  },
+  {
+    "case": "mixed",
+    "enabled": false,
+    "wallSeconds": 3.00576619200001,
+    "id": "d6bb73e10a294323bf1f17010b9b5311",
+    "config": {
+      "version": "strategy-choices-4",
+      "name": "選択肢検証・mixed・False",
+      "scenario": "custom",
+      "horizon": 180,
+      "rules": {
+        "retry_payload": "retain",
+        "br_ramp": false,
+        "sky_relocate": false,
+        "repeat_transfer": false,
+        "placed_mustika": false,
+        "conflict": "branch",
+        "mandate": "simultaneous"
+      },
+      "profiles": {
+        "move": [
+          10,
+          0.5,
+          0.3
+        ],
+        "pick": [
+          1,
+          2,
+          4
+        ],
+        "place": [
+          2,
+          4,
+          7
+        ],
+        "flip": [
+          2,
+          4,
+          8
+        ],
+        "handover": [
+          1,
+          2,
+          4
+        ],
+        "retry": [
+          5,
+          10,
+          15
+        ]
+      },
+      "teams": [
+        {
+          "caps": {
+            "ramp": [
+              true
+            ],
+            "stairs1": [
+              true
+            ],
+            "stairs2": [
+              true
+            ],
+            "flip": [
+              true
+            ],
+            "reposition": [
+              true
+            ],
+            "earth": [
+              true
+            ],
+            "sky": [
+              true
+            ],
+            "mustika": [
+              true
+            ],
+            "direct": [
+              true
+            ],
+            "mixed": [
+              false
+            ],
+            "capacity_tr": [
+              0
+            ],
+            "capacity_br": [
+              2
+            ]
+          },
+          "speeds": {
+            "move": [
+              0
+            ],
+            "pick": [
+              1
+            ],
+            "place": [
+              1
+            ],
+            "flip": [
+              1
+            ],
+            "handover": [
+              1
+            ],
+            "retry": [
+              1
+            ]
+          }
+        },
+        {
+          "caps": {
+            "ramp": [
+              true
+            ],
+            "stairs1": [
+              true
+            ],
+            "stairs2": [
+              true
+            ],
+            "flip": [
+              true
+            ],
+            "reposition": [
+              true
+            ],
+            "earth": [
+              true
+            ],
+            "sky": [
+              true
+            ],
+            "mustika": [
+              true
+            ],
+            "direct": [
+              true
+            ],
+            "mixed": [
+              true
+            ],
+            "capacity_tr": [
+              3
+            ],
+            "capacity_br": [
+              2
+            ]
+          },
+          "speeds": {
+            "move": [
+              1
+            ],
+            "pick": [
+              1
+            ],
+            "place": [
+              1
+            ],
+            "flip": [
+              1
+            ],
+            "handover": [
+              1
+            ],
+            "retry": [
+              1
+            ]
+          }
+        }
+      ],
+      "starts": [
+        0
+      ],
+      "layouts": [
+        "stacked"
+      ],
+      "root": {
+        "t": 164,
+        "robots": [
+          {
+            "pos": "transfer0",
+            "job": null,
+            "entered": true,
+            "waited": false
+          },
+          {
+            "pos": "transfer0",
+            "job": null,
+            "entered": true,
+            "waited": false
+          },
+          {
+            "pos": "startA1",
+            "job": null,
+            "entered": false,
+            "waited": false
+          },
+          {
+            "pos": "startB1",
+            "job": null,
+            "entered": false,
+            "waited": false
+          }
+        ],
+        "objects": [
+          {
+            "id": 0,
+            "kind": "E",
+            "owner": 0,
+            "loc": "tower1",
+            "slot": 0,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 1,
+            "kind": "E",
+            "owner": 0,
+            "loc": "buffer0",
+            "slot": 0,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 2,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 1,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 3,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 1,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 4,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 2,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 5,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 2,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 6,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 3,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 7,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 3,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 8,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 4,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 9,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 4,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 10,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 5,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 11,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 5,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 12,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 6,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 13,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 6,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 14,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 7,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 15,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 7,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 16,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 8,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 17,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 8,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 18,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 9,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 19,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 9,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 20,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 0,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 21,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 0,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 22,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 1,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 23,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 1,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 24,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 2,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 25,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 2,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 26,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 3,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 27,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 3,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 28,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 4,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 29,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 4,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 30,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 5,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 31,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 5,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 32,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 6,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 33,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 6,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 34,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 7,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 35,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 7,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 36,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 8,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 37,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 8,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 38,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 9,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 39,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 9,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 40,
+            "kind": "S",
+            "owner": -1,
+            "loc": "buffer0",
+            "slot": 0,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 41,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 1,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 42,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 2,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 43,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 3,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 44,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 4,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 45,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 5,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 46,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 6,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 47,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 7,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 48,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 8,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 49,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 9,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 50,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 10,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 51,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 11,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 52,
+            "kind": "M",
+            "owner": -1,
+            "loc": "groundBall",
+            "slot": 0,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          }
+        ],
+        "mandate": [
+          false,
+          false
+        ],
+        "ever": [
+          [],
+          []
+        ],
+        "transfer": [
+          0,
+          0
+        ]
+      }
+    },
+    "candidates": 4,
+    "best": {
+      "baseline": {
+        "blocked": [],
+        "milestones": [
+          [
+            "[1,\"finish\",\"place\",null,1,[\"E0\"]]"
+          ]
+        ],
+        "node": 14,
+        "path": [
+          1,
+          3,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "scores": [
+          30,
+          0
+        ],
+        "strategy": "S-245165763e60"
+      },
+      "id": "P-c99a2957a327",
+      "pending": 3,
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 1
+        }
+      ],
+      "responses": [
+        {
+          "blocked": [],
+          "kind": "procedure",
+          "milestones": [
+            [
+              "[1,\"finish\",\"place\",null,1,[\"E0\"]]"
+            ]
+          ],
+          "node": 57,
+          "opponent": "O-f8663bc6fcc9",
+          "path": [
+            15,
+            18,
+            24,
+            28,
+            34,
+            37,
+            42,
+            48,
+            51,
+            53,
+            56
+          ],
+          "scores": [
+            30,
+            0
+          ],
+          "shared": true,
+          "strategy": "S-245165763e60"
+        }
+      ]
+    },
+    "events": [
+      {
+        "action": {
+          "kind": "pick",
+          "objects": [
+            1
+          ]
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 166
+      },
+      {
+        "action": {
+          "dest": "lane0",
+          "edge": 8,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 167
+      },
+      {
+        "action": {
+          "dest": "middle0",
+          "edge": 9,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 168
+      },
+      {
+        "action": {
+          "dest": "lane1-0",
+          "edge": 14,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 169
+      },
+      {
+        "action": {
+          "dest": "spot1-0",
+          "edge": 15,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 170
+      },
+      {
+        "action": {
+          "kind": "place",
+          "objects": [
+            1
+          ],
+          "spot": 1
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 174
+      },
+      {
+        "action": {
+          "dest": "lane1-0",
+          "edge": 15,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 175
+      },
+      {
+        "action": {
+          "dest": "middle0",
+          "edge": 14,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 176
+      },
+      {
+        "action": {
+          "dest": "lane0",
+          "edge": 9,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 177
+      },
+      {
+        "action": {
+          "dest": "transfer0",
+          "edge": 8,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 178
+      },
+      {
+        "action": {
+          "kind": "pick",
+          "objects": [
+            40
+          ]
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 180
+      }
+    ]
+  },
+  {
+    "case": "mixed",
+    "enabled": true,
+    "wallSeconds": 3.006385427994246,
+    "id": "67fd63449b824cc48204f7f434d03257",
+    "config": {
+      "version": "strategy-choices-4",
+      "name": "選択肢検証・mixed・True",
+      "scenario": "custom",
+      "horizon": 180,
+      "rules": {
+        "retry_payload": "retain",
+        "br_ramp": false,
+        "sky_relocate": false,
+        "repeat_transfer": false,
+        "placed_mustika": false,
+        "conflict": "branch",
+        "mandate": "simultaneous"
+      },
+      "profiles": {
+        "move": [
+          10,
+          0.5,
+          0.3
+        ],
+        "pick": [
+          1,
+          2,
+          4
+        ],
+        "place": [
+          2,
+          4,
+          7
+        ],
+        "flip": [
+          2,
+          4,
+          8
+        ],
+        "handover": [
+          1,
+          2,
+          4
+        ],
+        "retry": [
+          5,
+          10,
+          15
+        ]
+      },
+      "teams": [
+        {
+          "caps": {
+            "ramp": [
+              true
+            ],
+            "stairs1": [
+              true
+            ],
+            "stairs2": [
+              true
+            ],
+            "flip": [
+              true
+            ],
+            "reposition": [
+              true
+            ],
+            "earth": [
+              true
+            ],
+            "sky": [
+              true
+            ],
+            "mustika": [
+              true
+            ],
+            "direct": [
+              true
+            ],
+            "mixed": [
+              true
+            ],
+            "capacity_tr": [
+              0
+            ],
+            "capacity_br": [
+              2
+            ]
+          },
+          "speeds": {
+            "move": [
+              0
+            ],
+            "pick": [
+              1
+            ],
+            "place": [
+              1
+            ],
+            "flip": [
+              1
+            ],
+            "handover": [
+              1
+            ],
+            "retry": [
+              1
+            ]
+          }
+        },
+        {
+          "caps": {
+            "ramp": [
+              true
+            ],
+            "stairs1": [
+              true
+            ],
+            "stairs2": [
+              true
+            ],
+            "flip": [
+              true
+            ],
+            "reposition": [
+              true
+            ],
+            "earth": [
+              true
+            ],
+            "sky": [
+              true
+            ],
+            "mustika": [
+              true
+            ],
+            "direct": [
+              true
+            ],
+            "mixed": [
+              true
+            ],
+            "capacity_tr": [
+              3
+            ],
+            "capacity_br": [
+              2
+            ]
+          },
+          "speeds": {
+            "move": [
+              1
+            ],
+            "pick": [
+              1
+            ],
+            "place": [
+              1
+            ],
+            "flip": [
+              1
+            ],
+            "handover": [
+              1
+            ],
+            "retry": [
+              1
+            ]
+          }
+        }
+      ],
+      "starts": [
+        0
+      ],
+      "layouts": [
+        "stacked"
+      ],
+      "root": {
+        "t": 164,
+        "robots": [
+          {
+            "pos": "transfer0",
+            "job": null,
+            "entered": true,
+            "waited": false
+          },
+          {
+            "pos": "transfer0",
+            "job": null,
+            "entered": true,
+            "waited": false
+          },
+          {
+            "pos": "startA1",
+            "job": null,
+            "entered": false,
+            "waited": false
+          },
+          {
+            "pos": "startB1",
+            "job": null,
+            "entered": false,
+            "waited": false
+          }
+        ],
+        "objects": [
+          {
+            "id": 0,
+            "kind": "E",
+            "owner": 0,
+            "loc": "tower1",
+            "slot": 0,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 1,
+            "kind": "E",
+            "owner": 0,
+            "loc": "buffer0",
+            "slot": 0,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 2,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 1,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 3,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 1,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 4,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 2,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 5,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 2,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 6,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 3,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 7,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 3,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 8,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 4,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 9,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 4,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 10,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 5,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 11,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 5,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 12,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 6,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 13,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 6,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 14,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 7,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 15,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 7,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 16,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 8,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 17,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 8,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 18,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 9,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 19,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 9,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 20,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 0,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 21,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 0,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 22,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 1,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 23,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 1,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 24,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 2,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 25,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 2,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 26,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 3,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 27,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 3,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 28,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 4,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 29,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 4,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 30,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 5,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 31,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 5,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 32,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 6,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 33,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 6,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 34,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 7,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 35,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 7,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 36,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 8,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 37,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 8,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 38,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 9,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 39,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 9,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 40,
+            "kind": "S",
+            "owner": -1,
+            "loc": "buffer0",
+            "slot": 0,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 41,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 1,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 42,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 2,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 43,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 3,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 44,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 4,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 45,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 5,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 46,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 6,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 47,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 7,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 48,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 8,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 49,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 9,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 50,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 10,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 51,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 11,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 52,
+            "kind": "M",
+            "owner": -1,
+            "loc": "groundBall",
+            "slot": 0,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          }
+        ],
+        "mandate": [
+          false,
+          false
+        ],
+        "ever": [
+          [],
+          []
+        ],
+        "transfer": [
+          0,
+          0
+        ]
+      }
+    },
+    "candidates": 4,
+    "best": {
+      "baseline": {
+        "blocked": [],
+        "milestones": [
+          [
+            "[1,\"finish\",\"place\",null,1,[\"E0\"]]"
+          ],
+          [
+            "[1,\"finish\",\"place\",null,1,[\"S\"]]"
+          ]
+        ],
+        "node": 13,
+        "path": [
+          1,
+          3,
+          5,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "scores": [
+          70,
+          0
+        ],
+        "strategy": "S-a5eb2090d252"
+      },
+      "id": "P-d9144a5d3922",
+      "pending": 1,
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 1
+        }
+      ],
+      "responses": [
+        {
+          "blocked": [],
+          "kind": "procedure",
+          "milestones": [
+            [
+              "[1,\"finish\",\"place\",null,1,[\"E0\"]]"
+            ],
+            [
+              "[1,\"finish\",\"place\",null,1,[\"S\"]]"
+            ]
+          ],
+          "node": 36,
+          "opponent": "O-0e7febddcbc6",
+          "path": [
+            13,
+            15,
+            17,
+            18,
+            21,
+            23,
+            26,
+            29,
+            31,
+            33,
+            35
+          ],
+          "scores": [
+            70,
+            0
+          ],
+          "shared": true,
+          "strategy": "S-a5eb2090d252"
+        }
+      ]
+    },
+    "events": [
+      {
+        "action": {
+          "kind": "pick",
+          "objects": [
+            1,
+            40
+          ]
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 166
+      },
+      {
+        "action": {
+          "dest": "lane0",
+          "edge": 8,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 167
+      },
+      {
+        "action": {
+          "dest": "middle0",
+          "edge": 9,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 168
+      },
+      {
+        "action": {
+          "dest": "lane1-0",
+          "edge": 14,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 169
+      },
+      {
+        "action": {
+          "dest": "spot1-0",
+          "edge": 15,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 170
+      },
+      {
+        "action": {
+          "kind": "place",
+          "objects": [
+            1
+          ],
+          "spot": 1
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 174
+      },
+      {
+        "action": {
+          "kind": "place",
+          "objects": [
+            40
+          ],
+          "spot": 1
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 178
+      },
+      {
+        "action": {
+          "dest": "north0",
+          "edge": 6,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 179
+      },
+      {
+        "action": {
+          "dest": "lane1-0",
+          "edge": 15,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 179
+      },
+      {
+        "action": {
+          "dest": "store0",
+          "edge": 3,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 180
+      },
+      {
+        "action": {
+          "dest": "spot5-0",
+          "edge": 17,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 180
+      }
+    ]
+  },
+  {
+    "case": "switch",
+    "enabled": true,
+    "wallSeconds": 3.0082171550020576,
+    "id": "f09c5bb5fd3340a78bb86618389e0948",
+    "config": {
+      "version": "strategy-choices-4",
+      "name": "選択肢検証・switch・True",
+      "scenario": "custom",
+      "horizon": 180,
+      "rules": {
+        "retry_payload": "retain",
+        "br_ramp": false,
+        "sky_relocate": false,
+        "repeat_transfer": false,
+        "placed_mustika": false,
+        "conflict": "branch",
+        "mandate": "simultaneous"
+      },
+      "profiles": {
+        "move": [
+          10,
+          0.5,
+          0.3
+        ],
+        "pick": [
+          1,
+          2,
+          4
+        ],
+        "place": [
+          2,
+          4,
+          7
+        ],
+        "flip": [
+          2,
+          4,
+          8
+        ],
+        "handover": [
+          1,
+          2,
+          4
+        ],
+        "retry": [
+          5,
+          10,
+          15
+        ]
+      },
+      "teams": [
+        {
+          "caps": {
+            "ramp": [
+              true
+            ],
+            "stairs1": [
+              true
+            ],
+            "stairs2": [
+              true
+            ],
+            "flip": [
+              true
+            ],
+            "reposition": [
+              true
+            ],
+            "earth": [
+              true
+            ],
+            "sky": [
+              true
+            ],
+            "mustika": [
+              true
+            ],
+            "direct": [
+              true
+            ],
+            "mixed": [
+              true
+            ],
+            "capacity_tr": [
+              0
+            ],
+            "capacity_br": [
+              2
+            ]
+          },
+          "speeds": {
+            "move": [
+              0
+            ],
+            "pick": [
+              1
+            ],
+            "place": [
+              1
+            ],
+            "flip": [
+              1
+            ],
+            "handover": [
+              1
+            ],
+            "retry": [
+              1
+            ]
+          }
+        },
+        {
+          "caps": {
+            "ramp": [
+              true
+            ],
+            "stairs1": [
+              true
+            ],
+            "stairs2": [
+              true
+            ],
+            "flip": [
+              true
+            ],
+            "reposition": [
+              true
+            ],
+            "earth": [
+              true
+            ],
+            "sky": [
+              true
+            ],
+            "mustika": [
+              true
+            ],
+            "direct": [
+              true
+            ],
+            "mixed": [
+              true
+            ],
+            "capacity_tr": [
+              3
+            ],
+            "capacity_br": [
+              2
+            ]
+          },
+          "speeds": {
+            "move": [
+              1
+            ],
+            "pick": [
+              1
+            ],
+            "place": [
+              1
+            ],
+            "flip": [
+              1
+            ],
+            "handover": [
+              1
+            ],
+            "retry": [
+              1
+            ]
+          }
+        }
+      ],
+      "starts": [
+        0
+      ],
+      "layouts": [
+        "stacked"
+      ],
+      "root": {
+        "t": 166,
+        "robots": [
+          {
+            "pos": "transfer0",
+            "job": null,
+            "entered": true,
+            "waited": false
+          },
+          {
+            "pos": "spot0-0",
+            "job": null,
+            "entered": true,
+            "waited": false
+          },
+          {
+            "pos": "startA1",
+            "job": null,
+            "entered": false,
+            "waited": false
+          },
+          {
+            "pos": "startB1",
+            "job": null,
+            "entered": false,
+            "waited": false
+          }
+        ],
+        "objects": [
+          {
+            "id": 0,
+            "kind": "E",
+            "owner": 0,
+            "loc": "robot1",
+            "slot": 0,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 1,
+            "kind": "E",
+            "owner": 0,
+            "loc": "tower6",
+            "slot": 0,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 2,
+            "kind": "E",
+            "owner": 0,
+            "loc": "tower6",
+            "slot": 1,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 3,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 1,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 4,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 2,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 5,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 2,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 6,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 3,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 7,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 3,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 8,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 4,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 9,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 4,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 10,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 5,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 11,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 5,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 12,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 6,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 13,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 6,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 14,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 7,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 15,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 7,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 16,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 8,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 17,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 8,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 18,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 9,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 19,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 9,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 20,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 0,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 21,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 0,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 22,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 1,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 23,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 1,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 24,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 2,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 25,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 2,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 26,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 3,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 27,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 3,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 28,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 4,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 29,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 4,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 30,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 5,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 31,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 5,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 32,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 6,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 33,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 6,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 34,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 7,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 35,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 7,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 36,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 8,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 37,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 8,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 38,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 9,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 39,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 9,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 40,
+            "kind": "S",
+            "owner": -1,
+            "loc": "robot1",
+            "slot": 0,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 41,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 1,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 42,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 2,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 43,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 3,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 44,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 4,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 45,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 5,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 46,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 6,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 47,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 7,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 48,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 8,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 49,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 9,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 50,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 10,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 51,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 11,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 52,
+            "kind": "M",
+            "owner": -1,
+            "loc": "groundBall",
+            "slot": 0,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          }
+        ],
+        "mandate": [
+          false,
+          false
+        ],
+        "ever": [
+          [],
+          []
+        ],
+        "transfer": [
+          0,
+          0
+        ]
+      }
+    },
+    "candidates": 3,
+    "best": {
+      "baseline": {
+        "blocked": [],
+        "milestones": [
+          [
+            "[1,\"finish\",\"place\",null,6,[\"S\"]]"
+          ],
+          [
+            "[1,\"finish\",\"place\",null,7,[\"E0\"]]"
+          ]
+        ],
+        "node": 10,
+        "path": [
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "scores": [
+          160,
+          0
+        ],
+        "strategy": "S-141bf66fb91e"
+      },
+      "id": "P-4bea0416387c",
+      "pending": 2,
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 6
+        },
+        {
+          "kind": "build",
+          "spot": 7
+        }
+      ],
+      "responses": [
+        {
+          "blocked": [],
+          "kind": "procedure",
+          "milestones": [
+            [
+              "[1,\"finish\",\"place\",null,6,[\"S\"]]"
+            ],
+            [
+              "[1,\"finish\",\"place\",null,7,[\"E0\"]]"
+            ]
+          ],
+          "node": 38,
+          "opponent": "O-e76ac16ad788",
+          "path": [
+            10,
+            12,
+            13,
+            15,
+            18,
+            20,
+            23,
+            26,
+            28,
+            30,
+            32,
+            35,
+            37
+          ],
+          "scores": [
+            160,
+            0
+          ],
+          "shared": true,
+          "strategy": "S-141bf66fb91e"
+        },
+        {
+          "blocked": [],
+          "kind": "procedure",
+          "milestones": [
+            [
+              "[1,\"finish\",\"place\",null,6,[\"S\"]]"
+            ],
+            [
+              "[1,\"finish\",\"place\",null,7,[\"E0\"]]"
+            ]
+          ],
+          "node": 148,
+          "opponent": "O-4fcd66b9aa6c",
+          "path": [
+            1,
+            40,
+            41,
+            44,
+            46,
+            48,
+            120,
+            124,
+            131,
+            140,
+            149
+          ],
+          "scores": [
+            160,
+            0
+          ],
+          "shared": false,
+          "strategy": "S-141bf66fb91e"
+        }
+      ]
+    },
+    "events": [
+      {
+        "action": {
+          "dest": "lane0-0",
+          "edge": 13,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 167
+      },
+      {
+        "action": {
+          "dest": "middle0",
+          "edge": 12,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 168
+      },
+      {
+        "action": {
+          "dest": "upper0",
+          "edge": 10,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 169
+      },
+      {
+        "action": {
+          "dest": "spot6-0",
+          "edge": 18,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 170
+      },
+      {
+        "action": {
+          "kind": "place",
+          "objects": [
+            40
+          ],
+          "spot": 6
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 174
+      },
+      {
+        "action": {
+          "dest": "north0",
+          "edge": 6,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 175
+      },
+      {
+        "action": {
+          "dest": "upper0",
+          "edge": 18,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 175
+      },
+      {
+        "action": {
+          "dest": "store0",
+          "edge": 3,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 176
+      },
+      {
+        "action": {
+          "dest": "spot7-0",
+          "edge": 19,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 176
+      },
+      {
+        "action": {
+          "kind": "place",
+          "objects": [
+            0
+          ],
+          "spot": 7
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 180
+      }
+    ]
+  },
+  {
+    "case": "prefetch",
+    "enabled": true,
+    "wallSeconds": 8.044620212000154,
+    "id": "a12ff15edfd947c8a4947f7fad2dde76",
+    "config": {
+      "version": "strategy-choices-4",
+      "name": "選択肢検証・prefetch・True",
+      "scenario": "custom",
+      "horizon": 180,
+      "rules": {
+        "retry_payload": "retain",
+        "br_ramp": false,
+        "sky_relocate": false,
+        "repeat_transfer": false,
+        "placed_mustika": false,
+        "conflict": "branch",
+        "mandate": "simultaneous"
+      },
+      "profiles": {
+        "move": [
+          10,
+          0.5,
+          0.3
+        ],
+        "pick": [
+          1,
+          2,
+          4
+        ],
+        "place": [
+          2,
+          4,
+          7
+        ],
+        "flip": [
+          2,
+          4,
+          8
+        ],
+        "handover": [
+          1,
+          2,
+          4
+        ],
+        "retry": [
+          5,
+          10,
+          15
+        ]
+      },
+      "teams": [
+        {
+          "caps": {
+            "ramp": [
+              true
+            ],
+            "stairs1": [
+              true
+            ],
+            "stairs2": [
+              true
+            ],
+            "flip": [
+              true
+            ],
+            "reposition": [
+              true
+            ],
+            "earth": [
+              true
+            ],
+            "sky": [
+              true
+            ],
+            "mustika": [
+              true
+            ],
+            "direct": [
+              true
+            ],
+            "mixed": [
+              true
+            ],
+            "capacity_tr": [
+              3
+            ],
+            "capacity_br": [
+              2
+            ]
+          },
+          "speeds": {
+            "move": [
+              0
+            ],
+            "pick": [
+              1
+            ],
+            "place": [
+              1
+            ],
+            "flip": [
+              1
+            ],
+            "handover": [
+              1
+            ],
+            "retry": [
+              1
+            ]
+          }
+        },
+        {
+          "caps": {
+            "ramp": [
+              true
+            ],
+            "stairs1": [
+              true
+            ],
+            "stairs2": [
+              true
+            ],
+            "flip": [
+              true
+            ],
+            "reposition": [
+              true
+            ],
+            "earth": [
+              true
+            ],
+            "sky": [
+              true
+            ],
+            "mustika": [
+              true
+            ],
+            "direct": [
+              true
+            ],
+            "mixed": [
+              true
+            ],
+            "capacity_tr": [
+              3
+            ],
+            "capacity_br": [
+              2
+            ]
+          },
+          "speeds": {
+            "move": [
+              1
+            ],
+            "pick": [
+              1
+            ],
+            "place": [
+              1
+            ],
+            "flip": [
+              1
+            ],
+            "handover": [
+              1
+            ],
+            "retry": [
+              1
+            ]
+          }
+        }
+      ],
+      "starts": [
+        0
+      ],
+      "layouts": [
+        "stacked"
+      ],
+      "root": {
+        "t": 172,
+        "robots": [
+          {
+            "pos": "store0",
+            "job": null,
+            "entered": true,
+            "waited": false
+          },
+          {
+            "pos": "spot6-0",
+            "job": null,
+            "entered": true,
+            "waited": false
+          },
+          {
+            "pos": "startA1",
+            "job": null,
+            "entered": false,
+            "waited": false
+          },
+          {
+            "pos": "startB1",
+            "job": null,
+            "entered": false,
+            "waited": false
+          }
+        ],
+        "objects": [
+          {
+            "id": 0,
+            "kind": "E",
+            "owner": 0,
+            "loc": "tower6",
+            "slot": 0,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 1,
+            "kind": "E",
+            "owner": 0,
+            "loc": "tower6",
+            "slot": 0,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 2,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 1,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 3,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 1,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 4,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 2,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 5,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 2,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 6,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 3,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 7,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 3,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 8,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 4,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 9,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 4,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 10,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 5,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 11,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 5,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 12,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 6,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 13,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 6,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 14,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 7,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 15,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 7,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 16,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 8,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 17,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 8,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 18,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 9,
+            "layer": 0,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 19,
+            "kind": "E",
+            "owner": 0,
+            "loc": "store0",
+            "slot": 9,
+            "layer": 1,
+            "face": 0,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 20,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 0,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 21,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 0,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 22,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 1,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 23,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 1,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 24,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 2,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 25,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 2,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 26,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 3,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 27,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 3,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 28,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 4,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 29,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 4,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 30,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 5,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 31,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 5,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 32,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 6,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 33,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 6,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 34,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 7,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 35,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 7,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 36,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 8,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 37,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 8,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 38,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 9,
+            "layer": 0,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 39,
+            "kind": "E",
+            "owner": 1,
+            "loc": "store1",
+            "slot": 9,
+            "layer": 1,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 40,
+            "kind": "S",
+            "owner": -1,
+            "loc": "tower6",
+            "slot": 0,
+            "layer": 2,
+            "face": 1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 41,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 1,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 42,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 2,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 43,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 3,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 44,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 4,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 45,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 5,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 46,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 6,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 47,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 7,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 48,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 8,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 49,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 9,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 50,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 10,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 51,
+            "kind": "S",
+            "owner": -1,
+            "loc": "groundSky",
+            "slot": 11,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          },
+          {
+            "id": 52,
+            "kind": "M",
+            "owner": -1,
+            "loc": "groundBall",
+            "slot": 0,
+            "layer": 0,
+            "face": -1,
+            "delivered": [
+              false,
+              false
+            ]
+          }
+        ],
+        "mandate": [
+          false,
+          false
+        ],
+        "ever": [
+          [],
+          []
+        ],
+        "transfer": [
+          0,
+          0
+        ]
+      }
+    },
+    "candidates": 11,
+    "best": {
+      "baseline": {
+        "blocked": [],
+        "milestones": [
+          [
+            "[1,\"finish\",\"flip\",null,6,[\"S\"]]"
+          ]
+        ],
+        "node": 9,
+        "path": [
+          1,
+          3,
+          5,
+          6,
+          7,
+          8
+        ],
+        "scores": [
+          150,
+          0
+        ],
+        "strategy": "S-42ec7e37973a"
+      },
+      "id": "P-d9c0e9c9c0fc",
+      "pending": 4,
+      "plan": [
+        {
+          "kind": "flip",
+          "spot": 6
+        }
+      ],
+      "responses": [
+        {
+          "blocked": [],
+          "kind": "procedure",
+          "milestones": [
+            [
+              "[1,\"finish\",\"flip\",null,6,[\"S\"]]"
+            ]
+          ],
+          "node": 9,
+          "opponent": "O-09316c2eb642",
+          "path": [
+            1,
+            3,
+            5,
+            6,
+            7,
+            8
+          ],
+          "scores": [
+            150,
+            0
+          ],
+          "shared": true,
+          "strategy": "S-42ec7e37973a"
+        }
+      ]
+    },
+    "events": [
+      {
+        "action": {
+          "kind": "pick",
+          "objects": [
+            2,
+            3,
+            5
+          ]
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 174
+      },
+      {
+        "action": {
+          "dest": "north0",
+          "edge": 3,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 175
+      },
+      {
+        "action": {
+          "dest": "transfer0",
+          "edge": 6,
+          "kind": "move"
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 176
+      },
+      {
+        "action": {
+          "kind": "drop",
+          "objects": [
+            2
+          ]
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 178
+      },
+      {
+        "action": {
+          "kind": "drop",
+          "objects": [
+            3
+          ]
+        },
+        "phase": "finish",
+        "robot": 0,
+        "t": 180
+      },
+      {
+        "action": {
+          "kind": "flip",
+          "objects": [
+            40
+          ],
+          "spot": 6
+        },
+        "phase": "finish",
+        "robot": 1,
+        "t": 180
+      }
+    ]
+  }
+]

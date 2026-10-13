@@ -51,7 +51,7 @@ def verify(store, run, evidence):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--data", type=Path, default=Path(".explorer-strategy-discovery-3")
+        "--data", type=Path, default=Path(".explorer-strategy-choices-4")
     )
     parser.add_argument(
         "--output", type=Path, default=Path("results/discovery-review-2026-10-13.json")

@@ -105,7 +105,7 @@ def exhaust(c):
             return {key(s) for s in states if s["t"] == c["horizon"]}
 
 
-def first_candidate(c, minimum=0):
+def first_candidate(c, minimum=0, accept=lambda result: True):
     with TemporaryDirectory() as d:
         st = Store.create(d, c)
         p = Planner(c, config_at(c, 0))
@@ -117,7 +117,7 @@ def first_candidate(c, minimum=0):
                     "SELECT * FROM discovery_jobs WHERE id=?", (jid,)
                 ).fetchone()
                 result = step(db, st, p, j)
-                if result and result[0]["scores"][0] >= minimum:
+                if result and result[0]["scores"][0] >= minimum and accept(result):
                     return result
         raise AssertionError("no completed candidate")
 
@@ -231,8 +231,19 @@ class ChoiceSearchTest(unittest.TestCase):
         )
         prefetch = first_candidate(local("prefetch"), 145)
         self.assertGreater(prefetch[0]["scores"][0], 140)
-        switched = first_candidate(local("switch"), 150)
-        self.assertGreaterEqual(switched[0]["scores"][0], 150)
+        switched = first_candidate(
+            local("switch"),
+            150,
+            lambda result: (
+                [
+                    i["action"].get("spot")
+                    for i in result[1][1]
+                    if i.get("action", {}).get("kind") == "place"
+                ][:2]
+                == [0, 6]
+            ),
+        )
+        self.assertEqual(switched[0]["scores"][0], 150)
 
     def test_arbitration_siblings_get_continuations(self):
         from explorer.search.choices import instruction

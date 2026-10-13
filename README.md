@@ -69,3 +69,5 @@ npm run build
 修正前に実作戦を組み、相手の反転を入れて再評価した結果は [実利用レビュー](docs/strategy-use-review-2026-10-13.md) を参照してください。待機の削減によるスペック評価の歪みと、全試合作戦の分類上の問題が確認されています。
 
 修正後の自動候補探索と206経路の再検算は [候補探索の実利用結果](docs/discovery-review-2026-10-13.md) を参照してください。`python3 scripts/discovery-benchmark.py` で再現できます。
+
+搬送・建設の選択肢を保持する探索の実験条件と結果は [検証記録](docs/choice-search-review-2026-10-13.md) を参照してください。
