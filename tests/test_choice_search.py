@@ -276,6 +276,25 @@ class ChoiceSearchTest(unittest.TestCase):
                     2,
                 )
 
+    def test_shared_recheck_promotes_existing_counter_witness(self):
+        from explorer.search.discovery import record
+
+        ev = {"path": [1, 2], "scores": [10, 20]}
+        data = {
+            "candidates": [
+                {"id": "P", "responses": [{**ev, "opponent": "O", "shared": False}]}
+            ]
+        }
+        record(
+            None,
+            {},
+            data,
+            {"mode": "compare", "candidate": "P", "opponent": "O"},
+            (ev, [[], [], [], []], []),
+        )
+        self.assertEqual(len(data["candidates"][0]["responses"]), 1)
+        self.assertTrue(data["candidates"][0]["responses"][0]["shared"])
+
     def test_fixed_procedure_does_not_substitute_another_action(self):
         c = fixture()
         p = Planner(c, config_at(c, 0))

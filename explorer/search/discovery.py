@@ -7,7 +7,7 @@ from math import prod
 
 from explorer.model.actions import action
 from explorer.model.config import config_at, count_configs
-from explorer.model.state import scores, tower
+from explorer.model.state import scores, tower, payload
 from explorer.model.transition import successors
 from .guidance import Planner
 from .choices import choices, fixed_choice, instruction, matched
@@ -96,6 +96,19 @@ def alternatives(p, state, context, hints, job):
             )
         # Prefer a useful mixed BR load, but keep every subset on the frontier.
         g = hints[team]
+        if fixed is None and r % 2 == 0 and g and g["kind"] == "flip":
+            # Supply during BR's flip is an ordering hint, never a forced wait.
+            held = bool(payload(state, r))
+            opts.sort(
+                key=lambda x: (
+                    not (
+                        x[0]["kind"] in ("drop", "give")
+                        or (held and x[1] and x[1].get("dest") == f"transfer{team}")
+                        or (not held and x[0]["kind"] == "pick")
+                    ),
+                    -len(x[0].get("objects", [])),
+                )
+            )
         if fixed is None and r % 2 and g and g["kind"] == "build":
             ts = tower(state, g["spot"])
             need = {
@@ -380,10 +393,17 @@ def record(db, report, data, job, result):
                     oid,
                     {"0": a["script"], "1": scripts[2:]},
                 )
-        if not any(
-            x["opponent"] == oid and x["path"] == ev["path"]
-            for x in candidate["responses"]
-        ):
+        previous = next(
+            (
+                x
+                for x in candidate["responses"]
+                if x["opponent"] == oid and x["path"] == ev["path"]
+            ),
+            None,
+        )
+        if previous is not None:
+            previous["shared"] = previous["shared"] or job["mode"] == "compare"
+        else:
             candidate["responses"].append(
                 {
                     **ev,
