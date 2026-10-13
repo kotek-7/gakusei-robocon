@@ -114,17 +114,33 @@ def margin_with_win(a, b, v):
     return float(res.x[-1]), res.x[:-1].tolist()
 
 
-def analyze(store, history_limit=30000, cancel=None):
+def analyze(store, history_limit=30000, cancel=None, progress=None):
     def check_cancel():
         if cancel and cancel.is_set():
             raise InterruptedError("集計を停止しました")
 
+    def report(phase, done=0, total=None):
+        # Once committed, a late stop request must not relabel a saved result.
+        if phase != "complete":
+            check_cancel()
+        if progress:
+            progress({"phase": phase, "done": done, "total": total,
+                      "run": current_run, "completedRuns": completed_runs,
+                      "totalRuns": total_runs})
+
+    current_run = None
+    completed_runs = 0
+    total_runs = 0
+    report("loading")
     config = store.config()
     all_results = []
     with connect(store.path) as db:
         db.execute("BEGIN")
-        for run in db.execute("SELECT * FROM runs ORDER BY id"):
-            check_cancel()
+        runs = list(db.execute("SELECT * FROM runs ORDER BY id"))
+        total_runs = len(runs)
+        for run in runs:
+            current_run = run["id"]
+            report("loading")
             nodes = {
                 r["id"]: {"s": json.loads(r["state"]), "done": bool(r["expanded"])}
                 for r in db.execute("SELECT * FROM nodes WHERE run=?", (run["id"],))
@@ -150,8 +166,9 @@ def analyze(store, history_limit=30000, cancel=None):
             strategies = {}
             hist_complete = True
             total_hist = 1
-            for nid in order:
-                check_cancel()
+            report("histories", 0, len(order))
+            for node_index, nid in enumerate(order):
+                report("histories", node_index, len(order))
                 nd = nodes[nid]
                 terminal = nd["s"]["t"] >= config["horizon"]
                 traces = paths.pop(nid, {})
@@ -159,6 +176,7 @@ def analyze(store, history_limit=30000, cancel=None):
                     sc = scores(nd["s"])
                     w = winner(nd["s"])
                     for trace, last in traces.items():
+                        report("histories", node_index, len(order))
                         if trace in exact:
                             continue
                         exact.add(trace)
@@ -207,6 +225,7 @@ def analyze(store, history_limit=30000, cancel=None):
                         if x["action"]["kind"] not in ("wait", "delay", "continue")
                     )
                     for trace in traces:
+                        report("histories", node_index, len(order))
                         # Sort a full event stream to merge simultaneous events spanning edges.
                         new = tuple(
                             sorted(
@@ -225,8 +244,11 @@ def analyze(store, history_limit=30000, cancel=None):
                             if total_hist > history_limit:
                                 hist_complete = False
                                 break
+            report("histories", len(order), len(order))
             stats = []
-            for st in strategies.values():
+            report("statistics", 0, len(strategies))
+            for strategy_index, st in enumerate(strategies.values()):
+                report("statistics", strategy_index, len(strategies))
                 equal_group_win = 0
                 equal_group_unresolved = 0
                 distribution = defaultdict(float)
@@ -257,6 +279,7 @@ def analyze(store, history_limit=30000, cancel=None):
             run_distribution = defaultdict(float)
             run_win = run_unresolved = 0.0
             for group in groups.values():
+                check_cancel()
                 for (a, b, w), count in group["outcomes"].items():
                     weight = count / group["count"] / len(groups)
                     run_distribution[a - b] += weight
@@ -287,8 +310,9 @@ def analyze(store, history_limit=30000, cancel=None):
             if complete:
                 vals = {}
                 policy = {}
-                for nid in reversed(order):
-                    check_cancel()
+                report("guarantees", 0, len(order))
+                for node_index, nid in enumerate(reversed(order)):
+                    report("guarantees", node_index, len(order))
                     s = nodes[nid]["s"]
                     if s["t"] >= config["horizon"]:
                         w = winner(s)
@@ -331,13 +355,17 @@ def analyze(store, history_limit=30000, cancel=None):
                     **policy,
                     "meaning": "モデル内で相手が最善の行動を選ぶ場合の勝利確率です。同時操作の競合は不利な結果も考慮します。点差は勝利確率の保証を維持する保守的な下限です。",
                 }
+                report("guarantees", len(order), len(order))
             all_results.append(result)
-    report = {
+            completed_runs += 1
+    report("saving")
+    result_report = {
         "classification": CLASS_VERSION,
         "cut": None,
         "runs": all_results,
         "meaning": "展開グループを等重みとし、各グループ内の試合展開も等重みで集計します。実大会の勝率ではありません。未完了の値は発見済みの範囲です。",
     }
     check_cancel()
-    store.set_meta("evaluation", report)
-    return report
+    store.set_meta("evaluation", result_report)
+    report("complete", total_runs, total_runs)
+    return result_report

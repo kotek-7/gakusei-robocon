@@ -19,7 +19,7 @@ from explorer.model.field import SPOTS, routes
 from explorer.model.state import initial, payload, scores, tower
 from explorer.model.transition import successors
 from .evaluation import classification, structural, token
-from .store import connect, dumps
+from .store import connect, dumps, discovery_finished, discovery_metrics
 
 
 class Planner:
@@ -348,6 +348,10 @@ def discover(store, seconds=10, cancel=None):
             "scope": "候補探索：建設目標の順序、最短経路、同種資材の搬送を探索。相手の共有塔反転順序と建設を検査します。未探索の作戦・経路・待機・相手の対応があります。最適性・勝率・点差の保証ではありません。",
         }
     )
+    if discovery_finished(report, c):
+        return report
+    before = discovery_metrics(report)
+    report["stopReason"] = None
     planners = {}
 
     def checkpoint():
@@ -452,10 +456,7 @@ def discover(store, seconds=10, cancel=None):
                             data["frontier"].append(new)
                             queued.add(k)
             else:
-                if len(report["runs"]) == count_configs(c) and all(
-                    not d["frontier"] and not any(a["pending"] for a in d["candidates"])
-                    for d in report["runs"].values()
-                ):
+                if discovery_finished(report, c):
                     break
 
             def priority(prefix):
@@ -481,5 +482,27 @@ def discover(store, seconds=10, cancel=None):
             checkpoint()
     except InterruptedError:
         pass
+    after = discovery_metrics(report)
+    reason = (
+        "exhausted" if discovery_finished(report, c)
+        else "cancelled" if cancel and cancel.is_set()
+        else "time_limit"
+    )
+    report["stopReason"] = reason
+    report.setdefault("sessions", []).append({
+        "seconds": time.monotonic() - started,
+        "budget": seconds,
+        "reason": reason,
+        "newCandidates": after["candidates"] - before["candidates"],
+        "newStrategies": after["strategies"] - before["strategies"],
+        "responses": after["responses"] - before["responses"],
+        "scoreChanges": [
+            {"run": int(k), "before": before["bestScores"][k], "after": value}
+            for k, value in after["bestScores"].items()
+            if before["bestScores"].get(k) is not None
+            and value is not None and value > before["bestScores"][k]
+        ],
+    })
+    report["sessions"] = report["sessions"][-12:]
     checkpoint()
     return report

@@ -1,6 +1,6 @@
 """A browser-independent local job runner. SQLite commits are checkpoints."""
 
-import threading, json
+import threading, json, time
 from pathlib import Path
 from explorer.search.store import Store, connect
 from explorer.search.evaluation import analyze
@@ -19,6 +19,10 @@ class Runtime:
             st.config()
             if st.summary()["status"] in ("running", "evaluating"):
                 st.set_meta("status", "paused")
+                progress = st.summary().get("evaluationProgress")
+                if progress and progress["state"] == "running":
+                    st.set_meta("evaluationProgress", {**progress, "state": "interrupted"})
+                st.set_meta("job", None)
 
     def get(self, id):
         if len(id) != 32 or any(c not in "0123456789abcdef" for c in id):
@@ -55,15 +59,38 @@ class Runtime:
             stop = threading.Event()
 
             def work():
+                started = time.monotonic()
+                last_update = 0
+                last_phase = None
+                def update_progress(value):
+                    nonlocal last_update, last_phase
+                    now = time.monotonic()
+                    phase_key = (value["phase"], value["run"])
+                    if phase_key != last_phase or now - last_update >= 0.25:
+                        st.set_meta("evaluationProgress", {
+                            **value, "elapsed": now - started,
+                            "state": "complete" if value["phase"] == "complete" else "running",
+                        })
+                        last_update, last_phase = now, phase_key
+
+                def end_progress(state):
+                    if evaluate:
+                        value = st.summary().get("evaluationProgress")
+                        if value:
+                            st.set_meta("evaluationProgress", {
+                                **value, "state": state, "elapsed": time.monotonic() - started,
+                            })
+
                 try:
                     st.set_meta("status", "evaluating" if evaluate else "running")
                     st.set_meta("error", None)
+                    st.set_meta("job", "evaluation" if evaluate else "discovery" if discovery_seconds is not None else "exact")
                     if discovery_seconds is not None:
                         from explorer.search.discovery import discover
 
                         discover(st, discovery_seconds, stop)
                     elif evaluate:
-                        analyze(st, cancel=stop)
+                        analyze(st, cancel=stop, progress=update_progress)
                     else:
                         used = 0
                         c = st.config()
@@ -113,10 +140,14 @@ class Runtime:
                         "status", "complete" if st.summary()["complete"] else "paused"
                     )
                 except InterruptedError:
+                    end_progress("cancelled")
                     st.set_meta("status", "paused")
                 except Exception as e:
+                    end_progress("error")
                     st.set_meta("error", str(e))
                     st.set_meta("status", "error")
+                finally:
+                    st.set_meta("job", None)
 
             thread = threading.Thread(
                 target=work, daemon=True, name="explore-" + id[:8]

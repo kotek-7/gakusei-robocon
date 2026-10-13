@@ -121,3 +121,37 @@ class SearchTest(unittest.TestCase):
         v, p = matrix_value([[1, 0], [0, 1]])
         self.assertAlmostEqual(v, 0.5)
         self.assertAlmostEqual(p[0], 0.5)
+
+    def test_evaluation_progress_is_readable_and_does_not_change_result(self):
+        st = Store.create(self.tmp.name, self.c)
+        while st.batch(100):
+            pass
+        expected = analyze(st)
+        updates = []
+        def progress(value):
+            st.set_meta("evaluationProgress", value)
+            self.assertEqual(st.summary()["evaluationProgress"], value)
+            updates.append(value)
+        actual = analyze(st, progress=progress)
+        self.assertEqual(actual, expected)
+        self.assertEqual(updates[0]["phase"], "loading")
+        self.assertEqual(updates[-1]["phase"], "complete")
+        self.assertEqual(updates[-1]["completedRuns"], 1)
+        self.assertIn("guarantees", {u["phase"] for u in updates})
+        for value in updates:
+            if value["total"] is not None:
+                self.assertLessEqual(value["done"], value["total"])
+
+    def test_cancel_during_progress_preserves_previous_evaluation(self):
+        from threading import Event
+        st = Store.create(self.tmp.name, self.c)
+        st.batch(2)
+        analyze(st)
+        previous = st.summary()["evaluation"]
+        stop = Event()
+        def progress(value):
+            if value["phase"] == "histories":
+                stop.set()
+        with self.assertRaises(InterruptedError):
+            analyze(st, cancel=stop, progress=progress)
+        self.assertEqual(st.summary()["evaluation"], previous)

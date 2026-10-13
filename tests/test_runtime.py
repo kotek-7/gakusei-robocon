@@ -80,3 +80,43 @@ class RuntimeTest(unittest.TestCase):
             self.assertFalse(report["complete"])
             self.assertEqual(Runtime(d).get(st.path.stem).summary()["discovery"], report)
             runtime.close()
+
+    def test_live_evaluation_progress_and_cancellation(self):
+        from unittest.mock import patch
+        ready = threading.Event()
+        release = threading.Event()
+        with TemporaryDirectory() as d:
+            runtime = Runtime(d)
+            st = Store.create(d, defaults())
+            def evaluate(store, cancel, progress):
+                progress({"phase": "histories", "done": 3, "total": 10,
+                          "run": 0, "completedRuns": 0, "totalRuns": 1})
+                ready.set()
+                release.wait(5)
+                if cancel.is_set():
+                    raise InterruptedError()
+            with patch("explorer.runtime.analyze", side_effect=evaluate):
+                try:
+                    runtime.start(st.path.stem, evaluate=True)
+                    self.assertTrue(ready.wait(5))
+                    snapshot = runtime.get(st.path.stem).summary()
+                    self.assertEqual(snapshot["evaluationProgress"]["done"], 3)
+                    self.assertEqual(snapshot["evaluationProgress"]["state"], "running")
+                    runtime.pause(st.path.stem)
+                finally:
+                    release.set()
+                    runtime.close()
+            snapshot = st.summary()
+            self.assertEqual(snapshot["evaluationProgress"]["state"], "cancelled")
+            self.assertEqual(snapshot["status"], "paused")
+            self.assertIsNone(snapshot["job"])
+
+    def test_restart_marks_evaluation_interrupted(self):
+        with TemporaryDirectory() as d:
+            st = Store.create(d, defaults())
+            st.set_meta("status", "evaluating")
+            st.set_meta("evaluationProgress", {"state": "running", "done": 2})
+            runtime = Runtime(d)
+            self.assertEqual(st.summary()["evaluationProgress"]["state"], "interrupted")
+            self.assertEqual(st.summary()["status"], "paused")
+            runtime.close()

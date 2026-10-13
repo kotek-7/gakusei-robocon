@@ -6,7 +6,7 @@ import {
 } from "./labels";
 import { useEffect, useRef, useState } from "react";
 import { api, saveJSON } from "./api";
-import { statusName, actionName, robotNames } from "./labels";
+import { actionName, robotNames } from "./labels";
 import type {
   Action,
   Config,
@@ -18,6 +18,7 @@ import type {
   Replay,
   Search,
 } from "./types";
+import { DiscoveryProgress, EvaluationProgress } from "./SearchProgress";
 import { Candidates } from "./Candidates";
 import { Conditions } from "./Conditions";
 import { Graph } from "./Graph";
@@ -43,7 +44,7 @@ export function App() {
   const [error, setError] = useState(""),
     [request, setRequest] = useState(false),
     [budget, setBudget] = useState(1000),
-    [seconds, setSeconds] = useState(10),
+    [seconds, setSeconds] = useState(60),
     [revision, setRevision] = useState(0);
   const [selectionOwner, setSelectionOwner] = useState(id);
   const chosen = useRef(id);
@@ -382,7 +383,7 @@ export function App() {
               </select>
             </label>
             <label>
-              候補探索の時間
+              1回の候補探索時間
               <select
                 value={seconds}
                 onChange={(e) => setSeconds(Number(e.target.value))}
@@ -396,7 +397,7 @@ export function App() {
             </label>
             <button
               className="primary"
-              disabled={!!busy}
+              disabled={!!busy || !!search.discovery?.scopeComplete}
               onClick={() =>
                 perform(async () => {
                   await api(`searches/${id}/discover`, { seconds });
@@ -404,31 +405,9 @@ export function App() {
                 })
               }
             >
-              候補を探す
+              {search.discovery?.scopeComplete ? "候補探索済み" : search.discovery ? "候補探索を続ける" : "候補を探す"}
             </button>
-            <details className="exact-search">
-              <summary>詳細な全探索</summary>
-              <label>
-                計算上限（両チームの行動の組合せ数）
-                <input
-                  type="number"
-                  value={budget}
-                  min={1}
-                  max={1000000}
-                  onChange={(e) => setBudget(Number(e.target.value))}
-                />
-              </label>
-              <button
-                disabled={!!busy || search.complete}
-                onClick={() =>
-                  perform(async () => {
-                    await api(`searches/${id}/start`, { budget });
-                  })
-                }
-              >
-                全探索を続ける
-              </button>
-            </details>
+
             <button
               disabled={!["running", "evaluating"].includes(search.status)}
               onClick={() =>
@@ -451,22 +430,35 @@ export function App() {
               評価を計算
             </button>
           </section>
-          <div className="statusbar" aria-live="polite">
-            <strong>{statusName[search.status]}</strong>
-            <span>
-              {search.nodes.toLocaleString()}局面 /{" "}
-              {search.edges.toLocaleString()}遷移
-            </span>
-            <span>展開済み {search.expanded.toLocaleString()}局面</span>
-            <span>
-              完了構成 {search.completeRuns} / {search.totalRuns}
-            </span>
-            <span>
-              {search.complete
-                ? "対象範囲の探索完了"
-                : "未探索の分岐があります"}
-            </span>
-          </div>
+          <DiscoveryProgress search={search} />
+          <EvaluationProgress search={search} />
+          <details className="exact-search">
+            <summary>
+              <span className="exact-search-title">詳細な全探索</span>
+              <span className="exact-search-state">{search.job === "exact" && search.status === "running" ? "探索中" : search.complete ? "対象範囲を探索済み" : "未探索の分岐あり"}</span>
+              <span className="disclosure-hint"><span className="when-closed">開く</span><span className="when-open">閉じる</span></span>
+            </summary>
+            <div className="exact-search-body">
+              <p>移動・待機を含む双方の行動の組合せを調べます。候補探索より細かい分岐を扱うため、試合全体の探索には大量の計算が必要です。</p>
+              <div className="exact-search-controls">
+                <label htmlFor="exact-budget">1回の計算上限（行動の組合せ数）
+                  <input id="exact-budget" type="number" value={budget} min={1} max={1000000} step={1}
+                    onChange={(e) => setBudget(Number(e.target.value))} aria-describedby="exact-budget-help" />
+                </label>
+                <button disabled={!!busy || search.complete || !Number.isInteger(budget) || budget < 1 || budget > 1000000}
+                  onClick={() => perform(async () => { await api(`searches/${id}/start`, { budget }); })}>
+                  {search.complete ? "全探索済み" : "全探索を続ける"}
+                </button>
+              </div>
+              <p id="exact-budget-help" className="progress-note">1〜1,000,000組。上限に達したら保存して中断します。再実行で続きから計算します。秒数や総候補数の指定ではありません。</p>
+              <div className="discovery-counts">
+                <span>{search.nodes.toLocaleString()}局面 / {search.edges.toLocaleString()}遷移</span>
+                <span>展開済み {search.expanded.toLocaleString()}局面</span>
+                <span>探索完了した構成 {search.completeRuns} / {search.totalRuns}</span>
+              </div>
+              <p className="progress-note">候補探索の終了とは別の判定です。発見済みの局面数から、全探索の進捗率は算出できません。</p>
+            </div>
+          </details>
           {search.error && (
             <p className="error-banner" role="alert">
               {search.error}

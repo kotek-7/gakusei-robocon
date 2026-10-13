@@ -141,3 +141,40 @@ class DiscoveryTest(unittest.TestCase):
         self.assertEqual(
             [(e["phase"], e["t"]) for e in flips], [("start", 178), ("finish", 180)]
         )
+
+    def test_scoped_completion_and_noop_resume(self):
+        c = defaults()
+        c["horizon"] = 1
+        c["teams"][0]["speeds"]["move"] = [0, 1]
+        with TemporaryDirectory() as d:
+            st = Store.create(d, c)
+            discover(st, 5)
+            before = st.summary()["discovery"]
+            self.assertTrue(before["scopeComplete"])
+            self.assertFalse(before["complete"])
+            self.assertFalse(st.summary()["complete"])
+            self.assertEqual(before["stopReason"], "exhausted")
+            self.assertEqual(before["metrics"]["frontier"], 0)
+            self.assertEqual(before["metrics"]["pending"], 0)
+            self.assertEqual(before["sessions"][-1]["newCandidates"], before["metrics"]["candidates"])
+            self.assertEqual(before["sessions"][-1]["responses"], before["metrics"]["responses"])
+            discover(st, 5)
+            self.assertEqual(st.summary()["discovery"], before)
+
+    def test_stop_reasons_and_legacy_report(self):
+        from explorer.search.store import public_discovery
+        c = defaults()
+        with TemporaryDirectory() as d:
+            st = Store.create(d, c)
+            report = discover(st, 0)
+            self.assertEqual(st.summary()["discovery"]["stopReason"], "time_limit")
+            stop = Event()
+            stop.set()
+            discover(st, 1, stop)
+            self.assertEqual(st.summary()["discovery"]["stopReason"], "cancelled")
+            self.assertFalse(st.summary()["discovery"]["scopeComplete"])
+            report.pop("sessions")
+            report.pop("stopReason")
+            public = public_discovery(report, c)
+            self.assertEqual(public["sessions"], [])
+            self.assertIsNone(public["stopReason"])
