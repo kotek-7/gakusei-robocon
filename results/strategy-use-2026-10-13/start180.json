@@ -1,0 +1,291 @@
+{
+  "sourceCommit": "2714b96813001c78435a31c9d656e75110bed16a",
+  "previousExploreSeconds": 0,
+  "case": "start180",
+  "config": {
+    "horizon": 180,
+    "layouts": [
+      "stacked"
+    ],
+    "name": "実用性検証・start180",
+    "profiles": {
+      "flip": [
+        2,
+        4,
+        8
+      ],
+      "handover": [
+        1,
+        2,
+        4
+      ],
+      "move": [
+        0.8,
+        0.5,
+        0.3
+      ],
+      "pick": [
+        1,
+        2,
+        4
+      ],
+      "place": [
+        2,
+        4,
+        7
+      ],
+      "retry": [
+        5,
+        10,
+        15
+      ]
+    },
+    "rules": {
+      "br_ramp": false,
+      "conflict": "branch",
+      "mandate": "simultaneous",
+      "placed_mustika": false,
+      "repeat_transfer": false,
+      "retry_payload": "retain",
+      "sky_relocate": false
+    },
+    "scenario": "start",
+    "starts": [
+      0
+    ],
+    "teams": [
+      {
+        "caps": {
+          "capacity_br": [
+            2
+          ],
+          "capacity_tr": [
+            3
+          ],
+          "direct": [
+            true
+          ],
+          "earth": [
+            true
+          ],
+          "flip": [
+            true
+          ],
+          "mixed": [
+            true
+          ],
+          "mustika": [
+            true
+          ],
+          "ramp": [
+            true
+          ],
+          "reposition": [
+            true
+          ],
+          "sky": [
+            true
+          ],
+          "stairs1": [
+            true
+          ],
+          "stairs2": [
+            true
+          ]
+        },
+        "speeds": {
+          "flip": [
+            1
+          ],
+          "handover": [
+            1
+          ],
+          "move": [
+            1
+          ],
+          "pick": [
+            1
+          ],
+          "place": [
+            1
+          ],
+          "retry": [
+            1
+          ]
+        }
+      },
+      {
+        "caps": {
+          "capacity_br": [
+            2
+          ],
+          "capacity_tr": [
+            3
+          ],
+          "direct": [
+            true
+          ],
+          "earth": [
+            true
+          ],
+          "flip": [
+            true
+          ],
+          "mixed": [
+            true
+          ],
+          "mustika": [
+            true
+          ],
+          "ramp": [
+            true
+          ],
+          "reposition": [
+            true
+          ],
+          "sky": [
+            true
+          ],
+          "stairs1": [
+            true
+          ],
+          "stairs2": [
+            true
+          ]
+        },
+        "speeds": {
+          "flip": [
+            1
+          ],
+          "handover": [
+            1
+          ],
+          "move": [
+            1
+          ],
+          "pick": [
+            1
+          ],
+          "place": [
+            1
+          ],
+          "retry": [
+            1
+          ]
+        }
+      }
+    ],
+    "version": "resource-events-2"
+  },
+  "exploreSeconds": 60.455,
+  "evaluationSeconds": 3.024,
+  "checkpoint": {
+    "id": "9806ab6087de4113a48ba733bb89015e",
+    "status": "paused",
+    "nodes": 6760,
+    "edges": 15792,
+    "expanded": 198,
+    "runs": 1,
+    "completeRuns": 0,
+    "totalRuns": "1",
+    "complete": false,
+    "error": null
+  },
+  "finalStatus": "paused",
+  "finalError": null,
+  "peakRssMiB": 633.1,
+  "databaseMiB": 262.95,
+  "stats": [
+    {
+      "run": 0,
+      "variant": {
+        "layout": "stacked",
+        "start": 0,
+        "teams": [
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": true,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 1,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          },
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": true,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 1,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          }
+        ]
+      },
+      "nodes": 6760,
+      "terminal": 44,
+      "terminalScores": [
+        [
+          0,
+          0
+        ]
+      ],
+      "frontierMin": 10,
+      "frontierMax": 31,
+      "expanded": 198,
+      "jointChoices": 15792
+    }
+  ],
+  "evaluation": [
+    {
+      "run": 0,
+      "complete": false,
+      "statisticsComplete": false,
+      "historyLimited": true,
+      "rawGraphPaths": "1558",
+      "paths": "197",
+      "groups": 197,
+      "groupWinFraction": 0.0,
+      "unresolvedFraction": 1.0000000000000018,
+      "distribution": [
+        [
+          0,
+          1.0000000000000018
+        ]
+      ],
+      "guarantee": null,
+      "strategyCount": 1
+    }
+  ],
+  "evaluationAvailable": true
+}

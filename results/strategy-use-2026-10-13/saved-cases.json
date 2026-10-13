@@ -1,0 +1,92 @@
+[
+  {
+    "case": "mustika",
+    "id": "f712df6608ac4dd28cf5efdf78d127ae",
+    "node": 68,
+    "scores": [
+      420,
+      0
+    ],
+    "displayName": "手順検算｜自陣L1→共有L1→ムスティカ・速い・相手待機"
+  },
+  {
+    "case": "mustika",
+    "id": "35f0b32c5362414d9969db772d9257bf",
+    "node": 67,
+    "scores": [
+      560,
+      0
+    ],
+    "displayName": "手順検算｜L2二塔→ムスティカ・速い・相手待機"
+  },
+  {
+    "case": "mustika",
+    "id": "a7fd1396182e4d0a9c0f42a341cb14bc",
+    "node": 67,
+    "scores": [
+      170,
+      0
+    ],
+    "displayName": "手順検算｜自陣L1→共有L1→ムスティカ・標準・相手待機"
+  },
+  {
+    "case": "counter",
+    "id": "177f5e695d3544bba2dc80be329034fc",
+    "node": 64,
+    "scores": [
+      150,
+      160
+    ],
+    "displayName": "手順検算｜L2二塔→ムスティカ・速い・相手が反転"
+  },
+  {
+    "case": "protected",
+    "id": "2742acc77def4c2285a9feab6ee1a2ac",
+    "node": 73,
+    "scores": [
+      380,
+      40
+    ],
+    "displayName": "手順検算｜自陣L1→共有L1→ムスティカ・速い・相手が反転"
+  },
+  {
+    "case": "protected",
+    "id": "55b04ae4f9384402bffa2151a4e77a68",
+    "node": 73,
+    "scores": [
+      410,
+      80
+    ],
+    "displayName": "手順検算｜自陣L1→共有L2→ムスティカ・速い・相手が反転"
+  },
+  {
+    "case": "bundled",
+    "id": "b4a23945a01a40109e58ef4fd124b7b1",
+    "node": 37,
+    "scores": [
+      85,
+      0
+    ],
+    "displayName": "手順検算｜自陣L1→共有L1・3個混載・遅い・相手待機"
+  },
+  {
+    "case": "defense",
+    "id": "1ac9363ba14842fdbb9377f70ba9c3f9",
+    "displayName": "再検証｜残り6秒・反転速度と相手の反転能力"
+  },
+  {
+    "case": "l2",
+    "id": "e01f0e1271cc4b868dd4d878780ff7fc",
+    "displayName": "再検証｜残り10秒・L2進入と走行速度"
+  },
+  {
+    "case": "l2-guided",
+    "id": "ba4f24ffb2f148a997e2a6ce6987014e",
+    "displayName": "経路検算｜残り10秒・L1とL2への設置"
+  },
+  {
+    "case": "full",
+    "id": "9806ab6087de4113a48ba733bb89015e",
+    "displayName": "再検証｜初期局面から180秒・標準"
+  }
+]
