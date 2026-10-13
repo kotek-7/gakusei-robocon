@@ -62,9 +62,14 @@ class Store:
 
     def config(self):
         with connect(self.path) as db:
-            return json.loads(
+            c = json.loads(
                 db.execute("SELECT value FROM meta WHERE key='config'").fetchone()[0]
             )
+            if c.get("version") != schema.VERSION:
+                raise ValueError(
+                    "旧モデルの保存データは利用できません。新しい探索を作成してください"
+                )
+            return c
 
     def set_meta(self, k, v):
         with connect(self.path) as db:

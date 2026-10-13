@@ -47,7 +47,7 @@ def fits(objects, caps, role):
     return caps["mixed"] or len({o["kind"] for o in objects}) <= 1
 
 
-def legal(s, r, config, v):
+def concrete_legal(s, r, config, v):
     robot = s["robots"][r]
     team, role = divmod(r, 2)
     caps = v["teams"][team]["caps"]
@@ -64,16 +64,8 @@ def legal(s, r, config, v):
     if role and robot["entered"]:
         retries.append(action("retry", dest=f"transfer{team}"))
     if robot["job"]:
-        return [action("continue")] + (
-            [] if robot["job"]["action"]["kind"] == "retry" else retries
-        )
+        return [action("continue")]
     opts = [action("wait", seconds=config["horizon"] - s["t"])]
-    if not robot["waited"]:
-        opts += [
-            action("wait", seconds=n)
-            for n in (1, 2, 5, 10)
-            if n < config["horizon"] - s["t"]
-        ]
     opts += retries
     held = payload(s, r)
     for eid, dest, e in routes(pos, team, "BR" if role else "TR", caps, rules):
@@ -166,6 +158,26 @@ def legal(s, r, config, v):
         if not held and rules["placed_mustika"] and s["objects"][52]["loc"] == "pillar":
             opts.append(action("takeM", objects=[52]))
     return opts
+
+
+def legal(s, r, config, v):
+    from .abstraction import representatives
+
+    if s["t"] >= config["horizon"]:
+        return []
+    if s["robots"][r]["job"]:
+        return [action("continue")]
+    choices = []
+    for a in concrete_legal(s, r, config, v):
+        if a["kind"] == "retry" and a["dest"] == s["robots"][r]["pos"]:
+            held = payload(s, r)
+            if not held or (
+                config["rules"]["retry_payload"] == "retain"
+                and not any(o["kind"] == "M" for o in held)
+            ):
+                continue
+        choices.append(a)
+    return list(representatives(s, choices))
 
 
 def team_choices(s, team, config, v):

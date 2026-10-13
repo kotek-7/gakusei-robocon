@@ -1,8 +1,9 @@
 """Joint snapshot decisions, contact-time arbitration and integer-time events."""
 
 from copy import deepcopy
-from .actions import legal, duration, action
-from .state import key, payload, tower, qualify, validate
+from .actions import legal, concrete_legal, duration, action
+from .abstraction import demand, outcome_key
+from .state import payload, tower, qualify, validate
 from .field import NODES
 
 
@@ -21,7 +22,7 @@ def _return_object(o):
         o["owner"] = -1
 
 
-def _start(s, r, a, config, v, events):
+def _start(s, r, a, config, v, events, reference=None):
     rob = s["robots"][r]
     k = a["kind"]
     if k == "continue":
@@ -32,7 +33,19 @@ def _start(s, r, a, config, v, events):
         and s["robots"][a["partner"]]["job"]["action"].get("objects") == a["objects"]
         and s["robots"][a["partner"]]["job"]["action"]["kind"] == "give"
     )
-    if not matching_receive and a not in legal(s, r, config, v):
+    # Resource requests refer to interchangeable stock, not a claimed physical ID.
+    if a["kind"] == "pick":
+        wanted = demand(reference, a)
+        a = next(
+            (
+                x
+                for x in concrete_legal(s, r, config, v)
+                if x["kind"] == "pick" and demand(s, x) == wanted
+            ),
+            a,
+        )
+    available = concrete_legal(s, r, config, v)
+    if not matching_receive and a not in available:
         events.append({"t": s["t"], "robot": r, "phase": "blocked", "action": a})
         a = action("wait", seconds=1)
         k = "wait"
@@ -122,13 +135,11 @@ def successors(s, red, blue, config, v):
         events = []
         for team in (priority, 1 - priority):
             for r in (team * 2, team * 2 + 1):
-                _start(child, r, (red + blue)[r], config, v, events)
+                _start(child, r, (red + blue)[r], config, v, events, s)
         started = deepcopy(child)
-        # Retry remains possible at every second of an active operation.
+        # Decisions resume at the next completion or match end.
         jobs = [r["job"] for r in child["robots"] if r["job"]]
         nxt = min([config["horizon"]] + [j["end"] for j in jobs])
-        if any(j["action"]["kind"] not in ("wait", "retry") for j in jobs):
-            nxt = min(nxt, s["t"] + 1)
         if nxt <= s["t"]:
             raise ValueError("遷移後の時刻が進んでいません")
         child["t"] = nxt
@@ -146,7 +157,7 @@ def successors(s, red, blue, config, v):
                     rob["job"] = None
         qualify(child, config["rules"])
         validate(child)
-        ck = key(child)
+        ck = outcome_key(child)
         if ck in seen:
             seen[ck]["cases"].append(priority)
         else:

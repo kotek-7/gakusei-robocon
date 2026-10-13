@@ -64,6 +64,8 @@ class ModelTest(unittest.TestCase):
     def test_conflict_branches(self):
         self.s["robots"][0]["pos"] = "sky0"
         self.s["robots"][2]["pos"] = "sky1"
+        for o in self.s["objects"][41:52]:
+            o["loc"] = "buffer0"
         a = action("pick", objects=[40])
         outs = self.step({0: a, 2: a})
         self.assertEqual(len(outs), 2)
@@ -75,10 +77,9 @@ class ModelTest(unittest.TestCase):
 
     def test_wait_wakes(self):
         self.s["robots"][0]["pos"] = "sky0"
-        s = self.step({0: action("pick", objects=[40]), 2: action("wait", seconds=10)})[
-            0
-        ]["state"]
-        s = self.step({}, s)[0]["state"]
+        s = self.step(
+            {0: action("pick", objects=[40]), 2: action("wait", seconds=180)}
+        )[0]["state"]
         self.assertEqual(s["t"], 2)
         self.assertIsNone(s["robots"][2]["job"])
 

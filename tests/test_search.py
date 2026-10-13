@@ -81,20 +81,12 @@ class SearchTest(unittest.TestCase):
         st = Store.create(self.tmp.name, self.c)
         from explorer.model.actions import action
 
-        for seconds in (1, 2):
-            aa = [action("wait", seconds=seconds)] * 2
-            ids = st.step(1, aa, aa)
-            edge = st.edge(ids[0])
-            if seconds == 1:
-                st.step(
-                    edge["dst"],
-                    [action("wait", seconds=1)] * 2,
-                    [action("wait", seconds=1)] * 2,
-                )
+        aa = [action("wait", seconds=2)] * 2
+        st.step(1, aa, aa)
         r = analyze(st)["runs"][0]
         self.assertEqual(r["paths"], "1")
         self.assertEqual(r["strategies"][0]["paths"], "1")
-        self.assertEqual(r["rawGraphPaths"], "2")
+        self.assertEqual(r["rawGraphPaths"], "1")
 
     def test_evaluation_cancellation_keeps_checkpoint(self):
         from threading import Event

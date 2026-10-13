@@ -3,7 +3,9 @@
 from copy import deepcopy
 import math
 
-VERSION = "finite-operations-1"
+VERSION = "resource-events-2"
+
+
 CAPS = {
     "ramp": True,
     "stairs1": True,
@@ -64,7 +66,11 @@ RULE_OPTIONS = {
     "repeat_transfer": ([False, True], "同じ競技物体への受け渡し得点の再加算", "8.1"),
     "placed_mustika": ([False, True], "設置済みムスティカの取り外し", "明文未確認"),
     "conflict": (["branch", "red", "blue"], "同時取得・操作の競合", "6.6 / モデル仮定"),
-    "mandate": (["simultaneous", "historical"], "ムスティカ取得条件のタワー数判定", "3.6.1–2"),
+    "mandate": (
+        ["simultaneous", "historical"],
+        "ムスティカ取得条件のタワー数判定",
+        "3.6.1–2",
+    ),
 }
 
 
@@ -216,8 +222,10 @@ def metadata():
         },
         "scope": [
             "位置・経路・初期配置は有限候補",
-            "成功動作のみ。任意リトライを含む",
-            "1秒単位。通常動作は区間終了まで継続",
+            "成功動作のみ。動作完了後のリトライを含む",
+            "資源・イベントモデル：秒単位で計時し、動作完了・試合終了まで進めます",
+            "待機は次の動作完了まで。通常動作中の任意リトライ・任意時刻の再判断は対象外",
+            "同等な物体は個数と属性で選択し、共有在庫は接触時に割り当てます",
             "全盤面観測。相手の今回の選択は非公開",
             "経路は代表機体の通路。接触力学・転倒・把持軌道は対象外",
             "数値は仮定。速い／標準／遅いの3段階は項目ごとに独立",

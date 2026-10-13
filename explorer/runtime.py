@@ -16,6 +16,7 @@ class Runtime:
         # A process restart never silently resumes CPU work, but no frontier is lost.
         for p in self.directory.glob("*.sqlite3"):
             st = Store(p)
+            st.config()
             if st.summary()["status"] in ("running", "evaluating"):
                 st.set_meta("status", "paused")
 

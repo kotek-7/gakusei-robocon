@@ -164,7 +164,7 @@ def make_handler(runtime, static):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--port", type=int, default=4174)
-    p.add_argument("--data", type=Path, default=ROOT / ".explorer")
+    p.add_argument("--data", type=Path, default=ROOT / ".explorer-resource-events-2")
     args = p.parse_args()
     runtime = Runtime(args.data)
     server = ThreadingHTTPServer(
