@@ -119,13 +119,13 @@ export function Candidates({
                         <td>
                           C{r}
                           <br />
-                          {c.baseline.strategy}
+                          <span title={c.baseline.strategy}>{c.baseline.strategy.slice(0, 14)}</span>
                         </td>
                         <td>
                           {c.plan.map(goalLabel).join(" → ") ||
                             "建設・反転なし"}
                           <br />
-                          <small>展開 {c.id}</small>
+                          <small title={c.id}>展開 {c.id.slice(0, 14)}</small>
                         </td>
                         <td>{score(c.baseline)}</td>
                         <td>
@@ -147,7 +147,7 @@ export function Candidates({
                             {c.responses.map((response, i) => (
                               <div className="candidate-response" key={i}>
                                 <p>
-                                  相手手順 {response.opponent}（
+                                  相手手順 <span title={response.opponent}>{response.opponent?.slice(0, 14)}</span>（
                                   {response.shared
                                     ? "共有手順での検査"
                                     : "この候補への対抗手探索"}

@@ -13,6 +13,7 @@ export type State = {
   robots: { pos: string; job: Job | null; entered: boolean; waited: boolean }[];
   objects: Obj[];
   mandate: boolean[];
+  ever: number[][];
   transfer: number[];
 };
 export type Obj = {

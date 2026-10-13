@@ -1,14 +1,17 @@
-# 作戦探索 Web画面
+# 作戦探索 Webアプリ
 
-NHK学生ロボコン2027の作戦検討用。競技ルールはABUロボコン2027と同一と仮定します。用語は手元の日本語参考訳（非公式）に合わせています。
-
-探索計算は `python3 -m explorer` が担当します。このディレクトリはReact / TypeScriptの操作画面とThree.jsによる状態表示です。
+React / TypeScript / Three.jsの画面と、Web Worker内のTypeScript探索エンジンです。保存はIndexedDB、完全探索済みの構成の数理最適化はHiGHS WebAssemblyを使います。バックエンドは不要です。
 
 ```sh
 npm ci
 npm run dev
+npm test
+npm run build
+npm run preview
 ```
 
-APIはlocalhost:4174へ接続します。完成ビルドは `npm run build` で作成し、Pythonサーバーが配信します。詳細はルートREADMEを参照してください。
+Node.js 22.12以上は開発・ビルド時のみ必要です。`dist/` をHTTPSの静的ホスティングへ配置します。Wasmを含め、必要な資産はビルドに同梱します。
 
-`npm test` はCAD資産などの検証、`npm run typecheck` は型検査です。`npm run import:field` は提供STEPから表示資産を再生成します。
+`npm run import:field` は提供STEPから表示資産を再生成する開発用コマンドです。通常の実行・ビルドには不要です。
+
+保存・再開の動作と制限は[ルートREADME](../README.md)、機能ごとの責務は[ARCHITECTURE.md](ARCHITECTURE.md)を参照してください。

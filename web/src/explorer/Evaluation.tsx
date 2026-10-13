@@ -233,8 +233,8 @@ export function Evaluation({
               .map((s) => (
                 <tr key={s.id}>
                   <td>
-                    <button onClick={() => onNode(result.run, s.node)}>
-                      {s.id}
+                    <button title={s.id} onClick={() => onNode(result.run, s.node)}>
+                      {s.id.slice(0, 14)}
                     </button>
                     <details>
                       <summary>構造</summary>

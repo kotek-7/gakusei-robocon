@@ -50,6 +50,7 @@ export function App() {
   const chosen = useRef(id);
   chosen.current = id;
   const positioned = useRef("");
+  const backupInput = useRef<HTMLInputElement>(null);
   const selectedNode = useRef(node);
   selectedNode.current = node;
   const search = searches.find((s) => s.id === id) || null;
@@ -80,7 +81,7 @@ export function App() {
       .catch((e) => {
         if (!c.signal.aborted)
           setError(
-            "ローカル計算プロセスに接続できません。python3 -m explorer を起動してください。 " +
+            "ブラウザ内の計算処理を開始できません。 " +
               e.message,
           );
       });
@@ -184,6 +185,7 @@ export function App() {
   }
   async function create(c: Config) {
     await perform(async () => {
+      await navigator.storage?.persist?.();
       const s = await api<Search>("searches", c);
       setSearches((old) => [s, ...old]);
       setId(s.id);
@@ -306,6 +308,21 @@ export function App() {
         </div>
         <span className="header-context">{competitionName}</span>
         <div className="header-actions">
+          <input ref={backupInput} type="file" accept=".json,application/json" hidden
+            onChange={event => {
+              const file = event.target.files?.[0];
+              event.target.value = "";
+              if (!file) return;
+              void perform(async () => {
+                await navigator.storage?.persist?.();
+                const restored = await api<Search>("import", JSON.parse(await file.text()));
+                setId(restored.id);
+                setEditing(false);
+              });
+            }} />
+          <button disabled={!model || busy} onClick={() => backupInput.current?.click()}>
+            バックアップを読み込む
+          </button>
           <button
             onClick={() => {
               setEditing(!editing);
@@ -326,8 +343,16 @@ export function App() {
               )
             }
           >
-            結果を保存
+            バックアップを書き出す
           </button>
+          <button disabled={!search || busy} onClick={() => {
+            if (search && window.confirm(`「${search.name}」をこのブラウザから削除しますか？`)) {
+              void perform(async () => {
+                await api(`searches/${id}/delete`, {});
+                setId("");
+              });
+            }
+          }}>探索を削除</button>
         </div>
       </header>
       {error && (
@@ -729,7 +754,7 @@ export function App() {
         </>
       )}
       <footer className="app-footer">
-        計算・保存はこのPCで実行。画面を閉じても探索は継続します。
+        計算・保存はこのブラウザ内で実行。画面を閉じると停止し、最後の自動保存地点から再開できます。
       </footer>
     </div>
   );

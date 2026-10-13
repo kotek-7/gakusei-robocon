@@ -38,7 +38,7 @@ export function Classification({
       <ul className="classification-tree">
         {parent.leaves.map((id) => (
           <li key={id}>
-            <button onClick={() => onSelect([id])}>{id}</button>
+            <button title={id} onClick={() => onSelect([id])}>{id.slice(0, 14)}</button>
           </li>
         ))}
         {[...parent.children].map(([key, b]) => (

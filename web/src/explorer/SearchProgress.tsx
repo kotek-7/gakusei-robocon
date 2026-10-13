@@ -12,6 +12,9 @@ const stopLabels: Record<string, string> = {
   exhausted: "対象範囲を探索済み",
   time_limit: "指定時間で中断",
   cancelled: "操作により停止",
+  interrupted: "画面を閉じたため中断",
+  resource_limit: "保存量の上限で中断",
+  error: "エラーで中断",
 };
 
 export function DiscoveryProgress({ search, onDefinitions }: { search: Search; onDefinitions: () => void }) {
@@ -48,7 +51,7 @@ export function DiscoveryProgress({ search, onDefinitions }: { search: Search; o
               <td>{i === 0 ? "直近 · " : ""}{duration(s.seconds)}</td>
               <td>+{s.newCandidates}</td><td>+{s.newStrategies}</td><td>+{s.responses}</td>
               <td>{s.scoreChanges.length ? <details className="score-changes"><summary>{s.scoreChanges.length}構成</summary><ul>{s.scoreChanges.map((v) => <li key={v.run}>C{v.run}: {v.before} → {v.after}点</li>)}</ul></details> : "なし"}</td>
-              <td>{({ exhausted: "範囲内完了", time_limit: "時間上限", cancelled: "停止" } as Record<string, string>)[s.reason] || s.reason}</td>
+              <td>{({ exhausted: "範囲内完了", time_limit: "時間上限", cancelled: "停止", resource_limit: "保存量上限", error: "エラー" } as Record<string, string>)[s.reason] || s.reason}</td>
             </tr>)}</tbody>
           </table>
         </div>
