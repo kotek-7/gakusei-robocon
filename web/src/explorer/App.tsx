@@ -18,6 +18,7 @@ import type {
   Replay,
   Search,
 } from "./types";
+import { Candidates } from "./Candidates";
 import { Conditions } from "./Conditions";
 import { Graph } from "./Graph";
 import { Inspector } from "./Inspector";
@@ -28,7 +29,7 @@ export function App() {
     [searches, setSearches] = useState<Search[]>([]),
     [id, setId] = useState(""),
     [baseline, setBaseline] = useState("");
-  const [tab, setTab] = useState("graph"),
+  const [tab, setTab] = useState("candidates"),
     [editing, setEditing] = useState(false),
     [run, setRun] = useState(0),
     [offset, setOffset] = useState(0),
@@ -42,6 +43,7 @@ export function App() {
   const [error, setError] = useState(""),
     [request, setRequest] = useState(false),
     [budget, setBudget] = useState(1000),
+    [seconds, setSeconds] = useState(10),
     [revision, setRevision] = useState(0);
   const [selectionOwner, setSelectionOwner] = useState(id);
   const chosen = useRef(id);
@@ -185,7 +187,7 @@ export function App() {
       setSearches((old) => [s, ...old]);
       setId(s.id);
       setEditing(false);
-      setTab("graph");
+      setTab("candidates");
     });
   }
   async function edge(e: Edge) {
@@ -380,26 +382,53 @@ export function App() {
               </select>
             </label>
             <label>
-              計算上限（両チームの行動の組合せ数）
-              <input
-                type="number"
-                value={budget}
-                min={1}
-                max={1000000}
-                onChange={(e) => setBudget(Number(e.target.value))}
-              />
+              候補探索の時間
+              <select
+                value={seconds}
+                onChange={(e) => setSeconds(Number(e.target.value))}
+              >
+                {[10, 30, 60].map((n) => (
+                  <option key={n} value={n}>
+                    {n}秒
+                  </option>
+                ))}
+              </select>
             </label>
             <button
               className="primary"
-              disabled={!!busy || search.complete}
+              disabled={!!busy}
               onClick={() =>
                 perform(async () => {
-                  await api(`searches/${id}/start`, { budget });
+                  await api(`searches/${id}/discover`, { seconds });
+                  setTab("candidates");
                 })
               }
             >
-              探索を続ける
+              候補を探す
             </button>
+            <details className="exact-search">
+              <summary>詳細な全探索</summary>
+              <label>
+                計算上限（両チームの行動の組合せ数）
+                <input
+                  type="number"
+                  value={budget}
+                  min={1}
+                  max={1000000}
+                  onChange={(e) => setBudget(Number(e.target.value))}
+                />
+              </label>
+              <button
+                disabled={!!busy || search.complete}
+                onClick={() =>
+                  perform(async () => {
+                    await api(`searches/${id}/start`, { budget });
+                  })
+                }
+              >
+                全探索を続ける
+              </button>
+            </details>
             <button
               disabled={!["running", "evaluating"].includes(search.status)}
               onClick={() =>
@@ -445,6 +474,7 @@ export function App() {
           )}
           <nav className="tabs" aria-label="探索表示">
             {[
+              ["candidates", "作戦候補"],
               ["graph", "グラフ・3D"],
               ["evaluation", "評価・比較"],
               ["model", "モデル・前提"],
@@ -458,7 +488,29 @@ export function App() {
               </button>
             ))}
           </nav>
-          {tab === "graph" ? (
+          {tab === "candidates" ? (
+            <main>
+              <Candidates
+                search={search}
+                model={model}
+                onOpen={(r, evidence) => {
+                  const owner = id;
+                  perform(async () => {
+                    const data = await api<Replay>(`searches/${id}/replay`, {
+                      edges: evidence.path,
+                    });
+                    if (chosen.current !== owner) return;
+                    switchRun(r);
+                    setNode(evidence.node);
+                    setTrail(evidence.path);
+                    setReplay(data);
+                    setTime(data.frames[0]?.t || 0);
+                    setTab("graph");
+                  });
+                }}
+              />
+            </main>
+          ) : tab === "graph" ? (
             <main className="workbench">
               <div className="graph-area">
                 <div className="section-title">
@@ -613,7 +665,7 @@ export function App() {
               </dl>
               <p>
                 モデル：{model.version}
-                。設定した構成・初期局面・行動単位の範囲で全探索します。
+                。候補探索と、詳細な行動単位の全探索を別に実行できます。
               </p>
               <ul>
                 {model.scope.map((s) => (

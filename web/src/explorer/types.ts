@@ -79,7 +79,7 @@ export type Strategy = {
 };
 export type Evaluation = {
   classification: string;
-  cut: number;
+  cut: number | null;
   meaning: string;
   runs: {
     run: number;
@@ -120,6 +120,7 @@ export type Search = {
   totalRuns: string;
   complete: boolean;
   evaluation: Evaluation | null;
+  discovery: Discovery | null;
 };
 export type Model = {
   version: string;
@@ -175,4 +176,39 @@ export type Replay = {
   frames: Frame[];
   edges: number[];
   events: { t: number; robot: number; phase: string; action: Action }[];
+};
+
+export type Goal = {
+  kind: string;
+  spot?: number;
+  count?: number;
+  at?: number;
+  height?: number;
+};
+export type CandidateEvidence = {
+  node: number;
+  path: number[];
+  scores: number[];
+  strategy: string;
+  milestones: string[][];
+};
+export type Candidate = {
+  id: string;
+  plan: Goal[];
+  baseline: CandidateEvidence;
+  responses: (CandidateEvidence & { kind: string; targets?: number[] })[];
+  pending: number;
+};
+export type Discovery = {
+  elapsed: number;
+  scope: string;
+  complete: false;
+  runs: {
+    run: number;
+    tested: number;
+    frontier: number;
+    variant: Variant;
+    firstCandidateSeconds: number | null;
+    candidates: Candidate[];
+  }[];
 };

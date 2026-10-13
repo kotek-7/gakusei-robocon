@@ -116,7 +116,7 @@ class Store:
                 "complete": str(complete_runs)
                 == str(schema.count_configs(m["config"])),
                 "evaluation": m.get("evaluation"),
-                "discovery": public_discovery(m.get("discovery")),
+                "discovery": public_discovery(m.get("discovery"), m["config"]),
             }
 
     def add_outcomes(self, db, run, src, red, blue, outcomes, c):
@@ -348,7 +348,7 @@ class Store:
             }
 
 
-def public_discovery(report):
+def public_discovery(report, config):
     if report is None:
         return None
     return {
@@ -358,6 +358,7 @@ def public_discovery(report):
         "runs": [
             {
                 "run": int(k),
+                "variant": schema.config_at(config, int(k)),
                 "tested": d["tested"],
                 "frontier": len(d["frontier"]),
                 "firstCandidateSeconds": d["firstCandidateSeconds"],

@@ -10,6 +10,7 @@
 - `explorer/model/actions.py`: 合法操作の列挙と所要時間。
 - `explorer/model/transition.py`: 同時選択、競合、開始・完了イベント。
 - `explorer/search/store.py`: SQLiteの状態グラフ、全入出辺、展開カーソル。バッチの遷移とカーソルを同一トランザクションで確定。
+- `explorer/search/discovery.py`: ルールと状態からの階層目標生成、候補と相手の対応の探索、保存済み経路への接続。詳細モデルの遷移を使う限定探索。
 - `explorer/search/evaluation.py`: 経路と構造分類の集計、同時行動ゲームの線形計画。
 - `explorer/runtime.py`: ローカルの計算ジョブの実行・停止。ブラウザから独立。
 - `explorer/presentation.py`: 保存した状態・遷移から描画用フレームへの射影。再シミュレーションしない。
@@ -19,7 +20,7 @@
 
 ## Webの所有者
 
-`explorer/App.tsx`は保存済み探索の選択、API購読、グラフ・詳細・再生の接続を担う。条件編集はConditions、グラフ描画はGraph、局面操作はInspector、集計表示はEvaluation。3Dはviewport以下でフレームを描画する。
+`explorer/App.tsx`は保存済み探索の選択、API購読、グラフ・詳細・再生の接続を担う。条件編集はConditions、グラフ描画はGraph、局面操作はInspector、集計表示はEvaluation、候補と相手の対応の比較はCandidates。3Dはviewport以下でフレームを描画する。
 
 正本はSQLite。ブラウザが所有するのは編集中の条件、選択ノード/経路、表示ページと再生時刻。計算結果をブラウザで別の競技モデルにかけ直さない。取得リクエストは切替時にabortし、古い局面応答を採用しない。
 

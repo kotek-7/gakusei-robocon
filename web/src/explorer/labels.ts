@@ -11,6 +11,7 @@ const names: Record<string, string> = {
   takeM: "ムスティカを持ち直す",
   retry: "リトライ",
   wait: "待機",
+  delay: "時刻を指定して待機",
   continue: "継続",
 };
 export function actionName(a: {
@@ -25,7 +26,10 @@ export function actionName(a: {
     a.dest && "→ " + locationName(a.dest),
     a.spot !== undefined && "建設スポット " + a.spot,
     a.objects && "物体 " + a.objects.join(", "),
-    a.seconds !== undefined && `次の動作完了まで（最長${a.seconds}秒）`,
+    a.seconds !== undefined &&
+      (a.kind === "delay"
+        ? `${a.seconds}秒`
+        : `次の動作完了まで（最長${a.seconds}秒）`),
   ]
     .filter(Boolean)
     .join(" ");
@@ -125,9 +129,17 @@ export const phaseNames: Record<string, string> = {
 
 export function structuralEventName(raw: string) {
   const [robot, phase, kind, dest, spot, objects] = JSON.parse(raw);
-  const resources: Record<string, string> = { E0: "赤のアースブロック", E1: "青のアースブロック", S: "スカイブロック", M: "ムスティカ" };
+  const resources: Record<string, string> = {
+    E0: "赤のアースブロック",
+    E1: "青のアースブロック",
+    S: "スカイブロック",
+    M: "ムスティカ",
+  };
   const counts = new Map<string, number>();
-  for (const object of objects || []) counts.set(object, (counts.get(object) || 0) + 1);
-  const description = [...counts].map(([kind, count]) => `${resources[kind] || kind} ×${count}`).join("、");
+  for (const object of objects || [])
+    counts.set(object, (counts.get(object) || 0) + 1);
+  const description = [...counts]
+    .map(([kind, count]) => `${resources[kind] || kind} ×${count}`)
+    .join("、");
   return `${robotNames[robot]} ${actionName({ kind, dest: dest ?? undefined, spot: spot ?? undefined })} ${description} ${phaseNames[phase] || phase}`;
 }
