@@ -1,0 +1,468 @@
+[
+  {
+    "secondsRemaining": 6,
+    "redFlip": false,
+    "redDuration": null,
+    "opponentAction": "wait",
+    "blueDuration": 4,
+    "elapsed": 0.031104027999390382,
+    "id": "749fa1ce24de45b3914386589fe8ffbc",
+    "outcomes": [
+      {
+        "node": 2,
+        "path": [
+          1
+        ],
+        "scores": [
+          85,
+          85
+        ],
+        "winner": 0
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 6,
+    "redFlip": false,
+    "redDuration": null,
+    "opponentAction": "flip",
+    "blueDuration": 4,
+    "elapsed": 0.12292187399725663,
+    "id": "bf8b0647b6974c999f30b8f125117c72",
+    "outcomes": [
+      {
+        "node": 6,
+        "path": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "scores": [
+          85,
+          85
+        ],
+        "winner": 0
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 6,
+    "redFlip": true,
+    "redDuration": 2,
+    "opponentAction": "wait",
+    "blueDuration": 4,
+    "elapsed": 0.08443405500293011,
+    "id": "ce06cbbfacfe45048149490df758aa36",
+    "outcomes": [
+      {
+        "node": 4,
+        "path": [
+          1,
+          2,
+          3
+        ],
+        "scores": [
+          125,
+          45
+        ],
+        "winner": 1
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 6,
+    "redFlip": true,
+    "redDuration": 2,
+    "opponentAction": "flip",
+    "blueDuration": 4,
+    "elapsed": 0.1812291099995491,
+    "id": "4dfbd1e4c2a04d61a08036f9d1ada107",
+    "outcomes": [
+      {
+        "node": 7,
+        "path": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "scores": [
+          85,
+          85
+        ],
+        "winner": 0
+      },
+      {
+        "node": 9,
+        "path": [
+          1,
+          7,
+          8
+        ],
+        "scores": [
+          125,
+          45
+        ],
+        "winner": 1
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 6,
+    "redFlip": true,
+    "redDuration": 4,
+    "opponentAction": "wait",
+    "blueDuration": 4,
+    "elapsed": 0.1452547240005515,
+    "id": "bb00c17c84f44ebabd7146df9af7f517",
+    "outcomes": [
+      {
+        "node": 6,
+        "path": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "scores": [
+          125,
+          45
+        ],
+        "winner": 1
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 6,
+    "redFlip": true,
+    "redDuration": 4,
+    "opponentAction": "flip",
+    "blueDuration": 4,
+    "elapsed": 0.27652978200057987,
+    "id": "f6f6f65bf18847f4aa5fcf161c6c66c6",
+    "outcomes": [
+      {
+        "node": 7,
+        "path": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "scores": [
+          85,
+          85
+        ],
+        "winner": 0
+      },
+      {
+        "node": 11,
+        "path": [
+          1,
+          7,
+          8,
+          9,
+          10
+        ],
+        "scores": [
+          125,
+          45
+        ],
+        "winner": 1
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 6,
+    "redFlip": true,
+    "redDuration": 8,
+    "opponentAction": "wait",
+    "blueDuration": 4,
+    "elapsed": 0.20104231000004802,
+    "id": "0ac95920ad6e41869644f7be778badac",
+    "outcomes": [
+      {
+        "node": 7,
+        "path": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "scores": [
+          85,
+          45
+        ],
+        "winner": 1
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 6,
+    "redFlip": true,
+    "redDuration": 8,
+    "opponentAction": "flip",
+    "blueDuration": 4,
+    "elapsed": 0.24884391399973538,
+    "id": "f9b14ffd497647f3a3aa0e4862950107",
+    "outcomes": [
+      {
+        "node": 7,
+        "path": [
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "scores": [
+          85,
+          85
+        ],
+        "winner": 0
+      },
+      {
+        "node": 12,
+        "path": [
+          1,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "scores": [
+          85,
+          45
+        ],
+        "winner": 1
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 2,
+    "redFlip": false,
+    "redDuration": null,
+    "opponentAction": "wait",
+    "blueDuration": 4,
+    "elapsed": 0.031460859998333035,
+    "id": "bf31fe538e7e436dabe253a278518705",
+    "outcomes": [
+      {
+        "node": 2,
+        "path": [
+          1
+        ],
+        "scores": [
+          85,
+          85
+        ],
+        "winner": 0
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 2,
+    "redFlip": false,
+    "redDuration": null,
+    "opponentAction": "flip",
+    "blueDuration": 4,
+    "elapsed": 0.04774253199866507,
+    "id": "6cd2d58646a340a1ab83bf020f7cb754",
+    "outcomes": [
+      {
+        "node": 3,
+        "path": [
+          1,
+          2
+        ],
+        "scores": [
+          85,
+          45
+        ],
+        "winner": 1
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 2,
+    "redFlip": true,
+    "redDuration": 2,
+    "opponentAction": "wait",
+    "blueDuration": 4,
+    "elapsed": 0.06234748499991838,
+    "id": "275ec87f35aa48daafe83b33957fbfe6",
+    "outcomes": [
+      {
+        "node": 3,
+        "path": [
+          1,
+          2
+        ],
+        "scores": [
+          125,
+          45
+        ],
+        "winner": 1
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 2,
+    "redFlip": true,
+    "redDuration": 2,
+    "opponentAction": "flip",
+    "blueDuration": 4,
+    "elapsed": 0.0629818620000151,
+    "id": "d89542b896ba4dd197e4d4f03018ea1a",
+    "outcomes": [
+      {
+        "node": 4,
+        "path": [
+          2,
+          3
+        ],
+        "scores": [
+          85,
+          45
+        ],
+        "winner": 1
+      },
+      {
+        "node": 5,
+        "path": [
+          1,
+          4
+        ],
+        "scores": [
+          125,
+          45
+        ],
+        "winner": 1
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 2,
+    "redFlip": true,
+    "redDuration": 4,
+    "opponentAction": "wait",
+    "blueDuration": 4,
+    "elapsed": 0.04487355099990964,
+    "id": "e01ec643baff41729b545458effbc18a",
+    "outcomes": [
+      {
+        "node": 3,
+        "path": [
+          1,
+          2
+        ],
+        "scores": [
+          85,
+          45
+        ],
+        "winner": 1
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 2,
+    "redFlip": true,
+    "redDuration": 4,
+    "opponentAction": "flip",
+    "blueDuration": 4,
+    "elapsed": 0.09811143600018113,
+    "id": "36066e0a917645b386704afc0a340fba",
+    "outcomes": [
+      {
+        "node": 4,
+        "path": [
+          2,
+          3
+        ],
+        "scores": [
+          85,
+          45
+        ],
+        "winner": 1
+      },
+      {
+        "node": 5,
+        "path": [
+          1,
+          4
+        ],
+        "scores": [
+          85,
+          45
+        ],
+        "winner": 1
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 2,
+    "redFlip": true,
+    "redDuration": 8,
+    "opponentAction": "wait",
+    "blueDuration": 4,
+    "elapsed": 0.05936345200098003,
+    "id": "8e959a380f044ff18baab05b0903c0d9",
+    "outcomes": [
+      {
+        "node": 3,
+        "path": [
+          1,
+          2
+        ],
+        "scores": [
+          85,
+          45
+        ],
+        "winner": 1
+      }
+    ]
+  },
+  {
+    "secondsRemaining": 2,
+    "redFlip": true,
+    "redDuration": 8,
+    "opponentAction": "flip",
+    "blueDuration": 4,
+    "elapsed": 0.08806004600046435,
+    "id": "f979cde19054444eae95b97cde07f459",
+    "outcomes": [
+      {
+        "node": 4,
+        "path": [
+          2,
+          3
+        ],
+        "scores": [
+          85,
+          45
+        ],
+        "winner": 1
+      },
+      {
+        "node": 5,
+        "path": [
+          1,
+          4
+        ],
+        "scores": [
+          85,
+          45
+        ],
+        "winner": 1
+      }
+    ]
+  }
+]

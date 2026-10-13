@@ -1,0 +1,1516 @@
+{
+  "case": "end2-six",
+  "config": {
+    "version": "finite-operations-1",
+    "name": "実用性検証・end2-six",
+    "scenario": "custom",
+    "horizon": 180,
+    "rules": {
+      "retry_payload": "retain",
+      "br_ramp": false,
+      "sky_relocate": false,
+      "repeat_transfer": false,
+      "placed_mustika": false,
+      "conflict": "branch",
+      "mandate": "simultaneous"
+    },
+    "profiles": {
+      "move": [
+        0.8,
+        0.5,
+        0.3
+      ],
+      "pick": [
+        1,
+        2,
+        4
+      ],
+      "place": [
+        2,
+        4,
+        7
+      ],
+      "flip": [
+        2,
+        4,
+        8
+      ],
+      "handover": [
+        1,
+        2,
+        4
+      ],
+      "retry": [
+        5,
+        10,
+        15
+      ]
+    },
+    "teams": [
+      {
+        "caps": {
+          "ramp": [
+            true
+          ],
+          "stairs1": [
+            true
+          ],
+          "stairs2": [
+            true
+          ],
+          "flip": [
+            false,
+            true
+          ],
+          "reposition": [
+            true
+          ],
+          "earth": [
+            true
+          ],
+          "sky": [
+            true
+          ],
+          "mustika": [
+            true
+          ],
+          "direct": [
+            true
+          ],
+          "mixed": [
+            true
+          ],
+          "capacity_tr": [
+            3
+          ],
+          "capacity_br": [
+            2
+          ]
+        },
+        "speeds": {
+          "move": [
+            1
+          ],
+          "pick": [
+            1
+          ],
+          "place": [
+            1
+          ],
+          "flip": [
+            0,
+            1,
+            2
+          ],
+          "handover": [
+            1
+          ],
+          "retry": [
+            1
+          ]
+        }
+      },
+      {
+        "caps": {
+          "ramp": [
+            true
+          ],
+          "stairs1": [
+            true
+          ],
+          "stairs2": [
+            true
+          ],
+          "flip": [
+            true
+          ],
+          "reposition": [
+            true
+          ],
+          "earth": [
+            true
+          ],
+          "sky": [
+            true
+          ],
+          "mustika": [
+            true
+          ],
+          "direct": [
+            true
+          ],
+          "mixed": [
+            true
+          ],
+          "capacity_tr": [
+            3
+          ],
+          "capacity_br": [
+            2
+          ]
+        },
+        "speeds": {
+          "move": [
+            1
+          ],
+          "pick": [
+            1
+          ],
+          "place": [
+            1
+          ],
+          "flip": [
+            1
+          ],
+          "handover": [
+            1
+          ],
+          "retry": [
+            1
+          ]
+        }
+      }
+    ],
+    "starts": [
+      0
+    ],
+    "layouts": [
+      "stacked"
+    ],
+    "root": {
+      "t": 178,
+      "robots": [
+        {
+          "pos": "transfer0",
+          "job": null,
+          "entered": false,
+          "waited": false
+        },
+        {
+          "pos": "spot4-0",
+          "job": null,
+          "entered": true,
+          "waited": false
+        },
+        {
+          "pos": "transfer1",
+          "job": null,
+          "entered": false,
+          "waited": false
+        },
+        {
+          "pos": "spot4-1",
+          "job": null,
+          "entered": true,
+          "waited": false
+        }
+      ],
+      "objects": [
+        {
+          "id": 0,
+          "kind": "E",
+          "owner": 0,
+          "loc": "tower0",
+          "slot": 0,
+          "layer": 0,
+          "face": 0,
+          "delivered": [
+            true,
+            false
+          ]
+        },
+        {
+          "id": 1,
+          "kind": "E",
+          "owner": 0,
+          "loc": "tower0",
+          "slot": 0,
+          "layer": 1,
+          "face": 0,
+          "delivered": [
+            true,
+            false
+          ]
+        },
+        {
+          "id": 2,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 1,
+          "layer": 0,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 3,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 1,
+          "layer": 1,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 4,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 2,
+          "layer": 0,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 5,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 2,
+          "layer": 1,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 6,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 3,
+          "layer": 0,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 7,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 3,
+          "layer": 1,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 8,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 4,
+          "layer": 0,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 9,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 4,
+          "layer": 1,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 10,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 5,
+          "layer": 0,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 11,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 5,
+          "layer": 1,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 12,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 6,
+          "layer": 0,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 13,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 6,
+          "layer": 1,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 14,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 7,
+          "layer": 0,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 15,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 7,
+          "layer": 1,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 16,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 8,
+          "layer": 0,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 17,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 8,
+          "layer": 1,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 18,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 9,
+          "layer": 0,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 19,
+          "kind": "E",
+          "owner": 0,
+          "loc": "store0",
+          "slot": 9,
+          "layer": 1,
+          "face": 0,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 20,
+          "kind": "E",
+          "owner": 1,
+          "loc": "tower4",
+          "slot": 0,
+          "layer": 0,
+          "face": 1,
+          "delivered": [
+            false,
+            true
+          ]
+        },
+        {
+          "id": 21,
+          "kind": "E",
+          "owner": 1,
+          "loc": "tower4",
+          "slot": 0,
+          "layer": 1,
+          "face": 1,
+          "delivered": [
+            false,
+            true
+          ]
+        },
+        {
+          "id": 22,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 1,
+          "layer": 0,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 23,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 1,
+          "layer": 1,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 24,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 2,
+          "layer": 0,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 25,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 2,
+          "layer": 1,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 26,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 3,
+          "layer": 0,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 27,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 3,
+          "layer": 1,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 28,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 4,
+          "layer": 0,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 29,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 4,
+          "layer": 1,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 30,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 5,
+          "layer": 0,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 31,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 5,
+          "layer": 1,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 32,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 6,
+          "layer": 0,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 33,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 6,
+          "layer": 1,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 34,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 7,
+          "layer": 0,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 35,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 7,
+          "layer": 1,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 36,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 8,
+          "layer": 0,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 37,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 8,
+          "layer": 1,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 38,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 9,
+          "layer": 0,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 39,
+          "kind": "E",
+          "owner": 1,
+          "loc": "store1",
+          "slot": 9,
+          "layer": 1,
+          "face": 1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 40,
+          "kind": "S",
+          "owner": -1,
+          "loc": "tower0",
+          "slot": 0,
+          "layer": 2,
+          "face": 0,
+          "delivered": [
+            true,
+            false
+          ]
+        },
+        {
+          "id": 41,
+          "kind": "S",
+          "owner": -1,
+          "loc": "tower4",
+          "slot": 1,
+          "layer": 2,
+          "face": 1,
+          "delivered": [
+            false,
+            true
+          ]
+        },
+        {
+          "id": 42,
+          "kind": "S",
+          "owner": -1,
+          "loc": "groundSky",
+          "slot": 2,
+          "layer": 0,
+          "face": -1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 43,
+          "kind": "S",
+          "owner": -1,
+          "loc": "groundSky",
+          "slot": 3,
+          "layer": 0,
+          "face": -1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 44,
+          "kind": "S",
+          "owner": -1,
+          "loc": "groundSky",
+          "slot": 4,
+          "layer": 0,
+          "face": -1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 45,
+          "kind": "S",
+          "owner": -1,
+          "loc": "groundSky",
+          "slot": 5,
+          "layer": 0,
+          "face": -1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 46,
+          "kind": "S",
+          "owner": -1,
+          "loc": "groundSky",
+          "slot": 6,
+          "layer": 0,
+          "face": -1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 47,
+          "kind": "S",
+          "owner": -1,
+          "loc": "groundSky",
+          "slot": 7,
+          "layer": 0,
+          "face": -1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 48,
+          "kind": "S",
+          "owner": -1,
+          "loc": "groundSky",
+          "slot": 8,
+          "layer": 0,
+          "face": -1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 49,
+          "kind": "S",
+          "owner": -1,
+          "loc": "groundSky",
+          "slot": 9,
+          "layer": 0,
+          "face": -1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 50,
+          "kind": "S",
+          "owner": -1,
+          "loc": "groundSky",
+          "slot": 10,
+          "layer": 0,
+          "face": -1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 51,
+          "kind": "S",
+          "owner": -1,
+          "loc": "groundSky",
+          "slot": 11,
+          "layer": 0,
+          "face": -1,
+          "delivered": [
+            false,
+            false
+          ]
+        },
+        {
+          "id": 52,
+          "kind": "M",
+          "owner": -1,
+          "loc": "groundBall",
+          "slot": 0,
+          "layer": 0,
+          "face": -1,
+          "delivered": [
+            false,
+            false
+          ]
+        }
+      ],
+      "mandate": [
+        false,
+        false
+      ],
+      "ever": [
+        [
+          0
+        ],
+        [
+          4
+        ]
+      ],
+      "transfer": [
+        3,
+        3
+      ]
+    }
+  },
+  "exploreSeconds": 90.672,
+  "evaluationSeconds": 9.058,
+  "checkpoint": {
+    "id": "4978b6d88e734103acd8cbd77fd36d8c",
+    "status": "paused",
+    "nodes": 9555,
+    "edges": 12558,
+    "expanded": 5070,
+    "runs": 6,
+    "completeRuns": 0,
+    "totalRuns": "6",
+    "complete": false,
+    "error": null
+  },
+  "finalStatus": "paused",
+  "finalError": null,
+  "peakRssMiB": 593.4,
+  "databaseMiB": 294.8,
+  "stats": [
+    {
+      "run": 0,
+      "variant": {
+        "layout": "stacked",
+        "start": 0,
+        "teams": [
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": false,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 0,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          },
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": true,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 1,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          }
+        ]
+      },
+      "nodes": 1569,
+      "terminal": 854,
+      "terminalScores": [
+        [
+          85,
+          45
+        ],
+        [
+          85,
+          85
+        ]
+      ],
+      "frontierMin": 179,
+      "frontierMax": 179,
+      "expanded": 886,
+      "jointChoices": 2077
+    },
+    {
+      "run": 1,
+      "variant": {
+        "layout": "stacked",
+        "start": 0,
+        "teams": [
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": false,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 1,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          },
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": true,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 1,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          }
+        ]
+      },
+      "nodes": 1573,
+      "terminal": 858,
+      "terminalScores": [
+        [
+          85,
+          45
+        ],
+        [
+          85,
+          85
+        ]
+      ],
+      "frontierMin": 179,
+      "frontierMax": 179,
+      "expanded": 890,
+      "jointChoices": 2099
+    },
+    {
+      "run": 2,
+      "variant": {
+        "layout": "stacked",
+        "start": 0,
+        "teams": [
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": false,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 2,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          },
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": true,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 1,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          }
+        ]
+      },
+      "nodes": 1586,
+      "terminal": 871,
+      "terminalScores": [
+        [
+          85,
+          45
+        ],
+        [
+          85,
+          85
+        ]
+      ],
+      "frontierMin": 179,
+      "frontierMax": 179,
+      "expanded": 903,
+      "jointChoices": 2120
+    },
+    {
+      "run": 3,
+      "variant": {
+        "layout": "stacked",
+        "start": 0,
+        "teams": [
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": true,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 0,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          },
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": true,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 1,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          }
+        ]
+      },
+      "nodes": 1625,
+      "terminal": 785,
+      "terminalScores": [
+        [
+          85,
+          45
+        ],
+        [
+          85,
+          85
+        ]
+      ],
+      "frontierMin": 179,
+      "frontierMax": 179,
+      "expanded": 814,
+      "jointChoices": 2074
+    },
+    {
+      "run": 4,
+      "variant": {
+        "layout": "stacked",
+        "start": 0,
+        "teams": [
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": true,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 1,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          },
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": true,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 1,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          }
+        ]
+      },
+      "nodes": 1640,
+      "terminal": 800,
+      "terminalScores": [
+        [
+          85,
+          45
+        ],
+        [
+          85,
+          85
+        ]
+      ],
+      "frontierMin": 179,
+      "frontierMax": 179,
+      "expanded": 829,
+      "jointChoices": 2124
+    },
+    {
+      "run": 5,
+      "variant": {
+        "layout": "stacked",
+        "start": 0,
+        "teams": [
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": true,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 2,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          },
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": true,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 1,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          }
+        ]
+      },
+      "nodes": 1562,
+      "terminal": 722,
+      "terminalScores": [
+        [
+          85,
+          45
+        ],
+        [
+          85,
+          85
+        ]
+      ],
+      "frontierMin": 179,
+      "frontierMax": 179,
+      "expanded": 748,
+      "jointChoices": 1979
+    }
+  ],
+  "evaluation": [
+    {
+      "run": 0,
+      "complete": false,
+      "statisticsComplete": false,
+      "historyLimited": false,
+      "rawGraphPaths": "1363",
+      "paths": "786",
+      "groups": 737,
+      "groupWinFraction": 0.30936227951153217,
+      "unresolvedFraction": 0.690637720488464,
+      "distribution": [
+        [
+          0,
+          0.690637720488464
+        ],
+        [
+          40,
+          0.30936227951153217
+        ]
+      ],
+      "guarantee": null,
+      "strategyCount": 737
+    },
+    {
+      "run": 1,
+      "complete": false,
+      "statisticsComplete": false,
+      "historyLimited": false,
+      "rawGraphPaths": "1385",
+      "paths": "786",
+      "groups": 737,
+      "groupWinFraction": 0.30936227951153217,
+      "unresolvedFraction": 0.690637720488464,
+      "distribution": [
+        [
+          0,
+          0.690637720488464
+        ],
+        [
+          40,
+          0.30936227951153217
+        ]
+      ],
+      "guarantee": null,
+      "strategyCount": 737
+    },
+    {
+      "run": 2,
+      "complete": false,
+      "statisticsComplete": false,
+      "historyLimited": false,
+      "rawGraphPaths": "1406",
+      "paths": "786",
+      "groups": 737,
+      "groupWinFraction": 0.30936227951153217,
+      "unresolvedFraction": 0.690637720488464,
+      "distribution": [
+        [
+          0,
+          0.690637720488464
+        ],
+        [
+          40,
+          0.30936227951153217
+        ]
+      ],
+      "guarantee": null,
+      "strategyCount": 737
+    },
+    {
+      "run": 3,
+      "complete": false,
+      "statisticsComplete": false,
+      "historyLimited": false,
+      "rawGraphPaths": "1214",
+      "paths": "782",
+      "groups": 733,
+      "groupWinFraction": 0.3383356070941331,
+      "unresolvedFraction": 0.6616643929058678,
+      "distribution": [
+        [
+          0,
+          0.6616643929058678
+        ],
+        [
+          40,
+          0.3383356070941331
+        ]
+      ],
+      "guarantee": null,
+      "strategyCount": 733
+    },
+    {
+      "run": 4,
+      "complete": false,
+      "statisticsComplete": false,
+      "historyLimited": false,
+      "rawGraphPaths": "1264",
+      "paths": "804",
+      "groups": 755,
+      "groupWinFraction": 0.3417218543046349,
+      "unresolvedFraction": 0.658278145695369,
+      "distribution": [
+        [
+          0,
+          0.658278145695369
+        ],
+        [
+          40,
+          0.3417218543046349
+        ]
+      ],
+      "guarantee": null,
+      "strategyCount": 755
+    },
+    {
+      "run": 5,
+      "complete": false,
+      "statisticsComplete": false,
+      "historyLimited": false,
+      "rawGraphPaths": "1117",
+      "paths": "756",
+      "groups": 707,
+      "groupWinFraction": 0.32814710042432693,
+      "unresolvedFraction": 0.6718528995756757,
+      "distribution": [
+        [
+          0,
+          0.6718528995756757
+        ],
+        [
+          40,
+          0.32814710042432693
+        ]
+      ],
+      "guarantee": null,
+      "strategyCount": 707
+    }
+  ],
+  "evaluationAvailable": true
+}

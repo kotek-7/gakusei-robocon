@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-13",
+  "cpu": "Intel Core Ultra 7 155H",
+  "physicalMemoryGiB": 31,
+  "python": "3.12.3",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "numpy": "1.26.4",
+  "scipy": "1.11.4",
+  "sourceCommit": "96ce9c3940c0b06da808e0105e763c7b2e16a03a",
+  "databaseDirectory": "/tmp/robocon-practical-20261013",
+  "limits": {
+    "initialExploreSeconds": {
+      "start1": 45,
+      "start10": 45,
+      "start180": 60,
+      "end6": 60,
+      "end2-six": 90
+    },
+    "extraStart180Seconds": 240,
+    "evaluationSeconds": 30,
+    "jointChoicesPerInvocation": 1000000,
+    "historyLimit": 30000
+  },
+  "measurementNotes": [
+    "Shared desktop, not an isolated performance benchmark. Brief build/test/probe tasks overlapped some samples.",
+    "Peak RSS is the whole measurement Python process, including SQLite inspection, decoded states and evaluation. It is not the server-only RSS.",
+    "Exploration uses Runtime.start and unchanged default model/pruning. Scenario/horizon/red flip capability/profile are the only case-specific settings.",
+    "Specified-action cases restrict the chosen actions and enumerate their conflict outcomes only; they are not exhaustive strategy searches."
+  ]
+}
