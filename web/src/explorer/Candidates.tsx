@@ -21,6 +21,7 @@ export function Candidates({
 }) {
   const [run, setRun] = useState("all");
   const report = search.discovery;
+  const selectedRun = report?.runs.find((r) => String(r.run) === run);
   function configuration(v: Variant) {
     return v.teams
       .flatMap((team, t) => [
@@ -83,13 +84,7 @@ export function Candidates({
               計算時間 {report.elapsed.toFixed(1)}秒 · {rows.length}候補
             </span>
           </div>
-          {run !== "all" && (
-            <p>
-              {configuration(
-                report.runs.find((r) => String(r.run) === run)!.variant,
-              )}
-            </p>
-          )}
+          {selectedRun && <p>{configuration(selectedRun.variant)}</p>}
           <p>
             点差は確認済みの対応内の値で、保証ではありません。未検証件数も併せて比較してください。相手待機は対照条件です。
           </p>

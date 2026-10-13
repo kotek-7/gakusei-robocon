@@ -491,6 +491,7 @@ export function App() {
           {tab === "candidates" ? (
             <main>
               <Candidates
+                key={id}
                 search={search}
                 model={model}
                 onOpen={(r, evidence) => {
