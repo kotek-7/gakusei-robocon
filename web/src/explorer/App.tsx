@@ -1,5 +1,13 @@
+import {
+  competitionName,
+  modelDisplayLabels,
+  ruleAssumption,
+  glossary,
+  phaseNames,
+} from "./labels";
 import { useEffect, useRef, useState } from "react";
-import { api, saveJSON, statusName, actionName, robotNames } from "./api";
+import { api, saveJSON } from "./api";
+import { statusName, actionName, robotNames } from "./labels";
 import type {
   Action,
   Config,
@@ -66,7 +74,7 @@ export function App() {
   useEffect(() => {
     const c = new AbortController();
     api<Model>("model", undefined, c.signal)
-      .then(setModel)
+      .then((data) => setModel(modelDisplayLabels(data)))
       .catch((e) => {
         if (!c.signal.aborted)
           setError(
@@ -294,9 +302,7 @@ export function App() {
           </svg>
           <h1>作戦探索</h1>
         </div>
-        <span className="header-context">
-          ABU 2027 · 状態遷移エクスプローラ
-        </span>
+        <span className="header-context">{competitionName}</span>
         <div className="header-actions">
           <button
             onClick={() => {
@@ -375,7 +381,7 @@ export function App() {
               </select>
             </label>
             <label>
-              今回の計算上限（共同選択）
+              計算上限（両チームの行動の組合せ数）
               <input
                 type="number"
                 value={budget}
@@ -592,6 +598,21 @@ export function App() {
             <main className="model-document">
               <h2>モデルと探索範囲</h2>
               <p>
+                {competitionName}の作戦検討用です。{ruleAssumption}。
+              </p>
+              <p>用語は手元の日本語参考訳（非公式）に合わせています。</p>
+              <h3>競技と探索の用語</h3>
+              <dl>
+                {glossary.map(([term, description]) => (
+                  <div key={term}>
+                    <dt>
+                      <b>{term}</b>
+                    </dt>
+                    <dd>{description}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p>
                 モデル：{model.version}
                 。設定した構成・初期局面・行動単位の範囲で全探索します。
               </p>
@@ -608,7 +629,7 @@ export function App() {
                 未探索は到達不能や0勝ではありません。同じ計算上限でも、構成ごとの網羅率は一致しません。途中の分布は発見済みの範囲です。
               </p>
               <p>
-                勝敗割合は展開の集計であり、実大会の勝率ではありません。勝ち保証は探索完了時だけ、相手の同時選択と不利な競合を含めて計算します。
+                勝敗割合は展開の集計であり、実大会の勝率ではありません。勝利確率の保証値は探索完了時だけ、相手の同時選択と不利な競合を含めて計算します。
               </p>
               <h3>適用した条件</h3>
               <pre>{JSON.stringify(search.config, null, 2)}</pre>
@@ -616,7 +637,7 @@ export function App() {
           )}
           {replay && tab === "graph" && (
             <details className="timeline">
-              <summary>選択経路のイベント {replay.events.length}件</summary>
+              <summary>選択経路の動作履歴 {replay.events.length}件</summary>
               <table>
                 <thead>
                   <tr>
@@ -640,17 +661,7 @@ export function App() {
                         </button>
                       </td>
                       <td>{robotNames[e.robot]}</td>
-                      <td>
-                        {
-                          (
-                            {
-                              start: "開始",
-                              finish: "完了",
-                              blocked: "競合で不成立",
-                            } as Record<string, string>
-                          )[e.phase]
-                        }
-                      </td>
+                      <td>{phaseNames[e.phase] || e.phase}</td>
                       <td>{actionName(e.action)}</td>
                     </tr>
                   ))}

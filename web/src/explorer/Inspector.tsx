@@ -1,6 +1,8 @@
+import { objectNames } from "./labels";
 import { useState } from "react";
 import type { Action, Detail, Edge } from "./types";
-import { actionName, robotNames, saveJSON, locationName } from "./api";
+import { saveJSON } from "./api";
+import { actionName, robotNames, locationName } from "./labels";
 export function Inspector({
   detail,
   busy,
@@ -60,11 +62,11 @@ export function Inspector({
         </tbody>
       </table>
       <p className="qualification">
-        資格：赤 {detail.state.mandate[0] ? "成立" : "未成立"} ／ 青{" "}
-        {detail.state.mandate[1] ? "成立" : "未成立"}
+        ムスティカ取得条件：赤 {detail.state.mandate[0] ? "成立" : "未成立"} ／
+        青 {detail.state.mandate[1] ? "成立" : "未成立"}
       </p>
       <details open>
-        <summary>合法行動から次の局面へ</summary>
+        <summary>選べる行動から次の局面へ</summary>
         {detail.actions.every((a) => a.length > 0) ? (
           <>
             <p>
@@ -151,7 +153,7 @@ export function Inspector({
             {detail.state.objects.map((o) => (
               <tr key={o.id}>
                 <td>{o.id}</td>
-                <td>{o.kind}</td>
+                <td>{objectNames[o.kind] || o.kind}</td>
                 <td>{locationName(o.loc)}</td>
                 <td>{o.delivered.map((v) => (v ? "有" : "無")).join(" / ")}</td>
               </tr>

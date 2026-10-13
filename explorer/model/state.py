@@ -172,32 +172,32 @@ def validate(s):
         "ever",
         "transfer",
     }:
-        raise ValueError("Invalid state fields")
+        raise ValueError("局面データの項目が不正です")
     if type(s.get("t")) is not int or not 0 <= s["t"] <= 180:
-        raise ValueError("Invalid state time")
+        raise ValueError("局面の時刻が不正です")
     if len(s["objects"]) != 53 or [o["id"] for o in s["objects"]] != list(range(53)):
-        raise ValueError("Object identity conservation")
+        raise ValueError("競技物体の個数またはIDが不正です")
     if len(s["robots"]) != 4:
-        raise ValueError("Four robots required")
+        raise ValueError("両チーム合わせて4台の機体が必要です")
     if len(s["mandate"]) != 2 or any(type(v) is not bool for v in s["mandate"]):
-        raise ValueError("Invalid qualifications")
+        raise ValueError("ムスティカ取得条件の成立状態が不正です")
     if len(s["transfer"]) != 2 or any(
         type(v) is not int or v < 0 for v in s["transfer"]
     ):
-        raise ValueError("Invalid transfer points")
+        raise ValueError("受け渡し得点が不正です")
     if len(s["ever"]) != 2 or any(
         any(type(i) is not int or i not in range(10) for i in a) for a in s["ever"]
     ):
-        raise ValueError("Invalid tower history")
+        raise ValueError("タワーの完成履歴が不正です")
     for i, r in enumerate(s["robots"]):
         if (
             r["pos"] not in NODES
             or NODES[r["pos"]]["team"] not in (-1, i // 2)
             or ("BR" if i % 2 else "TR") not in NODES[r["pos"]]["roles"]
         ):
-            raise ValueError("Invalid robot position")
+            raise ValueError("機体の位置が不正です")
         if type(r["entered"]) is not bool or type(r["waited"]) is not bool:
-            raise ValueError("Invalid robot flags")
+            raise ValueError("機体の進入・待機状態が不正です")
         if r["job"]:
             j = r["job"]
             if (
@@ -206,7 +206,7 @@ def validate(s):
                 or type(j["start"]) is not int
                 or not 0 <= j["start"] <= s["t"]
             ):
-                raise ValueError("Invalid pending job time")
+                raise ValueError("実行中の動作の時刻が不正です")
     places = (
         {"groundSky", "groundBall", "pillar", "store0", "store1", "buffer0", "buffer1"}
         | {f"robot{i}" for i in range(4)}
@@ -215,29 +215,29 @@ def validate(s):
     for o in s["objects"]:
         kind = "E" if o["id"] < 40 else "S" if o["id"] < 52 else "M"
         if o["kind"] != kind or o["loc"] not in places:
-            raise ValueError("Invalid object kind/location")
+            raise ValueError("競技物体の種類または所在が不正です")
         if (
             type(o["owner"]) is not int
             or o["owner"] not in (-1, 0, 1)
             or type(o["face"]) is not int
             or o["face"] not in (-1, 0, 1)
         ):
-            raise ValueError("Invalid object owner/color")
+            raise ValueError("競技物体の所属または色が不正です")
         if kind == "E" and o["owner"] != o["id"] // 20:
-            raise ValueError("Earth ownership changed")
+            raise ValueError("アースブロックの所属が元のチームと一致しません")
         if len(o["delivered"]) != 2 or any(type(v) is not bool for v in o["delivered"]):
-            raise ValueError("Invalid delivery history")
+            raise ValueError("受け渡し得点の加点履歴が不正です")
         if (
             type(o["layer"]) is not int
             or o["layer"] < 0
             or type(o["slot"]) is not int
             or o["slot"] < 0
         ):
-            raise ValueError("Invalid object layer")
+            raise ValueError("競技物体の段数または配置番号が不正です")
         if o["loc"] == "pillar" and (
             kind != "M" or o["owner"] not in (0, 1) or not s["mandate"][o["owner"]]
         ):
-            raise ValueError("Invalid enshrinement")
+            raise ValueError("中央柱へのムスティカの設置状態が不正です")
         if kind == "M" and o["loc"] not in {
             "groundBall",
             "pillar",
@@ -248,7 +248,7 @@ def validate(s):
             "robot2",
             "robot3",
         }:
-            raise ValueError("Invalid Mustika location")
+            raise ValueError("ムスティカの所在が不正です")
     for i in range(10):
         ts = tower(s, i)
         if (
@@ -256,7 +256,7 @@ def validate(s):
             or [o["layer"] for o in ts] != list(range(len(ts)))
             or any(o["kind"] != ("S" if k == 2 else "E") for k, o in enumerate(ts))
         ):
-            raise ValueError("Invalid tower support")
+            raise ValueError("タワーの積み順が不正です")
     for r in range(4):
         ps = payload(s, r)
         if (
@@ -264,7 +264,7 @@ def validate(s):
             or any(o["kind"] == "M" for o in ps)
             and len(ps) > 1
         ):
-            raise ValueError("Payload overflow")
+            raise ValueError("積載数の上限または混載条件を満たしていません")
 
 
 def snapshot(s):

@@ -22,13 +22,13 @@ CAP_LABELS = {
     "ramp": "GND–L1 スロープ",
     "stairs1": "GND–L1 階段",
     "stairs2": "L1–L2 階段",
-    "flip": "Sky反転",
-    "reposition": "再把持・再配置",
-    "earth": "Earth取扱い",
-    "sky": "Sky取扱い",
-    "mustika": "Mustika取扱い",
-    "direct": "直接受渡し",
-    "mixed": "Earth / Sky混載",
+    "flip": "スカイブロックを裏返す",
+    "reposition": "持ち直す・置き直す",
+    "earth": "アースブロックを扱う",
+    "sky": "スカイブロックを扱う",
+    "mustika": "ムスティカを扱う",
+    "direct": "直接受け渡し",
+    "mixed": "アースブロック・スカイブロックの混載",
     "capacity_tr": "TR積載数",
     "capacity_br": "BR積載数",
 }
@@ -44,8 +44,8 @@ PROFILE_LABELS = {
     "move": "走行速度 m/s",
     "pick": "取得 秒",
     "place": "設置 秒",
-    "flip": "反転 秒",
-    "handover": "受渡し 秒",
+    "flip": "裏返す 秒",
+    "handover": "受け渡し 秒",
     "retry": "リトライ 秒",
 }
 RULES = {
@@ -60,11 +60,11 @@ RULES = {
 RULE_OPTIONS = {
     "retry_payload": (["retain", "return"], "リトライ時のブロック", "5.1.1 / 5.3.2"),
     "br_ramp": ([False, True], "BRスロープ利用", "4.3.2"),
-    "sky_relocate": ([False, True], "Skyの他地点への移設", "3.5.8"),
-    "repeat_transfer": ([False, True], "同一物体の再搬送加点", "8.1"),
-    "placed_mustika": ([False, True], "奉納済みMustikaの取り外し", "明文未確認"),
+    "sky_relocate": ([False, True], "スカイブロックの別スポットへの移設", "3.5.8"),
+    "repeat_transfer": ([False, True], "同じ競技物体への受け渡し得点の再加算", "8.1"),
+    "placed_mustika": ([False, True], "設置済みムスティカの取り外し", "明文未確認"),
     "conflict": (["branch", "red", "blue"], "同時取得・操作の競合", "6.6 / モデル仮定"),
-    "mandate": (["simultaneous", "historical"], "資格の塔数判定", "3.6.1–2"),
+    "mandate": (["simultaneous", "historical"], "ムスティカ取得条件のタワー数判定", "3.6.1–2"),
 }
 
 
@@ -113,7 +113,7 @@ def validate(c):
         raise ValueError("規則設定が不足しています")
     for k, (opts, _, _) in RULE_OPTIONS.items():
         if not any(type(c["rules"][k]) is type(x) and c["rules"][k] == x for x in opts):
-            raise ValueError(f"不正な規則設定: {k}")
+            raise ValueError(f"不正なルール設定: {RULE_OPTIONS[k][1]}")
     if set(c.get("profiles", {})) != set(PROFILES):
         raise ValueError("数値プロファイルが不足しています")
     for k, vals in c["profiles"].items():
@@ -125,7 +125,7 @@ def validate(c):
                 for v in vals
             )
         ):
-            raise ValueError(f"正の3段階値が必要です: {k}")
+            raise ValueError(f"正の3段階値が必要です: {PROFILE_LABELS[k]}")
     if len(c.get("teams", [])) != 2:
         raise ValueError("赤青の2構成が必要です")
     for team in c["teams"]:
@@ -147,14 +147,14 @@ def validate(c):
                     for v in vals
                 )
             ):
-                raise ValueError(f"不正な能力: {k}")
+                raise ValueError(f"不正な能力設定: {CAP_LABELS[k]}")
         for k, vals in team["speeds"].items():
             if (
                 not vals
                 or len(vals) != len(set(vals))
                 or any(type(v) is not int or v not in (0, 1, 2) for v in vals)
             ):
-                raise ValueError(f"不正な段階: {k}")
+                raise ValueError(f"不正な段階設定: {PROFILE_LABELS[k]}")
     for key, allowed in [("starts", [0, 1, 2, 3]), ("layouts", ["stacked", "single"])]:
         vals = c.get(key)
         if (
@@ -220,7 +220,7 @@ def metadata():
             "1秒単位。通常動作は区間終了まで継続",
             "全盤面観測。相手の今回の選択は非公開",
             "経路は代表機体の通路。接触力学・転倒・把持軌道は対象外",
-            "数値は仮定。fast / normal / slow は項目別に独立",
+            "数値は仮定。速い／標準／遅いの3段階は項目ごとに独立",
             "未確定解釈の選択肢は公式裁定ではありません",
         ],
     }

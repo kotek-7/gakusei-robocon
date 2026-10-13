@@ -48,7 +48,7 @@ export function Comparison({
     <section className="comparison">
       <h3>赤の同じ構成で、相手構成を比較</h3>
       <p>
-        {peers.length} 構成を集計済み。赤勝ち割合の範囲{" "}
+        {peers.length} 構成を集計済み。赤が勝つ展開の割合の範囲{" "}
         {fractions.length
           ? `${pct(Math.min(...fractions))}–${pct(Math.max(...fractions))}`
           : "未確定"}
@@ -59,7 +59,7 @@ export function Comparison({
           <tr>
             <th>対戦構成</th>
             <th>網羅</th>
-            <th>群等重みの赤勝ち割合</th>
+            <th>赤が勝つ展開の割合（グループ等重み）</th>
             <th>未決割合</th>
             <th>点差の範囲</th>
           </tr>
@@ -92,7 +92,7 @@ export function Comparison({
               <tr>
                 <th>探索・構成</th>
                 <th>網羅</th>
-                <th>群等重みの赤勝ち割合</th>
+                <th>赤が勝つ展開の割合（グループ等重み）</th>
                 <th>選択中との差</th>
               </tr>
             </thead>

@@ -1,5 +1,5 @@
 import type { Strategy } from "./types";
-import { actionName, robotNames } from "./api";
+import { structuralEventName } from "./labels";
 
 type Branch = {
   batch: string[];
@@ -7,10 +7,7 @@ type Branch = {
   ids: string[];
   leaves: string[];
 };
-function eventName(raw: string) {
-  const [robot, phase, kind, dest, spot, objects] = JSON.parse(raw);
-  return `${robotNames[robot]} ${actionName({ kind, dest: dest ?? undefined, spot: spot ?? undefined, objects: objects ?? undefined })} ${phase === "start" ? "開始" : phase === "finish" ? "完了" : "競合で中断"}`;
-}
+
 export function Classification({
   strategies,
   onSelect,
@@ -48,12 +45,12 @@ export function Classification({
           <li key={key}>
             <details>
               <summary>
-                第{depth}バッチ · {b.ids.length} 作戦 · {b.batch.length}{" "}
-                イベント
+                同時刻の動作 {depth}組目 · {b.ids.length} 作戦 ·{" "}
+                {b.batch.length} 動作の記録
               </summary>
               <ul>
                 {b.batch.map((e) => (
-                  <li key={e}>{eventName(e)}</li>
+                  <li key={e}>{structuralEventName(e)}</li>
                 ))}
               </ul>
               <button onClick={() => onSelect(b.ids)}>
@@ -69,7 +66,9 @@ export function Classification({
   return (
     <details className="classification">
       <summary>分類階層をたどる</summary>
-      <p>同時刻のイベントを1バッチとして、共通の先頭部分で分かれます。</p>
+      <p>
+        動作の開始・完了などを同時刻ごとにまとめ、共通の先頭部分で分かれます。
+      </p>
       {branches(root, 1)}
     </details>
   );

@@ -701,7 +701,7 @@ dd {
 }
 @media (max-width: 1050px) {
   .header-context {
-    display: none;
+    display: block;
   }
   .workbench {
     grid-template-columns: minmax(0, 1fr) 350px;
@@ -721,6 +721,10 @@ dd {
   }
 }
 @media (max-width: 760px) {
+  .header-context {
+    order: 3;
+    width: 100%;
+  }
   .app-header {
     padding: 12px;
     gap: 12px;

@@ -187,14 +187,14 @@ def team_choices(s, team, config, v):
 NAMES = {
     "move": "移動",
     "pick": "取得",
-    "drop": "受渡し床へ解放",
-    "give": "直接受渡し",
-    "receive": "直接受取",
+    "drop": "受け渡しエリアの床に置く",
+    "give": "直接渡す",
+    "receive": "直接受け取る",
     "place": "設置",
-    "take": "再把持",
-    "flip": "反転",
-    "placeM": "Mustika設置",
-    "takeM": "Mustika再把持",
+    "take": "持ち直す",
+    "flip": "スカイブロックを裏返す",
+    "placeM": "ムスティカを設置",
+    "takeM": "ムスティカを持ち直す",
     "retry": "リトライ",
     "wait": "待機",
     "continue": "継続",
@@ -206,7 +206,7 @@ def label(a, r=None):
     if a.get("dest"):
         text += " → " + a["dest"]
     if "spot" in a:
-        text += f" 地点{a['spot']}"
+        text += f" 建設スポット{a['spot']}"
     if "objects" in a:
         text += " [" + ",".join(map(str, a["objects"])) + "]"
     if a["kind"] == "wait":

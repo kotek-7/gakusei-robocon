@@ -64,12 +64,12 @@ def make_handler(runtime, static):
                     elif op == "export":
                         self.send(st.export())
                     else:
-                        self.send({"error": "Not found"}, 404)
+                        self.send({"error": "指定されたデータが見つかりません"}, 404)
                     return
                 rel = unquote(u.path).lstrip("/") or "index.html"
                 p = (static / rel).resolve()
                 if not p.is_relative_to(static.resolve()):
-                    self.send({"error": "Not found"}, 404)
+                    self.send({"error": "指定されたデータが見つかりません"}, 404)
                     return
                 if not p.is_file():
                     self.send(
@@ -102,12 +102,12 @@ def make_handler(runtime, static):
                     "localhost",
                     "127.0.0.1",
                 ):
-                    self.send({"error": "Local origin required"}, 403)
+                    self.send({"error": "このPCのアプリ画面から操作してください"}, 403)
                     return
                 if not self.headers.get("Content-Type", "").startswith(
                     "application/json"
                 ):
-                    self.send({"error": "JSON required"}, 415)
+                    self.send({"error": "JSON形式で送信してください"}, 415)
                     return
                 length = int(self.headers.get("Content-Length", "0"))
                 if not 0 < length <= 2000000:
@@ -121,7 +121,7 @@ def make_handler(runtime, static):
                     self.send(Store.create(runtime.directory, data).summary(), 201)
                     return
                 if parts[:2] != ["api", "searches"] or len(parts) != 4:
-                    self.send({"error": "Not found"}, 404)
+                    self.send({"error": "指定されたデータが見つかりません"}, 404)
                     return
                 st = runtime.get(parts[2])
                 op = parts[3]
@@ -150,7 +150,7 @@ def make_handler(runtime, static):
                 elif op == "replay":
                     self.send(replay(st, data["edges"]))
                 else:
-                    self.send({"error": "Not found"}, 404)
+                    self.send({"error": "指定されたデータが見つかりません"}, 404)
             except (BrokenPipeError, ConnectionResetError):
                 return
             except (ValueError, KeyError, TypeError) as e:

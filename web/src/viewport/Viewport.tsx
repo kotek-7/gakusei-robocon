@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { actionName, locationName } from "../explorer/api";
+import { actionName, locationName } from "../explorer/labels";
 import type { Frame } from "../explorer/types";
 import type { createScene } from "./scene.js";
 export function Viewport({

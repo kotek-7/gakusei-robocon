@@ -110,7 +110,7 @@ def successors(s, red, blue, config, v):
     """One outcome for each distinct arbitration result; no stochastic probability."""
     for r, a in enumerate(red + blue):
         if a not in legal(s, r, config, v):
-            raise ValueError("Illegal snapshot choice")
+            raise ValueError("この局面では選べない行動です")
     priorities = (
         [0, 1]
         if config["rules"]["conflict"] == "branch"
@@ -130,7 +130,7 @@ def successors(s, red, blue, config, v):
         if any(j["action"]["kind"] not in ("wait", "retry") for j in jobs):
             nxt = min(nxt, s["t"] + 1)
         if nxt <= s["t"]:
-            raise ValueError("Non-increasing model time")
+            raise ValueError("遷移後の時刻が進んでいません")
         child["t"] = nxt
         for team in (priority, 1 - priority):
             for r in (team * 2, team * 2 + 1):

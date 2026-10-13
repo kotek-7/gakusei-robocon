@@ -97,7 +97,7 @@ def margin_with_win(a, b, v):
 def analyze(store, history_limit=30000, cancel=None):
     def check_cancel():
         if cancel and cancel.is_set():
-            raise InterruptedError("Evaluation paused")
+            raise InterruptedError("集計を停止しました")
 
     config = store.config()
     all_results = []
@@ -285,7 +285,7 @@ def analyze(store, history_limit=30000, cancel=None):
                     for e in out[nid]:
                         cells[dumps(e["red"]), dumps(e["blue"])].append(vals[e["dst"]])
                     if any((a, b) not in cells for a in rows for b in cols):
-                        raise ValueError("Complete node is missing joint actions")
+                        raise ValueError("探索済み局面に未処理の行動の組合せがあります")
                     lower = [
                         [min(v[0] for v in cells[a, b]) for b in cols] for a in rows
                     ]
@@ -309,14 +309,14 @@ def analyze(store, history_limit=30000, cancel=None):
                     "winUpper": vals[run["root"]][1],
                     "marginLower": vals[run["root"]][2],
                     **policy,
-                    "meaning": "同時行動の勝敗保証。不確定競合は不利なケース。得点差は勝敗保証を維持する保守的下限。",
+                    "meaning": "モデル内で相手が最善の行動を選ぶ場合の勝利確率です。同時操作の競合は不利な結果も考慮します。点差は勝利確率の保証を維持する保守的な下限です。",
                 }
             all_results.append(result)
     report = {
         "classification": CLASS_VERSION,
         "cut": 3,
         "runs": all_results,
-        "meaning": "展開群を等重み、群内の厳密展開は等重み。実大会の勝率ではない。未完了の値は発見済み展開の統計。",
+        "meaning": "展開グループを等重みとし、各グループ内の試合展開も等重みで集計します。実大会の勝率ではありません。未完了の値は発見済みの範囲です。",
     }
     check_cancel()
     store.set_meta("evaluation", report)

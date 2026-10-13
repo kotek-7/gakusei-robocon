@@ -1,6 +1,8 @@
+import { profileNames } from "./labels";
 import { useState } from "react";
 import type { Model, Config } from "./types";
 import { api, saveJSON } from "./api";
+
 export function Conditions({
   model,
   initial,
@@ -177,7 +179,7 @@ export function Conditions({
         <thead>
           <tr>
             <th>項目</th>
-            {["fast", "normal", "slow"].map((n) => (
+            {profileNames.map((n) => (
               <th key={n}>{n}</th>
             ))}
           </tr>
@@ -190,17 +192,13 @@ export function Conditions({
                 <td key={i}>
                   <label className="profile">
                     <input
-                      aria-label={
-                        label + " " + ["fast", "normal", "slow"][i] + "を探索"
-                      }
+                      aria-label={label + " " + profileNames[i] + "を探索"}
                       type="checkbox"
                       checked={c.teams[team].speeds[k].includes(i)}
                       onChange={() => toggle("speeds", k, i)}
                     />
                     <input
-                      aria-label={
-                        label + " " + ["fast", "normal", "slow"][i] + "の値"
-                      }
+                      aria-label={label + " " + profileNames[i] + "の値"}
                       type="number"
                       min={0.01}
                       max={300}
@@ -224,7 +222,7 @@ export function Conditions({
         <summary>初期配置とルール解釈</summary>
         <p>未確定の解釈を設定します。公式裁定を意味しません。</p>
         <label>
-          開始枠の割当
+          スタートゾーンの割当
           <select
             value={c.starts.length === 4 ? "all" : c.starts[0]}
             onChange={(e) =>
@@ -244,7 +242,7 @@ export function Conditions({
           </select>
         </label>
         <label>
-          Earth初期配置
+          アースブロック初期配置
           <select
             value={c.layouts.length === 2 ? "both" : c.layouts[0]}
             onChange={(e) =>

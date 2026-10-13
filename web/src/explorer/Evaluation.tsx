@@ -1,3 +1,9 @@
+import {
+  structuralEventName,
+  profileNames,
+  evaluationMeaning,
+  guaranteeMeaning,
+} from "./labels";
 import { useState } from "react";
 import { Comparison } from "./Comparison";
 import { Classification } from "./Classification";
@@ -37,7 +43,7 @@ export function Evaluation({
   return (
     <section className="evaluation">
       <h2>展開・作戦・構成の評価</h2>
-      <p>{e.meaning}</p>
+      <p>{evaluationMeaning}</p>
       {baseline && (
         <div className="notice">
           <b>比較対象：{baseline.name}</b>
@@ -76,8 +82,8 @@ export function Evaluation({
                   <tr>
                     <th>構成</th>
                     <th>網羅</th>
-                    <th>展開群</th>
-                    <th>勝ちの保証範囲</th>
+                    <th>展開グループ</th>
+                    <th>勝利確率の保証範囲</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -105,9 +111,9 @@ export function Evaluation({
           <tr>
             <th>構成</th>
             <th>探索</th>
-            <th>展開群</th>
-            <th>厳密経路</th>
-            <th>赤の勝ち保証</th>
+            <th>展開グループ</th>
+            <th>試合展開数（時刻を区別）</th>
+            <th>赤の勝利確率（保証範囲）</th>
           </tr>
         </thead>
         <tbody>
@@ -166,8 +172,7 @@ export function Evaluation({
                 <div key={k}>
                   <dt>{model.profiles[k]}</dt>
                   <dd>
-                    {["fast", "normal", "slow"][v]} /{" "}
-                    {search.config.profiles[k][v]}
+                    {profileNames[v]} / {search.config.profiles[k][v]}
                   </dd>
                 </div>
               ))}
@@ -185,13 +190,13 @@ export function Evaluation({
         <div className="guarantee">
           <h3>相手の最善応答を含む評価</h3>
           <p>
-            赤の勝ち保証：{pct(result.guarantee.winLower)}–
+            赤の勝利確率（保証範囲）：{pct(result.guarantee.winLower)}–
             {pct(result.guarantee.winUpper)}　／　得点差の保守的下限：
             {result.guarantee.marginLower.toFixed(2)}
           </p>
           <p>
-            {result.guarantee.meaning}{" "}
-            残る同点が審判判断になるため、勝ち保証は下限・上限で表示します。
+            {guaranteeMeaning}{" "}
+            残る同点が審判判断になるため、勝利確率は下限・上限で表示します。
           </p>
         </div>
       )}
@@ -199,8 +204,8 @@ export function Evaluation({
         作戦分類 <small>{e.classification}</small>
       </h3>
       <p>
-        非待機イベントの先頭{e.cut}
-        バッチで固定分割。IDは構造から決まり、条件間で共通です。得点や勝敗で分類していません。
+        待機以外の動作を同時刻ごとにまとめ、先頭{e.cut}
+        組で固定分割。IDは構造から決まり、条件間で共通です。得点や勝敗で分類していません。
       </p>
       <Classification strategies={result.strategies} onSelect={setFilter} />
       {filter && (
@@ -216,10 +221,10 @@ export function Evaluation({
           <thead>
             <tr>
               <th>作戦ID</th>
-              <th>展開群</th>
-              <th>経路数</th>
-              <th>群等重みの赤勝ち割合</th>
-              <th>経路等重み</th>
+              <th>展開グループ</th>
+              <th>試合展開数</th>
+              <th>赤が勝つ展開の割合（グループ等重み）</th>
+              <th>赤が勝つ展開の割合（展開等重み）</th>
               <th>点差分布</th>
             </tr>
           </thead>
@@ -234,13 +239,20 @@ export function Evaluation({
                     </button>
                     <details>
                       <summary>構造</summary>
-                      <pre>
-                        {JSON.stringify(
-                          s.prefix.map((g) => g.map((t) => JSON.parse(t))),
-                          null,
-                          2,
-                        )}
-                      </pre>
+                      <ol>
+                        {s.prefix.map((group, index) => (
+                          <li key={index}>
+                            同時刻の動作 {index + 1}組目
+                            <ul>
+                              {group.map((event) => (
+                                <li key={event}>
+                                  {structuralEventName(event)}
+                                </li>
+                              ))}
+                            </ul>
+                          </li>
+                        ))}
+                      </ol>
                     </details>
                   </td>
                   <td>{s.groups}</td>
