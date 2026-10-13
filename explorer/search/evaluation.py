@@ -10,13 +10,13 @@ import json
 from .store import connect, dumps
 from explorer.model.state import scores, winner
 
-CLASS_VERSION = "resource-prefix-3-v2"
+CLASS_VERSION = "match-milestones-v3"
 
 
 def token(event, state, with_time):
     a = event["action"]
     k = a["kind"]
-    if k in ("wait", "continue"):
+    if k in ("wait", "delay", "continue"):
         return None
     # Object identity is retained: no unproved permutation symmetry is assumed.
     body = [
@@ -45,13 +45,20 @@ def structural(trace):
 
 
 def classification(sig):
-    # Classification ignores travel details; the underlying traces remain intact.
+    # A strategy is the whole ordered sequence of completed construction and
+    # capture milestones. Travel, supply IDs and timing remain in child traces.
     groups = []
     for group in sig:
         operations = []
         for raw in group:
             event = json.loads(raw)
-            if event[2] in ("move", "retry", "wait", "continue"):
+            if event[1] != "finish" or event[2] not in (
+                "place",
+                "flip",
+                "take",
+                "placeM",
+                "takeM",
+            ):
                 continue
             event[5] = sorted(
                 "E0" if i < 20 else "E1" if i < 40 else "S" if i < 52 else "M"
@@ -60,9 +67,8 @@ def classification(sig):
             operations.append(dumps(event))
         if operations:
             groups.append(tuple(sorted(operations)))
-    prefix = tuple(groups[:3])
-    encoded = dumps(prefix)
-    return "S-" + sha256(encoded.encode()).hexdigest()[:12], prefix
+    signature = tuple(groups)
+    return "S-" + sha256(dumps(signature).encode()).hexdigest()[:12], signature
 
 
 def matrix_value(a):
@@ -198,7 +204,7 @@ def analyze(store, history_limit=30000, cancel=None):
                         for x in sorted(
                             e["events"], key=lambda x: (x["t"], x["phase"], x["robot"])
                         )
-                        if x["action"]["kind"] not in ("wait", "continue")
+                        if x["action"]["kind"] not in ("wait", "delay", "continue")
                     )
                     for trace in traces:
                         # Sort a full event stream to merge simultaneous events spanning edges.
@@ -328,7 +334,7 @@ def analyze(store, history_limit=30000, cancel=None):
             all_results.append(result)
     report = {
         "classification": CLASS_VERSION,
-        "cut": 3,
+        "cut": None,
         "runs": all_results,
         "meaning": "展開グループを等重みとし、各グループ内の試合展開も等重みで集計します。実大会の勝率ではありません。未完了の値は発見済みの範囲です。",
     }

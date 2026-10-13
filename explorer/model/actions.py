@@ -21,7 +21,7 @@ def duration(a, config, v, r):
         return max(
             1, math.ceil(EDGES[a["edge"]]["distance"] / profile(config, v, t, "move"))
         )
-    if k == "wait":
+    if k in ("wait", "delay"):
         return a["seconds"]
     name = (
         "pick"
@@ -66,6 +66,10 @@ def concrete_legal(s, r, config, v):
     if robot["job"]:
         return [action("continue")]
     opts = [action("wait", seconds=config["horizon"] - s["t"])]
+    # Repeating this finite choice represents every integer start time. Unlike
+    # event-wait, a delay is not cancelled by another robot completing a job.
+    if config["horizon"] - s["t"] > 1:
+        opts.append(action("delay", seconds=1))
     opts += retries
     held = payload(s, r)
     for eid, dest, e in routes(pos, team, "BR" if role else "TR", caps, rules):
@@ -219,7 +223,8 @@ NAMES = {
     "placeM": "ムスティカを設置",
     "takeM": "ムスティカを持ち直す",
     "retry": "リトライ",
-    "wait": "待機",
+    "wait": "次の動作完了まで待機",
+    "delay": "時刻を指定して待機",
     "continue": "継続",
 }
 
@@ -232,6 +237,6 @@ def label(a, r=None):
         text += f" 建設スポット{a['spot']}"
     if "objects" in a:
         text += " [" + ",".join(map(str, a["objects"])) + "]"
-    if a["kind"] == "wait":
+    if a["kind"] in ("wait", "delay"):
         text += f" {a['seconds']}秒"
     return (ROBOT_NAMES[r] + " " if r is not None else "") + text

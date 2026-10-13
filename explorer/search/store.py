@@ -5,7 +5,7 @@ from pathlib import Path
 from contextlib import contextmanager
 from explorer.model import config as schema
 from explorer.model.state import initial, key, snapshot
-from explorer.model.actions import team_choices
+from explorer.model.actions import team_choices, legal
 from explorer.model.transition import successors
 
 
@@ -116,6 +116,7 @@ class Store:
                 "complete": str(complete_runs)
                 == str(schema.count_configs(m["config"])),
                 "evaluation": m.get("evaluation"),
+                "discovery": public_discovery(m.get("discovery")),
             }
 
     def add_outcomes(self, db, run, src, red, blue, outcomes, c):
@@ -197,6 +198,13 @@ class Store:
         return processed
 
     def step(self, node, red, blue):
+        if (
+            not isinstance(red, list)
+            or not isinstance(blue, list)
+            or len(red) != 2
+            or len(blue) != 2
+        ):
+            raise ValueError("各チーム2台の行動が必要です")
         c = self.config()
         with connect(self.path) as db:
             row = db.execute("SELECT * FROM nodes WHERE id=?", (node,)).fetchone()
@@ -208,8 +216,14 @@ class Store:
                     "SELECT variant FROM runs WHERE id=?", (row["run"],)
                 ).fetchone()[0]
             )
-            if red not in team_choices(s, 0, c, v) or blue not in team_choices(
-                s, 1, c, v
+            if any(a not in legal(s, r, c, v) for r, a in enumerate(red + blue)) or any(
+                (a["kind"] == "give" or b["kind"] == "receive")
+                and not (
+                    a["kind"] == "give"
+                    and b["kind"] == "receive"
+                    and a["objects"] == b["objects"]
+                )
+                for a, b in (red, blue)
             ):
                 raise ValueError("同期条件を満たさない行動です")
             ids = self.add_outcomes(
@@ -332,3 +346,25 @@ class Store:
                 t: [dict(r) for r in db.execute("SELECT * FROM " + t)]
                 for t in ("meta", "runs", "nodes", "edges")
             }
+
+
+def public_discovery(report):
+    if report is None:
+        return None
+    return {
+        "elapsed": report["elapsed"],
+        "scope": report["scope"],
+        "complete": False,
+        "runs": [
+            {
+                "run": int(k),
+                "tested": d["tested"],
+                "frontier": len(d["frontier"]),
+                "firstCandidateSeconds": d["firstCandidateSeconds"],
+                "candidates": [
+                    {**a, "pending": len(a["pending"])} for a in d["candidates"]
+                ],
+            }
+            for k, d in sorted(report["runs"].items(), key=lambda x: int(x[0]))
+        ],
+    }

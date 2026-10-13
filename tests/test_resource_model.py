@@ -109,13 +109,13 @@ class ResourceModelTest(unittest.TestCase):
         from explorer.search.evaluation import classification
 
         def event(kind, objects, dest=None):
-            return json.dumps([0, "start", kind, dest, None, objects])
+            return json.dumps([1, "finish", kind, dest, 6, objects])
 
-        a = ((event("move", None, "sky0"),), (event("pick", [40, 41]),))
-        b = ((event("move", None, "south0"),), (event("pick", [42, 43]),))
+        a = ((event("move", None, "sky0"),), (event("place", [40, 41]),))
+        b = ((event("move", None, "south0"),), (event("place", [42, 43]),))
         self.assertEqual(classification(a), classification(b))
         self.assertNotEqual(
-            classification(a), classification(((event("pick", [40]),),))
+            classification(a), classification(((event("place", [40]),),))
         )
 
     def test_late_movement_removed_but_resource_effects_retained(self):

@@ -14,20 +14,29 @@ class SearchTest(unittest.TestCase):
         self.tmp = TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.c = defaults()
-        self.c["horizon"] = 5
+        self.c["horizon"] = 2
 
     def test_naive_equivalence(self):
         st = Store.create(self.tmp.name, self.c)
         v = config_at(self.c, 0)
         s = initial(self.c, v)
-        expected = set()
+        expected = {key(s)}
+        todo = [s]
         edges = 0
-        for a in team_choices(s, 0, self.c, v):
-            for b in team_choices(s, 1, self.c, v):
-                for out in successors(s, a, b, self.c, v):
-                    validate(out["state"])
-                    expected.add(key(out["state"]))
-                    edges += 1
+        while todo:
+            current = todo.pop()
+            if current["t"] >= self.c["horizon"]:
+                continue
+            for a in team_choices(current, 0, self.c, v):
+                for b in team_choices(current, 1, self.c, v):
+                    for out in successors(current, a, b, self.c, v):
+                        validate(out["state"])
+                        k = key(out["state"])
+                        if k not in expected:
+                            expected.add(k)
+                            todo.append(out["state"])
+                        edges += 1
+        expected.remove(key(s))
         while st.batch(10):
             pass
         with connect(st.path) as db:

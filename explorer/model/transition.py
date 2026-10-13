@@ -67,7 +67,7 @@ def _start(s, r, a, config, v, events, reference=None):
     }
     if k == "receive":
         rob["job"]["end"] = s["t"] + duration(a, config, v, r - 1)
-    if k != "wait":
+    if k not in ("wait", "delay"):
         events.append({"t": s["t"], "robot": r, "phase": "start", "action": a})
 
 
@@ -113,7 +113,7 @@ def _finish(s, r, config, v, events):
                 o["owner"] = team
     elif k == "placeM":
         s["objects"][52].update(loc="pillar", owner=team, layer=0)
-    if k == "wait":
+    if k in ("wait", "delay"):
         rob["waited"] = True
     else:
         events.append({"t": s["t"], "robot": r, "phase": "finish", "action": a})

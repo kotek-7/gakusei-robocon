@@ -41,9 +41,13 @@ class Runtime:
                 self.jobs[id][0].set()
         return self.get(id).summary()
 
-    def start(self, id, budget=1000, node=None, evaluate=False):
+    def start(self, id, budget=1000, node=None, evaluate=False, discovery_seconds=None):
         if type(budget) is not int or not 1 <= budget <= 1000000:
             raise ValueError("計算予算は1〜1000000の整数です")
+        if discovery_seconds is not None and (
+            type(discovery_seconds) is not int or not 1 <= discovery_seconds <= 300
+        ):
+            raise ValueError("候補探索の時間は1〜300秒の整数です")
         st = self.get(id)
         with self.lock:
             if id in self.jobs and self.jobs[id][1].is_alive():
@@ -54,7 +58,11 @@ class Runtime:
                 try:
                     st.set_meta("status", "evaluating" if evaluate else "running")
                     st.set_meta("error", None)
-                    if evaluate:
+                    if discovery_seconds is not None:
+                        from explorer.search.discovery import discover
+
+                        discover(st, discovery_seconds, stop)
+                    elif evaluate:
                         analyze(st, cancel=stop)
                     else:
                         used = 0

@@ -130,7 +130,13 @@ def make_handler(runtime, static):
                     "evaluating",
                 ):
                     raise ValueError("探索または集計を停止してから操作してください")
-                if op == "start":
+                if op == "discover":
+                    self.send(
+                        runtime.start(
+                            parts[2], discovery_seconds=data.get("seconds", 10)
+                        )
+                    )
+                elif op == "start":
                     self.send(
                         runtime.start(
                             parts[2], data.get("budget", 1000), data.get("node")
@@ -164,7 +170,7 @@ def make_handler(runtime, static):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--port", type=int, default=4174)
-    p.add_argument("--data", type=Path, default=ROOT / ".explorer-resource-events-2")
+    p.add_argument("--data", type=Path, default=ROOT / ".explorer-strategy-discovery-3")
     args = p.parse_args()
     runtime = Runtime(args.data)
     server = ThreadingHTTPServer(

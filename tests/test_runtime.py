@@ -61,3 +61,22 @@ class RuntimeTest(unittest.TestCase):
                 server.shutdown()
                 server.server_close()
                 runtime.close()
+
+    def test_candidate_job_round_robin_and_invalid_budget(self):
+        with TemporaryDirectory() as d:
+            runtime = Runtime(d)
+            c = defaults()
+            c["horizon"] = 1
+            c["teams"][0]["speeds"]["move"] = [0, 1, 2]
+            st = Store.create(d, c)
+            with self.assertRaises(ValueError):
+                runtime.start(st.path.stem, discovery_seconds=0)
+            runtime.start(st.path.stem, discovery_seconds=1)
+            runtime.jobs[st.path.stem][1].join(10)
+            self.assertIsNone(st.summary()["error"])
+            report = st.summary()["discovery"]
+            self.assertEqual(len(report["runs"]), 3)
+            self.assertTrue(all(r["candidates"] for r in report["runs"]))
+            self.assertFalse(report["complete"])
+            self.assertEqual(Runtime(d).get(st.path.stem).summary()["discovery"], report)
+            runtime.close()
