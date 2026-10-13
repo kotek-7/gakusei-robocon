@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Search } from "./types";
 
 const stopLabels: Record<string, string> = {
@@ -6,17 +7,13 @@ const stopLabels: Record<string, string> = {
   cancelled: "操作により停止",
 };
 
-export function DiscoveryProgress({ search }: { search: Search }) {
+export function DiscoveryProgress({ search, onDefinitions }: { search: Search; onDefinitions: () => void }) {
+  const [allHistory, setAllHistory] = useState(false);
   const report = search.discovery;
   const running = search.status === "running" && search.job === "discovery";
-  const recent = report?.sessions.slice(-3) || [];
-  const quiet = recent.length === 3 && recent.every(
-    (s) => s.reason === "time_limit" && s.newStrategies === 0 && s.scoreChanges.length === 0,
-  );
   const pending = report?.metrics.pending || 0;
-  const notice = report?.scopeComplete
-    ? "同じ条件での追加候補なし"
-    : quiet ? "直近3回：新しい種類・得点更新なし" : null;
+  const sessions = [...(report?.sessions || [])].reverse();
+  const visibleSessions = allHistory ? sessions : sessions.slice(0, 3);
   return (
     <section className="discovery-progress" aria-label="候補探索の進み具合">
       <details className="discovery-details">
@@ -26,37 +23,33 @@ export function DiscoveryProgress({ search }: { search: Search }) {
           {report && <span>{report.metrics.candidates}候補 · {report.metrics.strategies}種類 · {report.elapsed.toFixed(1)}秒</span>}
           <span className="progress-detail-label">進捗・履歴</span>
         </summary>
-      {notice && <p className="progress-note">{notice}</p>}
       {report && <dl className="search-metrics">
-        <div><dt>着手した構成</dt><dd>{report.runs.length} / {search.totalRuns}</dd></div>
-        <div><dt>発見済みの探索待ち</dt><dd>{report.metrics.frontier.toLocaleString()}件</dd></div>
-        <div><dt>相手対応の結果</dt><dd>{report.metrics.responses.toLocaleString()}展開</dd></div>
-        <div><dt>共有手順の比較待ち</dt><dd>{pending.toLocaleString()}件</dd></div>
+        <div><dt>着手構成</dt><dd>{report.runs.length} / {search.totalRuns}</dd></div>
+        <div><dt>探索待ち</dt><dd>{report.metrics.frontier.toLocaleString()}件</dd></div>
+        <div><dt>相手対応</dt><dd>{report.metrics.responses.toLocaleString()}展開</dd></div>
+        <div><dt>比較待ち</dt><dd>{pending.toLocaleString()}件</dd></div>
       </dl>}
       {!!report?.sessions.length && <div className="discovery-history">
-        <h3>計算履歴</h3>
+        <div className="history-heading">
+          <h3>計算履歴</h3>
+          {sessions.length > 3 && <button onClick={() => setAllHistory(!allHistory)}>{allHistory ? "直近3回" : `全${sessions.length}回`}</button>}
+        </div>
         <div className="progress-table" tabIndex={0} role="region" aria-label="候補探索の計算履歴">
           <table>
-            <thead><tr><th>計算時間</th><th>新しい候補</th><th>新しい種類</th><th>相手対応の検査</th><th>得点更新（相手待機）</th><th>停止理由</th></tr></thead>
-            <tbody>{[...report.sessions].reverse().map((s, i) => <tr key={i}>
+            <thead><tr><th>時間</th><th>候補増</th><th>種類増</th><th>対応検査</th><th>得点更新</th><th>終了</th></tr></thead>
+            <tbody>{visibleSessions.map((s, i) => <tr key={i}>
               <td>{i === 0 ? "直近 · " : ""}{s.seconds.toFixed(1)}秒</td>
               <td>+{s.newCandidates}</td><td>+{s.newStrategies}</td><td>+{s.responses}</td>
-              <td>{s.scoreChanges.length ? s.scoreChanges.map((v) => `C${v.run}: ${v.before} → ${v.after}点`).join(" / ") : "なし"}</td>
-              <td>{stopLabels[s.reason] || s.reason}</td>
+              <td>{s.scoreChanges.length ? <details className="score-changes"><summary>{s.scoreChanges.length}構成</summary><ul>{s.scoreChanges.map((v) => <li key={v.run}>C{v.run}: {v.before} → {v.after}点</li>)}</ul></details> : "なし"}</td>
+              <td>{({ exhausted: "範囲内完了", time_limit: "時間上限", cancelled: "停止" } as Record<string, string>)[s.reason] || s.reason}</td>
             </tr>)}</tbody>
           </table>
         </div>
       </div>}
-      <details className="search-help">
-        <summary>探索範囲・集計の定義</summary>
-        <dl>
-          <div><dt>候補探索</dt><dd>限定した経路・待機時刻で探索。全作戦の網羅・最適性は未保証。</dd></div>
-          <div><dt>終了目安</dt><dd>総候補数・残り時間は未確定。探索待ちは計算中にも増えます。</dd></div>
-          <div><dt>作戦の種類</dt><dd>設置・反転などの完了順序で分類。</dd></div>
-          <div><dt>得点更新</dt><dd>同じ構成の過去最高点との差。初回発見は除外。</dd></div>
-          <div><dt>履歴</dt><dd>直近12回分。履歴機能の導入前の実行は含みません。</dd></div>
-        </dl>
-      </details>
+      <div className="history-footer">
+        <span>全作戦の網羅・最適性は未保証</span>
+        <button onClick={onDefinitions}>集計の定義</button>
+      </div>
       </details>
     </section>
   );

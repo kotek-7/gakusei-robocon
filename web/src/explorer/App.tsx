@@ -446,7 +446,7 @@ export function App() {
               </button>
             ))}
           </nav>
-          {(tab === "candidates" || search.job === "discovery") && <DiscoveryProgress search={search} />}
+          {(tab === "candidates" || search.job === "discovery") && <DiscoveryProgress key={id} search={search} onDefinitions={() => setTab("model")} />}
           {(tab === "evaluation" || search.status === "evaluating") && <EvaluationProgress search={search} />}
           {(tab === "graph" || search.job === "exact") && <details className="exact-search">
             <summary>
@@ -669,6 +669,15 @@ export function App() {
                   <li key={s}>{s}</li>
                 ))}
               </ul>
+              <h3>候補探索・履歴の定義</h3>
+              <dl>
+                <div><dt>候補探索</dt><dd>限定した経路・待機時刻が対象。範囲内完了でも全作戦の網羅・最適性は未保証。</dd></div>
+                <div><dt>探索待ち</dt><dd>発見済みの未探索分岐。計算中にも増えるため、残り総数・完了時刻は未確定。</dd></div>
+                <div><dt>比較待ち</dt><dd>共有した相手手順のうち、未検査の組合せ。</dd></div>
+                <div><dt>種類</dt><dd>設置・反転などの完了順序による分類。</dd></div>
+                <div><dt>得点更新</dt><dd>相手待機時の、同じ構成の過去最高点との差。初回発見は除外。</dd></div>
+                <div><dt>履歴</dt><dd>直近12回分。履歴機能の導入前の実行は含まない。</dd></div>
+              </dl>
               <h3>結果の読み方</h3>
               <p>
                 ノードは局面、エッジは双方の行動と競合結果です。同じ局面への経路は合流しますが、入る遷移は保持します。グラフは100局面ずつ表示し、範囲外への遷移は局面詳細から移動できます。
