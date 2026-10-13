@@ -912,7 +912,6 @@ button.primary:hover:not(:disabled) {
 .exact-search-body p { margin: 10px 0; max-width: 85ch; }
 .progress-note { color: var(--muted); font-size: 14px; }
 .discovery-history { margin-top: 16px; }
-.discovery-history summary span { margin-left: 12px; color: var(--muted); font-weight: 400; }
 .progress-table { overflow-x: auto; }
 .progress-table table { width: 100%; min-width: 720px; }
 .evaluation-progress progress { width: 100%; height: 12px; margin-top: 12px; accent-color: var(--accent); }
@@ -943,4 +942,34 @@ button.primary:hover:not(:disabled) {
   .exact-search > summary { padding: 16px 12px; }
   .exact-search-body { padding: 8px 12px 16px; }
   .exact-search-state { flex-basis: 65%; order: 2; font-size: 13px; }
+}
+
+/* Keep results above the fold; accounting and history open on demand. */
+.discovery-progress { padding: 0 24px; }
+.discovery-details { padding: 0; border: 0; }
+.discovery-details > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 20px;
+  padding: 12px 0;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.discovery-details > summary > span:first-child { color: var(--accent); font-weight: 650; }
+.progress-detail-label { margin-left: auto; color: var(--muted); }
+.discovery-details[open] { padding-bottom: 16px; }
+.discovery-history h3 { margin: 16px 0 8px; }
+.candidate-caveat { color: var(--muted); font-size: 13px; }
+.candidate-scope { margin: 8px 0 16px; }
+.candidate-secondary { display: block; color: var(--muted); white-space: nowrap; }
+@media (max-width: 760px) {
+  .discovery-progress { padding: 0 12px; }
+  .discovery-details > summary { gap: 4px 12px; font-size: 13px; }
+}
+
+.candidate-table td:first-child, .candidate-table td:nth-child(3) { white-space: nowrap; }
+@media (max-width: 760px) {
+  .tabs { gap: 0; }
+  .tabs button { padding-inline: 10px; font-size: 13px; }
 }

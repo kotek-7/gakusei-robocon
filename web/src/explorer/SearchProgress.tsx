@@ -26,11 +26,13 @@ export function DiscoveryProgress({ search }: { search: Search }) {
           : "追加計算で作戦の種類や得点が変わるか、下の履歴で確認してください。変化が続くなら探索を継続し、落ち着いたら候補の経路を確認するのが目安です。";
   return (
     <section className="discovery-progress" aria-label="候補探索の進み具合">
-      <div className="progress-heading" role="status">
-        <strong>候補探索：{running ? "探索中" : report?.scopeComplete
-          ? "対象範囲を探索済み" : stopLabels[report?.stopReason || ""] || (report ? "途中保存あり" : "未開始")}</strong>
-        {report && <span>累計 {report.elapsed.toFixed(1)}秒</span>}
-      </div>
+      <details className="discovery-details">
+        <summary>
+          <span role="status">{running ? "探索中" : report?.scopeComplete
+            ? "対象範囲を探索済み" : stopLabels[report?.stopReason || ""] || (report ? "途中保存あり" : "未開始")}</span>
+          {report && <span>{report.metrics.candidates}候補 · {report.metrics.strategies}種類 · {report.elapsed.toFixed(1)}秒</span>}
+          <span className="progress-detail-label">進捗・履歴</span>
+        </summary>
       <p>{advice}</p>
       {report && <div className="discovery-counts">
         <span>候補 {report.metrics.candidates.toLocaleString()}件 / 作戦の種類 {report.metrics.strategies.toLocaleString()}種類</span>
@@ -40,8 +42,8 @@ export function DiscoveryProgress({ search }: { search: Search }) {
       </div>}
       <p className="progress-note">1回の計算時間は指定できます。候補の総数と完了までの時間は事前には分かりません。探索中にも枝が増えるため、探索待ち件数は残り総数ではありません。対象範囲を探索済みでも、全作戦の網羅・最適性の保証にはなりません。</p>
       {latest && <p>直近の計算：{latest.seconds.toFixed(1)}秒で候補 +{latest.newCandidates}件、作戦の種類 +{latest.newStrategies}種類、相手対応を{latest.responses}件検査。最高得点を更新した構成は{latest.scoreChanges.length}件。</p>}
-      {!!report?.sessions.length && <details className="discovery-history">
-        <summary>追加計算の効果を確認 <span>直近 {report.sessions.length}回</span></summary>
+      {!!report?.sessions.length && <div className="discovery-history">
+        <h3>計算履歴</h3>
         <div className="progress-table" tabIndex={0} role="region" aria-label="候補探索の計算履歴">
           <table>
             <thead><tr><th>計算時間</th><th>新しい候補</th><th>新しい作戦の種類</th><th>相手対応の検査</th><th>最高得点の更新（相手待機）</th><th>停止理由</th></tr></thead>
@@ -54,7 +56,8 @@ export function DiscoveryProgress({ search }: { search: Search }) {
           </table>
         </div>
         <p className="progress-note">得点更新は同じ構成の過去の最高得点との比較です。初めて候補が出た構成は更新に含みません。作戦の種類は設置・反転などの完了順序でまとめています。履歴はこの機能での実行から記録します。</p>
-      </details>}
+      </div>}
+      </details>
     </section>
   );
 }

@@ -366,7 +366,7 @@ export function App() {
                 ))}
               </select>
             </label>
-            <label>
+            {tab === "evaluation" && <label>
               比較対象
               <select
                 value={baseline}
@@ -381,9 +381,9 @@ export function App() {
                     </option>
                   ))}
               </select>
-            </label>
+            </label>}
             <label>
-              1回の候補探索時間
+              探索時間
               <select
                 value={seconds}
                 onChange={(e) => setSeconds(Number(e.target.value))}
@@ -408,8 +408,8 @@ export function App() {
               {search.discovery?.scopeComplete ? "候補探索済み" : search.discovery ? "候補探索を続ける" : "候補を探す"}
             </button>
 
-            <button
-              disabled={!["running", "evaluating"].includes(search.status)}
+            {["running", "evaluating"].includes(search.status) && <button
+              disabled={!!request}
               onClick={() =>
                 perform(async () => {
                   await api(`searches/${id}/pause`, {});
@@ -417,8 +417,8 @@ export function App() {
               }
             >
               停止
-            </button>
-            <button
+            </button>}
+            {tab === "evaluation" && <button
               disabled={!!busy}
               onClick={() =>
                 perform(async () => {
@@ -428,11 +428,27 @@ export function App() {
               }
             >
               評価を計算
-            </button>
+            </button>}
           </section>
-          <DiscoveryProgress search={search} />
-          <EvaluationProgress search={search} />
-          <details className="exact-search">
+          <nav className="tabs" aria-label="探索表示">
+            {[
+              ["candidates", "作戦候補"],
+              ["graph", "グラフ・3D"],
+              ["evaluation", "評価・比較"],
+              ["model", "モデル・前提"],
+            ].map(([key, label]) => (
+              <button
+                key={key}
+                aria-current={tab === key ? "page" : undefined}
+                onClick={() => setTab(key)}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+          {(tab === "candidates" || search.job === "discovery") && <DiscoveryProgress search={search} />}
+          {(tab === "evaluation" || search.status === "evaluating") && <EvaluationProgress search={search} />}
+          {(tab === "graph" || search.job === "exact") && <details className="exact-search">
             <summary>
               <span className="exact-search-title">詳細な全探索</span>
               <span className="exact-search-state">{search.job === "exact" && search.status === "running" ? "探索中" : search.complete ? "対象範囲を探索済み" : "未探索の分岐あり"}</span>
@@ -458,28 +474,13 @@ export function App() {
               </div>
               <p className="progress-note">候補探索の終了とは別の判定です。発見済みの局面数から、全探索の進捗率は算出できません。</p>
             </div>
-          </details>
+          </details>}
           {search.error && (
             <p className="error-banner" role="alert">
               {search.error}
             </p>
           )}
-          <nav className="tabs" aria-label="探索表示">
-            {[
-              ["candidates", "作戦候補"],
-              ["graph", "グラフ・3D"],
-              ["evaluation", "評価・比較"],
-              ["model", "モデル・前提"],
-            ].map(([key, label]) => (
-              <button
-                key={key}
-                aria-current={tab === key ? "page" : undefined}
-                onClick={() => setTab(key)}
-              >
-                {label}
-              </button>
-            ))}
-          </nav>
+
           {tab === "candidates" ? (
             <main>
               <Candidates

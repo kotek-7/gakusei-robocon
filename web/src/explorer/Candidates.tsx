@@ -51,9 +51,6 @@ export function Candidates({
   return (
     <section className="evaluation candidates">
       <h2>発見した作戦候補</h2>
-      <p>
-        候補の行から、相手の対応ごとの得点と、グラフ・3Dでの再生を開けます。
-      </p>
       {!report || !rows.length ? (
         <div className="empty">
           <h3>
@@ -67,10 +64,6 @@ export function Candidates({
         </div>
       ) : (
         <>
-          <details>
-            <summary>候補探索の範囲</summary>
-            <p>{report.scope}</p>
-          </details>
           <div className="candidate-controls">
             <label>
               表示する構成{" "}
@@ -85,26 +78,11 @@ export function Candidates({
               </select>
             </label>
             <span>
-              計算時間 {report.elapsed.toFixed(1)}秒 · {rows.length}候補
+              {rows.filter((r) => run === "all" || String(r.run) === run).length}候補
             </span>
           </div>
           {selectedRun && <p>{configuration(selectedRun.variant)}</p>}
-          <p>
-            未探索の局面{" "}
-            {report.runs
-              .filter((r) => run === "all" || String(r.run) === run)
-              .reduce((n, r) => n + r.frontier, 0)
-              .toLocaleString()}
-            件。 生成済みの選択肢のうち未計算{" "}
-            {report.runs
-              .filter((r) => run === "all" || String(r.run) === run)
-              .reduce((n, r) => n + r.remainingChoices, 0)
-              .toLocaleString()}
-            組。 局面の展開で選択肢は増えます。
-          </p>
-          <p>
-            点差は確認済みの対応内の値で、保証ではありません。未検証件数も併せて比較してください。相手待機は対照条件です。
-          </p>
+          <p className="candidate-caveat">点差は確認済みの相手手順での結果です。全対応への保証ではありません。</p>
           <div
             className="candidate-table"
             tabIndex={0}
@@ -151,8 +129,8 @@ export function Candidates({
                         </td>
                         <td>{score(c.baseline)}</td>
                         <td>
-                          {c.responses.length}展開確認 / 共通比較{" "}
-                          {common.length}手順 / {c.pending}手順待ち
+                          {c.responses.length}展開確認
+                          <small className="candidate-secondary">共通 {common.length}手順 · 未比較 {c.pending}手順</small>
                         </td>
                         <td>
                           {worst === null
@@ -182,7 +160,24 @@ export function Candidates({
                                       手順の実行条件が成立しない局面あり（
                                       {response.blocked.length}
                                       件）。経路で確認できます。
-                                    </>
+                                      <details className="candidate-scope">
+            <summary>探索範囲・未計算の分岐</summary>
+            <p>{report.scope}</p>
+          <p>
+            未探索の局面{" "}
+            {report.runs
+              .filter((r) => run === "all" || String(r.run) === run)
+              .reduce((n, r) => n + r.frontier, 0)
+              .toLocaleString()}
+            件。 生成済みの選択肢のうち未計算{" "}
+            {report.runs
+              .filter((r) => run === "all" || String(r.run) === run)
+              .reduce((n, r) => n + r.remainingChoices, 0)
+              .toLocaleString()}
+            組。 局面の展開で選択肢は増えます。
+          </p>
+          </details>
+        </>
                                   )}
                                 </p>
                                 <button onClick={() => onOpen(r, response)}>
