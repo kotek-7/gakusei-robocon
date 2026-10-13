@@ -1,0 +1,353 @@
+{
+  "sourceCommit": "3a2cfbf874af6e57a34b9b8b63633d9a552567e1",
+  "previousExploreSeconds": 0,
+  "case": "end6",
+  "config": {
+    "horizon": 180,
+    "layouts": [
+      "stacked"
+    ],
+    "name": "実用性検証・end6",
+    "profiles": {
+      "flip": [
+        2,
+        4,
+        8
+      ],
+      "handover": [
+        1,
+        2,
+        4
+      ],
+      "move": [
+        0.8,
+        0.5,
+        0.3
+      ],
+      "pick": [
+        1,
+        2,
+        4
+      ],
+      "place": [
+        2,
+        4,
+        7
+      ],
+      "retry": [
+        5,
+        10,
+        15
+      ]
+    },
+    "rules": {
+      "br_ramp": false,
+      "conflict": "branch",
+      "mandate": "simultaneous",
+      "placed_mustika": false,
+      "repeat_transfer": false,
+      "retry_payload": "retain",
+      "sky_relocate": false
+    },
+    "scenario": "endgame",
+    "starts": [
+      0
+    ],
+    "teams": [
+      {
+        "caps": {
+          "capacity_br": [
+            2
+          ],
+          "capacity_tr": [
+            3
+          ],
+          "direct": [
+            true
+          ],
+          "earth": [
+            true
+          ],
+          "flip": [
+            true
+          ],
+          "mixed": [
+            true
+          ],
+          "mustika": [
+            true
+          ],
+          "ramp": [
+            true
+          ],
+          "reposition": [
+            true
+          ],
+          "sky": [
+            true
+          ],
+          "stairs1": [
+            true
+          ],
+          "stairs2": [
+            true
+          ]
+        },
+        "speeds": {
+          "flip": [
+            1
+          ],
+          "handover": [
+            1
+          ],
+          "move": [
+            1
+          ],
+          "pick": [
+            1
+          ],
+          "place": [
+            1
+          ],
+          "retry": [
+            1
+          ]
+        }
+      },
+      {
+        "caps": {
+          "capacity_br": [
+            2
+          ],
+          "capacity_tr": [
+            3
+          ],
+          "direct": [
+            true
+          ],
+          "earth": [
+            true
+          ],
+          "flip": [
+            true
+          ],
+          "mixed": [
+            true
+          ],
+          "mustika": [
+            true
+          ],
+          "ramp": [
+            true
+          ],
+          "reposition": [
+            true
+          ],
+          "sky": [
+            true
+          ],
+          "stairs1": [
+            true
+          ],
+          "stairs2": [
+            true
+          ]
+        },
+        "speeds": {
+          "flip": [
+            1
+          ],
+          "handover": [
+            1
+          ],
+          "move": [
+            1
+          ],
+          "pick": [
+            1
+          ],
+          "place": [
+            1
+          ],
+          "retry": [
+            1
+          ]
+        }
+      }
+    ],
+    "version": "resource-events-2"
+  },
+  "exploreSeconds": 0.241,
+  "evaluationSeconds": 0.278,
+  "checkpoint": {
+    "id": "dbb793711f054722b69909bfc89189df",
+    "status": "complete",
+    "nodes": 43,
+    "edges": 54,
+    "expanded": 43,
+    "runs": 1,
+    "completeRuns": 1,
+    "totalRuns": "1",
+    "complete": true,
+    "error": null
+  },
+  "finalStatus": "complete",
+  "finalError": null,
+  "peakRssMiB": 633.1,
+  "databaseMiB": 1.33,
+  "stats": [
+    {
+      "run": 0,
+      "variant": {
+        "layout": "stacked",
+        "start": 0,
+        "teams": [
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": true,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 1,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          },
+          {
+            "caps": {
+              "capacity_br": 2,
+              "capacity_tr": 3,
+              "direct": true,
+              "earth": true,
+              "flip": true,
+              "mixed": true,
+              "mustika": true,
+              "ramp": true,
+              "reposition": true,
+              "sky": true,
+              "stairs1": true,
+              "stairs2": true
+            },
+            "speeds": {
+              "flip": 1,
+              "handover": 1,
+              "move": 1,
+              "pick": 1,
+              "place": 1,
+              "retry": 1
+            }
+          }
+        ]
+      },
+      "nodes": 43,
+      "terminal": 24,
+      "terminalScores": [
+        [
+          85,
+          45
+        ],
+        [
+          85,
+          85
+        ],
+        [
+          125,
+          45
+        ]
+      ],
+      "frontierMin": null,
+      "frontierMax": null,
+      "expanded": 43,
+      "jointChoices": 51
+    }
+  ],
+  "evaluation": [
+    {
+      "run": 0,
+      "complete": true,
+      "statisticsComplete": true,
+      "historyLimited": false,
+      "rawGraphPaths": "47",
+      "paths": "47",
+      "groups": 47,
+      "groupWinFraction": 0.7021276595744681,
+      "unresolvedFraction": 0.29787234042553185,
+      "distribution": [
+        [
+          0,
+          0.29787234042553185
+        ],
+        [
+          40,
+          0.5957446808510637
+        ],
+        [
+          80,
+          0.10638297872340426
+        ]
+      ],
+      "guarantee": {
+        "actions": [
+          [
+            {
+              "kind": "wait",
+              "seconds": 6
+            },
+            {
+              "dest": "lane0-0",
+              "edge": 16,
+              "kind": "move"
+            }
+          ],
+          [
+            {
+              "kind": "wait",
+              "seconds": 6
+            },
+            {
+              "kind": "flip",
+              "objects": [
+                41
+              ],
+              "spot": 4
+            }
+          ],
+          [
+            {
+              "kind": "wait",
+              "seconds": 6
+            },
+            {
+              "kind": "wait",
+              "seconds": 6
+            }
+          ]
+        ],
+        "marginLower": 40.0,
+        "meaning": "モデル内で相手が最善の行動を選ぶ場合の勝利確率です。同時操作の競合は不利な結果も考慮します。点差は勝利確率の保証を維持する保守的な下限です。",
+        "probabilities": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "winLower": 1.0,
+        "winUpper": 1.0
+      },
+      "strategyCount": 25
+    }
+  ],
+  "evaluationAvailable": true
+}
