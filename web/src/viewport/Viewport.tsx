@@ -1,48 +1,39 @@
 import { useEffect, useRef, useState } from "react";
+import { actionName, locationName } from "../explorer/api";
+import type { Frame } from "../explorer/types";
 import type { createScene } from "./scene.js";
-import type { Frame } from "../simulation/types";
 export function Viewport({
   frame,
-  planId,
-  time,
-  active,
+  replaying = false,
 }: {
   frame: Frame;
-  planId: number;
-  time: number;
-  active: boolean;
+  replaying?: boolean;
 }) {
-  const host = useRef<HTMLDivElement>(null),
-    scene = useRef<ReturnType<typeof createScene> | null>(null);
-  const [view, setView] = useState("iso"),
-    [error, setError] = useState(false);
-  const [started, setStarted] = useState(active);
-  const latest = useRef({ frame, view });
+  const host = useRef<HTMLDivElement>(null);
+  const scene = useRef<ReturnType<typeof createScene> | null>(null);
+  const latest = useRef(frame);
+  const [error, setError] = useState("");
+  const [view, setView] = useState("iso");
+  latest.current = frame;
   useEffect(() => {
-    latest.current = { frame, view };
-  }, [frame, view]);
-  useEffect(() => {
-    if (active) setStarted(true);
-  }, [active]);
-  useEffect(() => {
-    if (!started) return;
-    let cancelled = false;
+    let stopped = false;
     import("./scene.js")
       .then(({ createScene }) => {
-        if (cancelled) return;
-        scene.current = createScene(host.current!);
-        scene.current.update(latest.current.frame);
-        scene.current.view(latest.current.view);
+        if (stopped) return;
+        try {
+          scene.current = createScene(host.current!);
+          scene.current.update(latest.current);
+        } catch (e) {
+          setError(String(e));
+        }
       })
-      .catch(() => {
-        if (!cancelled) setError(true);
-      });
+      .catch((e) => setError(String(e)));
     return () => {
-      cancelled = true;
+      stopped = true;
       scene.current?.dispose();
       scene.current = null;
     };
-  }, [started]);
+  }, []);
   useEffect(() => {
     scene.current?.update(frame);
   }, [frame]);
@@ -50,11 +41,10 @@ export function Viewport({
     scene.current?.view(view);
   }, [view]);
   return (
-    <>
-      <div className="viewportbar">
+    <div className="viewer">
+      <div className="viewer-tools">
         <span>
-          <b>作戦 #{planId} のシミュレーション</b>
-          <small>提供CAD</small>
+          3D局面 <b>{frame.t}秒</b>
         </span>
         <div>
           {[
@@ -64,8 +54,6 @@ export function Viewport({
           ].map(([id, name]) => (
             <button
               key={id}
-              data-view={id}
-              className={view === id ? "active" : ""}
               aria-pressed={view === id}
               onClick={() => setView(id)}
             >
@@ -74,44 +62,45 @@ export function Viewport({
           ))}
         </div>
       </div>
-      <div id="viewport" ref={host}>
-        <div className="scoreboard">
-          <div className="red">
-            <span>RED</span>
-            <b id="redscore">{frame.scores[0]}</b>
-          </div>
-          <div className="matchclock">
-            <span>試合経過</span>
-            <b id="clock">
-              {String(Math.floor(time / 60)).padStart(2, "0")}:
-              {(time % 60).toFixed(1).padStart(4, "0")}
-            </b>
-          </div>
-          <div className="blue">
-            <b id="bluescore">{frame.scores[1]}</b>
-            <span>BLUE</span>
-          </div>
-        </div>
-        <div className="viewhint">
-          ドラッグ：回転　右ドラッグ：移動　スクロール：拡大
-        </div>
-        <div id="qualifications">
-          {frame.teams.map((t, i) => (
-            <span key={i} className={i ? "blue" : "red"}>
-              {i ? "BLUE" : "RED"}　
-              {t.mandate ? "ムスティカ設置可" : "ムスティカ設置条件未達成"}
-            </span>
-          ))}
-        </div>
+      <div className="replay-score" aria-live="off">
+        <span className="red-text">赤 {frame.scores[0]}</span>
+        <span>表示時刻の得点</span>
+        <span className="blue-text">青 {frame.scores[1]}</span>
+      </div>
+      <div
+        className="viewport"
+        ref={host}
+        aria-label="選択した探索局面の3D表示"
+      >
         {error && (
-          <p className="render-error" role="alert">
-            3D表示を開始できません。ブラウザのWebGL設定を確認してください。得点と再生時刻は引き続き確認できます。
+          <p role="alert" className="render-error">
+            3Dを開始できません。WebGLを確認してください。局面表・得点は利用できます。
           </p>
         )}
       </div>
-      <p className="model-note">
-        CADに基づく経路・得点の簡略計算。機体同士の衝突・把持・転倒は未計算。
+      {replaying && (
+        <table className="replay-robots">
+          <caption>再生時刻の機体状態</caption>
+          <tbody>
+            {frame.robots.map((r) => (
+              <tr key={r.id}>
+                <th>{r.id}</th>
+                <td>
+                  {r.action ? actionName(r.action) : "待機"}
+                  <small>
+                    {locationName(r.location)}
+                    {r.state === "move" ? " から移動中" : ""} · 保持{" "}
+                    {r.carry.length}個
+                  </small>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <p className="view-note">
+        ドラッグで回転・右ドラッグで移動。代表機体と有限経路の表示です。
       </p>
-    </>
+    </div>
   );
 }

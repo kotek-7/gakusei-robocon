@@ -1,0 +1,178 @@
+export type Action = {
+  kind: string;
+  dest?: string;
+  edge?: number;
+  spot?: number;
+  objects?: number[];
+  seconds?: number;
+  partner?: number;
+};
+export type Job = { action: Action; start: number; end: number; from: string };
+export type State = {
+  t: number;
+  robots: { pos: string; job: Job | null; entered: boolean; waited: boolean }[];
+  objects: Obj[];
+  mandate: boolean[];
+  transfer: number[];
+};
+export type Obj = {
+  id: number;
+  kind: string;
+  loc: string;
+  owner: number;
+  face: number;
+  slot: number;
+  layer: number;
+  delivered: boolean[];
+  p?: number[];
+};
+export type Frame = {
+  t: number;
+  scores: number[];
+  robots: {
+    id: string;
+    team: number;
+    role: string;
+    p: number[];
+    state: string;
+    location: string;
+    action: Action | null;
+    carry: string[];
+  }[];
+  objects: Obj[];
+  mandate: boolean[];
+};
+export type Variant = {
+  teams: {
+    caps: Record<string, boolean | number>;
+    speeds: Record<string, number>;
+  }[];
+  start: number;
+  layout: string;
+};
+export type Config = {
+  root?: State;
+  version: string;
+  name: string;
+  scenario: string;
+  horizon: number;
+  rules: Record<string, string | boolean>;
+  profiles: Record<string, number[]>;
+  teams: {
+    caps: Record<string, (boolean | number)[]>;
+    speeds: Record<string, number[]>;
+  }[];
+  starts: number[];
+  layouts: string[];
+};
+export type Strategy = {
+  id: string;
+  prefix: string[][];
+  groups: number;
+  paths: string;
+  groupWinFraction: number;
+  pathWinFraction: number;
+  unresolvedFraction: number;
+  distribution: [number, number][];
+  scores: { red: number; blue: number; count: string }[];
+  node: number;
+};
+export type Evaluation = {
+  classification: string;
+  cut: number;
+  meaning: string;
+  runs: {
+    run: number;
+    variant: Variant;
+    complete: boolean;
+    statisticsComplete: boolean;
+    historyLimited: boolean;
+    rawGraphPaths: string;
+    paths: string;
+    groups: number;
+    strategies: Strategy[];
+    windowEnd: number;
+    groupWinFraction: number | null;
+    unresolvedFraction: number | null;
+    distribution: [number, number][];
+    guarantee: null | {
+      winLower: number;
+      winUpper: number;
+      marginLower: number;
+      meaning: string;
+      actions: Action[][];
+      probabilities: number[];
+    };
+  }[];
+};
+export type Search = {
+  id: string;
+  name: string;
+  status: string;
+  error: string | null;
+  created: number;
+  config: Config;
+  nodes: number;
+  expanded: number;
+  edges: number;
+  runs: number;
+  completeRuns: number;
+  totalRuns: string;
+  complete: boolean;
+  evaluation: Evaluation | null;
+};
+export type Model = {
+  version: string;
+  defaults: Config;
+  caps: Record<string, string>;
+  profiles: Record<string, string>;
+  rules: Record<
+    string,
+    { options: (string | boolean)[]; label: string; source: string }
+  >;
+  scope: string[];
+  field: {
+    nodes: Record<string, { id: string; p: number[] }>;
+    edges: unknown[];
+  };
+};
+export type Node = {
+  id: number;
+  state: State;
+  scores: number[];
+  winner: number;
+  expanded: boolean;
+  cursor?: number;
+};
+export type Edge = {
+  id: number;
+  run?: number;
+  src: number;
+  dst: number;
+  red?: Action[];
+  blue?: Action[];
+  events?: { t: number; robot: number; phase: string; action: Action }[];
+  cases?: number[];
+};
+export type Detail = Node & {
+  offset: number;
+  run: number;
+  variant: Variant;
+  edges: Edge[];
+  actions: Action[][];
+  frame: Frame;
+  path: number[];
+};
+export type Graph = {
+  nodes: Node[];
+  edges: Edge[];
+  root: number;
+  variant: Variant;
+  total: number;
+  offset: number;
+};
+export type Replay = {
+  frames: Frame[];
+  edges: number[];
+  events: { t: number; robot: number; phase: string; action: Action }[];
+};

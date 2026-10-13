@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-13T04:58:10.402408+00:00",
+  "title": "Design System: 学生ロボコン 作戦探索器",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "accent",
+        "tonalRamp": [
+          "oklch(15% 0.0827 188.05)",
+          "oklch(26% 0.0827 188.05)",
+          "oklch(38% 0.0827 188.05)",
+          "oklch(49% 0.0827 188.05)",
+          "oklch(61% 0.0827 188.05)",
+          "oklch(72% 0.0827 188.05)",
+          "oklch(84% 0.0827 188.05)",
+          "oklch(95% 0.0827 188.05)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "paper",
+        "tonalRamp": [
+          "oklch(15% 0.0028 128.49)",
+          "oklch(26% 0.0028 128.49)",
+          "oklch(38% 0.0028 128.49)",
+          "oklch(49% 0.0028 128.49)",
+          "oklch(61% 0.0028 128.49)",
+          "oklch(72% 0.0028 128.49)",
+          "oklch(84% 0.0028 128.49)",
+          "oklch(95% 0.0028 128.49)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "surface",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "ink",
+        "tonalRamp": [
+          "oklch(15% 0.0180 220.25)",
+          "oklch(26% 0.0180 220.25)",
+          "oklch(38% 0.0180 220.25)",
+          "oklch(49% 0.0180 220.25)",
+          "oklch(61% 0.0180 220.25)",
+          "oklch(72% 0.0180 220.25)",
+          "oklch(84% 0.0180 220.25)",
+          "oklch(95% 0.0180 220.25)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "muted",
+        "tonalRamp": [
+          "oklch(15% 0.0206 229.39)",
+          "oklch(26% 0.0206 229.39)",
+          "oklch(38% 0.0206 229.39)",
+          "oklch(49% 0.0206 229.39)",
+          "oklch(61% 0.0206 229.39)",
+          "oklch(72% 0.0206 229.39)",
+          "oklch(84% 0.0206 229.39)",
+          "oklch(95% 0.0206 229.39)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "line",
+        "tonalRamp": [
+          "oklch(15% 0.0091 179.57)",
+          "oklch(26% 0.0091 179.57)",
+          "oklch(38% 0.0091 179.57)",
+          "oklch(49% 0.0091 179.57)",
+          "oklch(61% 0.0091 179.57)",
+          "oklch(72% 0.0091 179.57)",
+          "oklch(84% 0.0091 179.57)",
+          "oklch(95% 0.0091 179.57)"
+        ]
+      },
+      "control-line": {
+        "role": "neutral",
+        "displayName": "control-line",
+        "tonalRamp": [
+          "oklch(15% 0.0150 180.58)",
+          "oklch(26% 0.0150 180.58)",
+          "oklch(38% 0.0150 180.58)",
+          "oklch(49% 0.0150 180.58)",
+          "oklch(61% 0.0150 180.58)",
+          "oklch(72% 0.0150 180.58)",
+          "oklch(84% 0.0150 180.58)",
+          "oklch(95% 0.0150 180.58)"
+        ]
+      },
+      "control-hover": {
+        "role": "neutral",
+        "displayName": "control-hover",
+        "tonalRamp": [
+          "oklch(15% 0.0094 171.79)",
+          "oklch(26% 0.0094 171.79)",
+          "oklch(38% 0.0094 171.79)",
+          "oklch(49% 0.0094 171.79)",
+          "oklch(61% 0.0094 171.79)",
+          "oklch(72% 0.0094 171.79)",
+          "oklch(84% 0.0094 171.79)",
+          "oklch(95% 0.0094 171.79)"
+        ]
+      },
+      "selected": {
+        "role": "primary",
+        "displayName": "selected",
+        "tonalRamp": [
+          "oklch(15% 0.0212 178.33)",
+          "oklch(26% 0.0212 178.33)",
+          "oklch(38% 0.0212 178.33)",
+          "oklch(49% 0.0212 178.33)",
+          "oklch(61% 0.0212 178.33)",
+          "oklch(72% 0.0212 178.33)",
+          "oklch(84% 0.0212 178.33)",
+          "oklch(95% 0.0212 178.33)"
+        ]
+      },
+      "selected-ink": {
+        "role": "primary",
+        "displayName": "selected-ink",
+        "tonalRamp": [
+          "oklch(15% 0.0708 186.59)",
+          "oklch(26% 0.0708 186.59)",
+          "oklch(38% 0.0708 186.59)",
+          "oklch(49% 0.0708 186.59)",
+          "oklch(61% 0.0708 186.59)",
+          "oklch(72% 0.0708 186.59)",
+          "oklch(84% 0.0708 186.59)",
+          "oklch(95% 0.0708 186.59)"
+        ]
+      },
+      "focus": {
+        "role": "primary",
+        "displayName": "focus",
+        "tonalRamp": [
+          "oklch(15% 0.1098 186.10)",
+          "oklch(26% 0.1098 186.10)",
+          "oklch(38% 0.1098 186.10)",
+          "oklch(49% 0.1098 186.10)",
+          "oklch(61% 0.1098 186.10)",
+          "oklch(72% 0.1098 186.10)",
+          "oklch(84% 0.1098 186.10)",
+          "oklch(95% 0.1098 186.10)"
+        ]
+      },
+      "header": {
+        "role": "neutral",
+        "displayName": "header",
+        "tonalRamp": [
+          "oklch(15% 0.0274 176.97)",
+          "oklch(26% 0.0274 176.97)",
+          "oklch(38% 0.0274 176.97)",
+          "oklch(49% 0.0274 176.97)",
+          "oklch(61% 0.0274 176.97)",
+          "oklch(72% 0.0274 176.97)",
+          "oklch(84% 0.0274 176.97)",
+          "oklch(95% 0.0274 176.97)"
+        ]
+      },
+      "table-head": {
+        "role": "neutral",
+        "displayName": "table-head",
+        "tonalRamp": [
+          "oklch(15% 0.0058 153.77)",
+          "oklch(26% 0.0058 153.77)",
+          "oklch(38% 0.0058 153.77)",
+          "oklch(49% 0.0058 153.77)",
+          "oklch(61% 0.0058 153.77)",
+          "oklch(72% 0.0058 153.77)",
+          "oklch(84% 0.0058 153.77)",
+          "oklch(95% 0.0058 153.77)"
+        ]
+      },
+      "team-red": {
+        "role": "secondary",
+        "displayName": "team-red",
+        "tonalRamp": [
+          "oklch(15% 0.1702 24.21)",
+          "oklch(26% 0.1702 24.21)",
+          "oklch(38% 0.1702 24.21)",
+          "oklch(49% 0.1702 24.21)",
+          "oklch(61% 0.1702 24.21)",
+          "oklch(72% 0.1702 24.21)",
+          "oklch(84% 0.1702 24.21)",
+          "oklch(95% 0.1702 24.21)"
+        ]
+      },
+      "team-blue": {
+        "role": "secondary",
+        "displayName": "team-blue",
+        "tonalRamp": [
+          "oklch(15% 0.1510 262.14)",
+          "oklch(26% 0.1510 262.14)",
+          "oklch(38% 0.1510 262.14)",
+          "oklch(49% 0.1510 262.14)",
+          "oklch(61% 0.1510 262.14)",
+          "oklch(72% 0.1510 262.14)",
+          "oklch(84% 0.1510 262.14)",
+          "oklch(95% 0.1510 262.14)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "purpose": "探索名"
+      },
+      "title": {
+        "purpose": "領域見出し"
+      },
+      "section": {
+        "purpose": "小見出し"
+      },
+      "body": {
+        "purpose": "本文と通常操作"
+      },
+      "score": {
+        "purpose": "両チーム得点"
+      }
+    },
+    "shadows": [],
+    "motion": [],
+    "breakpoints": [
+      {
+        "name": "stacked",
+        "value": "760px"
+      },
+      {
+        "name": "compact",
+        "value": "1050px"
+      },
+      {
+        "name": "wide",
+        "value": "1600px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "通常操作",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "計算や移動に使う通常ボタン。",
+      "html": "<button class=\"ds-secondary\">選択局面を表示</button>",
+      "css": ".ds-secondary{font-family:\"Noto Sans JP\", \"Yu Gothic\", system-ui, sans-serif;font-size:14px;border:1px solid #aebbb8;border-radius:4px;padding:7px 11px;min-height:36px;line-height:1.35;cursor:pointer;background:var(--surface, #fff);color:var(--ink, #202c30);}.ds-secondary:hover:not(:disabled){background:#e6eeeb;border-color:#7c928b;}.ds-secondary:focus-visible{outline:3px solid var(--focus, #009d92);outline-offset:3px;}.ds-secondary:disabled{opacity:.5;cursor:default;}"
+    },
+    {
+      "name": "主操作",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "合法行動を計算する主操作。",
+      "html": "<button class=\"ds-primary\">選んだ行動を計算</button>",
+      "css": ".ds-primary{font-family:\"Noto Sans JP\", \"Yu Gothic\", system-ui, sans-serif;font-size:14px;border:1px solid #aebbb8;border-radius:4px;padding:7px 11px;min-height:36px;line-height:1.35;cursor:pointer;background:var(--accent, #006b65);color:#fff;border-color:var(--accent, #006b65);}.ds-primary:focus-visible{outline:3px solid var(--focus, #009d92);outline-offset:3px;}.ds-primary:disabled{opacity:.5;cursor:default;}.ds-primary:hover:not(:disabled){background:#00554f;color:#fff;border-color:#00554f;}"
+    },
+    {
+      "name": "押下状態",
+      "kind": "button",
+      "refersTo": "button-selected",
+      "description": "視点などの選択状態。",
+      "html": "<button class=\"ds-selected\" aria-pressed=\"true\">上面</button>",
+      "css": ".ds-selected{font-family:\"Noto Sans JP\", \"Yu Gothic\", system-ui, sans-serif;font-size:14px;border:1px solid #aebbb8;border-radius:4px;padding:7px 11px;min-height:36px;line-height:1.35;cursor:pointer;background:#d6e9e4;color:#00554f;border-color:var(--accent, #006b65);}.ds-selected:hover{background:#e6eeeb;border-color:#7c928b;}.ds-selected:focus-visible{outline:3px solid var(--focus, #009d92);outline-offset:3px;}"
+    },
+    {
+      "name": "数値入力",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "独立して編集する性能値。",
+      "html": "<label class=\"ds-label\">移動速度<input class=\"ds-field\" type=\"number\" value=\"1\" step=\"0.1\"></label>",
+      "css": ".ds-label{font-family:\"Noto Sans JP\", \"Yu Gothic\", system-ui, sans-serif;font-size:14px;display:flex;flex-direction:column;gap:6px;color:var(--muted, #536168);}.ds-field{font-family:\"Noto Sans JP\", \"Yu Gothic\", system-ui, sans-serif;font-size:14px;padding:7px 9px;border:1px solid #aebbb8;border-radius:4px;background:#fff;color:var(--ink, #202c30);font-variant-numeric:tabular-nums;caret-color:var(--accent, #006b65);}.ds-field:focus-visible{outline:3px solid var(--focus, #009d92);outline-offset:3px;}"
+    },
+    {
+      "name": "表示切替",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "グラフ・評価・モデルの現在位置。",
+      "html": "<nav class=\"ds-nav\" aria-label=\"探索表示\"><button aria-current=\"page\">グラフ</button><button>評価</button><button>モデル</button></nav>",
+      "css": ".ds-nav{display:flex;gap:8px;background:#fff;border-bottom:1px solid var(--line, #d4dcda);}.ds-nav button{font-family:\"Noto Sans JP\", \"Yu Gothic\", system-ui, sans-serif;font-size:14px;padding:13px 16px;border:0;border-bottom:3px solid transparent;border-radius:0;background:none;color:var(--ink, #202c30);cursor:pointer;}.ds-nav button[aria-current]{border-bottom-color:var(--accent, #006b65);color:var(--accent, #006b65);font-weight:650;}.ds-nav button:hover{background:#e6eeeb;}.ds-nav button:focus-visible{outline:3px solid var(--focus, #009d92);outline-offset:3px;}"
+    },
+    {
+      "name": "条件の作業面",
+      "kind": "card",
+      "refersTo": "work-surface",
+      "description": "境界だけで区切る条件編集領域。",
+      "html": "<section class=\"ds-surface\"><h2>探索条件</h2><p>能力と数値スペックを設定します。</p></section>",
+      "css": ".ds-surface{font-family:\"Noto Sans JP\", \"Yu Gothic\", system-ui, sans-serif;font-size:14px;padding:24px;background:var(--surface, #fff);border:1px solid var(--line, #d4dcda);color:var(--ink, #202c30);}.ds-surface h2{font-size:18px;font-weight:650;margin:0;}.ds-surface p{color:var(--muted, #536168);line-height:1.75;margin:10px 0;}"
+    }
+  ],
+  "narrative": {
+    "northStar": "競技分析の作業台",
+    "overview": "競技の条件表、状態遷移グラフ、3D、選択局面を同じ作業面で扱う操作画面。淡い紙色に白い作業領域を置き、細い境界と見出しで区切る。ヒーロー、装飾的な指標カード、作戦の解釈名は設けない。\n\n日本語を読んで条件を編集し、数値と局面を照合できる密度を保つ。システムサンセリフはOperateモードの既存方針であり、実際のCADを描く3Dが機体と競技場の視覚資料になる。",
+    "keyCharacteristics": [
+      "白い表とグラフを中心にした作業面。",
+      "選択を青緑、チームを赤と青で表示。",
+      "数値の桁を揃え、状態を文字と枠線でも区別。",
+      "狭い画面では作業領域を縦に並べ、グラフと表はスクロールで読む。"
+    ],
+    "rules": [
+      {
+        "name": "The State Meaning Rule",
+        "body": "青緑は操作・選択に使う。赤と青の組はチームの識別に使い、選択局面は太枠と「選択」の文字も併記する。",
+        "section": "colors"
+      },
+      {
+        "name": "The Flat Workbench Rule",
+        "body": "作業領域は白い面と細い境界で区切る。影や多重カードで階層を増やさない。",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do 本文は14px以上を基本にし、日本語の読みやすさを優先する。",
+      "Do 数値には等幅数字を使い、得点・時刻・局面IDを照合できるようにする。",
+      "Do 未展開、展開済み、終了、選択を文字や枠線でも区別する。",
+      "Do 再生時刻の得点・機体状態と選択局面の情報を別の見出しで示す。",
+      "Do 狭い画面では操作を折り返し、グラフと比較表にスクロール領域を残す。"
+    ],
+    "donts": [
+      "Don't ヒーローや装飾的な指標カードを追加する。",
+      "Don't 作戦の解釈名を画面の分類として発明する。",
+      "Don't グラフ全体を収めるためにラベルを自動縮小する。",
+      "Don't 色だけで局面や操作の状態を伝える。",
+      "Don't 影やカードの入れ子で作業領域を装飾する。"
+    ]
+  }
+}

@@ -8,3 +8,9 @@ __pycache__/
 # Local UI captures and regenerated browser simulation results
 /results/*.png
 /results/web-cad/
+
+# Local exploration databases and checkpoints
+/.explorer/
+
+# Local design review evidence
+/.impeccable/review/

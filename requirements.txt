@@ -1,0 +1,2 @@
+# Linear programs for simultaneous-action guarantees. Model/search use Python's stdlib.
+scipy>=1.11,<2

@@ -1,2 +1,0 @@
-# Optional finite simultaneous-game solver; verified in this environment.
-scipy==1.11.4

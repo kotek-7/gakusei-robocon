@@ -1,5 +1,5 @@
 {
-  "name": "strata-abu-2027",
+  "name": "robocon-state-explorer",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -8,7 +8,6 @@
     "dev": "vite",
     "test": "node --import tsx --test src/*/*.test.js src/*/*.test.ts",
     "import:field": "node scripts/import-field.mjs",
-    "validate:catalog": "node --import tsx scripts/validate-catalog.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
   },
