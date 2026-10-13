@@ -10,7 +10,9 @@
 - `explorer/model/actions.py`: 合法操作の列挙と所要時間。
 - `explorer/model/transition.py`: 同時選択、競合、開始・完了イベント。
 - `explorer/search/store.py`: SQLiteの状態グラフ、全入出辺、展開カーソル。バッチの遷移とカーソルを同一トランザクションで確定。
-- `explorer/search/discovery.py`: ルールと状態からの階層目標生成、候補と相手の対応の探索、保存済み経路への接続。詳細モデルの遷移を使う限定探索。
+- `explorer/search/discovery.py`: 独立したロボット選択の遅延列挙、探索状態・カーソル保存、候補と対抗手の探索、共通手順での比較。
+- `explorer/search/choices.py`: 最短経路の移動目的地と合法な資源操作、固定手順の再実行。
+- `explorer/search/guidance.py`: 候補を除外しない探索順序のヒント。
 - `explorer/search/evaluation.py`: 経路と構造分類の集計、同時行動ゲームの線形計画。
 - `explorer/runtime.py`: ローカルの計算ジョブの実行・停止。ブラウザから独立。
 - `explorer/presentation.py`: 保存した状態・遷移から描画用フレームへの射影。再シミュレーションしない。

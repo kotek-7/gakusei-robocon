@@ -42,7 +42,11 @@ export function Candidates({
   }
   const rows =
     report?.runs.flatMap((r) =>
-      r.candidates.map((c) => ({ run: r.run, candidate: c })),
+      r.candidates.map((c) => ({
+        run: r.run,
+        common: r.commonOpponents,
+        candidate: c,
+      })),
     ) || [];
   return (
     <section className="evaluation candidates">
@@ -86,6 +90,19 @@ export function Candidates({
           </div>
           {selectedRun && <p>{configuration(selectedRun.variant)}</p>}
           <p>
+            未探索の局面{" "}
+            {report.runs
+              .filter((r) => run === "all" || String(r.run) === run)
+              .reduce((n, r) => n + r.frontier, 0)
+              .toLocaleString()}
+            件。 生成済みの選択肢のうち未計算{" "}
+            {report.runs
+              .filter((r) => run === "all" || String(r.run) === run)
+              .reduce((n, r) => n + r.remainingChoices, 0)
+              .toLocaleString()}
+            組。 局面の展開で選択肢は増えます。
+          </p>
+          <p>
             点差は確認済みの対応内の値で、保証ではありません。未検証件数も併せて比較してください。相手待機は対照条件です。
           </p>
           <div
@@ -98,22 +115,26 @@ export function Candidates({
               <thead>
                 <tr>
                   <th>構成・作戦ID</th>
-                  <th>目標の順序（未達を含む）</th>
+                  <th>完了した建設・反転の順序</th>
                   <th>
                     相手待機
                     <br />赤 対 青
                   </th>
                   <th>相手の対応</th>
-                  <th>確認済みの最小点差</th>
+                  <th>共通の相手手順での最小点差</th>
                   <th>計算した展開</th>
                 </tr>
               </thead>
               <tbody>
                 {rows
                   .filter((r) => run === "all" || String(r.run) === run)
-                  .map(({ run: r, candidate: c }) => {
-                    const worst = c.responses.length
-                      ? Math.min(...c.responses.map(margin))
+                  .map(({ run: r, common, candidate: c }) => {
+                    const comparable = c.responses.filter(
+                      (x) =>
+                        x.shared && x.opponent && common.includes(x.opponent),
+                    );
+                    const worst = comparable.length
+                      ? Math.min(...comparable.map(margin))
                       : null;
                     return (
                       <tr key={`${r}/${c.id}`}>
@@ -122,14 +143,20 @@ export function Candidates({
                           <br />
                           {c.baseline.strategy}
                         </td>
-                        <td>{c.plan.map(goalLabel).join(" → ")}</td>
+                        <td>
+                          {c.plan.map(goalLabel).join(" → ") ||
+                            "建設・反転なし"}
+                          <br />
+                          <small>展開 {c.id}</small>
+                        </td>
                         <td>{score(c.baseline)}</td>
                         <td>
-                          {c.responses.length}件確認 / {c.pending}件待ち
+                          {c.responses.length}展開確認 / 共通比較{" "}
+                          {common.length}手順 / {c.pending}手順待ち
                         </td>
                         <td>
                           {worst === null
-                            ? "未検証"
+                            ? "共通比較待ち"
                             : `${worst > 0 ? "+" : ""}${worst}点`}
                         </td>
                         <td>
@@ -142,11 +169,21 @@ export function Candidates({
                             {c.responses.map((response, i) => (
                               <div className="candidate-response" key={i}>
                                 <p>
-                                  {response.kind === "flip"
-                                    ? `相手が反転：${response.targets?.join(" → ")}`
-                                    : "相手も建設を進める"}
+                                  相手手順 {response.opponent}（
+                                  {response.shared
+                                    ? "共有手順での検査"
+                                    : "この候補への対抗手探索"}
+                                  ）
                                   <br />
                                   {score(response)}
+                                  {!!response.blocked?.length && (
+                                    <>
+                                      <br />
+                                      手順の実行条件が成立しない局面あり（
+                                      {response.blocked.length}
+                                      件）。経路で確認できます。
+                                    </>
+                                  )}
                                 </p>
                                 <button onClick={() => onOpen(r, response)}>
                                   対応{i + 1}の経路を開く

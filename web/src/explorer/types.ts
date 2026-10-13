@@ -191,12 +191,18 @@ export type CandidateEvidence = {
   scores: number[];
   strategy: string;
   milestones: string[][];
+  blocked?: { robot: number; t: number; instruction: number; reason: string }[];
 };
 export type Candidate = {
   id: string;
   plan: Goal[];
   baseline: CandidateEvidence;
-  responses: (CandidateEvidence & { kind: string; targets?: number[] })[];
+  responses: (CandidateEvidence & {
+    kind: string;
+    targets?: number[];
+    opponent?: string;
+    shared?: boolean;
+  })[];
   pending: number;
 };
 export type Discovery = {
@@ -207,6 +213,9 @@ export type Discovery = {
     run: number;
     tested: number;
     frontier: number;
+    remainingChoices: number;
+    scopeComplete: boolean;
+    commonOpponents: string[];
     variant: Variant;
     firstCandidateSeconds: number | null;
     candidates: Candidate[];
