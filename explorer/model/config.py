@@ -3,7 +3,7 @@
 from copy import deepcopy
 import math
 
-VERSION = "strategy-discovery-3"
+VERSION = "strategy-choices-4"
 
 
 CAPS = {

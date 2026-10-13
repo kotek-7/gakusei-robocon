@@ -344,7 +344,18 @@ class Store:
         with connect(self.path) as db:
             return {
                 t: [dict(r) for r in db.execute("SELECT * FROM " + t)]
-                for t in ("meta", "runs", "nodes", "edges")
+                for t in (
+                    "meta",
+                    "runs",
+                    "nodes",
+                    "edges",
+                    "discovery_jobs",
+                    "discovery_states",
+                    "discovery_links",
+                )
+                if db.execute(
+                    "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (t,)
+                ).fetchone()
             }
 
 
@@ -360,10 +371,14 @@ def public_discovery(report, config):
                 "run": int(k),
                 "variant": schema.config_at(config, int(k)),
                 "tested": d["tested"],
-                "frontier": len(d["frontier"]),
+                "frontier": d["frontier"],
+                "remainingChoices": d.get("remainingChoices", 0),
+                "scopeComplete": d.get("complete", False),
+                "commonOpponents": d.get("commonOpponents", []),
                 "firstCandidateSeconds": d["firstCandidateSeconds"],
                 "candidates": [
-                    {**a, "pending": len(a["pending"])} for a in d["candidates"]
+                    {key: value for key, value in a.items() if key != "script"}
+                    for a in d["candidates"]
                 ],
             }
             for k, d in sorted(report["runs"].items(), key=lambda x: int(x[0]))
