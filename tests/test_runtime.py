@@ -71,7 +71,9 @@ class RuntimeTest(unittest.TestCase):
             st = Store.create(d, c)
             with self.assertRaises(ValueError):
                 runtime.start(st.path.stem, discovery_seconds=0)
-            runtime.start(st.path.stem, discovery_seconds=1)
+            with self.assertRaises(ValueError):
+                runtime.start(st.path.stem, discovery_seconds=86401)
+            runtime.start(st.path.stem, discovery_seconds=86400)
             runtime.jobs[st.path.stem][1].join(10)
             self.assertIsNone(st.summary()["error"])
             report = st.summary()["discovery"]

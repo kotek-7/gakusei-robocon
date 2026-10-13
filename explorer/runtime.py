@@ -49,9 +49,9 @@ class Runtime:
         if type(budget) is not int or not 1 <= budget <= 1000000:
             raise ValueError("計算予算は1〜1000000の整数です")
         if discovery_seconds is not None and (
-            type(discovery_seconds) is not int or not 1 <= discovery_seconds <= 300
+            type(discovery_seconds) is not int or not 1 <= discovery_seconds <= 86400
         ):
-            raise ValueError("候補探索の時間は1〜300秒の整数です")
+            raise ValueError("候補探索の時間は1〜86400秒の整数です")
         st = self.get(id)
         with self.lock:
             if id in self.jobs and self.jobs[id][1].is_alive():

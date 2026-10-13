@@ -1,5 +1,12 @@
 import type { Search } from "./types";
 
+function duration(seconds: number) {
+  if (seconds < 60) return `${seconds.toFixed(1)}秒`;
+  const whole = Math.floor(seconds);
+  if (whole < 3600) return `${Math.floor(whole / 60)}分${whole % 60}秒`;
+  return `${Math.floor(whole / 3600)}時間${Math.floor((whole % 3600) / 60)}分`;
+}
+
 const stopLabels: Record<string, string> = {
   exhausted: "対象範囲を探索済み",
   time_limit: "指定時間で中断",
@@ -18,7 +25,7 @@ export function DiscoveryProgress({ search }: { search: Search }) {
   const advice = report?.scopeComplete
     ? "この生成ルールで探せる候補と相手対応を確認しました。同じ条件で追加計算しても候補は増えません。候補の経路を確認するか、探索条件を変更してください。"
     : !report || report.metrics.candidates === 0
-      ? "まず30〜60秒を目安に探索してください。構成数が多い場合は、比較したい能力・スペックに絞ると各構成の探索を進めやすくなります。"
+      ? "まず5分から探索できます。構成数や未比較の相手手順が多い場合は、長めの時間を選んでください。途中で停止しても続きから再開できます。"
       : pending > 0
         ? "未検証の相手対応があります。追加で探索を進め、同じ対応を検査した候補どうしで比較してください。"
         : quiet
@@ -30,7 +37,7 @@ export function DiscoveryProgress({ search }: { search: Search }) {
         <summary>
           <span role="status">{running ? "探索中" : report?.scopeComplete
             ? "対象範囲を探索済み" : stopLabels[report?.stopReason || ""] || (report ? "途中保存あり" : "未開始")}</span>
-          {report && <span>{report.metrics.candidates}候補 · {report.metrics.strategies}種類 · {report.elapsed.toFixed(1)}秒</span>}
+          {report && <span>{report.metrics.candidates}候補 · {report.metrics.strategies}種類 · {duration(report.elapsed)}</span>}
           <span className="progress-detail-label">進捗・履歴</span>
         </summary>
       <p>{advice}</p>
@@ -41,14 +48,14 @@ export function DiscoveryProgress({ search }: { search: Search }) {
         <span>相手対応の結果 {report.metrics.responses.toLocaleString()}展開 / 共有手順の比較 {pending.toLocaleString()}件待ち</span>
       </div>}
       <p className="progress-note">1回の計算時間は指定できます。候補の総数と完了までの時間は事前には分かりません。探索中にも枝が増えるため、探索待ち件数は残り総数ではありません。対象範囲を探索済みでも、全作戦の網羅・最適性の保証にはなりません。</p>
-      {latest && <p>直近の計算：{latest.seconds.toFixed(1)}秒で候補 +{latest.newCandidates}件、作戦の種類 +{latest.newStrategies}種類、相手対応を{latest.responses}件検査。最高得点を更新した構成は{latest.scoreChanges.length}件。</p>}
+      {latest && <p>直近の計算：{duration(latest.seconds)}で候補 +{latest.newCandidates}件、作戦の種類 +{latest.newStrategies}種類、相手対応を{latest.responses}件検査。最高得点を更新した構成は{latest.scoreChanges.length}件。</p>}
       {!!report?.sessions.length && <div className="discovery-history">
         <h3>計算履歴</h3>
         <div className="progress-table" tabIndex={0} role="region" aria-label="候補探索の計算履歴">
           <table>
             <thead><tr><th>計算時間</th><th>新しい候補</th><th>新しい作戦の種類</th><th>相手対応の検査</th><th>最高得点の更新（相手待機）</th><th>停止理由</th></tr></thead>
             <tbody>{[...report.sessions].reverse().map((s, i) => <tr key={i}>
-              <td>{i === 0 ? "直近 · " : ""}{s.seconds.toFixed(1)}秒</td>
+              <td>{i === 0 ? "直近 · " : ""}{duration(s.seconds)}</td>
               <td>+{s.newCandidates}</td><td>+{s.newStrategies}</td><td>+{s.responses}</td>
               <td>{s.scoreChanges.length ? s.scoreChanges.map((v) => `C${v.run}: ${v.before} → ${v.after}点`).join(" / ") : "なし"}</td>
               <td>{stopLabels[s.reason] || s.reason}</td>
@@ -85,7 +92,7 @@ export function EvaluationProgress({ search }: { search: Search }) {
   return <section className="evaluation-progress" aria-label="評価計算の進捗" aria-busy={active}>
     <div className="progress-heading" role="status">
       <strong>{title}</strong>
-      {progress && <span>{progress.elapsed.toFixed(1)}秒 · 構成 {progress.completedRuns} / {progress.totalRuns}件処理済み</span>}
+      {progress && <span>{duration(progress.elapsed)} · 構成 {progress.completedRuns} / {progress.totalRuns}件処理済み</span>}
     </div>
     {active && <>
       <progress aria-label="現在の処理段階の進捗" max={determinate ? total : undefined} value={determinate ? progress?.done : undefined} />

@@ -44,7 +44,7 @@ export function App() {
   const [error, setError] = useState(""),
     [request, setRequest] = useState(false),
     [budget, setBudget] = useState(1000),
-    [seconds, setSeconds] = useState(60),
+    [seconds, setSeconds] = useState(300),
     [revision, setRevision] = useState(0);
   const [selectionOwner, setSelectionOwner] = useState(id);
   const chosen = useRef(id);
@@ -388,9 +388,9 @@ export function App() {
                 value={seconds}
                 onChange={(e) => setSeconds(Number(e.target.value))}
               >
-                {[10, 30, 60].map((n) => (
+                {[10, 30, 60, 300, 900, 1800, 3600, 10800, 21600, 43200, 86400].map((n) => (
                   <option key={n} value={n}>
-                    {n}秒
+                    {n < 60 ? `${n}秒` : n < 3600 ? `${n / 60}分` : `${n / 3600}時間`}
                   </option>
                 ))}
               </select>
