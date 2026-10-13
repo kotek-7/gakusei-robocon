@@ -13,7 +13,7 @@ from .guidance import Planner
 from .choices import choices, fixed_choice, instruction, matched
 from .evidence import persist as persist  # public replay helper
 from .evaluation import classification, structural, token
-from .store import connect, dumps
+from .store import connect, dumps, discovery_finished, discovery_metrics
 
 SCOPE = (
     "候補探索：両チームの取得個数・混載・床／直接受け渡し・建設途中の切替・先行搬送を探索します。"
@@ -461,6 +461,10 @@ def discover(store, seconds=10, cancel=None):
                 "scope": SCOPE,
             }
         )
+    if discovery_finished(report, c):
+        return report
+    before = discovery_metrics(report)
+    report["stopReason"] = None
     planners = {}
     base = report["elapsed"]
     while time.monotonic() < deadline and not (cancel and cancel.is_set()):
@@ -512,6 +516,28 @@ def discover(store, seconds=10, cancel=None):
             ):
                 break
     report["elapsed"] = base + time.monotonic() - start
+    after = discovery_metrics(report)
+    reason = (
+        "exhausted" if discovery_finished(report, c)
+        else "cancelled" if cancel and cancel.is_set()
+        else "time_limit"
+    )
+    report["stopReason"] = reason
+    report.setdefault("sessions", []).append({
+        "seconds": time.monotonic() - start,
+        "budget": seconds,
+        "reason": reason,
+        "newCandidates": after["candidates"] - before["candidates"],
+        "newStrategies": after["strategies"] - before["strategies"],
+        "responses": after["responses"] - before["responses"],
+        "scoreChanges": [
+            {"run": int(k), "before": before["bestScores"][k], "after": value}
+            for k, value in after["bestScores"].items()
+            if before["bestScores"].get(k) is not None
+            and value is not None and value > before["bestScores"][k]
+        ],
+    })
+    report["sessions"] = report["sessions"][-12:]
     with connect(store.path) as db:
         refresh(db, report)
     return report

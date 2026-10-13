@@ -116,6 +116,8 @@ class Store:
                 "complete": str(complete_runs)
                 == str(schema.count_configs(m["config"])),
                 "evaluation": m.get("evaluation"),
+                "evaluationProgress": m.get("evaluationProgress"),
+                "job": m.get("job"),
                 "discovery": public_discovery(m.get("discovery"), m["config"]),
             }
 
@@ -359,6 +361,29 @@ class Store:
             }
 
 
+def discovery_finished(report, config):
+    """Completion within the planner's restricted scope, not exhaustive search."""
+    return len(report["runs"]) == schema.count_configs(config) and all(
+        d.get("complete", False)
+        for d in report["runs"].values()
+    )
+
+
+def discovery_metrics(report):
+    candidates = [a for d in report["runs"].values() for a in d["candidates"]]
+    return {
+        "candidates": len(candidates),
+        "strategies": len({a["baseline"]["strategy"] for a in candidates}),
+        "responses": sum(len(a["responses"]) for a in candidates),
+        "pending": sum(a["pending"] for a in candidates),
+        "frontier": sum(d["frontier"] for d in report["runs"].values()),
+        "bestScores": {
+            k: max((a["baseline"]["scores"][0] for a in d["candidates"]), default=None)
+            for k, d in report["runs"].items()
+        },
+    }
+
+
 def public_discovery(report, config):
     if report is None:
         return None
@@ -366,6 +391,10 @@ def public_discovery(report, config):
         "elapsed": report["elapsed"],
         "scope": report["scope"],
         "complete": False,
+        "scopeComplete": discovery_finished(report, config),
+        "stopReason": "exhausted" if discovery_finished(report, config) else report.get("stopReason"),
+        "metrics": discovery_metrics(report),
+        "sessions": report.get("sessions", []),
         "runs": [
             {
                 "run": int(k),

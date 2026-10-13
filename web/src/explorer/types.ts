@@ -120,6 +120,8 @@ export type Search = {
   totalRuns: string;
   complete: boolean;
   evaluation: Evaluation | null;
+  job: "discovery" | "exact" | "evaluation" | null;
+  evaluationProgress: EvaluationProgress | null;
   discovery: Discovery | null;
 };
 export type Model = {
@@ -205,10 +207,40 @@ export type Candidate = {
   })[];
   pending: number;
 };
+export type EvaluationProgress = {
+  phase: "loading" | "histories" | "statistics" | "guarantees" | "saving" | "complete";
+  state: "running" | "complete" | "cancelled" | "interrupted" | "error";
+  done: number;
+  total: number | null;
+  run: number | null;
+  completedRuns: number;
+  totalRuns: number;
+  elapsed: number;
+};
+export type DiscoverySession = {
+  seconds: number;
+  budget: number;
+  reason: string;
+  newCandidates: number;
+  newStrategies: number;
+  responses: number;
+  scoreChanges: { run: number; before: number; after: number }[];
+};
 export type Discovery = {
   elapsed: number;
   scope: string;
   complete: false;
+  scopeComplete: boolean;
+  stopReason: string | null;
+  metrics: {
+    candidates: number;
+    strategies: number;
+    responses: number;
+    pending: number;
+    frontier: number;
+    bestScores: Record<string, number | null>;
+  };
+  sessions: DiscoverySession[];
   runs: {
     run: number;
     tested: number;
