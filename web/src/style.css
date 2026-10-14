@@ -537,16 +537,20 @@ button.primary:hover:not(:disabled) {
 }
 .area-header {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: 2px;
-  min-height: 30px;
-  padding: 2px;
+  height: 30px;
+  padding: 0 2px;
   background: var(--surface-2);
   border-bottom: 1px solid var(--line);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
   flex: none;
 }
+.area-header::-webkit-scrollbar { display: none; }
+.area-header > * { flex-shrink: 0; }
+.area-header[data-panning] { cursor: grabbing; user-select: none; }
 .area.active .area-header {
   background: var(--chrome);
 }
@@ -2015,9 +2019,8 @@ tr[aria-selected="true"] th {
 .dock-tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); background: var(--surface); }
 .dock-tabs button:hover { background: var(--hover); }
 .area-header .area-tools {
-  /* Wrap controls instead of squeezing a scrollbar into the control row. */
-  flex: 1 1 240px;
-  flex-wrap: wrap;
+  /* Like Blender, pan the single header row without a visible scrollbar. */
+  flex: none;
   overflow: visible;
 }
 .area-header .area-tools > * { flex-shrink: 0; }

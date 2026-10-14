@@ -13,6 +13,7 @@ import { getPref } from "../app/prefs";
 import { allEditors, getEditor } from "../editors/registry";
 import { Icon } from "./icons";
 import { run } from "../app/commands";
+import { EditorHeader } from "./EditorHeader";
 
 function Splitter({ split, index }: { split: AreaSplit; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -127,7 +128,7 @@ function Area({ area, compactActive }: { area: AreaLeaf; compactActive: string }
           useUI.setState({ menu: { x: r.left, y: r.bottom + 2, items: areaMenu(area) } });
         }}><Icon name="chevron" size={12} /></button>
         <button className="tool icon-only area-max" title={maximized ? "元に戻す (Ctrl+Space)" : "最大化 (Ctrl+Space)"} aria-pressed={maximized} onClick={() => layout.toggleMaximize(area.id)}><Icon name="maximize" /></button></div>}
-      {(!area.tabs || def?.Header) && <header
+      {(!area.tabs || def?.Header) && <EditorHeader
         className="area-header"
         onDoubleClick={(e) => {
           if (e.target === e.currentTarget) layout.toggleMaximize(area.id);
@@ -163,7 +164,7 @@ function Area({ area, compactActive }: { area: AreaLeaf; compactActive: string }
           <Icon name="maximize" />
         </button>
         </>}
-      </header>}
+      </EditorHeader>}
       <div className="area-body" id={`${area.id}-panel`} role={area.tabs ? "tabpanel" : undefined} aria-labelledby={area.tabs ? `${area.id}-tab-${area.editor}` : undefined}>
         {def ? <def.Component key={area.editor} area={area} /> : <p className="empty">不明なエディタ</p>}
       </div>
