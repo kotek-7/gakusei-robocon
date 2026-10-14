@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import { useQuery } from "../../app/data";
 import { useSearch } from "../../app/session";
 import { layout, useLayout } from "../../app/layout";
@@ -16,6 +16,12 @@ import { resolveStrategy, type StrategySelection } from "./selection";
 import { inspectStrategyTime } from "./commands";
 import "./detail.css";
 
+const views = [
+  ["summary", "機体別の概要"], ["instructions", "固定手順"], ["completed", "完了結果"],
+  ["execution", "動作・時間"], ["score", "得点"], ["diagnostics", "実行不可"], ["configuration", "機体構成"],
+] as const;
+type DetailView = typeof views[number][0];
+
 function StrategyDetail({ area }: EditorProps) {
   const search = useSearch(), model = useModel();
   const root = useRef<HTMLDivElement>(null);
@@ -27,12 +33,14 @@ function StrategyDetail({ area }: EditorProps) {
   const instructions = useQuery("candidate.instructions", search && resolved ? {search: search.id, run:resolved.run.run, candidate:resolved.candidate.id, ...(opponent ? {opponent} : {})} : null);
   const currentPath = useUI(s => s.session.path);
   const pathMatches = evidence && currentPath?.join() === evidence.path.join();
-  const section = (id: string) => {
-    const target = root.current?.querySelector<HTMLElement>(`[data-section="${id}"]`);
-    target?.focus({preventScroll:true}); target?.scrollIntoView({block:"start"});
-  };
+  const tabsId = useId();
+  const view: DetailView = views.find(([id]) => id === area.state?.detailView)?.[0] ?? "summary";
+  function showView(next: DetailView, robot?: number) {
+    layout.setAreaState(area.id, {detailView: next, instructionRobot: robot});
+    if (root.current) root.current.scrollTop = 0;
+  }
   function update(next: StrategySelection) {
-    layout.setAreaState(area.id, {strategySelection: next});
+    layout.setAreaState(area.id, {strategySelection: next, instructionRobot: undefined});
     void inspectStrategyTime(next, undefined).catch(ui.error);
     ui.patchPlayback({playing:false, range:null});
   }
@@ -56,29 +64,32 @@ function StrategyDetail({ area }: EditorProps) {
       <label>展開<select aria-label="詳しく見る展開" value={resolved.chosen?.key ?? ""} onChange={e => update({...selection,evidence:e.target.value})}>{!resolved.chosen && <option value="">展開が見つかりません</option>}{options.map(option => <option key={option.key} value={option.key}>{option.label}</option>)}</select></label>
       <Help topic="results" text="作戦候補は赤TR・赤BRの固定指示です。相手の手順や競合の裁定により実行結果が変わります。候補番号はこの構成内の発見順です。" />
     </div>
-    <nav className="strategy-detail-nav" aria-label="作戦詳細の内容">
-      <span className="strategy-sticky-identity">C{configRun.run} · 候補 {ordinal} · {resolved.chosen?.label ?? "展開未選択"}</span>
-      <button onClick={() => section("instructions")}>作戦の指示</button>
-      <button onClick={() => section("execution")} disabled={!analysis.data}>動作・時間</button>
-      <button onClick={() => section("score")} disabled={!analysis.data}>得点の変化</button>
-      <button onClick={() => section("diagnostics")} disabled={!evidence}>実行不可</button>
-      <button onClick={() => section("configuration")}>機体構成</button>
-    </nav>
+    <div className="strategy-detail-tabs" role="tablist" aria-label="作戦詳細の内容" onKeyDown={event => {
+      const index = views.findIndex(([id]) => id === view);
+      const next = event.key === "ArrowRight" ? (index + 1) % views.length : event.key === "ArrowLeft" ? (index + views.length - 1) % views.length : event.key === "Home" ? 0 : event.key === "End" ? views.length - 1 : -1;
+      if (next < 0) return;
+      event.preventDefault(); showView(views[next][0]);
+      document.getElementById(`${tabsId}-${views[next][0]}`)?.focus();
+    }}>
+      {views.map(([id, label]) => <button key={id} id={`${tabsId}-${id}`} role="tab" aria-selected={view === id} aria-controls={`${tabsId}-panel`} tabIndex={view === id ? 0 : -1} onClick={() => showView(id)}>{label}</button>)}
+    </div>
     {evidence && <div className="strategy-evidence-status"><span>選択展開：赤 {evidence.scores[0]} 対 青 {evidence.scores[1]}</span><span>{analysis.data ? `${analysis.data.start}〜${analysis.data.end}秒` : ""}</span><button onClick={() => { void inspectStrategyTime(selection, undefined).catch(ui.error); }}>{pathMatches ? "終局を3D表示" : "この展開を3Dに表示"}</button></div>}
-    <section data-section="instructions" tabIndex={-1}>
+    <div role="tabpanel" id={`${tabsId}-panel`} aria-labelledby={`${tabsId}-${view}`} tabIndex={0}>
+    {(["summary", "instructions", "completed"] as string[]).includes(view) && <section>
       {instructions.error && <p role="alert">固定指示を読み込めません：{instructions.error}</p>}
       {instructions.loading && !instructions.data && <p role="status">作戦の指示を読み込み中…</p>}
-      <StrategyPlan key={`${search.id}/${candidate.id}`} candidate={candidate} variant={configRun.variant} model={model} instructions={instructions.data} blocked={evidence?.blocked} onSeek={seek} onSpot={spot => { void inspectStrategyTime(selection, undefined, undefined, `spot:${spot}`).catch(ui.error); }} />
-    </section>
-    <section data-section="execution" tabIndex={-1}>
+      <StrategyPlan view={view as "summary" | "instructions" | "completed"} initialRobot={area.state?.instructionRobot as number | undefined} onInstructions={robot => { showView("instructions", robot); requestAnimationFrame(() => document.getElementById(`${tabsId}-panel`)?.focus()); }} key={`${search.id}/${candidate.id}/${view}`} candidate={candidate} variant={configRun.variant} model={model} instructions={instructions.data} blocked={evidence?.blocked} onSeek={seek} onSpot={spot => { void inspectStrategyTime(selection, undefined, undefined, `spot:${spot}`).catch(ui.error); }} />
+    </section>}
+    {view === "execution" && <section>
       {analysis.error && <p role="alert">実行記録を読み込めません：{analysis.error}</p>}
       {analysis.loading && !analysis.data && <p role="status">実行記録を読み込み中…</p>}
-      {evidence && !evidence.path.length && <p>この展開には動作の記録がありません。</p>}
+      {!evidence ? <p>展開が見つかりません。</p> : !evidence.path.length && <p>この展開には動作の記録がありません。</p>}
       {analysis.data && <StrategyExecution analysis={analysis.data} onSeek={seek} />}
-    </section>
-    <section data-section="score" tabIndex={-1}>{analysis.data && <StrategyScore analysis={analysis.data} onSeek={seek} />}</section>
-    <section data-section="diagnostics" tabIndex={-1}>{evidence && <EvidenceDiagnostics evidence={evidence} onOpenAt={issue => seek(issue.t,issue.robot)} />}</section>
-    <section data-section="configuration" tabIndex={-1}><StrategyConfiguration variant={configRun.variant} model={model} /></section>
+    </section>}
+    {view === "score" && <section>{analysis.data && <StrategyScore analysis={analysis.data} onSeek={seek} />}{!analysis.data && <p>{analysis.error ? `実行記録を読み込めません：${analysis.error}` : analysis.loading ? "実行記録を読み込み中…" : "この展開には動作の記録がありません。"}</p>}</section>}
+    {view === "diagnostics" && <section>{evidence && <EvidenceDiagnostics evidence={evidence} onOpenAt={issue => seek(issue.t,issue.robot)} />}{!evidence && <p>展開が見つかりません。</p>}</section>}
+    {view === "configuration" && <section><StrategyConfiguration variant={configRun.variant} model={model} /></section>}
+    </div>
     <footer className="strategy-provenance">構成 C{configRun.run} · 候補 {candidate.id} · 展開 N{evidence?.node ?? "未選択"}</footer>
   </div>;
 }
