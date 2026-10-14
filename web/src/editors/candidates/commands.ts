@@ -35,3 +35,17 @@ register({
     saveJSON(args, "candidate-evidence.json");
   },
 });
+
+register({
+  id: "candidate.inspectIssue", title: "実行不可の時刻を3Dに表示", category: "候補", hidden: true,
+  enabled: ({args}) => !!(args as {evidence?: {path?: number[]}} | undefined)?.evidence?.path?.length,
+  run: async ({args}) => {
+    const {evidence, issue} = args as {evidence: {node:number; path:number[]}; issue: {t:number; robot:number}};
+    const search = useUI.getState().session.search;
+    await goToNode(evidence.node, evidence.path);
+    if (useUI.getState().session.search !== search) return;
+    ui.patchPlayback({playing: false, range: null});
+    ui.seek(issue.t);
+    ui.select(`robot:${issue.robot}`);
+  },
+});

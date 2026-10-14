@@ -1,0 +1,9 @@
+.candidate-recovery { font-size: 12px; min-width: 0; }
+.candidate-recovery summary { cursor: pointer; padding: 4px 0; }
+.candidate-recovery ul { list-style: none; margin: 2px 0 6px; padding: 0; max-height: 220px; overflow: auto; border-inline-start: 2px solid var(--line); }
+.candidate-recovery li + li { border-top: 1px solid var(--line); }
+.candidate-recovery li button { width: 100%; text-align: start; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 3px 10px; border: 0; border-radius: 0; padding: 6px 8px; }
+.candidate-recovery li button > span { overflow-wrap: anywhere; }
+.candidate-recovery li small { font-size: 11px; }
+.candidate-recovery-note { grid-column: 1 / -1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: .75; }
+.candidate-query-match { display: block; font-size: 11px; opacity: .75; }

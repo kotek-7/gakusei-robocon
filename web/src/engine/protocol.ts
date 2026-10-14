@@ -39,6 +39,18 @@ export type Workspace = {
   ab: { a: number[] | null; b: number[] | null; label?: [string, string] };
   notes: Record<string, string>;
   reviews?: ReviewRecord[];
+  candidateReview?: {
+    shortlist: string[];
+    decisions: Record<string, { status: "open" | "keep" | "dismiss"; note: string }>;
+    views?: {
+      id: string;
+      name: string;
+      filters: {
+        run: string; query: string; sort: string; status: string;
+        opponent: string; decision: string; shortlistOnly: boolean;
+      };
+    }[];
+  };
   updated: number;
 };
 

@@ -1,0 +1,19 @@
+.candidate-completions { min-width: 0; border-top: 1px solid var(--line); padding-top: 7px; }
+.candidate-completions > header, .candidate-completion-context header { display: flex; justify-content: space-between; gap: 6px; align-items: center; }
+.candidate-completions > header span { color: var(--muted); white-space: nowrap; }
+.candidate-completion-filters { display: flex; flex-wrap: wrap; gap: 5px; margin-block: 5px; }
+.candidate-completion-filters label { display: flex; align-items: center; gap: 3px; }
+.candidate-completion-filters select { width: auto; max-width: 130px; }
+.candidate-completion-filters input { flex: 1; width: 110px; min-width: 90px; }
+.candidate-completion-difference { color: var(--muted); display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+.candidate-completion-table { max-height: 240px; overflow: auto; }
+.candidate-completion-table table { width: 100%; border-collapse: collapse; }
+.candidate-completion-table td, .candidate-completion-table th { padding: 4px; text-align: left; vertical-align: top; }
+.candidate-completion-table td { overflow-wrap: anywhere; }
+.candidate-completion-table td:nth-child(-n+2) { white-space: nowrap; }
+.candidate-completion-table [data-context="true"] { background: var(--selected); }
+.candidate-completions .candidate-group-link { border: 0; padding: 0 3px; text-decoration: underline; background: transparent; color: var(--accent); }
+.candidate-completion-context { padding: 6px; border-left: 2px solid var(--accent); background: var(--surface-2); margin-block: 5px; }
+.candidate-completion-diff-detail { border-block: 1px solid var(--line); padding: 6px 0; }
+.candidate-completion-diff-detail > div { margin-top: 5px; padding-left: 6px; border-left: 2px solid var(--line-strong); }
+.candidate-completion-diff-detail > div > span { color: var(--muted); }

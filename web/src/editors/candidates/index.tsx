@@ -1,3 +1,5 @@
+import { updateWorkspace, useWorkspaceData } from "../../app/workspace";
+import { emptyCandidateReview } from "./review";
 import { layout } from "../../app/layout";
 import { run } from "../../app/commands";
 import { useSearch } from "../../app/session";
@@ -9,6 +11,7 @@ import { Candidates, type CandidateView } from "./Candidates";
 function CandidatesEditor({ area }: EditorProps) {
   const search = useSearch();
   const model = useModel();
+  const workspace = useWorkspaceData();
   if (!search || !model) return <Empty title="探索がありません" />;
   return (
     <div className="editor-scroll">
@@ -16,6 +19,9 @@ function CandidatesEditor({ area }: EditorProps) {
         key={search.id}
         search={search}
         model={model}
+        review={workspace?.candidateReview ?? emptyCandidateReview()}
+        reviewReady={!!workspace}
+        onReviewChange={edit => updateWorkspace(w => ({ ...w, candidateReview: edit(w.candidateReview ?? emptyCandidateReview()) }))}
         initialView={area.state?.candidateSearchId === search.id ? area.state?.candidateView as Partial<CandidateView> | undefined : undefined}
         onViewChange={candidateView => layout.setAreaState(area.id, { candidateSearchId: search.id, candidateView })}
         requestedRun={area.state?.searchId === search.id ? area.state?.run as string | undefined : undefined}

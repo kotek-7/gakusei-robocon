@@ -1,0 +1,30 @@
+.candidate-matrix { border-block: 1px solid var(--line); margin-block: 8px; min-width: 0; }
+.candidate-matrix > header { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; padding-block: 6px; }
+.candidate-matrix-scroll { overflow: auto; max-height: 290px; min-width: 0; }
+.candidate-matrix table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.candidate-matrix caption { text-align: left; padding: 5px; color: var(--muted); }
+.candidate-matrix th, .candidate-matrix td { padding: 5px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.candidate-matrix th > span { display: inline-block; max-width: 145px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
+.candidate-matrix thead th { min-width: 150px; }
+.candidate-matrix thead button { margin-left: 4px; padding: 2px 4px; font-size: 11px; }
+.candidate-matrix-cell { display: grid; width: 100%; text-align: left; gap: 2px; border-color: transparent; background: transparent; border-radius: 2px; }
+.candidate-matrix-cell[aria-pressed="true"] { background: var(--selected); color: var(--selected-ink); border-color: var(--accent); }
+.candidate-matrix-cell small { font-weight: normal; }
+.candidate-matrix-baseline { border-top: 2px solid var(--line); }
+.candidate-matrix-note, .candidate-matrix-missing { color: var(--muted); font-size: 11px; }
+.candidate-matrix-note { margin: 5px; }
+.candidate-matrix-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 5px; padding-block: 6px; min-width: 0; }
+.candidate-matrix-tools > span { flex: 1 1 100%; overflow-wrap: anywhere; color: var(--muted); font-size: 11px; }
+
+.candidate-matrix-id { display: inline-block; max-width: 145px; font-size: 10px; font-weight: normal; color: var(--muted); margin-right: 4px; }
+.candidate-matrix-filters { display: flex; gap: 6px; flex-wrap: wrap; padding-block: 5px; border-bottom: 1px solid var(--line); }
+.candidate-matrix-filters label, .candidate-matrix-tools label { display: flex; gap: 4px; align-items: center; min-width: 0; flex-wrap: wrap; }
+.candidate-matrix-filters input { width: 115px; min-width: 60px; }
+.candidate-matrix-filters select, .candidate-matrix-tools select { max-width: 240px; }
+.candidate-matrix-blocked { flex: 1 0 100%; overflow-wrap: anywhere; }
+.candidate-matrix-blocked ul { padding-left: 20px; }
+
+.candidate-matrix-spread { display: block; font-size: 10px; font-weight: normal; color: var(--muted); }
+.candidates .candidate-matrix-cell { display: grid; height: auto; min-height: var(--row); padding: 4px; gap: 2px; justify-items: start; white-space: normal; }
+.candidate-matrix thead th > span { display: block; }
+.candidate-matrix-tools > button { flex-shrink: 0; }

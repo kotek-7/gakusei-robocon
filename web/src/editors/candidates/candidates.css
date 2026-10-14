@@ -1,8 +1,11 @@
 
 .candidates { container-type: inline-size; }
-.candidate-workbench { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, 30%); min-width: 0; border-block: 1px solid var(--line); }
-.candidate-workbench > .candidate-table { min-width: 0; overflow: auto; max-height: 64vh; }
-.candidate-inspector { padding: 10px; border-left: 1px solid var(--line); min-width: 0; overflow: auto; max-height: 64vh; }
+.candidate-workbench { display: grid; grid-template-columns: minmax(0, 1fr) minmax(250px, 32%); align-items: start; min-width: 0; border-block: 1px solid var(--line); }
+.candidate-collection > .candidate-table { min-width: 0; overflow: auto; max-height: 64vh; }
+.candidate-collection { min-width: 0; }
+.candidate-workbench.has-comparison .candidate-collection > .candidate-table { max-height: clamp(150px, 25vh, 260px); }
+.candidate-collection > .candidate-table thead th { position: sticky; top: 0; z-index: 1; background: var(--surface-2); }
+.candidate-inspector { padding: 10px; border-left: 1px solid var(--line); min-width: 0; overflow: auto; max-height: 75vh; position: sticky; top: 0; }
 .candidate-inspector header { padding-bottom: 10px; overflow-wrap: anywhere; }
 .candidate-inspector label { display: grid; gap: 4px; }
 .candidate-inspector select { width: 100%; min-width: 0; }
@@ -13,7 +16,7 @@
 
 
 .candidate-status { padding-block: 7px; color: var(--muted); font-size: 11px; }
-@container (max-width: 680px) { .candidate-workbench { grid-template-columns: 1fr; } .candidate-inspector { border-left: 0; border-top: 1px solid var(--line); max-height: 300px; } .candidate-workbench > .candidate-table { max-height: 360px; } }
+@container (max-width: 680px) { .candidate-workbench { grid-template-columns: 1fr; } .candidate-inspector { border-left: 0; border-top: 1px solid var(--line); max-height: 360px; position: static; } .candidate-collection > .candidate-table { max-height: 360px; } }
 
 .candidates .candidate-controls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .candidate-controls > label { display: flex; align-items: center; gap: 4px; min-width: 0; }
@@ -54,3 +57,35 @@
 .candidate-milestones td:nth-of-type(1) { white-space: nowrap; }
 .candidate-milestones tbody { border-top: 1px solid var(--line); }
 .candidate-milestones small { display: block; color: var(--muted); font-size: 10px; }
+
+.candidate-decision { margin-bottom: 8px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.candidate-decision summary { cursor: pointer; }
+.candidate-decision label { margin-top: 6px; }
+.candidate-decision textarea { width: 100%; box-sizing: border-box; resize: vertical; }
+.candidate-controls > label:has(input[type="checkbox"]) { flex: 0 1 auto; }
+
+.candidate-scope-tools { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; padding-block: 4px; font-size: 11px; }
+.candidate-scope-tools button { font-size: 11px; }
+.candidate-saved-views { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; min-width: 0; margin-top: 6px; border: 1px solid var(--line); }
+.candidate-saved-views input { min-width: 0; max-width: 180px; }
+.candidate-query-help { font-size: 11px; max-width: 100%; }
+.candidate-query-help p { overflow-wrap: anywhere; }
+
+/* Keep the opponent and candidate identities visible while comparing a wide matrix. */
+.candidate-collection .candidate-matrix thead th { position: sticky; top: 0; z-index: 2; background: var(--surface-2); }
+.candidate-collection .candidate-matrix tbody th { position: sticky; left: 0; z-index: 1; background: var(--surface); }
+.candidate-collection .candidate-matrix thead th:first-child { left: 0; z-index: 3; }
+
+/* Region navigation changes focus, never the simultaneous visibility of evidence. */
+.candidate-region-nav { display: flex; gap: 12px; align-items: center; position: sticky; top: 0; z-index: 4; background: var(--surface); border-block: 1px solid var(--line); min-height: 32px; padding: 3px 0; }
+.candidate-region-nav button { background: transparent; border: 0; border-radius: 0; padding: 3px 0; font-size: 11px; text-decoration: underline; text-underline-offset: 3px; }
+.candidate-region-nav button:disabled { text-decoration: none; }
+.candidate-table, .candidate-comparison-region, .candidate-inspector { scroll-margin-top: 40px; }
+.candidate-comparison-region { min-width: 0; }
+.candidate-comparison-region:focus-visible, .candidate-inspector:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.candidate-inspector { top: 40px; }
+.candidate-inspector > header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; align-items: baseline; }
+.candidate-inspector > header button { font-size: 11px; }
+
+.candidate-workbench:not(.has-inspector) { grid-template-columns: minmax(0, 1fr); }
+.candidate-table:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }

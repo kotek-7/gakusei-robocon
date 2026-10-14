@@ -55,3 +55,16 @@ test("comparison sync restores labels and protects new edits from an in-flight r
   assert.deepEqual(saved.get("race")?.ab.label, ["編集中", "保存B"]);
   stop();
 });
+
+test("candidate shortlist and decisions serialize independently and stay in the originating search", async () => {
+  ui.openSearch("candidate-review");
+  const a = updateWorkspace(w => ({ ...w, candidateReview: { ...(w.candidateReview ?? { decisions: {} }), shortlist: ["0/a"] } }));
+  const b = updateWorkspace(w => ({ ...w, candidateReview: { shortlist: w.candidateReview?.shortlist ?? [], decisions: { "0/a": {status: "keep", note: "反転を再検査"} } } }));
+  const c = updateWorkspace(w => ({ ...w, candidateReview: { ...w.candidateReview!, shortlist: [...w.candidateReview!.shortlist, "1/a"] } }));
+  ui.openSearch("candidate-other");
+  await Promise.all([a, b, c]);
+  assert.deepEqual(saved.get("candidate-review")?.candidateReview, {
+    shortlist: ["0/a", "1/a"], decisions: {"0/a": {status: "keep", note: "反転を再検査"}},
+  });
+  assert.equal(saved.has("candidate-other"), false);
+});
