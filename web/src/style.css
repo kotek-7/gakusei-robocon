@@ -405,7 +405,8 @@ button.primary:hover:not(:disabled) {
   height: 26px;
   padding: 0 10px;
   border: 0;
-  border-radius: 3px;
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
   background: transparent;
   color: var(--muted);
   white-space: nowrap;
@@ -415,10 +416,10 @@ button.primary:hover:not(:disabled) {
   color: var(--ink);
 }
 .workspace-tab[aria-selected="true"] {
-  background: var(--surface);
+  background: transparent;
   color: var(--ink);
   font-weight: 600;
-  box-shadow: inset 0 -2px 0 var(--accent);
+  border-bottom-color: var(--accent);
 }
 .topbar-spacer {
   flex: 1;
@@ -650,6 +651,7 @@ button.status-item:hover {
   position: fixed;
   z-index: 50;
   min-width: 220px;
+  max-width: calc(100vw - 8px);
   max-height: calc(100vh - 16px);
   overflow: auto;
   padding: 4px;
