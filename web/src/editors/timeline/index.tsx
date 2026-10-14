@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { register, run } from "../../app/commands";
-import { layout } from "../../app/layout";
+import { currentAnalysis } from "../../app/coreCommands";
+import { eventTimes, nextEventTime } from "./navigation";
+import { findArea, useLayout, layout } from "../../app/layout";
 import { definePrefs, usePref } from "../../app/prefs";
 import { useAnalysis, useSearch, useSpan } from "../../app/session";
 import { ui, useUI, type MenuItem } from "../../app/store";
@@ -67,7 +69,47 @@ register({
   },
 });
 
-export function Transport({ compact = false }: { compact?: boolean }) {
+function activeTimeline() {
+  const state = useLayout.getState();
+  const workspace = state.workspaces.find((w) => w.id === state.active);
+  const id = useUI.getState().activeArea;
+  const area = workspace && id ? findArea(workspace.root, id) : null;
+  return area?.editor === "timeline" ? area : null;
+}
+
+register(
+  ...Object.entries({ all: "すべて", ...MARKER_LABEL }).map(([kind, label]) => ({
+    id: `timeline.event.${kind}`,
+    title: `イベント: ${label}`,
+    category: "タイムライン",
+    enabled: () => !!activeTimeline(),
+    checked: () => (activeTimeline()?.state?.eventKind ?? "all") === kind,
+    run: () => {
+      const area = activeTimeline();
+      if (area) layout.setAreaState(area.id, { eventKind: kind });
+    },
+  })),
+  ...([-1, 1] as const).map((direction) => ({
+    id: direction < 0 ? "timeline.prevEvent" : "timeline.nextEvent",
+    title: direction < 0 ? "前の表示イベントへ" : "次の表示イベントへ",
+    category: "タイムライン",
+    scope: "timeline",
+    keys: [direction < 0 ? "ArrowDown" : "ArrowUp"],
+    enabled: () => !!activeTimeline(),
+    run: async () => {
+      const area = activeTimeline();
+      const session = useUI.getState().session;
+      const analysis = await currentAnalysis();
+      if (!area || !analysis || useUI.getState().session !== session) return;
+      const times = eventTimes(analysis.markers, String(area.state?.eventKind ?? "all"), (area.state?.lanes as boolean[]) ?? [true, true, true, true]);
+      const time = nextEventTime(times, useUI.getState().playback.time, direction);
+      if (time === null) ui.toast(direction < 0 ? "前の表示イベントはありません" : "次の表示イベントはありません");
+      else ui.patchPlayback({ time, playing: false });
+    },
+  })),
+);
+
+export function Transport({ compact = false, filteredEvents = false }: { compact?: boolean; filteredEvents?: boolean }) {
   const playing = useUI((s) => s.playback.playing);
   const dir = useUI((s) => s.playback.direction);
   const time = useUI((s) => s.playback.time);
@@ -83,7 +125,7 @@ export function Transport({ compact = false }: { compact?: boolean }) {
   return (
     <div className="transport">
       {btn("first", "play.start", "先頭へ (Home)")}
-      {!compact && btn("prevEvent", "play.prevEvent", "前のイベント (↓)")}
+      {!compact && btn("prevEvent", filteredEvents ? "timeline.prevEvent" : "play.prevEvent", filteredEvents ? "前の表示イベント (↓)" : "前のイベント (↓)")}
       {btn("stepBack", "play.stepBack", "0.25秒戻る (←)")}
       {btn("reverse", "play.reverse", "逆再生 (Shift+Space)", playing && dir < 0)}
       <button
@@ -95,7 +137,7 @@ export function Transport({ compact = false }: { compact?: boolean }) {
         <Icon name={playing ? "pause" : "play"} />
       </button>
       {btn("stepFwd", "play.stepFwd", "0.25秒進む (→)")}
-      {!compact && btn("nextEvent", "play.nextEvent", "次のイベント (↑)")}
+      {!compact && btn("nextEvent", filteredEvents ? "timeline.nextEvent" : "play.nextEvent", filteredEvents ? "次の表示イベント (↑)" : "次のイベント (↑)")}
       {btn("last", "play.end", "末尾へ (End)")}
       <input
         className="time-field tabular"
@@ -147,8 +189,15 @@ function Header({ area }: EditorProps) {
   const lanes = (area.state?.lanes as boolean[]) ?? [true, true, true, true];
   return (
     <div className="area-tools">
-      <Transport />
+      <Transport filteredEvents />
       <span className="area-sep" />
+      <button className="tool" title="表示・移動するイベントを選ぶ" onClick={(e) => {
+        const r = e.currentTarget.getBoundingClientRect();
+        useUI.setState({ menu: { x: r.left, y: r.bottom + 2, items: Object.keys({ all: "すべて", ...MARKER_LABEL }).map((kind) => ({ command: `timeline.event.${kind}` })) } });
+      }}>
+        {`イベント: ${MARKER_LABEL[String(area.state?.eventKind)] ?? "すべて"}`}
+        <Icon name="chevron" size={12} />
+      </button>
       <button
         className="tool"
         onClick={(e) => {
@@ -279,9 +328,12 @@ function Timeline({ area }: EditorProps) {
   ];
   const markerGroups = useMemo(() => {
     const byT = new Map<number, Marker[]>();
-    for (const m of analysis?.markers ?? []) byT.set(m.t, [...(byT.get(m.t) ?? []), m]);
+    for (const m of analysis?.markers ?? []) {
+      if (!eventTimes([m], String(area.state?.eventKind ?? "all"), lanes).length) continue;
+      byT.set(m.t, [...(byT.get(m.t) ?? []), m]);
+    }
     return [...byT];
-  }, [analysis]);
+  }, [analysis, area.state?.eventKind, lanes]);
 
   if (!search) return null;
   return (
