@@ -1,5 +1,7 @@
 import { profileNames } from "../common/labels";
-import { useState } from "react";
+import { useReducer, useState } from "react";
+import { conditionHistory, selectProfile } from "./history";
+import "./conditions.css";
 import type { Model, Config } from "../../engine/types";
 import { call } from "../../app/client";
 import { saveJSON } from "../../app/coreCommands";
@@ -15,15 +17,43 @@ export function Conditions({
   onCreate: (c: Config) => void;
   busy: boolean;
 }) {
-  const [c, setC] = useState<Config>(() => structuredClone(initial));
+  const [history, dispatch] = useReducer(
+    conditionHistory,
+    initial,
+    (config) => ({
+      past: [],
+      present: structuredClone(config),
+      future: [],
+    }),
+  );
+  const c = history.present;
   const [team, setTeam] = useState(0);
   const [error, setError] = useState("");
-  const change = (f: (x: Config) => void) =>
-    setC((old) => {
-      const next = structuredClone(old);
-      f(next);
-      return next;
-    });
+  const [query, setQuery] = useState("");
+  const [changedOnly, setChangedOnly] = useState(false);
+  const sameValues = (a: (number | boolean)[], b: (number | boolean)[]) =>
+    a.length === b.length && a.every((value) => b.includes(value));
+  const capChanged = (key: string) =>
+    !sameValues(c.teams[team].caps[key], initial.teams[team].caps[key]);
+  const profileChanged = (key: string) =>
+    !sameValues(c.teams[team].speeds[key], initial.teams[team].speeds[key]) ||
+    c.profiles[key].some((value, i) => value !== initial.profiles[key][i]);
+  const matches = (key: string, label: string, changed: boolean) =>
+    (!changedOnly || changed) &&
+    `${key} ${label}`
+      .toLocaleLowerCase()
+      .includes(query.trim().toLocaleLowerCase());
+  const caps = Object.entries(model.caps).filter(([key, label]) =>
+    matches(key, label, capChanged(key)),
+  );
+  const profiles = Object.entries(model.profiles).filter(([key, label]) =>
+    matches(key, label, profileChanged(key)),
+  );
+  const changedCount =
+    Object.keys(model.caps).filter(capChanged).length +
+    Object.keys(model.profiles).filter(profileChanged).length;
+  const change = (edit: (x: Config) => void) =>
+    dispatch({ type: "change", edit });
   function toggle(
     kind: "caps" | "speeds",
     key: string,
@@ -49,6 +79,21 @@ export function Conditions({
   return (
     <form
       className="conditions"
+      onKeyDown={(e) => {
+        const target = e.target as HTMLElement;
+        if (
+          target.matches(
+            'input:not([type="checkbox"]):not([type="radio"]), textarea, select',
+          ) ||
+          !(e.ctrlKey || e.metaKey)
+        )
+          return;
+        if (e.key.toLowerCase() === "z") {
+          e.preventDefault();
+          e.stopPropagation();
+          dispatch({ type: e.shiftKey ? "redo" : "undo" });
+        }
+      }}
       onSubmit={(e) => {
         e.preventDefault();
         onCreate(c);
@@ -56,6 +101,24 @@ export function Conditions({
     >
       <div className="section-title">
         <h2>探索条件</h2>
+        <div className="condition-history" aria-label="条件の編集履歴">
+          <button
+            type="button"
+            disabled={!history.past.length}
+            onClick={() => dispatch({ type: "undo" })}
+            title="条件の編集を取り消す（Ctrl / ⌘ Z、入力欄の外）"
+          >
+            取り消す
+          </button>
+          <button
+            type="button"
+            disabled={!history.future.length}
+            onClick={() => dispatch({ type: "redo" })}
+            title="条件の編集をやり直す（Ctrl / ⌘ Shift Z、入力欄の外）"
+          >
+            やり直す
+          </button>
+        </div>
         <button type="button" onClick={() => saveJSON(c, "conditions.json")}>
           条件を書き出す
         </button>
@@ -141,6 +204,37 @@ export function Conditions({
           反対側にコピー
         </button>
       </div>
+      <div className="condition-filter">
+        <input
+          type="search"
+          aria-label="能力・数値スペックを検索"
+          placeholder="能力・数値スペックを検索"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+        <label>
+          <input
+            type="checkbox"
+            checked={changedOnly}
+            onChange={(e) => setChangedOnly(e.target.checked)}
+          />
+          変更した項目のみ ({changedCount})
+        </label>
+        {(query || changedOnly) && (
+          <button
+            type="button"
+            onClick={() => {
+              setQuery("");
+              setChangedOnly(false);
+            }}
+          >
+            絞り込みを解除
+          </button>
+        )}
+      </div>
+      {!caps.length && !profiles.length && (
+        <p role="status">該当する項目はありません。</p>
+      )}
       <table className="config-table">
         <caption>{team ? "青" : "赤"}チームの能力候補</caption>
         <thead>
@@ -150,9 +244,30 @@ export function Conditions({
           </tr>
         </thead>
         <tbody>
-          {Object.entries(model.caps).map(([k, label]) => (
+          {caps.map(([k, label]) => (
             <tr key={k}>
-              <th scope="row">{label}</th>
+              <th scope="row">
+                <span className="condition-row-label">
+                  {label}
+                  {capChanged(k) && (
+                    <button
+                      type="button"
+                      className="condition-revert"
+                      aria-label={`${label}の能力候補を編集開始時に戻す`}
+                      title="この項目を編集開始時に戻す"
+                      onClick={() =>
+                        change((x) => {
+                          x.teams[team].caps[k] = [
+                            ...initial.teams[team].caps[k],
+                          ];
+                        })
+                      }
+                    >
+                      戻す
+                    </button>
+                  )}
+                </span>
+              </th>
               <td>
                 {(k.startsWith("capacity")
                   ? Array.from(
@@ -164,6 +279,17 @@ export function Conditions({
                   <label className="check" key={String(v)}>
                     <input
                       type="checkbox"
+                      aria-label={`${label} ${typeof v === "boolean" ? (v ? "可能" : "不可") : v + "個"}`}
+                      title={
+                        c.teams[team].caps[k].length === 1 &&
+                        c.teams[team].caps[k].includes(v)
+                          ? "各項目で1つ以上の候補が必要です"
+                          : undefined
+                      }
+                      disabled={
+                        c.teams[team].caps[k].length === 1 &&
+                        c.teams[team].caps[k].includes(v)
+                      }
                       checked={c.teams[team].caps[k].includes(v)}
                       onChange={() => toggle("caps", k, v)}
                     />
@@ -176,7 +302,12 @@ export function Conditions({
         </tbody>
       </table>
       <table className="config-table">
-        <caption>数値スペック — 各項目を独立に選択</caption>
+        <caption>
+          数値スペック
+          <span className="condition-shared-note">
+            数値は両チーム共通・候補の選択は{team ? "青" : "赤"}チーム
+          </span>
+        </caption>
         <thead>
           <tr>
             <th>項目</th>
@@ -186,15 +317,68 @@ export function Conditions({
           </tr>
         </thead>
         <tbody>
-          {Object.entries(model.profiles).map(([k, label]) => (
+          <tr className="condition-bulk-row">
+            <th scope="row">
+              <button
+                type="button"
+                onClick={() => change((x) => selectProfile(x, team, "all"))}
+              >
+                全項目を3段階に
+              </button>
+            </th>
+            {profileNames.map((name, i) => (
+              <td key={name}>
+                <button
+                  type="button"
+                  title={`${team ? "青" : "赤"}チームの全項目を${name}だけにする`}
+                  onClick={() => change((x) => selectProfile(x, team, i))}
+                >
+                  {name}のみ
+                </button>
+              </td>
+            ))}
+          </tr>
+          {profiles.map(([k, label]) => (
             <tr key={k}>
-              <th scope="row">{label}</th>
+              <th scope="row">
+                <span className="condition-row-label">
+                  {label}
+                  {profileChanged(k) && (
+                    <button
+                      type="button"
+                      className="condition-revert"
+                      aria-label={`${label}の数値と候補を編集開始時に戻す`}
+                      title="両チーム共通の数値と、このチームの候補を編集開始時に戻す"
+                      onClick={() =>
+                        change((x) => {
+                          x.teams[team].speeds[k] = [
+                            ...initial.teams[team].speeds[k],
+                          ];
+                          x.profiles[k] = [...initial.profiles[k]];
+                        })
+                      }
+                    >
+                      戻す
+                    </button>
+                  )}
+                </span>
+              </th>
               {[0, 1, 2].map((i) => (
                 <td key={i}>
                   <label className="profile">
                     <input
                       aria-label={label + " " + profileNames[i] + "を探索"}
                       type="checkbox"
+                      title={
+                        c.teams[team].speeds[k].length === 1 &&
+                        c.teams[team].speeds[k].includes(i)
+                          ? "各項目で1つ以上の候補が必要です"
+                          : undefined
+                      }
+                      disabled={
+                        c.teams[team].speeds[k].length === 1 &&
+                        c.teams[team].speeds[k].includes(i)
+                      }
                       checked={c.teams[team].speeds[k].includes(i)}
                       onChange={() => toggle("speeds", k, i)}
                     />
@@ -344,7 +528,10 @@ export function Conditions({
                   !parsed.rules
                 )
                   throw Error("このモデルの条件JSONではありません");
-                setC(await call("config.validate", { config: parsed }));
+                dispatch({
+                  type: "replace",
+                  config: await call("config.validate", { config: parsed }),
+                });
                 setError("");
               } catch (e) {
                 setError(String(e));
