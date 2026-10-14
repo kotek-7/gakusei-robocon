@@ -34,6 +34,7 @@ export function Conditions({
   const c = history.present;
   const [team, setTeam] = useState(0);
   const [view, setView] = useState("edit");
+  const [spec, setSpec] = useState("capabilities");
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [changedOnly, setChangedOnly] = useState(false);
@@ -86,7 +87,7 @@ export function Conditions({
   return (
     <form
       className="conditions"
-      onInvalidCapture={() => flushSync(() => setView("edit"))}
+      onInvalidCapture={(event) => flushSync(() => { setView("edit"); if ((event.target as HTMLElement).closest(".config-table")) setSpec("speeds"); })}
       onKeyDown={(e) => {
         const target = e.target as HTMLElement;
         if (
@@ -132,7 +133,7 @@ export function Conditions({
         </button>
       </div>
       <nav className="condition-views" aria-label="条件の表示">
-        {[["edit", "基本編集"], ["differences", "編集差分"], ["axes", "組合せ"], ["rules", "初期配置・ルール"]].map(([id, label]) => <button key={id} type="button" aria-pressed={view === id} onClick={() => setView(id)}>{label}</button>)}
+        {[["edit", "機体・試合"], ["differences", "編集差分"], ["axes", "組合せ"], ["rules", "初期配置・ルール"]].map(([id, label]) => <button key={id} type="button" aria-pressed={view === id} onClick={() => setView(id)}>{label}</button>)}
       </nav>
       <section hidden={view !== "differences"} aria-label="編集差分"><Differences initial={initial} current={c} model={model} change={change} /></section>
       <section hidden={view !== "axes"} aria-label="構成の組合せ"><SearchAxes config={c} model={model} change={change} /></section>
@@ -255,7 +256,8 @@ export function Conditions({
       {!caps.length && !profiles.length && (
         <p role="status">該当する項目はありません。</p>
       )}
-      <table className="config-table">
+      <div className="condition-spec-tabs" role="group" aria-label="機体の設定対象"><button type="button" aria-pressed={spec === "capabilities"} onClick={() => setSpec("capabilities")}>能力・制約</button><button type="button" aria-pressed={spec === "speeds"} onClick={() => setSpec("speeds")}>速度・所要時間</button></div>
+      <table className="config-table" hidden={spec !== "capabilities"}>
         <caption>{team ? "青" : "赤"}チームの能力候補</caption>
         <thead>
           <tr>
@@ -340,7 +342,7 @@ export function Conditions({
           ))}
         </tbody>
       </table>
-      <table className="config-table">
+      <table className="config-table" hidden={spec !== "speeds"}>
         <caption>
           数値スペック
           <span className="condition-shared-note">
@@ -557,6 +559,7 @@ export function Conditions({
           </label>
         ))}
       </section>
+      <details className="condition-file-tools"><summary>条件・初期局面を読み込む</summary>
       <div className="form-row">
         <label>
           初期局面JSONを読み込む
@@ -616,6 +619,7 @@ export function Conditions({
           />
         </label>
       </div>
+      </details>
       {error && <p role="alert">{error}</p>}
       <footer className="condition-footer">
         <span>

@@ -11,3 +11,9 @@
 .review-detail input, .review-detail textarea, .review-detail select { width: 100%; min-width: 0; }
 .review-detail textarea { resize: vertical; }
 .review-detail p { margin: 0; }
+
+.review-editor { container-type: inline-size; }
+.review-workbench { display: grid; grid-template-columns: minmax(150px, 35%) minmax(0, 1fr); border-top: 1px solid var(--line); }
+.review-workbench .review-list { max-height: none; margin: 0; align-content: start; border-right: 1px solid var(--line); }
+.review-workbench .review-detail { padding: 10px; align-content: start; }
+@container (max-width: 480px) { .review-workbench { grid-template-columns: 1fr; } .review-workbench .review-list { max-height: 170px; border-right: 0; border-bottom: 1px solid var(--line); } }

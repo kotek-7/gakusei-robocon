@@ -96,3 +96,9 @@
   font-weight: 700;
 }
 .conditions section[hidden] { display: none; }
+
+.condition-spec-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.condition-spec-tabs [aria-pressed="true"] { background: var(--selected); color: var(--selected-ink); }
+.conditions table[hidden] { display: none; }
+.condition-file-tools { margin-block: 8px; border-top: 1px solid var(--line); padding-top: 8px; }
+.condition-file-tools summary { cursor: pointer; }

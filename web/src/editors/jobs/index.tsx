@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import "./jobs.css";
 import { Coverage } from "./Coverage";
 import { isEnabled, run } from "../../app/commands";
 import { usePref, setPref } from "../../app/prefs";
@@ -8,6 +10,11 @@ import { DiscoveryProgress, EvaluationProgress } from "./SearchProgress";
 
 function JobsEditor() {
   const search = useSearch();
+  const [mode, setMode] = useState("discovery");
+  useEffect(() => {
+    if (search?.status === "evaluating" || (search?.status === "running" && search.job === "exact")) setMode("exact");
+    else if (search?.status === "running" && search.job === "discovery") setMode("discovery");
+  }, [search?.status, search?.job]);
   const budget = usePref<number>("job.exactBudget");
   if (!search) return <Empty title="探索がありません" />;
   return (
@@ -17,8 +24,12 @@ function JobsEditor() {
           {search.error}
         </p>
       )}
+      <div className="job-modes" role="group" aria-label="計算の種類">{[["discovery", "候補探索"], ["exact", "全探索・評価"]].map(([id, label]) => <button key={id} aria-pressed={mode === id} onClick={() => setMode(id)}>{label}{search.status === "running" && search.job === id ? " · 実行中" : ""}</button>)}</div>
+      <div hidden={mode !== "discovery"}>
       <DiscoveryProgress key={search.id} search={search} onDefinitions={() => run("docs.open", "search")} />
       <Coverage search={search} />
+      </div>
+      <div hidden={mode !== "exact"}>
       <EvaluationProgress search={search} />
       <section className="exact-panel" aria-label="詳細な全探索">
         <h3>詳細な全探索</h3>
@@ -54,6 +65,7 @@ function JobsEditor() {
           <div><dt>探索済み構成</dt><dd>{search.completeRuns} / {search.totalRuns}</dd></div>
         </dl>
       </section>
+      </div>
     </div>
   );
 }

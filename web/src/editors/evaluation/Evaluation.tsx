@@ -33,6 +33,8 @@ export function Evaluation({
   model: Model;
   onNode: (run: number, id: number) => void;
 }) {
+  const [mode, setMode] = useState("results");
+  const [detail, setDetail] = useState("strategies");
   const [run, setRun] = useState(0);
   const [filter, setFilter] = useState<string[] | null>(null);
   const [runQuery, setRunQuery] = useState("");
@@ -64,7 +66,8 @@ export function Evaluation({
   const pct = (x: number) => `${(x * 100).toFixed(1)}%`;
   return (
     <section className="evaluation">
-      <h2>展開・作戦・構成の評価 <Help topic="results" text={evaluationMeaning} /></h2>
+      <div className="evaluation-modes" role="group" aria-label="評価の表示"><button aria-pressed={mode === "results"} onClick={() => setMode("results")}>構成別の結果</button><button aria-pressed={mode === "comparison"} onClick={() => setMode("comparison")}>構成・探索を比較</button><Help topic="results" text={evaluationMeaning} /></div>
+      <div hidden={mode !== "comparison"}>
       {baseline && (
         <div className="notice">
           <b>比較対象：{baseline.name}</b>
@@ -97,7 +100,7 @@ export function Evaluation({
           </table>
           <ConditionComparison before={baseline.config} after={search.config} model={model} />
           {baseline.evaluation && (
-            <DetailView label="比較対象の構成別結果" title={`${baseline.name} の構成別結果`}>
+            <details><summary>比較対象の構成別結果</summary>
               <table>
                 <thead>
                   <tr>
@@ -122,10 +125,12 @@ export function Evaluation({
                   ))}
                 </tbody>
               </table>
-            </DetailView>
+            </details>
           )}
         </div>
       )}
+      </div>
+      <div hidden={mode !== "results"}>
       <div className="evaluation-tools" aria-label="構成の絞り込み">
         <input
           type="search"
@@ -238,6 +243,8 @@ export function Evaluation({
           ))}
         </tbody>
       </table>
+      </div>
+      <div hidden={mode !== "comparison"}>
       <Comparison
         search={search}
         result={result}
@@ -248,10 +255,12 @@ export function Evaluation({
           setFilter(null);
         }}
       />
-      <h3>C{result.run} の構成</h3>
+      </div>
+      <div className="evaluation-selection"><strong>C{result.run}</strong><div className="evaluation-modes" role="group" aria-label="選択構成の検査"><button aria-pressed={detail === "strategies"} onClick={() => setDetail("strategies")}>作戦・得点</button><button aria-pressed={detail === "spec"} onClick={() => setDetail("spec")}>機体スペック</button></div></div>
+      <div hidden={detail !== "spec"}>
       <div className="variant-columns">
         {result.variant.teams.map((t, i) => (
-          <DetailView key={i} label={`${i ? "青" : "赤"}チームのスペック`} title={`C${result.run} · ${i ? "青" : "赤"}チームのスペック`}>
+          <div key={i}><strong>{i ? "青" : "赤"}チーム</strong>
             <dl>
               {Object.entries(t.caps).map(([k, v]) => (
                 <div key={k}>
@@ -270,9 +279,11 @@ export function Evaluation({
                 </div>
               ))}
             </dl>
-          </DetailView>
+          </div>
         ))}
       </div>
+      </div>
+      <div hidden={detail !== "strategies"}>
       {result.windowEnd < 180 && (
         <p className="notice">
           {result.windowEnd}
@@ -458,6 +469,7 @@ export function Evaluation({
           </tbody>
         </table>
       )}
+      </div>
     </section>
   );
 }

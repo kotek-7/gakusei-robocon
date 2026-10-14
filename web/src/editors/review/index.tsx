@@ -58,10 +58,12 @@ function Review({ area }: import("../registry").EditorProps) {
     </div>
     {!records.length ? <Empty title="残したい局面で記録を追加してください">経路・再生時刻・再生範囲を保存します。</Empty> : <>
       {!filtered.length && <p className="muted">該当する記録はありません</p>}
+      <div className="review-workbench">
       <div className="review-list" aria-label="検討記録の一覧">{filtered.map(r => <button key={r.id} aria-pressed={record?.id === r.id} onClick={() => layout.setAreaState(area.id, { selected: r.id })}>
         <span>{r.title}</span><span className="muted">{statusNames[r.status]}</span>
       </button>)}</div>
       {record && <RecordEditor key={`${search}:${record.id}`} record={record} />}
+      </div>
     </>}
   </div>;
 }
