@@ -29,7 +29,7 @@ export const DEFAULT_OVERLAYS: Overlays = {
 };
 export type Trail = { robot: number; points: number[][] };
 export type Label = { id: string; text: string; p: number[]; tone?: "red" | "blue" | "muted" };
-export type CameraState = { position: number[]; target: number[]; ortho: boolean };
+export type CameraState = { position: number[]; target: number[]; ortho: boolean; zoom?: number; orthoHeight?: number };
 
 const VIEWS: Record<ViewName, [number, number, number]> = {
   iso: [11, 13, 15],
@@ -311,6 +311,10 @@ export function createScene(host: HTMLElement) {
     view(v: ViewName) {
       follow = null;
       camera.position.set(...VIEWS[v]);
+      if (camera === ortho) {
+        ortho.zoom = Math.min(ortho.right - ortho.left, ortho.top - ortho.bottom) / 14;
+        ortho.updateProjectionMatrix();
+      }
       controls.target.set(0, 0.4, 0);
       controls.update();
     },
@@ -326,6 +330,10 @@ export function createScene(host: HTMLElement) {
       const radius = Math.max(o ? 1.6 : 7, box.getSize(new T.Vector3()).length() / 2);
       const dir = camera.position.clone().sub(controls.target).normalize();
       controls.target.copy(center);
+      if (camera === ortho) {
+        ortho.zoom = Math.min(ortho.right - ortho.left, ortho.top - ortho.bottom) / (2 * radius);
+        ortho.updateProjectionMatrix();
+      }
       camera.position.copy(center.clone().add(dir.multiplyScalar(radius / Math.tan(T.MathUtils.degToRad(persp.fov / 2)))));
       controls.update();
     },
@@ -369,6 +377,8 @@ export function createScene(host: HTMLElement) {
         position: camera.position.toArray(),
         target: controls.target.toArray(),
         ortho: camera === ortho,
+        zoom: ortho.zoom,
+        orthoHeight: ortho.top - ortho.bottom,
       };
     },
     setCameraState(c: CameraState) {
@@ -376,6 +386,15 @@ export function createScene(host: HTMLElement) {
       if ((camera === ortho) !== c.ortho) setCamera(c.ortho ? ortho : persp);
       camera.position.fromArray(c.position);
       controls.target.fromArray(c.target);
+      if (c.orthoHeight && Number.isFinite(c.orthoHeight) && c.orthoHeight > 0) {
+        const [w, h] = size();
+        ortho.top = c.orthoHeight / 2;
+        ortho.bottom = -ortho.top;
+        ortho.right = ortho.top * w / h;
+        ortho.left = -ortho.right;
+      }
+      ortho.zoom = c.zoom && Number.isFinite(c.zoom) && c.zoom > 0 ? c.zoom : 1;
+      ortho.updateProjectionMatrix();
       controls.update();
     },
     onCameraChange(fn: () => void) {

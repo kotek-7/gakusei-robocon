@@ -45,6 +45,15 @@ function setOverlay(key: keyof Overlays, value?: boolean) {
   layout.setAreaState(id, { overlays: { ...o, [key]: value ?? !o[key] } });
 }
 
+function cameraCommand(action: (scene: SceneAPI) => void, stopFollowing = false) {
+  const id = activeAreaId();
+  const scene = activeScene();
+  if (!id || !scene) return;
+  if (stopFollowing) scene.follow(null);
+  action(scene);
+  layout.setAreaState(id, { camera: scene.camera(), ...(stopFollowing ? { follow: null } : {}) });
+}
+
 definePrefs([
   { id: "viewport.background", category: "3Dビュー", label: "背景", type: "enum", default: "night", options: [["night", "濃紺"], ["slate", "灰"], ["paper", "明るい"]] },
   { id: "viewport.labelSize", category: "3Dビュー", label: "ラベルの大きさ", type: "number", default: 12, min: 10, max: 16, unit: "px" },
@@ -81,7 +90,7 @@ register(
     category: "3Dビュー",
     keys: [key],
     scope: "viewport",
-    run: () => activeScene()?.view(v),
+    run: () => cameraCommand((scene) => scene.view(v), true),
   })),
   {
     id: "viewport.ortho",
@@ -90,10 +99,7 @@ register(
     keys: ["Numpad5"],
     scope: "viewport",
     checked: () => !!activeScene()?.isOrtho(),
-    run: () => {
-      const s = activeScene();
-      if (s) s.setOrtho(!s.isOrtho());
-    },
+    run: () => cameraCommand((scene) => scene.setOrtho(!scene.isOrtho())),
   },
   {
     id: "viewport.frameAll",
@@ -101,7 +107,7 @@ register(
     category: "3Dビュー",
     keys: ["Home"],
     scope: "viewport",
-    run: () => activeScene()?.focus(null),
+    run: () => cameraCommand((scene) => scene.focus(null), true),
   },
   {
     id: "viewport.frameSelected",
@@ -110,7 +116,7 @@ register(
     keys: [".", "NumpadDecimal"],
     scope: "viewport",
     enabled: () => !!useUI.getState().session.selection,
-    run: () => activeScene()?.focus(useUI.getState().session.selection),
+    run: () => cameraCommand((scene) => scene.focus(useUI.getState().session.selection), true),
   },
   {
     id: "viewport.follow",
@@ -119,12 +125,16 @@ register(
     keys: ["F"],
     scope: "viewport",
     checked: () => !!areaState(activeAreaId())?.follow,
+    enabled: () => !!areaState(activeAreaId())?.follow || /^robot:[0-3]$/.test(useUI.getState().session.selection ?? ""),
     run: () => {
       const id = activeAreaId();
       if (!id) return;
       const sel = useUI.getState().session.selection;
       const cur = areaState(id)?.follow as string | null;
-      layout.setAreaState(id, { follow: cur ? null : sel?.startsWith("robot:") ? sel : "robot:0" });
+      const target = sel?.startsWith("robot:") ? sel : null;
+      const next = cur === target || !target ? null : target;
+      activeScene()?.follow(next);
+      layout.setAreaState(id, { follow: next, camera: activeScene()?.camera() });
     },
   },
   ...OVERLAY_LABELS.map(([k, title]) => ({
@@ -136,6 +146,13 @@ register(
     checked: () => overlaysOf(activeAreaId())[k],
     run: () => setOverlay(k),
   })),
+  {
+    id: "viewport.restoreCamera",
+    title: "保存した視点を開く",
+    category: "3Dビュー",
+    hidden: true,
+    run: ({ args }) => cameraCommand((scene) => scene.setCameraState(args as CameraState), true),
+  },
   {
     id: "viewport.screenshot",
     title: "3Dビューを画像で保存",
@@ -189,7 +206,7 @@ register(
       const c = s.camera();
       await updateWorkspace((w) => ({
         ...w,
-        bookmarks: [...w.bookmarks, { id: newId(), name, camera: [...c.position, ...c.target, c.ortho ? 1 : 0] }],
+        bookmarks: [...w.bookmarks, { id: newId(), name, camera: [...c.position, ...c.target, c.ortho ? 1 : 0, c.zoom ?? 1, c.orthoHeight ?? 16] }],
       }));
     },
   },
@@ -199,7 +216,7 @@ register(
     category: "3Dビュー",
     keys: ["Numpad4"],
     scope: "viewport",
-    run: () => activeScene()?.orbit(-Math.PI / 12, 0),
+    run: () => cameraCommand((scene) => scene.orbit(-Math.PI / 12, 0)),
   },
   {
     id: "viewport.orbitRight",
@@ -207,7 +224,7 @@ register(
     category: "3Dビュー",
     keys: ["Numpad6"],
     scope: "viewport",
-    run: () => activeScene()?.orbit(Math.PI / 12, 0),
+    run: () => cameraCommand((scene) => scene.orbit(Math.PI / 12, 0)),
   },
   {
     id: "viewport.orbitUp",
@@ -215,7 +232,7 @@ register(
     category: "3Dビュー",
     keys: ["Numpad8"],
     scope: "viewport",
-    run: () => activeScene()?.orbit(0, -Math.PI / 12),
+    run: () => cameraCommand((scene) => scene.orbit(0, -Math.PI / 12)),
   },
   {
     id: "viewport.orbitDown",
@@ -223,7 +240,7 @@ register(
     category: "3Dビュー",
     keys: ["Numpad2"],
     scope: "viewport",
-    run: () => activeScene()?.orbit(0, Math.PI / 12),
+    run: () => cameraCommand((scene) => scene.orbit(0, Math.PI / 12)),
   },
   {
     id: "viewport.zoomIn",
@@ -231,7 +248,7 @@ register(
     category: "3Dビュー",
     keys: ["NumpadAdd"],
     scope: "viewport",
-    run: () => activeScene()?.zoom(1.2),
+    run: () => cameraCommand((scene) => scene.zoom(1.2)),
   },
   {
     id: "viewport.zoomOut",
@@ -239,7 +256,7 @@ register(
     category: "3Dビュー",
     keys: ["NumpadSubtract"],
     scope: "viewport",
-    run: () => activeScene()?.zoom(1 / 1.2),
+    run: () => cameraCommand((scene) => scene.zoom(1 / 1.2)),
   },
 );
 
@@ -276,7 +293,18 @@ function labelsFor(frame: Frame | null, o: Overlays) {
   return out;
 }
 
-function Gizmo({ scene }: { scene: SceneAPI | null }) {
+function Gizmo({ scene, areaId }: { scene: SceneAPI | null; areaId: string }) {
+  const invoke = (command: string) => {
+    useUI.setState({ activeArea: areaId, activeEditor: "viewport" });
+    run(command);
+  };
+  const axis = (view: ViewName, label: string) => ({
+    role: "button", tabIndex: 0, "aria-label": label,
+    onClick: () => invoke(`viewport.view.${view}`),
+    onKeyDown: (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); invoke(`viewport.view.${view}`); }
+    },
+  });
   const [h, setH] = useState({ azimuth: 0.6, polar: 0.8 });
   useEffect(() => {
     if (!scene) return;
@@ -296,34 +324,34 @@ function Gizmo({ scene }: { scene: SceneAPI | null }) {
         <circle cx="32" cy="32" r="30" className="gizmo-disc" />
         <line x1={rx} y1={ry} x2={bx} y2={by} className="gizmo-axis" />
         <line x1={fx} y1={fy} x2={kx} y2={ky} className="gizmo-axis" />
-        <g role="button" tabIndex={-1} onClick={() => scene?.view("red")}>
+        <g {...axis("red", "赤陣から表示")}>
           <circle cx={rx} cy={ry} r="8" className="gizmo-red" />
           <text x={rx} y={ry + 3.5}>赤</text>
         </g>
-        <g role="button" tabIndex={-1} onClick={() => scene?.view("blue")}>
+        <g {...axis("blue", "青陣から表示")}>
           <circle cx={bx} cy={by} r="8" className="gizmo-blue" />
           <text x={bx} y={by + 3.5}>青</text>
         </g>
-        <g role="button" tabIndex={-1} onClick={() => scene?.view("front")}>
+        <g {...axis("front", "正面を表示")}>
           <circle cx={fx} cy={fy} r="7" className="gizmo-front" />
           <text x={fx} y={fy + 3.5}>前</text>
         </g>
-        <g role="button" tabIndex={-1} onClick={() => scene?.view("top")}>
+        <g {...axis("top", "上面を表示")}>
           <circle cx="32" cy="32" r="6" className="gizmo-top" />
           <text x="32" y="35.5">上</text>
         </g>
       </svg>
       <div className="gizmo-buttons">
-        <button className="tool icon-only" title="ズームイン (テンキー+)" onClick={() => scene?.zoom(1.25)}>
+        <button className="tool icon-only" title="ズームイン (テンキー+)" onClick={() => invoke("viewport.zoomIn")}>
           <Icon name="zoomIn" />
         </button>
-        <button className="tool icon-only" title="ズームアウト (テンキー-)" onClick={() => scene?.zoom(0.8)}>
+        <button className="tool icon-only" title="ズームアウト (テンキー-)" onClick={() => invoke("viewport.zoomOut")}>
           <Icon name="zoomOut" />
         </button>
-        <button className="tool icon-only" title="全体を表示 (Home)" onClick={() => scene?.focus(null)}>
+        <button className="tool icon-only" title="全体を表示 (Home)" onClick={() => invoke("viewport.frameAll")}>
           <Icon name="fit" />
         </button>
-        <button className="tool icon-only" title="透視・平行投影 (テンキー5)" onClick={() => scene && scene.setOrtho(!scene.isOrtho())}>
+        <button className="tool icon-only" title="透視・平行投影 (テンキー5)" onClick={() => invoke("viewport.ortho")}>
           <Icon name="ortho" />
         </button>
       </div>
@@ -337,8 +365,8 @@ function entityMenu(ref: string | null, frame: Frame | null): MenuItem[] {
     const r = Number(ref.slice(6));
     items.push(
       { label: `${robotNames[r]}を選択`, run: () => ui.select(ref as never) },
-      { label: "この機体を追従", run: () => (ui.select(ref as never), run("viewport.follow")) },
-      { label: "中央に表示", run: () => activeScene()?.focus(ref) },
+      { label: areaState(activeAreaId())?.follow === ref ? "追従を止める" : "この機体を追従", run: () => (ui.select(ref as never), run("viewport.follow")) },
+      { label: "中央に表示", run: () => (ui.select(ref as never), run("viewport.frameSelected")) },
     );
     if (frame?.robots[r].action) items.push({ label: `動作: ${actionName(frame.robots[r].action!)}`, run: () => {}, disabled: true });
     items.push({ separator: true });
@@ -367,8 +395,8 @@ function entityMenu(ref: string | null, frame: Frame | null): MenuItem[] {
 
 function Header({ area }: EditorProps) {
   const ws = useWorkspaceData();
-  const o: Overlays = { ...DEFAULT_OVERLAYS, ...(area.state?.overlays as Partial<Overlays>) };
   const follow = area.state?.follow as string | null;
+  const selection = useUI((s) => s.session.selection);
   const side = area.state?.side as string | undefined;
   const compare = useUI((s) => s.session.compare);
   const open = (e: React.MouseEvent, items: MenuItem[]) => {
@@ -387,11 +415,7 @@ function Header({ area }: EditorProps) {
         onClick={(e) =>
           open(
             e,
-            OVERLAY_LABELS.map(([k, title]) => ({
-              label: title,
-              checked: o[k],
-              run: () => layout.setAreaState(area.id, { overlays: { ...o, [k]: !o[k] } }),
-            })),
+            OVERLAY_LABELS.map(([k]) => ({ command: `viewport.overlay.${k}` })),
           )
         }
       >
@@ -401,7 +425,8 @@ function Header({ area }: EditorProps) {
       <button
         className="tool icon-only"
         aria-pressed={!!follow}
-        title="選択した機体を追従 (F)"
+        title={follow ? `${robotNames[Number(follow.slice(6))]}を追従中 (F)` : "選択した機体を追従 (F)"}
+        disabled={!follow && !selection?.startsWith("robot:")}
         onClick={() => {
           useUI.setState({ activeArea: area.id, activeEditor: "viewport" });
           run("viewport.follow");
@@ -413,7 +438,7 @@ function Header({ area }: EditorProps) {
         className="tool icon-only"
         aria-pressed={!!area.state?.measuring}
         title="距離を測る (Shift+D)：2点をクリック"
-        onClick={() => layout.setAreaState(area.id, { measuring: !area.state?.measuring, measure: null })}
+        onClick={() => (useUI.setState({ activeArea: area.id, activeEditor: "viewport" }), run("viewport.measure"))}
       >
         <Icon name="ruler" />
       </button>
@@ -426,7 +451,7 @@ function Header({ area }: EditorProps) {
               ? ws.bookmarks.map((b) => ({
                   label: b.name,
                   run: () =>
-                    scenes.get(area.id)?.setCameraState({ position: b.camera.slice(0, 3), target: b.camera.slice(3, 6), ortho: !!b.camera[6] }),
+                    run("viewport.restoreCamera", { position: b.camera.slice(0, 3), target: b.camera.slice(3, 6), ortho: !!b.camera[6], zoom: b.camera[7], orthoHeight: b.camera[8] }),
                 }))
               : [{ label: "保存した視点はありません", run: () => {}, disabled: true }]),
             { separator: true },
@@ -582,7 +607,9 @@ function ViewportEditor({ area }: EditorProps) {
         }}
         onDoubleClick={(e) => {
           const hit = scene?.pick(e.clientX, e.clientY);
-          scene?.focus(hit?.ref ?? null);
+          useUI.setState({ activeArea: area.id, activeEditor: "viewport" });
+          if (hit?.ref) { ui.select(hit.ref as never); run("viewport.frameSelected"); }
+          else run("viewport.frameAll");
         }}
         onContextMenu={(e) => {
           useUI.setState({ activeArea: area.id, activeEditor: "viewport" });
@@ -614,7 +641,7 @@ function ViewportEditor({ area }: EditorProps) {
           {dist !== null ? `水平距離 ${dist.toFixed(2)} m · 高低差 ${(measure![1][1] - measure![0][1]).toFixed(2)} m` : "2点をクリック"}
         </div>
       )}
-      {gizmo && <Gizmo scene={scene} />}
+      {gizmo && <Gizmo scene={scene} areaId={area.id} />}
       {table && frame && (
         <table className="viewport-robots">
           <tbody>
