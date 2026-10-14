@@ -1,3 +1,4 @@
+import { register, run } from "../../app/commands";
 import { useState } from "react";
 import { layout } from "../../app/layout";
 import { useAnalysis, useSearch } from "../../app/session";
@@ -6,6 +7,14 @@ import type { MatchAnalysis, SpotTrack, StackItem } from "../../engine/analysis"
 import { Empty } from "../common/Empty";
 import { defineEditor, type EditorProps } from "../registry";
 import model from "../../engine/model-data.json";
+
+register({ id: "spots.inspectChange", title: "建設状態の継続区間を解析", category: "建設スポット", hidden: true,
+  run: ({ args }) => {
+    const { spot, start, end } = args as { spot: number; start: number; end: number };
+    if (![start, end].every(Number.isFinite) || end <= start) return;
+    ui.select(`spot:${spot}`); ui.patchPlayback({ time: start, range: [start, end], playing: false }); run("interval.fit");
+  },
+});
 
 const at = (track: SpotTrack, t: number) => {
   let h = track.history[0];
@@ -145,6 +154,7 @@ function SpotsEditor({ area }: EditorProps) {
                   {h.t}秒
                 </button>
                 <Stack stack={h.stack} />
+                {(selectedTrack.history[i + 1]?.t ?? a.end) > h.t && <button className="tool" title="この建設状態が続いた区間を解析" onClick={() => run("spots.inspectChange", { spot: sel, start: h.t, end: selectedTrack.history[i + 1]?.t ?? a.end })}>{selectedTrack.history[i + 1] ? "次の変化まで" : "経路末尾まで"} {((selectedTrack.history[i + 1]?.t ?? a.end) - h.t).toFixed(1)}秒</button>}
               </li>
             ))}
           </ol>

@@ -6,3 +6,8 @@
 .interval-table th, .interval-table td { white-space: nowrap; }
 .interval-table th { text-align: left; }
 .interval-table td { text-align: right; }
+
+.interval-detail-table { width: 100%; font-variant-numeric: tabular-nums; }
+.interval-detail-table th { text-align: left; }
+.interval-detail-table td:first-child { overflow-wrap: anywhere; }
+.interval-detail-table td:not(:first-child) { white-space: nowrap; }

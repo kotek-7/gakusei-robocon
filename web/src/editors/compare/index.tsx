@@ -1,13 +1,18 @@
 import { useMemo, useState } from "react";
-import { run } from "../../app/commands";
+import { register, run } from "../../app/commands";
 import { useAnalysis, useSearch } from "../../app/session";
 import { ui, useUI } from "../../app/store";
 import type { MatchAnalysis } from "../../engine/analysis";
 import { Empty } from "../common/Empty";
 import { robotNames } from "../common/labels";
 import { sampleAt } from "../score";
+import { scoreRangeDelta } from "../score/range";
+import { intervalSummary } from "../common/intervalSummary";
 import { scoreChangeTimes } from "./navigation";
 import { defineEditor } from "../registry";
+
+register({ id: "compare.seekRange", title: "比較区間の端へ移動", category: "比較", hidden: true,
+  run: ({ args }) => { const range = useUI.getState().playback.range; if (range) ui.patchPlayback({ time: range[args === "end" ? 1 : 0], playing: false }); } });
 
 function stats(a: MatchAnalysis) {
   const last = a.samples.at(-1)!;
@@ -24,6 +29,7 @@ function CompareEditor() {
   const [query, setQuery] = useState("");
   const compare = useUI((s) => s.session.compare);
   const time = useUI((s) => s.playback.time);
+  const range = useUI((s) => s.playback.range);
   const search = useSearch();
   const A = useAnalysis(compare.a).data,
     B = useAnalysis(compare.b).data;
@@ -40,6 +46,8 @@ function CompareEditor() {
     sb = B && stats(B);
   const nowA = A && time >= A.start && time <= A.end ? sampleAt(A, time) : undefined,
     nowB = B && time >= B.start && time <= B.end ? sampleAt(B, time) : undefined;
+  const rangeA = A && range ? scoreRangeDelta(A, range) : null;
+  const rangeB = B && range ? scoreRangeDelta(B, range) : null;
   const previous = changeTimes.findLast((t) => t < time - 0.001);
   const next = changeTimes.find((t) => t > time + 0.001);
   const seek = (t: number | undefined) => { if (t !== undefined) { ui.patchPlayback({ playing: false }); ui.seek(t); } };
@@ -54,6 +62,14 @@ function CompareEditor() {
   const d = (x?: number, y?: number) => (x === undefined || y === undefined ? null : y - x);
   const rows = [
     row(`${time.toFixed(1)}秒の点差`, nowA && nowA.parts[0].total - nowA.parts[1].total, nowB && nowB.parts[0].total - nowB.parts[1].total, d(nowA ? nowA.parts[0].total - nowA.parts[1].total : undefined, nowB ? nowB.parts[0].total - nowB.parts[1].total : undefined)),
+    ...(range ? [
+      ...[0, 1].map((team) => row(`${team ? "青" : "赤"} 区間の得点増減`, rangeA?.[team].total, rangeB?.[team].total, d(rangeA?.[team].total, rangeB?.[team].total))),
+      ...robotNames.map((name, robot) => {
+        const a = A && rangeA ? intervalSummary(A.intervals, range, robot).waiting : undefined;
+        const b = B && rangeB ? intervalSummary(B.intervals, range, robot).waiting : undefined;
+        return row(`${name} 区間の待機秒`, a, b, d(a, b), "robots");
+      }),
+    ] : []),
     row("末尾の得点", sa && `${sa.last.parts[0].total} 対 ${sa.last.parts[1].total}`, sb && `${sb.last.parts[0].total} 対 ${sb.last.parts[1].total}`),
     row("末尾の点差", sa && sa.last.parts[0].total - sa.last.parts[1].total, sb && sb.last.parts[0].total - sb.last.parts[1].total, d(sa ? sa.last.parts[0].total - sa.last.parts[1].total : undefined, sb ? sb.last.parts[0].total - sb.last.parts[1].total : undefined)),
     row("末尾の時刻", A?.end, B?.end, d(A?.end, B?.end)),
@@ -84,6 +100,7 @@ function CompareEditor() {
         <span className="muted">B−Aの変化 {changeTimes.length}か所</span>
       </div>
       {A && B && <p className="muted">共通の再生範囲：{Math.max(A.start, B.start) <= Math.min(A.end, B.end) ? `${Math.max(A.start, B.start)}–${Math.min(A.end, B.end)}秒` : "なし"}。各経路の範囲外の得点は「—」で表示します。</p>}
+      {range && <div className="row"><span className="tabular">解析区間 {range[0]}〜{range[1]}秒</span><button className="tool" onClick={() => run("compare.seekRange", "start")}>開始へ</button><button className="tool" onClick={() => run("compare.seekRange", "end")}>終了へ</button><span className="muted">得点は終了値−開始値。経路外は「—」。</span></div>}
       <table className="compare-table">
         <thead>
           <tr>
