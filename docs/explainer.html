@@ -1,0 +1,667 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
+<title>ムスティカ作戦探索の仕組み</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: 左に章目次、右に「本文＋操作できる図」を縦に並べる作業台型。DESIGN.md の配色を踏襲 */
+:root{
+  --paper:#f4f5f3; --surface:#ffffff; --ink:#202c30; --muted:#536168; --line:#d4dcda; --ctl:#aebbb8;
+  --accent:#006b65; --accent-ink:#00554f; --selected:#d6e9e4; --hover:#e6eeeb; --head:#eef2ef;
+  --red:#af292e; --blue:#2855ae; --red-soft:#f5dcdc; --blue-soft:#dbe4f6; --warn:#a1580b; --warn-soft:#fbecd9;
+  --sans:"Noto Sans JP","Yu Gothic","Hiragino Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#121a1b; --surface:#1a2325; --ink:#e2e9e7; --muted:#9caba9; --line:#2e3b3d; --ctl:#4a5b5c;
+  --accent:#4cc0b4; --accent-ink:#7ad6cc; --selected:#1e3d39; --hover:#22302f; --head:#1f2a2b;
+  --red:#ec7b7f; --blue:#86a6f2; --red-soft:#3c2224; --blue-soft:#1f2a45; --warn:#e3a35a; --warn-soft:#3a2b18; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#121a1b; --surface:#1a2325; --ink:#e2e9e7; --muted:#9caba9; --line:#2e3b3d; --ctl:#4a5b5c;
+  --accent:#4cc0b4; --accent-ink:#7ad6cc; --selected:#1e3d39; --hover:#22302f; --head:#1f2a2b;
+  --red:#ec7b7f; --blue:#86a6f2; --red-soft:#3c2224; --blue-soft:#1f2a45; --warn:#e3a35a; --warn-soft:#3a2b18; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.8;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+.wrap{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:200px minmax(0,1fr);gap:40px}
+header.top{max-width:1200px;margin:0 auto;padding-block:40px 28px;border-bottom:1px solid var(--line);margin-bottom:32px}
+.eyebrow{font-size:12px;letter-spacing:.12em;color:var(--accent);font-weight:700}
+h1{font-size:clamp(26px,4vw,38px);line-height:1.3;margin:.2em 0 .4em;font-weight:800;text-wrap:balance}
+.lede{max-width:46em;color:var(--muted);margin:0}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;font-size:13px}
+nav.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px;counter-reset:c}
+nav.toc a{display:block;padding:6px 10px;border-left:2px solid var(--line);color:var(--muted);text-decoration:none}
+nav.toc a:hover{color:var(--ink);background:var(--hover)}
+nav.toc a.on{border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+main{min-width:0;display:grid;gap:64px}
+section{display:grid;gap:20px;scroll-margin-top:16px}
+h2{font-size:24px;margin:0;line-height:1.4;text-wrap:balance;display:flex;gap:12px;align-items:baseline}
+h2 .no{font-family:var(--mono);font-size:14px;color:var(--accent);font-weight:600}
+h3{font-size:16px;margin:8px 0 0;text-wrap:balance}
+p{margin:0;max-width:44em}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+code,.mono{font-family:var(--mono);font-size:.88em}
+code{background:var(--head);padding:1px 5px;border-radius:3px}
+.fig{background:var(--surface);border:1px solid var(--line);padding:20px;display:grid;gap:14px;min-width:0}
+.fig > .cap{font-size:13px;color:var(--muted)}
+.fig-title{font-weight:700;font-size:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+.fig-title .src{font-weight:400;font-size:12px;color:var(--muted);font-family:var(--mono)}
+.cols{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
+.cols > *{min-width:0}
+@media (max-width:980px){.wrap{grid-template-columns:minmax(0,1fr)} nav.toc{display:none} .cols{grid-template-columns:minmax(0,1fr)}}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,select,input[type=number]{font:inherit;font-size:13px;color:var(--ink);background:var(--surface);border:1px solid var(--ctl);border-radius:4px;padding:6px 10px;cursor:pointer}
+input[type=number]{width:64px;cursor:text}
+button:hover{background:var(--hover)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+button.primary:hover{background:var(--accent-ink)}
+button[aria-pressed=true]{background:var(--selected);border-color:var(--accent);color:var(--accent-ink);font-weight:700}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.r{border-color:var(--red);color:var(--red)} button.b{border-color:var(--blue);color:var(--blue)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+label.chk{display:inline-flex;gap:6px;align-items:center;font-size:13px}
+table{border-collapse:collapse;font-size:13px;width:100%}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--head);font-weight:700;font-size:12px}
+td.n,th.n{text-align:right;white-space:nowrap;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.scroll{overflow-x:auto}
+.mapbox{position:relative;width:100%;max-width:620px;aspect-ratio:1/1}
+.mapbox svg{width:100%;height:100%;display:block}
+.info{border:1px solid var(--line);background:var(--head);padding:12px 14px;font-size:13px;min-height:5em}
+.info b{font-size:14px}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:999px;border:1px solid currentColor;white-space:nowrap}
+.pill.red{color:var(--red)} .pill.blue{color:var(--blue)} .pill.acc{color:var(--accent)} .pill.warn{color:var(--warn)} .pill.mut{color:var(--muted)}
+.score{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+.score > div{background:var(--surface);padding:10px 14px}
+.score .v{font-size:28px;font-weight:800;font-family:var(--mono);font-variant-numeric:tabular-nums;line-height:1.2}
+.score .red .v{color:var(--red)} .score .blue .v{color:var(--blue)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13px}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+.callout{border-left:3px solid var(--warn);background:var(--warn-soft);padding:10px 14px;font-size:13px;max-width:52em}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.step{border:1px solid var(--line);background:var(--surface);padding:14px;display:grid;gap:6px;align-content:start}
+.step .k{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:600}
+.step b{font-size:14px}
+.step p{font-size:13px;color:var(--muted)}
+.log{font-family:var(--mono);font-size:12px;line-height:1.7;max-height:280px;overflow:auto;border:1px solid var(--line);background:var(--head);padding:10px 12px}
+.log .t{color:var(--accent);font-weight:600}
+.lanes text,.chart text{font-family:var(--sans)}
+.lanes .lbl{font-size:12px;font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:18px;height:4px;vertical-align:middle;margin-right:6px;border-radius:2px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.opt{border:1px solid var(--line);padding:8px;font-size:12px;display:grid;gap:3px;align-content:start}
+.opt .h{font-weight:700;font-size:12px}
+.opt div.o{padding:2px 6px;border-radius:3px;color:var(--muted)}
+.opt div.o.sel{background:var(--selected);color:var(--accent-ink);font-weight:700}
+.badge-ok{color:var(--accent);font-weight:700} .badge-ng{color:var(--warn);font-weight:700}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.mat td select{font-size:12px;padding:3px 4px}
+.mat td input{width:56px;font-size:12px;padding:3px 4px}
+.out{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.out > div{border:1px solid var(--line);padding:10px 12px}
+.out .v{font-family:var(--mono);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.out .l{font-size:12px;color:var(--muted)}
+ul.plain{margin:0;padding-left:1.2em;max-width:46em} ul.plain li{margin:.2em 0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.hit{fill:transparent;stroke:transparent;cursor:pointer}
+.hit:hover,.hit.on{fill:rgba(0,107,101,.18);stroke:#006b65;stroke-width:.04}
+</style>
+
+<header class="top">
+  <div class="eyebrow">NHK学生ロボコン2027・作戦探索アプリ</div>
+  <h1>ルールから作戦候補が出てくるまで</h1>
+  <p class="lede">試合のルールを確認し、アプリがそれをどう有限の計算モデルに置き換え、どの順番で候補を探し、どう評価しているかを、操作できる図でたどります。数値はリポジトリの <code>model-data.json</code> と探索エンジン（<code>web/src/engine</code>）の実装に合わせています。</p>
+</header>
+
+<div class="wrap">
+<nav class="toc" aria-label="目次"><ol>
+  <li><a href="#rules">1 試合のルール</a></li>
+  <li><a href="#score">2 得点と勝敗</a></li>
+  <li><a href="#field">3 フィールドの有限化</a></li>
+  <li><a href="#state">4 局面と同時行動</a></li>
+  <li><a href="#discover">5 候補探索</a></li>
+  <li><a href="#counter">6 対抗手と共通比較</a></li>
+  <li><a href="#eval">7 全探索と評価</a></li>
+  <li><a href="#limits">8 扱わないこと</a></li>
+</ol></nav>
+
+<main>
+<!-- 1 -->
+<section id="rules">
+  <h2><span class="no">01</span>試合のルール</h2>
+  <p>ABUロボコン2027「ヌサンタラのムスティカを求めて」。11m四方のフィールドで赤と青が3分間（180秒）対戦します。各チームは運搬ロボット<b>TR</b>と、完全自動の建設ロボット<b>BR</b>の2台。TRが地面の資材を受け渡しエリアへ運び、BRが高台にタワーを建て、最後にムスティカ（バレーボール）を中央柱へ奉納します。</p>
+  <div class="fig">
+    <div class="fig-title">フィールド（真上から）<span class="src">rulebook/field-2027.step を投影</span></div>
+    <div class="cols">
+      <div class="mapbox"><svg id="areaMap" viewBox="-5.5 -5.5 11 11" role="img" aria-label="競技フィールドのエリア図"></svg></div>
+      <div style="display:grid;gap:12px">
+        <div class="info" id="areaInfo"><b>エリアを選んでください</b><br>図の区画にカーソルを合わせるかタップすると、規則上の役割を表示します。</div>
+        <table>
+          <tr><th>ロボット</th><th>動ける場所</th><th class="n">積載</th></tr>
+          <tr><td><span class="pill acc">TR</span> 手動可</td><td>グラウンドと受け渡しエリアだけ。L1の他の場所とL2は禁止（3.2.1）</td><td class="n">3個</td></tr>
+          <tr><td><span class="pill acc">BR</span> 完全自動</td><td>受け渡しエリア・L1・L2。グラウンドには階段への乗り移りとリトライ時だけ触れてよい（4.3.2）</td><td class="n">2個</td></tr>
+        </table>
+        <p class="small muted">TRとBRの間の通信は禁止（11.10）。両者は相手の動きを見て合わせるしかありません。</p>
+      </div>
+    </div>
+  </div>
+  <div class="steps">
+    <div class="step"><span class="k">資材</span><b>アース 各20個／スカイ 共有12個</b><p>アース（350mm）は自陣の保管エリアに最大2段で置く。スカイ（200mm）は片面赤・片面青で、グラウンド共有エリアの5×5に市松配置。</p></div>
+    <div class="step"><span class="k">完成タワー</span><b>アース → アース → スカイ</b><p>建設スポット上に必ずこの順で積む。上を向いたスカイの色のチームが「完成させた」ことになる（3.5.7）。</p></div>
+    <div class="step"><span class="k">奪取</span><b>スカイは裏返せる</b><p>どのタワーのスカイも自色が上を向くよう裏返してよい（3.5.8）。下のアースの得点は最初に置いたチームのまま。</p></div>
+    <div class="step"><span class="k">サンクチュアリ・マンデート</span><b>完成タワー2基、うち1基は共有エリア</b><p>達成するとTRがムスティカを取りに行ける。一度達成すれば、後でタワーを奪われても維持（3.6.2）。</p></div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section id="score">
+  <h2><span class="no">02</span>得点と勝敗</h2>
+  <p>得点は試合終了の瞬間の状態で決まります。ロボットが触れている物体は数えません（4.6.3）。受け渡し得点だけは、TRがブロックを受け渡しエリアに置いた（または渡した）時点で確定します。</p>
+  <div class="cols">
+    <div class="fig">
+      <div class="fig-title">得点表 <span class="src">8.1〜8.5</span></div>
+      <table>
+        <tr><th>対象</th><th class="n">L1</th><th class="n">L2</th><th>得点が入るチーム</th></tr>
+        <tr><td>受け渡し（1個）</td><td class="n" colspan="2">5</td><td>運んだTRのチーム</td></tr>
+        <tr><td>アース 1段目</td><td class="n">10</td><td class="n">20</td><td rowspan="2">置いたチームに固定</td></tr>
+        <tr><td>アース 2段目</td><td class="n">20</td><td class="n">40</td></tr>
+        <tr><td>スカイ 最上段</td><td class="n">40</td><td class="n">80</td><td>終了時に上を向く色</td></tr>
+        <tr><td>ムスティカ奉納</td><td class="n" colspan="2">250</td><td>奉納したチーム</td></tr>
+      </table>
+      <div class="fig-title" style="margin-top:6px">同点のとき <span class="src">9.3 / model.ts ranks()</span></div>
+      <ol class="small" style="margin:0;padding-left:1.4em">
+        <li>合計得点</li><li>ムスティカを奉納したか</li><li>自色が上のスカイの数</li><li>L2スポットに置いた自チームのブロック数</li><li>L1スポットに置いた自チームのブロック数</li><li>それでも同じなら審判団の判断（モデルでは「審判未決」）</li>
+      </ol>
+    </div>
+    <div class="fig">
+      <div class="fig-title">得点計算機 <span class="src">model.ts scores() と同じ規則</span></div>
+      <p class="small muted">スポットを選び、赤または青のBRとして操作します。共有でないL1スポットには、そのチームしか建てられません。</p>
+      <div class="mapbox" style="max-width:380px;justify-self:center"><svg id="scoreMap" viewBox="-3.2 -3.2 6.4 6.4" role="img" aria-label="建設スポットの選択"></svg></div>
+      <div class="info" id="spotInfo" style="min-height:0"></div>
+      <div class="ctl" id="spotOps"></div>
+      <div class="ctl small">
+        <span>受け渡し</span>
+        <label class="chk" style="color:var(--red)">赤 <input type="number" id="trR" min="0" max="52" value="3"></label>
+        <label class="chk" style="color:var(--blue)">青 <input type="number" id="trB" min="0" max="52" value="2"></label>
+        <span style="margin-left:8px">ムスティカ</span>
+        <select id="mus"><option value="-1">未奉納</option><option value="0">赤が奉納</option><option value="1">青が奉納</option></select>
+        <button id="scoreReset">初期化</button>
+      </div>
+      <div class="score"><div class="red"><div class="small">赤</div><div class="v" id="sR">0</div><div class="small" id="mR"></div></div><div class="blue"><div class="small">青</div><div class="v" id="sB">0</div><div class="small" id="mB"></div></div></div>
+      <div class="small" id="winner"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section id="field">
+  <h2><span class="no">03</span>フィールドの有限化</h2>
+  <p>連続した床をそのまま扱うと探索できないため、アプリはフィールドを<b>44個の地点と44本の通路</b>のグラフに置き換えています。地点は作業できる場所（保管エリア・スカイ置場・受け渡しエリア・建設スポットなど）と、その間の中継点です。通路には「平地」「スロープ」「L1階段」「L2階段」の種別があり、機体の能力フラグで通れるかが決まります。</p>
+  <div class="fig">
+    <div class="fig-title">地点グラフと移動時間 <span class="src">model-data.json field / model.ts routes()</span></div>
+    <div class="cols">
+      <div class="mapbox"><svg id="graphMap" viewBox="-5.5 -5.5 11 11" role="img" aria-label="地点と通路のグラフ"></svg></div>
+      <div style="display:grid;gap:12px">
+        <div class="ctl">
+          <select id="rRobot" aria-label="機体"><option value="0">赤TR</option><option value="1" selected>赤BR</option><option value="2">青TR</option><option value="3">青BR</option></select>
+          <select id="rSpeed" aria-label="走行速度"><option value="0">速い 0.8 m/s</option><option value="1" selected>標準 0.5 m/s</option><option value="2">遅い 0.3 m/s</option></select>
+        </div>
+        <div class="ctl">
+          <label class="chk"><input type="checkbox" id="cRamp" checked>スロープ</label>
+          <label class="chk"><input type="checkbox" id="cSt1" checked>L1階段</label>
+          <label class="chk"><input type="checkbox" id="cSt2" checked>L2階段</label>
+          <label class="chk"><input type="checkbox" id="cBrRamp">BRスロープ利用（規則設定）</label>
+        </div>
+        <div class="ctl small"><span>出発</span><select id="rFrom"></select><span>到着</span><select id="rTo"></select></div>
+        <div class="info" id="routeInfo"></div>
+        <div class="legend"><span><i style="background:#3b4a4d"></i>平地</span><span><i style="background:#c06a1a"></i>スロープ</span><span><i style="background:#7a3fb0"></i>L1階段</span><span><i style="background:#1f7f4f"></i>L2階段</span><span><i style="background:#00a596;height:6px"></i>選択経路</span></div>
+      </div>
+    </div>
+    <p class="cap">地点をタップすると到着地になります。各通路の所要時間は「距離 ÷ 走行速度」を<b>秒に切り上げ</b>た整数（最低1秒）。BRは一度高台に上がるとグラウンドへ降りる通路を使えず、規則設定でスロープ利用を許さない限り南北の地上通路も通れません。</p>
+  </div>
+  <div class="fig">
+    <div class="fig-title">機体の数値スペック（3段階） <span class="src">model-data.json profiles</span></div>
+    <div class="scroll"><table>
+      <tr><th>項目</th><th class="n">速い</th><th class="n">標準</th><th class="n">遅い</th><th>使われ方</th></tr>
+      <tr><td>走行速度</td><td class="n">0.8 m/s</td><td class="n">0.5 m/s</td><td class="n">0.3 m/s</td><td>通路1本ごとの秒数</td></tr>
+      <tr><td>取得</td><td class="n">1 s</td><td class="n">2 s</td><td class="n">4 s</td><td>保管・スカイ置場・床からの取得、持ち直し</td></tr>
+      <tr><td>設置</td><td class="n">2 s</td><td class="n">4 s</td><td class="n">7 s</td><td>タワーへの設置、ムスティカ奉納</td></tr>
+      <tr><td>裏返す</td><td class="n">2 s</td><td class="n">4 s</td><td class="n">8 s</td><td>スカイの反転</td></tr>
+      <tr><td>受け渡し</td><td class="n">1 s</td><td class="n">2 s</td><td class="n">4 s</td><td>床に置く／直接渡す（1個ずつ）</td></tr>
+      <tr><td>リトライ</td><td class="n">5 s</td><td class="n">10 s</td><td class="n">15 s</td><td>スタート（BRはL1リトライも可）へ戻る</td></tr>
+    </table></div>
+    <p class="cap">項目ごとに独立して段階を選べます。「速い走行なら取得も速い」のような推定はしません。能力フラグ（スロープ・階段・裏返し・持ち直し・アース／スカイ／ムスティカの扱い・直接受け渡し・混載・積載数）も別々に採否を選べ、選んだ組合せの直積がそれぞれ1つの<b>構成</b>になります。</p>
+  </div>
+</section>
+
+<!-- 4 -->
+<section id="state">
+  <h2><span class="no">04</span>局面と同時行動</h2>
+  <p>局面（状態）は「時刻、4台の位置と実行中の動作、53個の物体の所在・段・所属・色・受け渡し履歴、マンデート成立、受け渡し得点」の組です。時間は1秒刻みですが、毎秒計算するのではなく、<b>空いている機体が行動を選び、次にどれかの動作が終わる時刻まで一気に進めます</b>。</p>
+  <div class="fig">
+    <div class="fig-title">遷移を1つずつ進める <span class="src">transition.ts successors()</span></div>
+    <div class="ctl">
+      <button class="primary" id="simStep">次の完了まで進める</button>
+      <button id="simAll">最後まで</button>
+      <button id="simReset">最初から</button>
+      <span class="small muted" id="simT"></span>
+    </div>
+    <div class="scroll"><svg id="lanes" class="lanes" viewBox="0 0 900 190" style="min-width:640px;width:100%"></svg></div>
+    <div class="legend"><span><i style="background:var(--accent)"></i>移動</span><span><i style="background:#c06a1a"></i>取得・受け渡し</span><span><i style="background:#1f7f4f"></i>設置</span><span><i style="background:var(--ctl)"></i>イベント待機</span><span><i style="background:var(--ink);width:2px;height:12px"></i>現在時刻</span></div>
+    <div class="cols">
+      <div class="log" id="simLog" aria-live="polite"></div>
+      <div style="display:grid;gap:10px">
+        <dl class="kv" id="simState"></dl>
+      </div>
+    </div>
+    <p class="cap">標準スペックで、赤は「床経由の受け渡し」、青は「直接受け渡し」で自陣側スポットへ2段積む手順を1本だけ再生しています（例示用に固定した手順）。実際の探索は、各判断時点で選べる行動をすべて分岐させます。</p>
+  </div>
+  <div class="steps">
+    <div class="step"><span class="k">同時に選ぶ</span><b>相手の今回の選択は見えない</b><p>4台は同じ局面を見て、それぞれ行動を選ぶ。遷移は「赤2台の行動 × 青2台の行動」の組で表す。</p></div>
+    <div class="step"><span class="k">イベント待機</span><b>誰かの動作が終われば再判断</b><p>待機中の機体は、他の機体の非待機動作が完了した瞬間に解放される。上の例で赤BRが38秒で一度起き、まだ足りずにもう一度待つ様子が見えます。</p></div>
+    <div class="step"><span class="k">直接受け渡し</span><b>両者が同時に合意したときだけ</b><p>TRの「渡す」とBRの「受け取る」が同じ物体で同時に選ばれた組だけを合法とする（<code>matched()</code>）。</p></div>
+    <div class="step"><span class="k">同等な物体</span><b>属性が同じなら1つの選択肢</b><p>保管エリアの20個のアースを個別に区別せず、種類・所属・色・受け渡し履歴・積み位置で同値にまとめる（<code>demand()</code>）。</p></div>
+  </div>
+  <div class="fig">
+    <div class="fig-title">競合の裁定分岐 <span class="src">rules.conflict</span></div>
+    <p class="small">共有スカイが残り1個のとき、赤TRと青TRが同じ瞬間に取りに行った場合。移動中は資源を予約せず、取得の開始時に在庫を割り当てます。</p>
+    <div class="ctl"><span class="small">同時取得・操作の競合</span>
+      <button data-cf="branch" aria-pressed="true">branch（両方を分岐）</button><button data-cf="red">red（赤を優先）</button><button data-cf="blue">blue（青を優先）</button></div>
+    <div class="scroll"><svg id="conflict" viewBox="0 0 640 170" style="min-width:520px;width:100%"></svg></div>
+    <p class="cap">負けた側は動作を開始できず「阻止」として記録され、1秒待機になります。評価では、この裁定分岐のうち赤に不利な結果を採ります（第7章）。</p>
+  </div>
+</section>
+
+<!-- 5 -->
+<section id="discover">
+  <h2><span class="no">05</span>候補探索：選択肢を捨てずに順番だけ付ける</h2>
+  <p>「候補を探す」は、詳細モデルの合法な行動を全部生成したうえで、計算しやすいように2つだけ制限をかけた探索です。移動は<b>作業地点までの最短経路を完走</b>（途中で目的地を変えない）、待機は<b>次の動作完了か試合終了まで</b>（反転できる地点では終了直前の反転開始を待つ選択も追加）。取得個数・混載・床か直接か・建設先の切替は全部残します。</p>
+  <div class="fig">
+    <div class="fig-title">4台の選択肢の直積とカーソル <span class="src">util.ts combination()</span></div>
+    <p class="small muted">ある判断時点の例（選択肢は抜粋）。全組合せをメモリに並べず、カーソル番号を混合基数として1組ずつ取り出します。最後の機体が一番速く回ります。</p>
+    <div class="grid4" id="cursorLists"></div>
+    <input type="range" id="cursor" min="0" value="0" aria-label="カーソル">
+    <div class="ctl small"><span class="mono" id="cursorNo"></span><span id="cursorOk"></span><span class="muted" id="cursorSum"></span></div>
+  </div>
+  <div class="fig">
+    <div class="fig-title">展開の順番：有望な完走と古い未探索を交互に <span class="src">discovery.ts expand()</span></div>
+    <div class="ctl">
+      <button class="primary" id="trStep">1手進める</button><button id="trRun">20手進める</button><button id="trReset">最初から</button>
+      <span class="small" id="trStat"></span>
+    </div>
+    <div class="scroll"><svg id="tree" viewBox="0 0 900 300" style="min-width:640px;width:100%"></svg></div>
+    <div class="legend"><span><i style="background:var(--accent)"></i>偶数手：有望な経路を続ける</span><span><i style="background:#c06a1a"></i>奇数手：最も古い未完了局面</span><span><i style="background:var(--line)"></i>未生成の組合せ</span><span><i style="background:#1f7f4f"></i>終了局面＝候補</span></div>
+    <p class="cap">偶数手は直前に生まれた子（なければ点差の優先度が最も高い未展開局面）を掘り、試合終了まで早く到達して候補を出します。奇数手は最も古い未完了局面のカーソルを1つ進め、取りこぼした分岐を少しずつ埋めます。図は分岐数と点差を擬似乱数で作った模型です。</p>
+  </div>
+  <div class="callout">建設目標（どのスポットに建てるか、ムスティカを狙うか）から作る従来の方針は、<b>行動リストの並べ替えだけ</b>に使います。「既存塔の完成を優先」などの順位で候補を除外しません。候補は終了状態に到達した具体的経路の代表例であり、最適性の保証ではありません。</div>
+</section>
+
+<!-- 6 -->
+<section id="counter">
+  <h2><span class="no">06</span>対抗手と共通比較</h2>
+  <p>候補探索は3種類のジョブを順番に回します。構成（能力と数値の組合せ）ごとに独立した run があり、時間は run を巡回して配分し、各 run の中では <code>baseline → counter → compare</code> の順に1手ずつ進めます。</p>
+  <div class="scroll"><svg id="pipe" viewBox="0 0 900 250" style="min-width:700px;width:100%" role="img" aria-label="baseline counter compare の流れ"></svg></div>
+  <div class="steps">
+    <div class="step"><span class="k">baseline</span><b>赤の候補を見つける</b><p>青は待機させ、赤2台の選択肢を探索。試合終了に届いた経路から、ロボット別の手順を取り出して候補 <code>P-…</code> として登録します。</p></div>
+    <div class="step"><span class="k">counter</span><b>候補を固定して青の対抗手を探す</b><p>赤の手順を再実行しながら、青を同じ生成器で探索。優先度は青−赤の点差。見つかった青の手順は <code>O-…</code> として同じ構成の全候補で共有します。</p></div>
+    <div class="step"><span class="k">compare</span><b>両方固定で全裁定分岐を検査</b><p>候補×相手手順の組を、競合の裁定分岐まで全部計算し終えたものだけ「共通比較済み」と数えます。</p></div>
+  </div>
+  <p class="small muted">手順は「移動先へ向かう」「この地点でこの操作をこの属性の物体に行う」の列です。再実行中に条件が成り立たなければ、その機体は待機し、阻止された局面を記録します。別の作戦への自動差し替えはしません。確認済みの点差を「保証値」とは呼びません。</p>
+</section>
+
+<!-- 7 -->
+<section id="eval">
+  <h2><span class="no">07</span>詳細な全探索と評価</h2>
+  <p>「詳細な全探索」は、候補探索の制限を外し、1秒待機や途中の分岐も含めて全行動の組合せを列挙します。局面は同一状態を統合した有限DAG（時刻は必ず増える）として IndexedDB に保存され、全分岐を処理したときだけ「探索完了」になります。180秒全体の完了は実用時間内に保証されません。</p>
+  <p>完全に展開できた構成では、終了局面から時刻を遡り、各局面で「赤の行動 × 青の行動」の行列ゲームを線形計画（HiGHS の WebAssembly 版）で解きます。値は3種類です。</p>
+  <div class="fig">
+    <div class="fig-title">1局面の行列ゲーム <span class="src">evaluation.ts / linear.ts matrixValue()</span></div>
+    <div class="cols">
+      <div style="display:grid;gap:10px">
+        <p class="small muted">各セルは、その行動の組の行き先局面の値です。裁定で分岐するセルは、赤に不利な方を採ります。赤は行動を確率 p と 1−p で混ぜ、青が最も困る列を選んでも得られる値を最大にします。</p>
+        <div class="scroll"><table class="mat" id="mat"></table></div>
+        <div class="ctl"><button id="matEx1">例：読み合い</button><button id="matEx2">例：支配的な行動</button></div>
+      </div>
+      <div style="display:grid;gap:10px">
+        <svg id="lpChart" class="chart" viewBox="0 0 420 240" style="width:100%"></svg>
+        <div class="out">
+          <div><div class="l">勝利確率の保証（下限）</div><div class="v" id="vL"></div></div>
+          <div><div class="l">負けない確率（上限側）</div><div class="v" id="vU"></div></div>
+          <div><div class="l">保証を保つ点差の下限</div><div class="v" id="vM"></div></div>
+          <div><div class="l">赤の混合戦略</div><div class="v" id="vP" style="font-size:16px"></div></div>
+        </div>
+      </div>
+    </div>
+    <p class="cap">線は「青がその列を選んだとき」の赤の勝利値。太線（下側の包絡線）の最高点が保証値です。点差は、勝利確率の保証を落とさない p の範囲の中で最大化します。実装は1回のソルバー呼出しを2秒で打ち切り、最適解が出なければ保証値を確定しません。</p>
+  </div>
+  <div class="steps">
+    <div class="step"><span class="k">分類</span><b>作戦は完了順序の構造で分ける</b><p>試合全体の設置・反転・持ち直しの完了順序と同時性を、物体IDを種類・所属に置き換えてハッシュ化。意味的な名前は付けません（<code>browser-milestones-1</code>）。</p></div>
+    <div class="step"><span class="k">集計</span><b>展開グループを等重み</b><p>絶対時刻を除いた構造が同じ試合展開を1グループとし、グループ間・グループ内を等重みで勝率と点差分布を出します。実大会の勝率ではありません。</p></div>
+    <div class="step"><span class="k">上限</span><b>履歴は30,000件まで</b><p>経路履歴の伝播が上限に達したら統計未完了と表示。未探索・打切りを0勝や到達不能とは扱いません。</p></div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section id="limits">
+  <h2><span class="no">08</span>モデルが扱わないこと</h2>
+  <div class="cols">
+    <ul class="plain">
+      <li>動作は必ず成功する前提。接触力学・転倒・把持軌道・機体寸法・偶発的な失敗は扱いません。</li>
+      <li>位置と経路は代表機体の有限グラフ。経路の迂回や途中の方向転換は詳細全探索側だけ。</li>
+      <li>受け渡しエリアの床の収容密度は個数で管理。</li>
+      <li>通信なしで実際にその手順を実行できるかは検証しません。</li>
+      <li>審判による接触裁定全体、違反による強制リトライの判断は対象外。</li>
+      <li>数値スペックの初期値は仮定であり、実機の測定値ではありません。</li>
+    </ul>
+    <div class="fig">
+      <div class="fig-title">ルール解釈の切替 <span class="src">model-data.json rules</span></div>
+      <table>
+        <tr><th>設定</th><th>既定</th><th>根拠</th></tr>
+        <tr><td>リトライ時のブロック</td><td>保持</td><td class="mono">5.1.1 / 5.3.2</td></tr>
+        <tr><td>BRのスロープ利用</td><td>不可</td><td class="mono">4.3.2</td></tr>
+        <tr><td>スカイの別スポットへの移設</td><td>不可</td><td class="mono">3.5.8</td></tr>
+        <tr><td>同じ物体の受け渡し得点の再加算</td><td>なし</td><td class="mono">8.1</td></tr>
+        <tr><td>設置済みムスティカの取り外し</td><td>不可</td><td class="mono">明文未確認</td></tr>
+        <tr><td>同時取得・操作の競合</td><td>分岐</td><td class="mono">6.6 / 仮定</td></tr>
+        <tr><td>マンデートのタワー数判定</td><td>同時保有</td><td class="mono">3.6.1–2</td></tr>
+      </table>
+      <p class="cap">ルールブックの記述が両方に読める箇所は設定に分けています。どれも公式裁定ではありません。</p>
+    </div>
+  </div>
+</section>
+</main>
+</div>
+
+<script>
+const FIELD="data:image/png;base64,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";
+const G={"nodes":{"startA0":[-5.1,0,5.1,0,"TB"],"startB0":[-4.25,0,5.1,0,"TB"],"south0":[-4.6,0,3.1,0,"TB"],"north0":[-4.6,0,-3.15,0,"TB"],"store0":[-4.5,0,-4.05,0,"T"],"sky0":[-0.95,0,4.6073,0,"T"],"ball0":[-0.55,0,-3.8856,0,"T"],"transfer0":[-3.5,0.6,1.3,0,"TB"],"lane0":[-2.1,0.6,1.3,0,"B"],"middle0":[-2.1,0.6,0,0,"B"],"upper0":[-0.65,0.9,0,0,"B"],"pillar0":[-0.55,0.9,0,0,"B"],"spot0-0":[-2.15,0.6,-2.55,0,"B"],"lane0-0":[-2.1,0.6,-2.05,0,"B"],"spot1-0":[-2.15,0.6,2.55,0,"B"],"lane1-0":[-2.1,0.6,2.05,0,"B"],"spot4-0":[-0.55,0.6,-2.55,0,"B"],"spot5-0":[-0.55,0.6,2.55,0,"B"],"spot6-0":[-0.85,0.9,-0.85,0,"B"],"spot7-0":[-0.85,0.9,0.85,0,"B"],"spot8-0":[0.85,0.9,-0.85,0,"B"],"spot9-0":[0.85,0.9,0.85,0,"B"],"startA1":[5.1,0,5.1,1,"TB"],"startB1":[4.25,0,5.1,1,"TB"],"south1":[4.6,0,3.1,1,"TB"],"north1":[4.6,0,-3.15,1,"TB"],"store1":[4.5,0,-4.05,1,"T"],"sky1":[0.95,0,4.6073,1,"T"],"ball1":[0.55,0,-3.8856,1,"T"],"transfer1":[3.5,0.6,1.3,1,"TB"],"lane1":[2.1,0.6,1.3,1,"B"],"middle1":[2.1,0.6,0,1,"B"],"upper1":[0.65,0.9,0,1,"B"],"pillar1":[0.55,0.9,0,1,"B"],"spot2-1":[2.15,0.6,-2.55,1,"B"],"lane0-1":[2.1,0.6,-2.05,1,"B"],"spot3-1":[2.15,0.6,2.55,1,"B"],"lane1-1":[2.1,0.6,2.05,1,"B"],"spot4-1":[0.55,0.6,-2.55,1,"B"],"spot5-1":[0.55,0.6,2.55,1,"B"],"spot6-1":[-0.85,0.9,-0.85,1,"B"],"spot7-1":[-0.85,0.9,0.85,1,"B"],"spot8-1":[0.85,0.9,-0.85,1,"B"],"spot9-1":[0.85,0.9,0.85,1,"B"]},"edges":[["startA0","south0","walk","TB",2.061553],["startB0","south0","walk","TB",2.030394],["south0","north0","walk","TB",6.25],["north0","store0","walk","T",0.905539],["south0","sky0","walk","T",3.948981],["north0","ball0","walk","T",4.116261],["north0","transfer0","ramp","TB",5.601143],["south0","transfer0","stairs1","TB",3.050036],["transfer0","lane0","walk","B",1.4],["lane0","middle0","walk","B",1.3],["middle0","upper0","stairs2","B",1.507426],["upper0","pillar0","walk","B",0.1],["middle0","lane0-0","walk","B",2.05],["lane0-0","spot0-0","walk","B",0.502494],["middle0","lane1-0","walk","B",2.05],["lane1-0","spot1-0","walk","B",0.502494],["lane0-0","spot4-0","walk","B",1.62865],["lane1-0","spot5-0","walk","B",1.62865],["upper0","spot6-0","walk","B",0.873212],["upper0","spot7-0","walk","B",0.873212],["upper0","spot8-0","walk","B",1.724094],["upper0","spot9-0","walk","B",1.724094],["startA1","south1","walk","TB",2.061553],["startB1","south1","walk","TB",2.030394],["south1","north1","walk","TB",6.25],["north1","store1","walk","T",0.905539],["south1","sky1","walk","T",3.948981],["north1","ball1","walk","T",4.116261],["north1","transfer1","ramp","TB",5.601143],["south1","transfer1","stairs1","TB",3.050036],["transfer1","lane1","walk","B",1.4],["lane1","middle1","walk","B",1.3],["middle1","upper1","stairs2","B",1.507426],["upper1","pillar1","walk","B",0.1],["middle1","lane0-1","walk","B",2.05],["lane0-1","spot2-1","walk","B",0.502494],["middle1","lane1-1","walk","B",2.05],["lane1-1","spot3-1","walk","B",0.502494],["lane0-1","spot4-1","walk","B",1.62865],["lane1-1","spot5-1","walk","B",1.62865],["upper1","spot6-1","walk","B",1.724094],["upper1","spot7-1","walk","B",1.724094],["upper1","spot8-1","walk","B",0.873212],["upper1","spot9-1","walk","B",0.873212]],"spots":[[-2.75,0.6,-2.75,1,0],[-2.75,0.6,2.75,1,0],[2.75,0.6,-2.75,1,1],[2.75,0.6,2.75,1,1],[0,0.6,-2.75,1,-1],[0,0.6,2.75,1,-1],[-1.25,0.9,-1.25,2,-1],[-1.25,0.9,1.25,2,-1],[1.25,0.9,-1.25,2,-1],[1.25,0.9,1.25,2,-1]]};
+const NS="http://www.w3.org/2000/svg";
+const $=id=>document.getElementById(id);
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!==undefined)e.textContent=text;if(parent)parent.appendChild(e);return e}
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+/* ---------- names ---------- */
+function nodeName(id){
+  const m=id.match(/^([a-zA-Z]+?)(\d*)(?:-(\d))?$/);
+  const base={startA:"スタートA",startB:"スタートB",south:"南通路",north:"北通路",store:"保管エリア",sky:"スカイ置場",ball:"ムスティカ柱",transfer:"受け渡しエリア",lane:"L1通路",middle:"L1中央",upper:"L2入口",pillar:"中央柱"};
+  if(id.startsWith("spot")){const n=+id.slice(4).split("-")[0];return `建設スポット${n}（${n<6?"L1":"L2"}${[0,1,2,3].includes(n)?"専用":"共有"}）`}
+  if(/^lane\d-\d$/.test(id)){return `スポット前の通路${id[4]}`}
+  const k=id.replace(/\d+$/,"");return base[k]||id;
+}
+const teamOf=id=>+id.slice(-1);
+
+/* ---------- 1: area map ---------- */
+const AREAS=[
+ ["保管エリア","各チームのアース20個の初期位置（1列2段まで）。TRだけが取得できます。",[[-5.5,-5.5,2,1],[3.5,-5.5,2,1]]],
+ ["スタート／リトライゾーン","700mm四方が2つ。どちらをTR・BRにするかは自由（モデルでは開始配置の選択肢）。リトライ時はここへ戻ります。",[[-5.5,4.8,.7,.7],[-4.6,4.8,.7,.7],[3.9,4.8,.7,.7],[4.8,4.8,.7,.7]]],
+ ["グラウンド共有エリア","スカイ12個を5×5の市松に配置。両チームのTRが進入して取得します（モデル上は残数の共有在庫）。",[[-.6,4,1.2,1.2]]],
+ ["ムスティカ柱","ムスティカの初期位置（高さ500mm）。マンデート達成後にTRが取得します。周囲1m四方は共有エリア。",[[-.5,-4.4,1,1]]],
+ ["受け渡しエリア","L1の境界にある1m四方。TRとBRが会える唯一の場所。床に置く（TRが置いた時点で5点）か、直接渡すか。",[[-4,.8,1,1],[3,.8,1,1]]],
+ ["スロープ","グラウンドとL1を結ぶ3.5mの坂。モデルでは北通路↔受け渡しエリアの通路（5.6m）。",[[-4,-2.7,1,3.5],[3,-2.7,1,3.5]]],
+ ["L1階段","受け渡しエリア南側の階段。モデルでは南通路↔受け渡しエリア（3.05m）。",[[-4,1.8,1,.9],[3,1.8,1,.9]]],
+ ["レベル1（L1）","高さ600mm、6m四方。BRの活動場所。自陣専用の建設スポットが2つずつ。",[[-3,-3,1.5,6],[1.5,-3,1.5,6],[-1.5,-3,3,1.5],[-1.5,1.5,3,1.5]]],
+ ["L1共有の建設スポット","赤青の境界上のスポット（L1、得点は1倍）。マンデートの「共有エリアの完成タワー」に数えられます。",[[-.25,-3,.5,.5],[-.25,2.5,.5,.5]]],
+ ["L1専用の建設スポット","自チームだけが建てられるL1のスポット（四隅）。",[[-3,-3,.5,.5],[-3,2.5,.5,.5],[2.5,-3,.5,.5],[2.5,2.5,.5,.5]]],
+ ["レベル2（L2）共有エリア","高さ900mm、3m四方。全体が共有で、4つの建設スポットは得点2倍。L1から階段で上がります。",[[-1.5,-1.5,3,3]]],
+ ["中央柱","L2中央の高さ800mmの柱。マンデートを満たしたチームのBRがムスティカを奉納すると250点。",[[-.2,-.2,.4,.4]]],
+ ["L1リトライゾーン","BRが一度L1に完全に入っていれば、リトライ時にここへ戻れます（モデルでは受け渡しエリアへの復帰で近似）。",[[-2.15,-3,.7,.65],[1.45,-3,.7,.65]]],
+];
+(function(){
+  const s=$("areaMap");el("image",{href:FIELD,x:-5.5,y:-5.5,width:11,height:11},s);
+  const info=$("areaInfo");let cur=null;
+  AREAS.forEach(([n,d,rs])=>{const g=el("g",{tabindex:0,role:"button","aria-label":n},s);
+    rs.forEach(r=>el("rect",{class:"hit",x:r[0],y:r[1],width:r[2],height:r[3]},g));
+    const show=()=>{if(cur)cur.forEach(x=>x.classList.remove("on"));cur=[...g.children];cur.forEach(x=>x.classList.add("on"));info.innerHTML=`<b>${n}</b><br>${d}`};
+    g.addEventListener("mouseenter",show);g.addEventListener("click",show);g.addEventListener("focus",show);});
+  [["赤",-2.75,4.3],["青",2.75,4.3]].forEach(([t,x,y])=>el("text",{x,y,"font-size":.42,"text-anchor":"middle","font-weight":700,fill:t==="赤"?"#8a1d22":"#1e3f87","pointer-events":"none"},s,t+"チーム側"));
+})();
+
+/* ---------- 2: score simulator ---------- */
+const SP=G.spots; // [x,y,z,level,owner]
+let towers,ever,selSpot=6;
+function resetScore(){towers=Array.from({length:10},()=>[]);ever=[[],[]];
+  towers[0]=[{k:"E",o:0},{k:"E",o:0},{k:"S",f:0}];towers[4]=[{k:"E",o:0},{k:"E",o:1},{k:"S",f:0}];towers[6]=[{k:"E",o:1},{k:"E",o:1}];
+  $("trR").value=3;$("trB").value=2;$("mus").value=-1;drawScore()}
+function qualify(){for(let t=0;t<2;t++){towers.forEach((ts,i)=>{if(ts.length===3&&ts[2].f===t&&!ever[t].includes(i))ever[t].push(i)})}}
+function mandate(t){const owned=towers.map((ts,i)=>i).filter(i=>towers[i].length===3&&towers[i][2].f===t);return owned.length>=2&&owned.some(i=>SP[i][4]===-1)}
+function scoreCalc(){const tr=[+$("trR").value||0,+$("trB").value||0];const pts=tr.map(n=>5*n);const caps=[0,0],cnt=[[0,0],[0,0]];
+  towers.forEach((ts,i)=>ts.forEach((o,l)=>{const lv=SP[i][3];if(o.k==="E"){pts[o.o]+=[10,20][l]*lv;cnt[o.o][lv-1]++}else{pts[o.f]+=40*lv;caps[o.f]++;cnt[o.f][lv-1]++}}));
+  const m=+$("mus").value;if(m>=0)pts[m]+=250;
+  const rk=[0,1].map(t=>[pts[t],+(m===t),caps[t],cnt[t][1],cnt[t][0]]);return{pts,rk}}
+function drawScore(){qualify();const s=$("scoreMap");s.innerHTML="";
+  el("image",{href:FIELD,x:-5.5,y:-5.5,width:11,height:11},s);
+  SP.forEach((sp,i)=>{const [x,,z,lv,own]=sp,g=el("g",{tabindex:0,role:"button","aria-label":"スポット"+i,style:"cursor:pointer"},s);
+    el("rect",{x:x-.38,y:z-.38,width:.76,height:.76,fill:i===selSpot?"rgba(0,165,150,.35)":"rgba(255,255,255,.01)",stroke:i===selSpot?"#00a596":"none","stroke-width":.06},g);
+    const ts=towers[i];ts.forEach((o,l)=>{const c=o.k==="E"?(o.o?"#3200ff":"#df2222"):(o.f?"#3200ff":"#df2222");
+      const w=o.k==="E"?.42:.28;el("rect",{x:x-w/2,y:z+.18-l*.2-(o.k==="E"?.18:.14),width:w,height:o.k==="E"?.18:.14,fill:c,stroke:"#fff","stroke-width":.025},g)});
+    el("text",{x:x,y:z-.26,"font-size":.2,"text-anchor":"middle",fill:"#fff","font-weight":700,style:"paint-order:stroke;stroke:#000;stroke-width:.04"},g,i);
+    g.addEventListener("click",()=>{selSpot=i;drawScore()});g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){selSpot=i;drawScore();e.preventDefault()}});});
+  const ts=towers[selSpot],sp=SP[selSpot];
+  $("spotInfo").innerHTML=`<b>スポット${selSpot}</b>　${sp[3]===2?"L2（得点2倍）":"L1"}・${sp[4]===-1?"共有":(sp[4]?"青専用":"赤専用")}　段数 ${ts.length}/3`+(ts.length===3?`　<span class="pill ${ts[2].f?"blue":"red"}">${ts[2].f?"青":"赤"}の完成タワー</span>`:"");
+  const ops=$("spotOps");ops.innerHTML="";
+  [0,1].forEach(t=>{const can=sp[4]===-1||sp[4]===t,cls=t?"b":"r",tn=t?"青":"赤";
+    const add=(lab,ok,fn)=>{const b=document.createElement("button");b.className=cls;b.textContent=tn+"："+lab;b.disabled=!ok;b.onclick=()=>{fn();drawScore()};ops.appendChild(b)};
+    add("アース設置",can&&ts.length<2,()=>ts.push({k:"E",o:t}));
+    add("スカイ設置",can&&ts.length===2,()=>ts.push({k:"S",f:t}));
+    add("裏返す",can&&ts.length===3&&ts[2].f!==t,()=>ts[2].f=t);
+    add("持ち直す",can&&ts.length>0&&ts.length<3&&ts.at(-1).o===t,()=>ts.pop());});
+  const {pts,rk}=scoreCalc();$("sR").textContent=pts[0];$("sB").textContent=pts[1];
+  [0,1].forEach(t=>{const now=mandate(t),hist=ever[t].length>=2&&ever[t].some(i=>SP[i][4]===-1);
+    $(t?"mB":"mR").innerHTML=`マンデート：${now?'<span class="badge-ok">成立中</span>':(hist?'<span class="muted">履歴では成立</span>':'<span class="muted">未成立</span>')}`});
+  const m=+$("mus").value;let w="";
+  if(m>=0&&!(mandate(m)||ever[m].length>=2&&ever[m].some(i=>SP[i][4]===-1)))w=`<span class="badge-ng">${m?"青":"赤"}はマンデート未達成のため、モデルではムスティカを奉納できません。</span> `;
+  const names=["合計得点","ムスティカ","自色スカイ数","L2ブロック数","L1ブロック数"];let res="審判未決（全指標が同じ）";
+  for(let i=0;i<5;i++)if(rk[0][i]!==rk[1][i]){res=`${rk[0][i]>rk[1][i]?"赤":"青"}の勝ち（${names[i]}で決定：${rk[0][i]} 対 ${rk[1][i]}）`;break}
+  $("winner").innerHTML=w+"判定："+res;}
+["trR","trB","mus"].forEach(id=>$(id).addEventListener("input",drawScore));
+$("scoreReset").onclick=resetScore;resetScore();
+
+/* ---------- 3: graph & routes ---------- */
+const N=G.nodes,E=G.edges;const ABC={walk:"#3b4a4d",ramp:"#c06a1a",stairs1:"#7a3fb0",stairs2:"#1f7f4f"};
+function caps(){return{ramp:$("cRamp").checked,stairs1:$("cSt1").checked,stairs2:$("cSt2").checked}}
+function routesFrom(pos,team,role,cp,brRamp){const out=[];E.forEach((e,i)=>{const [a,b,ab,roles]=e;if(!roles.includes(role)||(pos!==a&&pos!==b))return;const dest=pos===a?b:a,n=N[dest];
+  if(n[3]!==team||!n[4].includes(role)||(ab!=="walk"&&!cp[ab]))return;
+  if(role==="B"&&((ab==="ramp"&&!brRamp)||([`south${team}`,`north${team}`].includes(pos)&&[`south${team}`,`north${team}`].includes(dest)&&!(brRamp&&cp.ramp))||(n[1]===0&&N[pos][1]>0)))return;
+  out.push([i,dest])});return out}
+function dur(i,sp){return Math.max(1,Math.ceil(E[i][4]/sp))}
+function dijkstra(from,to,r,sp){const team=r>>1,role=r%2?"B":"T",cp=caps(),br=$("cBrRamp").checked;
+  const dist={[from]:0},prev={},done=new Set();
+  while(true){let u=null;for(const k in dist)if(!done.has(k)&&(u===null||dist[k]<dist[u]))u=k;if(u===null)break;if(u===to)break;done.add(u);
+    for(const [ei,v] of routesFrom(u,team,role,cp,br)){const d=dist[u]+dur(ei,sp);if(dist[v]===undefined||d<dist[v]){dist[v]=d;prev[v]=[u,ei]}}}
+  if(dist[to]===undefined)return null;const path=[];let c=to;while(c!==from){path.unshift(prev[c]);c=prev[c][0]}return{t:dist[to],path}}
+function fillSelects(){const r=+$("rRobot").value,team=r>>1,role=r%2?"B":"T";const ids=Object.keys(N).filter(k=>N[k][3]===team&&N[k][4].includes(role));
+  const pf=$("rFrom").value,pt=$("rTo").value;
+  for(const [sel,def] of [[$("rFrom"),`start${role==="T"?"A":"B"}${team}`],[$("rTo"),role==="T"?`transfer${team}`:`spot8-${team}`]]){sel.innerHTML="";ids.forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=nodeName(k);sel.appendChild(o)});sel.value=def}
+  if(ids.includes(pf)&&teamOf(pf)===team&&fillSelects.keep){$("rFrom").value=pf;if(ids.includes(pt))$("rTo").value=pt}}
+function drawGraph(){const s=$("graphMap");s.innerHTML="";el("image",{href:FIELD,x:-5.5,y:-5.5,width:11,height:11,opacity:.55},s);
+  const r=+$("rRobot").value,team=r>>1,role=r%2?"B":"T",sp=[.8,.5,.3][+$("rSpeed").value];
+  const res=dijkstra($("rFrom").value,$("rTo").value,r,sp);const on=new Set(res?res.path.map(p=>p[1]):[]);
+  E.forEach((e,i)=>{const a=N[e[0]],b=N[e[1]];const usable=e[3].includes(role)&&N[e[0]][3]===team;
+    el("line",{x1:a[0],y1:a[2],x2:b[0],y2:b[2],stroke:on.has(i)?"#00a596":ABC[e[2]],"stroke-width":on.has(i)?.13:.055,opacity:usable||on.has(i)?1:.25,"stroke-linecap":"round"},s)});
+  Object.entries(N).forEach(([k,n])=>{const usable=n[3]===team&&n[4].includes(role);if(n[3]!==team&&k.startsWith("spot")&&+k.slice(4,5)>=6)return;
+    const sel=k===$("rTo").value||k===$("rFrom").value;
+    const c=el("circle",{cx:n[0],cy:n[2],r:sel?.2:.13,fill:usable?(n[4]==="TB"?"#ffffff":n[4]==="T"?"#ffe9a8":"#bfeee8"):"#ccc",stroke:sel?"#00a596":"#203034","stroke-width":sel?.07:.035,opacity:usable?1:.4,style:usable?"cursor:pointer":""},s);
+    el("title",{},c,nodeName(k)+(usable?"":"（この機体は不可）"));
+    if(usable)c.addEventListener("click",()=>{$("rTo").value=k;update()});});
+  const info=$("routeInfo");
+  if(!res){info.innerHTML=`<b>到達できません</b><br>この能力・規則設定では ${nodeName($("rFrom").value)} から ${nodeName($("rTo").value)} への通路がありません。`;return}
+  let rows=res.path.map(([u,ei])=>{const e=E[ei],v=e[0]===u?e[1]:e[0];return `<tr><td>${nodeName(u)} → ${nodeName(v)}</td><td>${{walk:"平地",ramp:"スロープ",stairs1:"L1階段",stairs2:"L2階段"}[e[2]]}</td><td class="n">${e[4].toFixed(2)} m</td><td class="n">${dur(ei,sp)} s</td></tr>`}).join("");
+  info.innerHTML=`<b>最短 ${res.t} 秒</b>（通路${res.path.length}本）<div class="scroll" style="margin-top:6px"><table><tr><th>区間</th><th>種別</th><th class="n">距離</th><th class="n">秒</th></tr>${rows||'<tr><td colspan="4">出発地と同じです</td></tr>'}</table></div>`;}
+function update(){drawGraph()}
+$("rRobot").onchange=()=>{fillSelects();update()};["rSpeed","rFrom","rTo","cRamp","cSt1","cSt2","cBrRamp"].forEach(id=>$(id).onchange=update);
+fillSelects();fillSelects.keep=true;update();
+
+/* ---------- 4: stepper ---------- */
+const H=180,SPD=.5,RN=["赤TR","赤BR","青TR","青BR"];
+function edgeBetween(a,b){return E.findIndex(e=>(e[0]===a&&e[1]===b)||(e[0]===b&&e[1]===a))}
+function mv(to){return{k:"move",to}}
+const PLANS=()=>[
+ [mv("south0"),mv("north0"),mv("store0"),{k:"pick",n:2+1,src:"store"},mv("north0"),mv("transfer0"),{k:"drop"},{k:"drop"},{k:"drop"}],
+ [mv("south0"),mv("transfer0"),{k:"waitUntil",c:S=>S.buf[0]>=2,why:"床のアースが2個そろうまで"},{k:"pick",n:2,src:"buffer"},mv("lane0"),mv("middle0"),mv("lane1-0"),mv("spot1-0"),{k:"place",spot:1},{k:"place",spot:1}],
+ [mv("south1"),mv("north1"),mv("store1"),{k:"pick",n:2,src:"store"},mv("north1"),mv("transfer1"),{k:"give"},{k:"give"}],
+ [mv("south1"),mv("transfer1"),{k:"waitUntil",c:S=>S.r[2].pos==="transfer1",why:"青TRが受け渡しエリアで空くまで"},{k:"receive"},{k:"receive"},mv("lane1"),mv("middle1"),mv("lane1-1"),mv("spot5-1"),{k:"place",spot:5},{k:"place",spot:5}],
+];
+let S;
+function simReset(){S={t:0,r:[{pos:"startA0"},{pos:"startB0"},{pos:"startA1"},{pos:"startB1"}].map((x,i)=>({...x,plan:PLANS()[i],i:0,job:null,held:0})),buf:[0,0],tr:[0,0],tw:{1:[],5:[]},hist:[],log:[],end:false};
+  S.log.push(`<span class="t">t=0</span> 試合開始。4台ともスタートゾーン。`);drawSim()}
+function label(a){return a.k==="move"?`移動 → ${nodeName(a.to)}`:a.k==="pick"?`取得 アース×${a.n}${a.src==="buffer"?"（床から）":""}`:a.k==="drop"?"床へ置く アース×1":a.k==="give"?"直接渡す アース×1":a.k==="receive"?"受け取る アース×1":a.k==="place"?`設置 アース（スポット${a.spot}）`:a.k==="wait"?"イベント待機":""}
+function simStep(){if(S.end)return;const dec=[];
+  S.r.forEach((rb,ri)=>{if(rb.job)return;let a;
+    while(true){a=rb.plan[rb.i];if(!a){a={k:"wait",why:"手順終了"};break}
+      if(a.k==="waitUntil"){if(a.c(S)){rb.i++;continue}a={k:"wait",why:a.why};break}rb.i++;break}
+    let d;if(a.k==="move"){const ei=edgeBetween(rb.pos,a.to);d=dur(ei,SPD)}else if(a.k==="wait")d=H-S.t;else if(a.k==="place")d=4;else d=2;
+    if(a.k==="pick"){rb.held+=a.n;if(a.src==="buffer")S.buf[ri>>1]-=a.n}
+    rb.job={ri,a,start:S.t,end:S.t+d};S.hist.push(rb.job);
+    dec.push(`${RN[ri]}：${a.k==="wait"?`イベント待機（${a.why}）`:label(a)+`　${d}秒`}`)});
+  const next=Math.min(H,...S.r.map(rb=>rb.job.end));const fin=[];
+  S.r.forEach((rb,ri)=>{if(rb.job.end!==next)return;const a=rb.job.a;
+    if(a.k==="move")rb.pos=a.to;else if(a.k==="drop"){rb.held--;S.buf[ri>>1]++;S.tr[ri>>1]++}
+    else if(a.k==="give"){rb.held--;S.r[ri+1].held++;S.tr[ri>>1]++}else if(a.k==="place"){rb.held--;S.tw[a.spot].push(ri>>1)}
+    if(a.k!=="wait"){fin.push(`${RN[ri]} ${label(a)}`);rb.job=null}});
+  const released=[];
+  if(fin.length)S.r.forEach((rb,ri)=>{if(rb.job&&rb.job.a.k==="wait"){rb.job.end=next;rb.job=null;released.push(RN[ri])}});
+  S.log.push(`<span class="t">t=${S.t}</span> 判断：${dec.join(" ／ ")||"なし（全機体が動作中）"}`);
+  S.log.push(`　→ <span class="t">t=${next}</span> まで進める。完了：${fin.join("、")||"なし"}${released.length?`。待機解除 → 再判断：${released.join("、")}`:""}`);
+  S.t=next;
+  if(S.r.every(rb=>rb.i>=rb.plan.length&&(!rb.job||rb.job.a.k==="wait"))||S.t>=H){S.end=true;S.log.push(`手順の終わり（t=${S.t}）。以降は全機体が試合終了まで待機。`)}
+  drawSim()}
+function drawSim(){const s=$("lanes");s.innerHTML="";const X0=70,W=810,T=66,x=t=>X0+W*Math.min(t,T)/T;
+  for(let t=0;t<=T;t+=6){el("line",{x1:x(t),y1:12,x2:x(t),y2:176,stroke:css("--line")},s);el("text",{x:x(t),y:188,"font-size":10,"text-anchor":"middle",fill:css("--muted")},s,t+"s")}
+  RN.forEach((n,i)=>el("text",{x:4,y:34+i*40,class:"lbl",fill:i<2?css("--red"):css("--blue")},s,n));
+  const col=a=>a.k==="move"?css("--accent"):a.k==="place"?"#1f7f4f":a.k==="wait"?css("--ctl"):"#c06a1a";
+  S.hist.forEach(h=>{const y=18+h.ri*40,running=h.end>S.t,e=running?Math.max(S.t,h.start+.4):h.end;
+    const r=el("rect",{x:x(h.start),y:y+(h.a.k==="wait"?8:0),width:Math.max(1.5,x(running&&h.a.k!=="wait"?h.end:e)-x(h.start)-1),height:h.a.k==="wait"?8:24,fill:col(h.a),opacity:running?.45:1,rx:2},s);
+    el("title",{},r,`${RN[h.ri]} ${h.a.k==="wait"?"イベント待機":label(h.a)} ${h.start}–${h.end}s`);
+    if(h.a.k!=="wait"&&x(h.end)-x(h.start)>26)el("text",{x:x(h.start)+3,y:y+16,"font-size":9.5,fill:"#fff","pointer-events":"none"},s,h.a.k==="move"?"移動":h.a.k==="pick"?"取得":h.a.k==="place"?"設置":h.a.k==="drop"?"置く":h.a.k==="give"?"渡す":"受取")});
+  el("line",{x1:x(S.t),y1:8,x2:x(S.t),y2:178,stroke:css("--ink"),"stroke-width":2},s);
+  $("simT").textContent=`現在 t=${S.t} 秒`;$("simLog").innerHTML=S.log.join("<br>");$("simLog").scrollTop=1e6;
+  $("simStep").disabled=$("simAll").disabled=S.end;
+  const pos=S.r.map((rb,i)=>`<span style="color:var(${i<2?"--red":"--blue"})">${RN[i]}</span> ${nodeName(rb.pos)}${rb.held?`（保持${rb.held}）`:""}`).join("<br>");
+  const pts=[0,1].map(t=>S.tr[t]*5+(S.tw[t?5:1].length?[10,20].slice(0,S.tw[t?5:1].length).reduce((a,b)=>a+b,0):0));
+  $("simState").innerHTML=`<dt>時刻</dt><dd class="mono">${S.t} s</dd><dt>位置</dt><dd>${pos}</dd><dt>受け渡し床</dt><dd>赤 ${S.buf[0]}個 ／ 青 ${S.buf[1]}個</dd><dt>受け渡し得点</dt><dd class="mono">赤 ${S.tr[0]*5} ／ 青 ${S.tr[1]*5}</dd><dt>タワー</dt><dd>スポット1：${S.tw[1].length}段 ／ スポット5：${S.tw[5].length}段</dd><dt>得点</dt><dd class="mono"><span style="color:var(--red)">${pts[0]}</span> 対 <span style="color:var(--blue)">${pts[1]}</span></dd>`;}
+$("simStep").onclick=simStep;$("simAll").onclick=()=>{let k=0;while(!S.end&&k++<60)simStep()};$("simReset").onclick=simReset;simReset();
+
+/* conflict */
+let CF="branch";
+function drawConflict(){const s=$("conflict");s.innerHTML="";const ink=css("--ink"),mut=css("--muted"),ln=css("--line"),sf=css("--surface");
+  const box=(x,y,w,h,t1,t2,c)=>{el("rect",{x,y,width:w,height:h,fill:sf,stroke:c||ln,"stroke-width":1.5,rx:4},s);el("text",{x:x+10,y:y+20,"font-size":12,"font-weight":700,fill:ink},s,t1);if(t2)el("text",{x:x+10,y:y+38,"font-size":11,fill:mut},s,t2)};
+  box(10,55,180,56,"局面 t","スカイ残り1・両TRがスカイ置場");
+  el("text",{x:200,y:76,"font-size":11,fill:mut},s,"赤TR 取得 × 青TR 取得");
+  const outs=[];if(CF!=="blue")outs.push(["赤が先に割当","赤TRがスカイ保持／青TRは阻止→1秒待機",css("--red")]);if(CF!=="red")outs.push(["青が先に割当","青TRがスカイ保持／赤TRは阻止→1秒待機",css("--blue")]);
+  outs.forEach((o,i)=>{const y=outs.length===1?55:10+i*90;el("path",{d:`M190 83 C 260 83, 280 ${y+28}, 350 ${y+28}`,fill:"none",stroke:o[2],"stroke-width":2},s);box(350,y,280,56,o[0],o[1],o[2])});}
+document.querySelectorAll("[data-cf]").forEach(b=>b.onclick=()=>{CF=b.dataset.cf;document.querySelectorAll("[data-cf]").forEach(x=>x.setAttribute("aria-pressed",x===b));drawConflict()});
+
+/* ---------- 5: cursor ---------- */
+const OPTS=[
+ ["赤TR（受け渡し・アース2保持）",[["give","渡す アース"],["drop","床へ置く アース"],["wait","イベント待機"],["go","目的地：保管エリア"]]],
+ ["赤BR（受け渡し・空）",[["receive","受け取る アース"],["wait","イベント待機"],["go","目的地：スポット1"],["go","目的地：スポット5"]]],
+ ["青TR（移動中）",[["cont","継続"]]],
+ ["青BR（受け渡し・空）",[["pick","床から取得 アース×1"],["wait","イベント待機"],["go","目的地：L2スポット8"]]],
+];
+const TOT=OPTS.reduce((n,o)=>n*o[1].length,1);
+function decode(c){const out=[];for(let i=OPTS.length-1;i>=0;i--){const L=OPTS[i][1].length;out[i]=c%L;c=Math.floor(c/L)}return out}
+function okCombo(ix){const a=OPTS[0][1][ix[0]][0],b=OPTS[1][1][ix[1]][0];return !((a==="give")!==(b==="receive"))}
+const VALID=Array.from({length:TOT},(_,c)=>okCombo(decode(c))).filter(Boolean).length;
+$("cursor").max=TOT-1;
+function drawCursor(){const c=+$("cursor").value,ix=decode(c);const box=$("cursorLists");box.innerHTML="";
+  OPTS.forEach(([h,os],i)=>{const d=document.createElement("div");d.className="opt";d.innerHTML=`<div class="h">${h}</div>`+os.map((o,j)=>`<div class="o${j===ix[i]?" sel":""}">${o[1]}</div>`).join("");box.appendChild(d)});
+  $("cursorNo").textContent=`カーソル ${c} / ${TOT-1}　→ (${ix.join(", ")})`;
+  $("cursorOk").innerHTML=okCombo(ix)?'<span class="badge-ok">合法な組 → 遷移を計算</span>':'<span class="badge-ng">渡す／受け取るが片方だけ → 除外（matched）</span>';
+  $("cursorSum").textContent=`全${TOT}組のうち合法 ${VALID}組`;}
+$("cursor").oninput=drawCursor;drawCursor();
+
+/* tree demo */
+function rng(seed){return()=>{seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff}}
+let TR;
+function trReset(){const R=rng(7),D=5;let id=0;const all=[];
+  function mk(depth,parent,score){const n={id:id++,depth,parent,score,kids:[],total:depth<D?(1+Math.floor(R()*3)):0,cursor:0,done:depth>=D,shown:false,by:null};all.push(n);return n}
+  const root=mk(0,null,0);root.shown=true;
+  TR={all,root,D,ticks:0,active:root.id,order:[root],cands:0,R};drawTree()}
+function child(n){const c={id:TR.all.length,depth:n.depth+1,parent:n.id,score:n.score+Math.round((TR.R()-.45)*40),kids:[],total:n.depth+1<TR.D?(1+Math.floor(TR.R()*3)):0,cursor:0,shown:true,by:null};c.done=c.depth>=TR.D;TR.all.push(c);n.kids.push(c);return c}
+function trStep(){const even=TR.ticks%2===0;const vis=TR.order;
+  let row=even&&TR.active!=null?vis.find(n=>n.id===TR.active):undefined;if(row&&row.done)row=undefined;
+  if(!row&&even)row=vis.filter(n=>!n.done&&n.cursor===0).sort((a,b)=>b.score-a.score||a.id-b.id)[0];
+  row=row||vis.find(n=>!n.done);
+  if(!row){$("trStat").textContent="すべての分岐を展開しました";return false}
+  const c=child(row);c.by=even?"even":"odd";row.cursor++;if(row.cursor>=row.total)row.done=true;TR.order.push(c);
+  if(c.done)TR.cands++;
+  if(even||TR.active==null)TR.active=c.done?null:c.id;
+  TR.ticks++;drawTree();return true}
+function drawTree(){const s=$("tree");s.innerHTML="";const vis=TR.order;
+  // layout: leaves order by DFS among shown nodes
+  const pos={};let leaf=0;const W=900,Hh=300;
+  (function lay(n){const ks=n.kids;const pend=n.total-n.cursor;if(!ks.length&&!pend){pos[n.id]=[leaf++,n.depth];return}
+    ks.forEach(lay);const xs=ks.map(k=>pos[k.id][0]);for(let p=0;p<pend;p++)xs.push(leaf++);pos[n.id]=[(Math.min(...xs)+Math.max(...xs))/2,n.depth];n._pend=xs.slice(ks.length)})(TR.root);
+  const sx=i=>30+(W-60)*(leaf>1?i/(leaf-1):.5),sy=d=>24+d*(Hh-50)/TR.D;
+  vis.forEach(n=>{if(n.parent==null)return;const p=TR.all[n.parent];el("line",{x1:sx(pos[p.id][0]),y1:sy(p.depth),x2:sx(pos[n.id][0]),y2:sy(n.depth),stroke:n.by==="even"?css("--accent"):"#c06a1a","stroke-width":1.8},s)});
+  vis.forEach(n=>{(n._pend||[]).forEach(px=>{el("line",{x1:sx(pos[n.id][0]),y1:sy(n.depth),x2:sx(px),y2:sy(n.depth+1),stroke:css("--line"),"stroke-width":1.2,"stroke-dasharray":"3 3"},s);el("circle",{cx:sx(px),cy:sy(n.depth+1),r:3.5,fill:"none",stroke:css("--ctl")},s)})});
+  vis.forEach(n=>{const leafN=n.depth>=TR.D;const c=el("circle",{cx:sx(pos[n.id][0]),cy:sy(n.depth),r:leafN?7:6,fill:leafN?"#1f7f4f":n.id===TR.active?css("--accent"):css("--surface"),stroke:n.done&&!leafN?css("--muted"):css("--accent"),"stroke-width":2},s);el("title",{},c,`局面${n.id} 点差${n.score>=0?"+":""}${n.score}${n.total?` 組合せ ${n.cursor}/${n.total}`:""}`)});
+  el("text",{x:8,y:sy(0)+4,"font-size":10,fill:css("--muted")},s,"開始");el("text",{x:8,y:sy(TR.D)+4,"font-size":10,fill:css("--muted")},s,"終了");
+  const front=vis.filter(n=>!n.done).length;
+  $("trStat").textContent=`手数 ${TR.ticks}・候補 ${TR.cands}・未完了局面 ${front}`;}
+$("trStep").onclick=trStep;$("trRun").onclick=()=>{for(let i=0;i<20&&trStep();i++);};$("trReset").onclick=trReset;trReset();
+
+/* ---------- 6: pipeline ---------- */
+function drawPipe(){const s=$("pipe");s.innerHTML="";const ink=css("--ink"),mut=css("--muted"),sf=css("--surface"),ac=css("--accent"),rd=css("--red"),bl=css("--blue"),ln=css("--line");
+  el("defs",{},s).innerHTML=`<marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="${mut}"/></marker>`;
+  const box=(x,y,w,h,t,sub,c)=>{el("rect",{x,y,width:w,height:h,rx:4,fill:sf,stroke:c,"stroke-width":1.6},s);el("text",{x:x+w/2,y:y+22,"text-anchor":"middle","font-size":13,"font-weight":700,fill:ink},s,t);sub.forEach((l,i)=>el("text",{x:x+w/2,y:y+40+i*16,"text-anchor":"middle","font-size":11,fill:mut},s,l))};
+  const arrow=(x1,y1,x2,y2,lab,dash)=>{el("path",{d:`M${x1} ${y1} L${x2} ${y2}`,stroke:mut,"stroke-width":1.4,fill:"none","marker-end":"url(#ar)","stroke-dasharray":dash?"4 3":""},s);if(lab)el("text",{x:(x1+x2)/2,y:(y1+y2)/2-6,"text-anchor":"middle","font-size":10.5,fill:mut},s,lab)};
+  box(10,20,170,74,"baseline",["赤2台を探索","青は待機"],rd);
+  box(250,20,150,74,"候補 P-…",["赤のロボット別手順"],rd);
+  box(470,20,190,74,"counter",["赤の手順を固定して再実行","青を探索（青−赤を優先）"],bl);
+  box(730,20,160,74,"相手手順 O-…",["同じ構成の全候補で共有"],bl);
+  box(370,150,250,80,"compare",["候補 × 相手手順を両方固定","全裁定分岐を計算し終えたら"],ac);
+  box(690,150,200,80,"共通比較済み",["同じ相手手順での","確認済み点差を表示"],ac);
+  arrow(180,57,248,57,"終了局面に到達");arrow(400,57,468,57,"");arrow(660,57,728,57,"終了局面に到達");
+  arrow(325,94,440,148,"新しい候補",true);arrow(810,94,560,148,"新しい相手手順",true);arrow(620,190,688,190,"");
+  el("text",{x:10,y:130,"font-size":11,fill:mut},s,"各 run の中で baseline → counter → compare を1手ずつ巡回");
+  el("text",{x:10,y:146,"font-size":11,fill:mut},s,"run（構成）間も時間を巡回配分");}
+
+/* ---------- 7: matrix game ---------- */
+const OUT={W:"赤勝",D:"審判未決",L:"青勝",B:"裁定で分岐"};
+let MAT;
+function ex1(){MAT=[[["W",60],["L",-30],["W",20]],[["L",-40],["W",50],["B",10]]]}
+function ex2(){MAT=[[["W",80],["W",40],["W",10]],[["L",-20],["W",30],["D",0]]]}
+ex1();
+function drawMat(){const t=$("mat");let h=`<tr><th>赤＼青</th>${MAT[0].map((_,j)=>`<th>青の行動${"ABC"[j]}</th>`).join("")}</tr>`;
+  MAT.forEach((row,i)=>{h+=`<tr><th>赤の行動${i+1}</th>`+row.map((c,j)=>`<td><select data-i="${i}" data-j="${j}" aria-label="結果">${Object.entries(OUT).map(([k,v])=>`<option value="${k}"${k===c[0]?" selected":""}>${v}</option>`).join("")}</select><br><input type="number" data-m="${i},${j}" value="${c[1]}" aria-label="点差"> 点差</td>`).join("")+"</tr>"});
+  t.innerHTML=h;t.querySelectorAll("select").forEach(s=>s.onchange=()=>{MAT[s.dataset.i][s.dataset.j][0]=s.value;solve()});
+  t.querySelectorAll("input").forEach(s=>s.oninput=()=>{const [i,j]=s.dataset.m.split(",");MAT[i][j][1]=+s.value||0;solve()});solve()}
+const winV=c=>c[0]==="W"?1:0, notLose=c=>c[0]==="L"||c[0]==="B"?0:1;
+function lines(f){return MAT[0].map((_,j)=>[f(MAT[0][j]),f(MAT[1][j])])} // value(p)=p*a+(1-p)*b
+const at=(l,p)=>p*l[0]+(1-p)*l[1];
+function cands(ls){const ps=[0,1];for(let i=0;i<ls.length;i++)for(let k=i+1;k<ls.length;k++){const [a,b]=ls[i],[c,d]=ls[k],den=(a-b)-(c-d);if(Math.abs(den)>1e-12){const p=(d-b)/den;if(p>0&&p<1)ps.push(p)}}return ps}
+function maximin(ls,feasible){let best=-Infinity,bp=0;for(const p of cands(ls)){if(feasible&&!feasible(p))continue;const v=Math.min(...ls.map(l=>at(l,p)));if(v>best+1e-12||(Math.abs(v-best)<1e-12&&p>bp)){best=v;bp=p}}return[best,bp]}
+function solve(){const LW=lines(winV),LU=lines(notLose),LM=lines(c=>c[0]==="B"?-Math.abs(c[1]):c[1]);
+  const [vl,pl]=maximin(LW),[vu]=maximin(LU);
+  const feas=p=>Math.min(...LW.map(l=>at(l,p)))>=vl-1e-9;
+  const ps=new Set(cands(LM));cands(LW).forEach(p=>ps.add(p));LW.forEach(([a,b])=>{if(Math.abs(a-b)>1e-12){const p=(vl-b)/(a-b);if(p>0&&p<1)ps.add(p)}});
+  let vm=-Infinity,pm=pl;for(const p of ps){if(!feas(p))continue;const v=Math.min(...LM.map(l=>at(l,p)));if(v>vm+1e-12){vm=v;pm=p}}
+  $("vL").textContent=vl.toFixed(3);$("vU").textContent=vu.toFixed(3);$("vM").textContent=(vm>=0?"+":"")+vm.toFixed(1);
+  $("vP").textContent=`行動1 ${(pm*100).toFixed(0)}% ／ 行動2 ${((1-pm)*100).toFixed(0)}%`;
+  const s=$("lpChart");s.innerHTML="";const X=p=>40+p*360,Y=v=>200-v*170;const ink=css("--ink"),mut=css("--muted"),ln=css("--line");
+  [0,.5,1].forEach(v=>{el("line",{x1:40,x2:400,y1:Y(v),y2:Y(v),stroke:ln},s);el("text",{x:34,y:Y(v)+4,"font-size":10,"text-anchor":"end",fill:mut},s,v)});
+  [0,.5,1].forEach(p=>el("text",{x:X(p),y:220,"font-size":10,"text-anchor":"middle",fill:mut},s,p));
+  el("text",{x:220,y:236,"font-size":10.5,"text-anchor":"middle",fill:mut},s,"p＝赤の行動1を選ぶ確率");
+  const cols=["#c06a1a","#7a3fb0","#2f7fb5"];
+  LW.forEach((l,j)=>{const off=(j-1)*.012;el("line",{x1:X(0),y1:Y(at(l,0)+off),x2:X(1),y2:Y(at(l,1)+off),stroke:cols[j],"stroke-width":1.6,"stroke-dasharray":"5 3"},s);el("text",{x:X(1)+4,y:Y(at(l,1)+off)+4,"font-size":10,fill:cols[j]},s,"青"+"ABC"[j])});
+  let d="";for(let k=0;k<=100;k++){const p=k/100;d+=(k?"L":"M")+X(p)+" "+Y(Math.min(...LW.map(l=>at(l,p))))}
+  el("path",{d,fill:"none",stroke:css("--accent"),"stroke-width":3.2},s);
+  el("circle",{cx:X(pl),cy:Y(vl),r:5.5,fill:css("--accent"),stroke:css("--surface"),"stroke-width":2},s);
+  el("text",{x:X(pl),y:Y(vl)-11,"font-size":11,"font-weight":700,"text-anchor":"middle",fill:ink},s,"保証 "+vl.toFixed(2));}
+$("matEx1").onclick=()=>{ex1();drawMat()};$("matEx2").onclick=()=>{ex2();drawMat()};
+
+/* ---------- toc & theme redraw ---------- */
+const links=[...document.querySelectorAll("nav.toc a")];
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+e.target.id))}),{rootMargin:"-30% 0px -60% 0px"});
+document.querySelectorAll("main section").forEach(s=>io.observe(s));
+function redrawThemed(){drawSim();drawConflict();drawTree();drawPipe();drawMat()}
+redrawThemed();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",redrawThemed);
+new MutationObserver(redrawThemed).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+</script>
+</body></html>
