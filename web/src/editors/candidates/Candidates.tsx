@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { run as command } from "../../app/commands";
 import "./commands";
 import { responseIdentity, worstCommonResponse } from "./evidence";
+import { navigateRow } from "./rowSelection";
+import { milestoneCells } from "./milestones";
 import { profileNames } from "../common/labels";
 import type { CandidateEvidence, Goal, Search, Model, Variant } from "../../engine/types";
 
@@ -134,7 +136,7 @@ export function Candidates({
               </select>
             </label>
             <label>
-              候補を検索{" "}
+              <span>候補を検索</span>
               <input type="search" value={query} placeholder="手順・作戦ID" onChange={(e) => setQuery(e.target.value)} />
             </label>
             <span className="candidate-count">{visibleRows.length} / {rows.length}候補</span>
@@ -158,7 +160,7 @@ export function Candidates({
               {opponents.map((id) => <option value={id} key={id}>{id}</option>)}
             </select></label>
             {(query || run !== "all" || sort !== "discovery" || status !== "all" || opponent) && <button onClick={() => { setQuery(""); setRun("all"); setSort("discovery"); setStatus("all"); setOpponent(""); }}>表示を戻す</button>}
-            <button disabled={!visibleRows.length} onClick={() => command("candidate.exportVisible", {
+            <button className="action-button" disabled={!visibleRows.length} onClick={() => command("candidate.exportVisible", {
               version: 1, search: { id: search.id, name: search.name, config: search.config },
               scope: "発見済み候補。全対応への保証なし", filters: { run, query, sort, status, opponent },
               candidates: visibleRows.map(({ run, common, candidate, worst }) => ({ run, variant: report?.runs.find((r) => r.run === run)?.variant, commonOpponents: common, candidate, selectedWorst: worst })),
@@ -178,15 +180,14 @@ export function Candidates({
           <div className="candidate-workbench">
           <div
             className="candidate-table"
-            tabIndex={0}
             role="region"
             aria-label="作戦候補の比較表"
           >
-            <table>
+            <table role="grid" aria-label="作戦候補。上下キーで選択、Enterで3Dに表示">
               <thead>
                 <tr>
-                  <th>構成・作戦ID</th>
                   <th>完了した建設・反転の順序</th>
+                  <th>構成</th>
                   <th>
                     相手待機
                     <br />赤 対 青
@@ -200,16 +201,13 @@ export function Candidates({
                 {!visibleRows.length && <tr><td colSpan={5}>一致する候補がありません。検索語や構成を変更してください。</td></tr>}
                 {visibleRows.map(({ run: r, common, candidate: c, worst }) => {
                     return (
-                      <tr key={`${r}/${c.id}`} data-selected={active?.candidate.id === c.id && active.run === r}>
-                        <td>
-                          <button aria-pressed={active?.candidate.id === c.id && active.run === r} onClick={() => { setSelected(`${r}/${c.id}`); setResponseKey("worst"); }} title={c.baseline.strategy}>C{r} · {c.baseline.strategy.slice(0, 14)}</button>
-                        </td>
-                        <td>
-                          {c.plan.map(goalLabel).join(" → ") ||
-                            "建設・反転なし"}
-                          <br />
-                          <small title={c.id}>展開 {c.id.slice(0, 14)}</small>
-                        </td>
+                      <tr key={`${r}/${c.id}`} data-selectable-row aria-selected={active?.candidate.id === c.id && active.run === r} tabIndex={active?.candidate.id === c.id && active.run === r ? 0 : -1}
+                        onFocus={() => { if (active?.candidate.id !== c.id || active.run !== r) { setSelected(`${r}/${c.id}`); setResponseKey("worst"); } }}
+                        onClick={event => event.currentTarget.focus()}
+                        onKeyDown={event => navigateRow(event, () => { const evidence = worst ?? c.baseline; if (evidence.path.length) onOpen(r, evidence); })}
+                        onDoubleClick={() => { const evidence = worst ?? c.baseline; if (evidence.path.length) onOpen(r, evidence); }}>
+                        <td><span>{c.plan.map(goalLabel).join(" → ") || "建設・反転なし"}</span><small className="candidate-identity" title={`作戦 ${c.baseline.strategy} / 展開 ${c.id}`}>{c.baseline.strategy.slice(0, 14)} · 展開 {c.id.slice(0, 14)}</small></td>
+                        <td className="candidate-config-id">C{r}</td>
                         <td>{score(c.baseline)}</td>
                         <td>
                           {c.responses.length}展開確認
@@ -228,15 +226,15 @@ export function Candidates({
           </div>
           {active && chosen && <aside className="candidate-inspector" aria-label="選択候補の検査">
             <header><strong>C{active.run} · {active.candidate.id.slice(0, 14)}</strong></header>
-            <label>検査する展開<select value={chosen.key} onChange={event => setResponseKey(event.target.value)}>{evidenceOptions.map(option => <option key={option.key} value={option.key}>{option.label}</option>)}</select></label>
-            {chosen.key.startsWith("response-") && <span className="muted">{"shared" in chosen.evidence && chosen.evidence.shared ? "共有手順での検査" : "この候補への対抗手探索"}</span>}
+            <div className="candidate-evidence-list"><table role="grid" aria-label="検査した展開。上下キーで選択、Enterで3Dに表示"><thead><tr><th>相手の展開</th><th>赤 対 青</th></tr></thead><tbody>{evidenceOptions.map(option => <tr key={option.key} data-selectable-row aria-selected={chosen.key === option.key} tabIndex={chosen.key === option.key ? 0 : -1} onFocus={() => setResponseKey(option.key)} onClick={event => event.currentTarget.focus()} onKeyDown={event => navigateRow(event, () => { if (option.evidence.path.length) onOpen(active.run, option.evidence); })} onDoubleClick={() => { if (option.evidence.path.length) onOpen(active.run, option.evidence); }}><td>{option.label}{!!option.evidence.blocked?.length && <small>実行不可 {option.evidence.blocked.length}件</small>}</td><td>{score(option.evidence)}</td></tr>)}</tbody></table></div>
+            {chosen.key !== "worst" && chosen.key !== "baseline" && <span className="muted">{"shared" in chosen.evidence && chosen.evidence.shared ? "共有手順での検査" : "この候補への対抗手探索"}</span>}
             <div className="candidate-target-tools" role="group" aria-label="選択展開の操作">
-              <button disabled={!chosen.evidence.path.length} onClick={() => onOpen(active.run, chosen.evidence)}>この展開を3Dで開く</button>
-              {(["A", "B"] as const).map(side => <button key={side} disabled={!chosen.evidence.path.length} onClick={() => command(`candidate.compare${side}`, { path: chosen.evidence.path, node: chosen.evidence.node, label: `C${active.run} · ${active.candidate.id.slice(0, 8)} · ${chosen.label}` })}>比較{side}に設定</button>)}
+              <button className="primary" disabled={!chosen.evidence.path.length} onClick={() => onOpen(active.run, chosen.evidence)}>3Dに表示</button>
+              {(["A", "B"] as const).map(side => <button className="candidate-slot-action" key={side} disabled={!chosen.evidence.path.length} onClick={() => command(`candidate.compare${side}`, { path: chosen.evidence.path, node: chosen.evidence.node, label: `C${active.run} · ${active.candidate.id.slice(0, 8)} · ${chosen.label}` })}>比較 {side} に割当</button>)}
             </div>
-            <button onClick={() => command("compare.open")}>A/B比較を開く</button>
+            <button className="candidate-text-action" onClick={() => command("compare.open")}>A/B比較へ</button>
             <dl><div><dt>赤 対 青</dt><dd>{score(chosen.evidence)}</dd></div><div><dt>点差</dt><dd>{margin(chosen.evidence)}点</dd></div></dl>
-            <ol className="candidate-plan">{active.candidate.plan.map((goal, index) => <li key={index}>{goalLabel(goal)}</li>)}</ol>
+            <div className="candidate-milestones"><table aria-label="選択展開の動作順。組番号が同じ動作は同時刻"><thead><tr><th>組</th><th>機体</th><th>動作</th><th>場所</th><th>物体</th></tr></thead>{chosen.evidence.milestones.map((events, groupIndex) => <tbody key={groupIndex}>{events.map((event, eventIndex) => { const cells = milestoneCells(event); return <tr key={eventIndex} title={cells.full}>{eventIndex === 0 && <th scope="rowgroup" rowSpan={events.length}>{groupIndex + 1}</th>}<td>{cells.actor}</td><td>{cells.action}<small>{cells.phase}</small></td><td>{cells.location}</td><td>{cells.objects}</td></tr>; })}</tbody>)}</table></div>
             {!!chosen.evidence.blocked?.length && <div className="candidate-blocked"><strong>実行不可 {chosen.evidence.blocked.length}件</strong><ul>{chosen.evidence.blocked.map((block, index) => <li key={index}>{block.t}秒 · {['赤TR', '赤BR', '青TR', '青BR'][block.robot] ?? block.robot} · 手順{block.instruction + 1}：{block.reason}</li>)}</ul></div>}
           </aside>}
           </div>

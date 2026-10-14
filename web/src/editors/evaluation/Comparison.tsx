@@ -1,3 +1,4 @@
+import { navigateRow } from "../candidates/rowSelection";
 import { Help } from "../common/Help";
 import type { Config, Evaluation as Report, Search, Variant } from "../../engine/types";
 type Result = Report["runs"][number];
@@ -57,7 +58,7 @@ export function Comparison({
           : "未確定"}
         {peers.some((r) => !r.statisticsComplete) && " · 途中の集計を含む"}
       </p>
-      <table>
+      <table role="grid" aria-label="同じ赤構成での対戦構成。上下キーで選択">
         <thead>
           <tr>
             <th>対戦構成</th>
@@ -69,8 +70,8 @@ export function Comparison({
         </thead>
         <tbody>
           {peers.map((r) => (
-            <tr key={r.run}>
-              <td><button aria-pressed={r.run === result.run} onClick={() => onSelect(r.run)}>C{r.run}</button></td>
+            <tr key={r.run} data-selectable-row aria-selected={r.run === result.run} tabIndex={r.run === result.run ? 0 : -1} onFocus={() => { if (r.run !== result.run) onSelect(r.run); }} onClick={event => event.currentTarget.focus()} onKeyDown={event => navigateRow(event)}>
+              <td>C{r.run}</td>
               <td>{r.statisticsComplete ? "完了" : "途中"}</td>
               <td>{pct(r.groupWinFraction)}</td>
               <td>{pct(r.unresolvedFraction)}</td>

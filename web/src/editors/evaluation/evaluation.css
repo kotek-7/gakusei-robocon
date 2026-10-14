@@ -38,3 +38,26 @@
 .evaluation-modes { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; padding-block: 6px; }
 .evaluation-modes [aria-pressed="true"] { background: var(--selected); color: var(--selected-ink); }
 .evaluation-selection { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; border-block: 1px solid var(--line); margin-top: 10px; }
+
+.evaluation tr[data-selectable-row] { cursor: default; outline-offset: -2px; }
+.evaluation tr[data-selectable-row]:hover { background: var(--surface-2, var(--selected)); }
+.evaluation tr[aria-selected="true"] { background: var(--selected); color: var(--selected-ink); }
+.evaluation tr[data-selectable-row]:focus-visible { outline: 2px solid var(--accent); }
+.evaluation-spec { padding-block: 8px; }
+.evaluation-spec summary, .classification summary { cursor: pointer; }
+.classification { border-bottom: 1px solid var(--line); padding-block: 8px; }
+.classification-branch { display: flex; align-items: baseline; gap: 5px; text-align: left; width: 100%; }
+.classification-path, .classification-leaf { text-decoration: underline; text-underline-offset: 3px; }
+.classification-navigation { margin-top: 8px; }
+.strategy-results-scroll { overflow: auto; max-height: 340px; }
+.strategy-inspection { border-top: 1px solid var(--line); margin-top: 8px; }
+.strategy-inspection > header { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding-block: 8px; }
+.strategy-inspection > header > span { color: var(--muted); font-size: 11px; }
+.strategy-inspection-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, 35%); gap: 16px; }
+.strategy-sequence { list-style: none; padding: 0; margin: 0; max-height: 280px; overflow: auto; }
+.strategy-sequence > li { display: flex; gap: 10px; padding-block: 5px; border-bottom: 1px solid var(--line); }
+.strategy-batch { color: var(--muted); font-variant-numeric: tabular-nums; }
+.strategy-sequence ul { list-style: none; padding: 0; }
+.strategy-distribution { margin: 0; max-height: 280px; overflow: auto; }
+.strategy-distribution figcaption { font-size: 11px; margin-bottom: 8px; }
+@media (max-width: 680px) { .strategy-inspection-body { grid-template-columns: 1fr; } }

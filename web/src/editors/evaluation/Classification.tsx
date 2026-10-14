@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Help } from "../common/Help";
-import { DetailView } from "../common/DetailView";
+
 import type { Strategy } from "../../engine/types";
 import { structuralEventName } from "../common/labels";
 
@@ -47,22 +47,22 @@ export function Classification({
   }
   const current = trail.at(-1)!;
   return (
-    <DetailView label="分類をたどる" className="classification">
+    <details className="classification"><summary>共通する動作で絞り込む</summary>
       <div className="classification-navigation" aria-label="分類の階層">
-        {trail.map((_, index) => <button key={index} aria-current={index === trail.length - 1 ? "location" : undefined} onClick={() => setPath(validPath.slice(0, index))}>{index ? `${index}組目` : "全作戦"}</button>)}
+        {trail.map((_, index) => <button key={index} aria-current={index === trail.length - 1 ? "location" : undefined} className="classification-path" onClick={() => { setPath(validPath.slice(0, index)); onSelect(index === 0 ? null : trail[index].ids); }}>{index ? `${index}組目` : "全作戦"}</button>)}
         <Help topic="results" text="動作の開始・完了などを同時刻ごとにまとめ、共通する先頭の動作から分類をたどれます。" />
       </div>
-      <p>{current.ids.length} 作戦 <button onClick={(event) => { onSelect(current.ids); event.currentTarget.closest("dialog")?.close(); }}>この分類の作戦を表示</button></p>
+      <p className="muted">この分岐に {current.ids.length} 作戦</p>
       <table>
-        <thead><tr><th>次の同時刻の動作</th><th>作戦数</th><th>操作</th></tr></thead>
+        <thead><tr><th>次の同時刻の動作</th><th>作戦数</th></tr></thead>
         <tbody>{[...current.children].map(([key, branch]) => <tr key={key}>
-          <td><ul>{branch.batch.map((event) => <li key={event}>{structuralEventName(event)}</li>)}</ul></td>
+          <td><button className="classification-branch" onClick={() => { setPath([...validPath, key]); onSelect(branch.ids); }}><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg><span>{branch.batch.map(structuralEventName).join(" / ")}</span></button></td>
           <td>{branch.ids.length}</td>
-          <td><button onClick={() => setPath([...validPath, key])}>分類へ進む</button> <button onClick={(event) => { onSelect(branch.ids); event.currentTarget.closest("dialog")?.close(); }}>作戦を表示</button></td>
+
         </tr>)}</tbody>
       </table>
-      {!!current.leaves.length && <ul className="classification-leaves">{current.leaves.map((id) => <li key={id}><button title={id} onClick={(event) => { onSelect([id]); event.currentTarget.closest("dialog")?.close(); }}>{id.slice(0, 14)}</button></li>)}</ul>}
+      {!!current.leaves.length && <ul className="classification-leaves">{current.leaves.map((id) => <li key={id}><button className="classification-leaf" title={id} onClick={() => onSelect([id])}>{id.slice(0, 14)}</button></li>)}</ul>}
       {!current.ids.length && <p>分類できる作戦はまだありません。</p>}
-    </DetailView>
+    </details>
   );
 }

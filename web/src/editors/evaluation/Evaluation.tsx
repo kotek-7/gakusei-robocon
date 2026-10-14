@@ -1,4 +1,4 @@
-import { DetailView } from "../common/DetailView";
+import { navigateRow } from "../candidates/rowSelection";
 import { Help } from "../common/Help";
 import {
   structuralEventName,
@@ -34,7 +34,7 @@ export function Evaluation({
   onNode: (run: number, id: number) => void;
 }) {
   const [mode, setMode] = useState("results");
-  const [detail, setDetail] = useState("strategies");
+  const [selectedStrategy, setSelectedStrategy] = useState("");
   const [run, setRun] = useState(0);
   const [filter, setFilter] = useState<string[] | null>(null);
   const [runQuery, setRunQuery] = useState("");
@@ -63,10 +63,11 @@ export function Evaluation({
     strategySort,
     unresolvedOnly,
   );
+  const activeStrategy = strategies.find(strategy => strategy.id === selectedStrategy) ?? strategies[0];
   const pct = (x: number) => `${(x * 100).toFixed(1)}%`;
   return (
     <section className="evaluation">
-      <div className="evaluation-modes" role="group" aria-label="評価の表示"><button aria-pressed={mode === "results"} onClick={() => setMode("results")}>構成別の結果</button><button aria-pressed={mode === "comparison"} onClick={() => setMode("comparison")}>構成・探索を比較</button><Help topic="results" text={evaluationMeaning} /></div>
+      <div className="evaluation-modes"><label>集計 <select value={mode} onChange={event => setMode(event.target.value)}><option value="results">構成別の結果</option><option value="comparison">同条件で構成・探索を比較</option></select></label><Help topic="results" text={evaluationMeaning} /></div>
       <div hidden={mode !== "comparison"}>
       {baseline && (
         <div className="notice">
@@ -166,6 +167,7 @@ export function Evaluation({
           {visibleRuns.length} / {e.runs.length} 構成
         </span>
         <button
+          className="action-button"
           disabled={!visibleRuns.length}
           onClick={() =>
             saveJSON(
@@ -200,7 +202,7 @@ export function Evaluation({
           該当する構成はありません。絞り込みを解除すると全構成を表示できます。
         </p>
       )}
-      <table>
+      <table role="grid" aria-label="評価する構成。上下キーで選択">
         <caption>構成別の結果 — 相手構成の出現頻度は仮定しません</caption>
         <thead>
           <tr>
@@ -213,18 +215,9 @@ export function Evaluation({
         </thead>
         <tbody>
           {visibleRuns.map((r) => (
-            <tr key={r.run}>
-              <td>
-                <button
-                  onClick={() => {
-                    setRun(r.run);
-                    setFilter(null);
-                  }}
-                  aria-pressed={r.run === result.run}
-                >
-                  C{r.run}
-                </button>
-              </td>
+            <tr key={r.run} data-selectable-row aria-selected={r.run === result.run} tabIndex={r.run === result.run || !visibleRuns.some(row => row.run === result.run) && r.run === visibleRuns[0]?.run ? 0 : -1}
+              onFocus={() => { if (r.run !== result.run) { setRun(r.run); setFilter(null); setSelectedStrategy(""); } }} onClick={event => event.currentTarget.focus()} onKeyDown={event => navigateRow(event)}>
+              <td>C{r.run}</td>
               <td>
                 {r.statisticsComplete
                   ? "集計まで完了"
@@ -256,8 +249,8 @@ export function Evaluation({
         }}
       />
       </div>
-      <div className="evaluation-selection"><strong>C{result.run}</strong><div className="evaluation-modes" role="group" aria-label="選択構成の検査"><button aria-pressed={detail === "strategies"} onClick={() => setDetail("strategies")}>作戦・得点</button><button aria-pressed={detail === "spec"} onClick={() => setDetail("spec")}>機体スペック</button></div></div>
-      <div hidden={detail !== "spec"}>
+      <div className="evaluation-selection"><strong>構成 C{result.run}</strong></div>
+      <details className="evaluation-spec"><summary>この構成の機体スペック</summary>
       <div className="variant-columns">
         {result.variant.teams.map((t, i) => (
           <div key={i}><strong>{i ? "青" : "赤"}チーム</strong>
@@ -282,8 +275,8 @@ export function Evaluation({
           </div>
         ))}
       </div>
-      </div>
-      <div hidden={detail !== "strategies"}>
+      </details>
+      <div>
       {result.windowEnd < 180 && (
         <p className="notice">
           {result.windowEnd}
@@ -300,11 +293,7 @@ export function Evaluation({
           </p>
         </div>
       )}
-      <h3>
-        作戦分類 <small>{e.classification}</small>
-        <Help topic="results" text="試合全体の設置・反転・持ち直しの完了順序で分類します。移動・リトライと物体IDの違いは分類に含めません。詳細な移動や時刻は試合展開に残ります。得点や勝敗で分類していません。" />
-      </h3>
-      <Classification strategies={result.strategies} onSelect={setFilter} />
+      <Classification key={`${search.id}:${result.run}`} strategies={result.strategies} onSelect={setFilter} />
       <div className="evaluation-tools" aria-label="作戦の絞り込み">
         <input
           type="search"
@@ -340,6 +329,7 @@ export function Evaluation({
           {strategies.length} / {result.strategies.length} 作戦
         </span>
         <button
+          className="action-button"
           disabled={!strategies.length}
           onClick={() =>
             saveJSON(
@@ -396,78 +386,22 @@ export function Evaluation({
           該当する作戦はありません。検索語や分類を変更してください。
         </p>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>作戦ID</th>
-              <th>展開グループ</th>
-              <th>試合展開数</th>
-              <th>赤が勝つ展開の割合（グループ等重み）</th>
-              <th>赤が勝つ展開の割合（展開等重み）</th>
-              <th>点差分布</th>
-            </tr>
-          </thead>
-          <tbody>
-            {strategies.map((s) => (
-              <tr key={s.id}>
-                <td>
-                  <button
-                    title={s.id}
-                    aria-label={`${s.id}の代表局面を開く`}
-                    onClick={() => onNode(result.run, s.node)}
-                  >
-                    {s.id.slice(0, 14)}
-                  </button>
-                  <DetailView label={`構造 · ${s.prefix.length}組 / ${s.prefix.flat().length}動作`} title={`${s.id.slice(0, 14)} の動作構造`}>
-                    <ol>
-                      {s.prefix.map((group, index) => (
-                        <li key={index}>
-                          同時刻の動作 {index + 1}組目
-                          <ul>
-                            {group.map((event) => (
-                              <li key={event}>{structuralEventName(event)}</li>
-                            ))}
-                          </ul>
-                        </li>
-                      ))}
-                    </ol>
-                  </DetailView>
-                </td>
-                <td>{s.groups}</td>
-                <td>{s.paths}</td>
-                <td>
-                  {pct(s.groupWinFraction)}
-                  <small>未決 {pct(s.unresolvedFraction)}</small>
-                </td>
-                <td>{pct(s.pathWinFraction)}</td>
-                <td>
-                  <small>
-                    {marginRange(s.distribution)?.join(" ～ ") ?? "未集計"}
-                  </small>
-                  <DetailView label="点差ごとの割合" title={`${s.id.slice(0, 14)} の点差分布`}>
-                    <div className="distribution">
-                      {s.distribution.map(([margin, weight]) => (
-                        <div key={margin}>
-                          <span>
-                            {margin > 0 ? "+" : ""}
-                            {margin}
-                          </span>
-                          <meter
-                            min={0}
-                            max={1}
-                            value={weight}
-                            aria-label={`点差${margin}の割合`}
-                          />
-                          <span>{pct(weight)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </DetailView>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <>
+        <div className="strategy-results-scroll"><table role="grid" aria-label="作戦別の結果。上下キーで選択、Enterで代表局面を表示">
+          <thead><tr><th>作戦ID・動作数</th><th>展開グループ</th><th>試合展開数</th><th>赤勝利・グループ等重み</th><th>赤勝利・展開等重み</th><th>点差範囲</th></tr></thead>
+          <tbody>{strategies.map(strategy => <tr key={strategy.id} data-selectable-row aria-selected={activeStrategy?.id === strategy.id} tabIndex={activeStrategy?.id === strategy.id ? 0 : -1} onFocus={() => setSelectedStrategy(strategy.id)} onClick={event => event.currentTarget.focus()} onKeyDown={event => navigateRow(event, () => onNode(result.run, strategy.node))} onDoubleClick={() => onNode(result.run, strategy.node)}>
+            <td><span title={strategy.id}>{strategy.id.slice(0, 14)}</span><small>{strategy.prefix.length}組 · {strategy.prefix.flat().length}動作</small></td>
+            <td>{strategy.groups}</td><td>{strategy.paths}</td><td>{pct(strategy.groupWinFraction)}<small>未決 {pct(strategy.unresolvedFraction)}</small></td><td>{pct(strategy.pathWinFraction)}</td><td>{marginRange(strategy.distribution)?.join(" ～ ") ?? "未集計"}</td>
+          </tr>)}</tbody>
+        </table></div>
+        {activeStrategy && <div className="strategy-inspection" aria-label="選択作戦の動作と点差分布">
+          <header><span title={activeStrategy.id}>{activeStrategy.id.slice(0, 14)}</span><button className="action-button" onClick={() => onNode(result.run, activeStrategy.node)}>代表局面を3Dに表示</button></header>
+          <div className="strategy-inspection-body">
+            <ol className="strategy-sequence" aria-label="同時刻ごとの動作順序">{activeStrategy.prefix.map((group, index) => <li key={index}><span className="strategy-batch">{index + 1}</span><ul>{group.map((event, eventIndex) => <li key={eventIndex}>{structuralEventName(event)}</li>)}</ul></li>)}</ol>
+            <figure className="strategy-distribution"><figcaption>発見済み展開の点差分布</figcaption><div className="distribution">{activeStrategy.distribution.map(([margin, weight]) => <div key={margin}><span>{margin > 0 ? "+" : ""}{margin}</span><meter min={0} max={1} value={weight} aria-label={`点差${margin}の割合`} /><span>{pct(weight)}</span></div>)}</div>{!activeStrategy.distribution.length && <p className="muted">未集計</p>}</figure>
+          </div>
+        </div>}
+        </>
       )}
       </div>
     </section>
