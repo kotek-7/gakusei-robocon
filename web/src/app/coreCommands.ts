@@ -102,6 +102,7 @@ async function jumpEvent(dir: 1 | -1, kinds?: string[]) {
 }
 
 const REASONS: Record<string, string> = {
+  completed: "計算完了",
   time_limit: "指定時間で停止",
   exhausted: "対象範囲を探索済み",
   cancelled: "停止しました",

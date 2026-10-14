@@ -263,8 +263,11 @@ test("Worker runtime responds during computation, cancellation persists, and exa
   await rt.call("job.start", { search: short.id, kind: "exact", budget: 1000 });
   await rt.wait(short.id);
   assert.ok((await rt.get(short.id)).summary().complete);
+  const finished: string[] = [];
+  rt.subscribe((e) => { if (e.type === "job.finished" && e.kind === "evaluation") finished.push(e.reason); });
   await rt.call("job.start", { search: short.id, kind: "evaluation" });
   await rt.wait(short.id);
+  assert.deepEqual(finished, ["completed"]);
   assert.equal(
     (await rt.get(short.id)).data.evaluation?.runs[0].guarantee?.winUpper,
     1,

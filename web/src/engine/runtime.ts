@@ -129,7 +129,10 @@ export class Runtime {
     };
     try {
       await pauseTurn();
-      if (kind === "evaluation") await analyze(st, () => checkpoint());
+      if (kind === "evaluation") {
+        await analyze(st, () => checkpoint());
+        reason = "completed";
+      }
       else {
         let used = 0;
         while (
