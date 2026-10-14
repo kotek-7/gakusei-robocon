@@ -2,6 +2,7 @@ import { profileNames } from "../common/labels";
 import { useReducer, useState } from "react";
 import { conditionHistory, selectProfile } from "./history";
 import { countConfigs } from "../../engine/model";
+import { Differences } from "./Differences";
 import { SearchAxes } from "./SearchAxes";
 import "./conditions.css";
 import type { Model, Config } from "../../engine/types";
@@ -126,6 +127,7 @@ export function Conditions({
           条件を書き出す
         </button>
       </div>
+      <Differences initial={initial} current={c} model={model} change={change} />
       <p>
         選択した能力・数値の組合せから生成します。値は仮定で、編集できます。
       </p>

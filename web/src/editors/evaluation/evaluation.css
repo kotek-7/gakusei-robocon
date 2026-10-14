@@ -23,3 +23,4 @@
 .evaluation .distribution {
   min-width: 160px;
 }
+.evaluation details pre { max-height: 240px; max-width: 480px; overflow: auto; font-size: 11px; }

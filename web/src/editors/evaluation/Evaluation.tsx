@@ -15,6 +15,8 @@ import {
   type StrategySort,
 } from "./selectors";
 import "./evaluation.css";
+import { ConditionComparison } from "./ConditionComparison";
+import { configDifferences } from "../common/configDifferences";
 import { Comparison } from "./Comparison";
 import { Classification } from "./Classification";
 import type { Search, Model } from "../../engine/types";
@@ -39,13 +41,7 @@ export function Evaluation({
   const [unresolvedOnly, setUnresolvedOnly] = useState(false);
   const e = search.evaluation;
   const result = e?.runs.find((r) => r.run === run) || e?.runs[0];
-  const comparable =
-    baseline &&
-    ["scenario", "horizon", "rules", "starts", "layouts", "root"].every(
-      (k) =>
-        JSON.stringify(search.config[k as keyof typeof search.config]) ===
-        JSON.stringify(baseline.config[k as keyof typeof baseline.config]),
-    );
+  const comparable = baseline && !configDifferences(baseline.config, search.config, model).some((d) => d.context);
   if (!e || !result)
     return (
       <div className="empty">
@@ -98,6 +94,7 @@ export function Evaluation({
               ))}
             </tbody>
           </table>
+          <ConditionComparison before={baseline.config} after={search.config} model={model} />
           {baseline.evaluation && (
             <details>
               <summary>比較対象の構成別結果</summary>
