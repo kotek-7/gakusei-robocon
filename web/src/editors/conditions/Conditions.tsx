@@ -1,7 +1,7 @@
 import { flushSync } from "react-dom";
 import { Help } from "../common/Help";
 import { profileNames } from "../common/labels";
-import { useReducer, useState } from "react";
+import { useId, useReducer, useState } from "react";
 import { conditionHistory, selectProfile } from "./history";
 import { countConfigs } from "../../engine/model";
 import { Differences } from "./Differences";
@@ -31,6 +31,7 @@ export function Conditions({
       future: [],
     }),
   );
+  const controlId = useId();
   const c = history.present;
   const [team, setTeam] = useState(0);
   const [view, setView] = useState("edit");
@@ -169,7 +170,7 @@ export function Conditions({
           </select>
         </label>
         <label>
-          探索終了 秒
+          探索終了時刻（秒）
           <input
             type="number"
             min={
@@ -194,17 +195,12 @@ export function Conditions({
           {c.horizon}秒での局面評価です。180秒の最終勝敗ではありません。
         </p>
       )}
-      <div className="team-tabs" aria-label="編集するチーム">
+      <div className="condition-team-scope">
+        <fieldset className="condition-team-choice"><legend>編集するチーム</legend>
         {["赤チーム", "青チーム"].map((name, i) => (
-          <button
-            type="button"
-            key={i}
-            aria-pressed={team === i}
-            onClick={() => setTeam(i)}
-          >
-            {name}
-          </button>
+          <label key={i} data-team={i}><input type="radio" name={`${controlId}-team`} checked={team === i} onChange={() => setTeam(i)} />{name}</label>
         ))}
+        </fieldset>
         <button
           type="button"
           onClick={() =>
@@ -310,33 +306,13 @@ export function Conditions({
                 </span>
               </th>
               <td>
-                {(k.startsWith("capacity")
-                  ? Array.from(
-                      { length: k === "capacity_tr" ? 4 : 3 },
-                      (_, i) => i,
-                    )
-                  : [false, true]
-                ).map((v) => (
-                  <label className="check" key={String(v)}>
-                    <input
-                      type="checkbox"
-                      aria-label={`${label} ${typeof v === "boolean" ? (v ? "可能" : "不可") : v + "個"}`}
-                      title={
-                        c.teams[team].caps[k].length === 1 &&
-                        c.teams[team].caps[k].includes(v)
-                          ? "各項目で1つ以上の候補が必要です"
-                          : undefined
-                      }
-                      disabled={
-                        c.teams[team].caps[k].length === 1 &&
-                        c.teams[team].caps[k].includes(v)
-                      }
-                      checked={c.teams[team].caps[k].includes(v)}
-                      onChange={() => toggle("caps", k, v)}
-                    />
-                    {typeof v === "boolean" ? (v ? "可能" : "不可") : v + "個"}
-                  </label>
-                ))}
+                {k.startsWith("capacity") ? <div className="condition-capacity" role="group" aria-label={`${label}の探索候補`}>
+                  {Array.from({ length: k === "capacity_tr" ? 4 : 3 }, (_, i) => i).map(value => <label key={value}>
+                    <input type="checkbox" checked={c.teams[team].caps[k].includes(value)} disabled={c.teams[team].caps[k].length === 1 && c.teams[team].caps[k].includes(value)} onChange={() => toggle("caps", k, value)} />{value}個
+                  </label>)}
+                </div> : <select aria-label={`${label}の探索候補`} value={c.teams[team].caps[k].length > 1 ? "both" : String(c.teams[team].caps[k][0])} onChange={event => change(x => { x.teams[team].caps[k] = event.target.value === "both" ? [false, true] : [event.target.value === "true"]; })}>
+                  <option value="false">不可に固定</option><option value="true">可能に固定</option><option value="both">可能・不可の両方を探索</option>
+                </select>}
               </td>
             </tr>
           ))}
@@ -348,6 +324,7 @@ export function Conditions({
           <span className="condition-shared-note">
             数値は両チーム共通・候補の選択は{team ? "青" : "赤"}チーム
           </span>
+          <label className="condition-profile-preset">表示項目の候補を揃える<select value="" onChange={event => change(x => selectProfile(x, team, event.target.value === "all" ? "all" : Number(event.target.value), profiles.map(([key]) => key)))}><option value="" disabled>候補の組合せを選択…</option><option value="all">3段階すべてを探索</option>{profileNames.map((name, i) => <option key={name} value={i}>{name}に固定</option>)}</select></label>
         </caption>
         <thead>
           <tr>
@@ -358,50 +335,11 @@ export function Conditions({
           </tr>
         </thead>
         <tbody>
-          <tr className="condition-bulk-row">
-            <th scope="row">
-              <button
-                type="button"
-                onClick={() =>
-                  change((x) =>
-                    selectProfile(
-                      x,
-                      team,
-                      "all",
-                      profiles.map(([key]) => key),
-                    ),
-                  )
-                }
-              >
-                表示項目を3段階に
-              </button>
-            </th>
-            {profileNames.map((name, i) => (
-              <td key={name}>
-                <button
-                  type="button"
-                  title={`${team ? "青" : "赤"}チームの表示項目を${name}だけにする`}
-                  onClick={() =>
-                    change((x) =>
-                      selectProfile(
-                        x,
-                        team,
-                        i,
-                        profiles.map(([key]) => key),
-                      ),
-                    )
-                  }
-                >
-                  {name}のみ
-                </button>
-              </td>
-            ))}
-          </tr>
           {profiles.map(([k, label]) => (
             <tr key={k}>
               <th scope="row">
                 <span className="condition-row-label">
-                  {label}
+                  {label.replace(/ (m\/s|秒)$/, "")}
                   {!sameValues(
                     c.teams[team].speeds[k],
                     c.teams[1 - team].speeds[k],
@@ -443,7 +381,7 @@ export function Conditions({
               </th>
               {[0, 1, 2].map((i) => (
                 <td key={i}>
-                  <label className="profile">
+                  <div className="profile" data-included={c.teams[team].speeds[k].includes(i)}>
                     <input
                       aria-label={label + " " + profileNames[i] + "を探索"}
                       type="checkbox"
@@ -474,7 +412,8 @@ export function Conditions({
                         })
                       }
                     />
-                  </label>
+                    <span className="condition-unit">{k === "move" ? "m/s" : "秒"}</span>
+                  </div>
                 </td>
               ))}
             </tr>
@@ -482,7 +421,7 @@ export function Conditions({
         </tbody>
       </table>
       </section>
-      <section hidden={view !== "rules"} aria-label="初期配置とルール解釈">
+      <section className="condition-rule-grid" hidden={view !== "rules"} aria-label="初期配置とルール解釈">
         <h3>初期配置とルール解釈 <Help topic="rules" text="未確定の解釈を設定します。公式裁定を意味しません。" /></h3>
         <label>
           スタートゾーンの割当
@@ -625,7 +564,7 @@ export function Conditions({
         <span>
           構成の組合せ <strong>{combinations.toLocaleString()}</strong>
         </span>
-        <button className="primary" disabled={busy}>
+        <button className="primary action-button" disabled={busy}>
           この条件で探索を作成
         </button>
       </footer>

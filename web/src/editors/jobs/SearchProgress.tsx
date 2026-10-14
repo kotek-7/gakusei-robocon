@@ -45,13 +45,12 @@ export function DiscoveryProgress({ search, onDefinitions }: { search: Search; o
         <div><dt>相手対応</dt><dd>{report.metrics.responses.toLocaleString()}展開</dd></div>
         <div><dt>比較待ち</dt><dd>{pending.toLocaleString()}件</dd></div>
       </dl>}
-      {!!report?.sessions.length && <DetailView label={`計算履歴 ${sessions.length}回`} title="候補探索の計算履歴" className="discovery-history">
+      {!!report?.sessions.length && <details className="discovery-history"><summary>計算履歴 <span>{sessions.length}回</span></summary>
         <div className="history-heading">
-          <h3>計算履歴</h3>
           <label>終了理由 <select value={reason} onChange={(e) => setReason(e.target.value)}><option value="all">すべて</option>{[...new Set(sessions.map((s) => s.reason))].map((value) => <option key={value} value={value}>{stopLabels[value] || value}</option>)}</select></label>
           <button disabled={!filteredSessions.length} onClick={() => saveJSON({ search: search.id, scope: "保存済みの候補探索履歴", sessions: filteredSessions.map(({session}) => session) }, "discovery-history.json")}>絞った履歴を保存</button>
-          <button className="tool" aria-pressed={improvementsOnly} onClick={() => setImprovementsOnly(!improvementsOnly)}>候補・得点の更新あり</button>
-          {filteredSessions.length > 3 && <button onClick={() => setAllHistory(!allHistory)}>{allHistory ? "直近3回" : `全${filteredSessions.length}回`}</button>}
+          <label><input type="checkbox" checked={improvementsOnly} onChange={event => setImprovementsOnly(event.target.checked)} />候補・得点の更新あり</label>
+          {filteredSessions.length > 3 && <label><input type="checkbox" checked={allHistory} onChange={event => setAllHistory(event.target.checked)} />全{filteredSessions.length}回を表示</label>}
         </div>
         <p className="muted">条件に一致 {filteredSessions.length} / {sessions.length}回 · 合計 {duration(filteredSessions.reduce((n, {session}) => n + session.seconds, 0))} · 候補増 {filteredSessions.reduce((n, {session}) => n + session.newCandidates, 0)} · 対応検査 {filteredSessions.reduce((n, {session}) => n + session.responses, 0)}件</p>
         <div className="progress-table" tabIndex={0} role="region" aria-label="候補探索の計算履歴">
@@ -67,7 +66,7 @@ export function DiscoveryProgress({ search, onDefinitions }: { search: Search; o
           </table>
           {!visibleSessions.length && <p className="muted">条件に一致する計算履歴はありません</p>}
         </div>
-      </DetailView>}
+      </details>}
       <div className="history-footer">
         <span>全作戦の網羅・最適性は未保証</span>
         <button onClick={onDefinitions}>集計の定義</button>

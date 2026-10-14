@@ -102,3 +102,31 @@
 .conditions table[hidden] { display: none; }
 .condition-file-tools { margin-block: 8px; border-top: 1px solid var(--line); padding-top: 8px; }
 .condition-file-tools summary { cursor: pointer; }
+
+/* Property editing: scope, inclusion and numeric value are separate controls. */
+.condition-team-scope { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-block: 14px 8px; }
+.condition-team-choice { display: flex; align-items: center; gap: 16px; border: 0; padding: 0; margin: 0; }
+.condition-team-choice legend { float: left; margin-right: 12px; color: var(--muted); }
+.condition-team-choice label, .condition-capacity label { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.condition-team-choice label:has(:checked) { font-weight: 700; }
+.condition-team-choice [data-team="0"] input { accent-color: var(--red); }
+.condition-team-choice [data-team="1"] input { accent-color: var(--blue); }
+.condition-capacity { display: flex; gap: 16px; flex-wrap: wrap; }
+.conditions .config-table td > select { width: 100%; max-width: 260px; }
+.conditions .config-table { border-collapse: collapse; }
+.conditions .config-table th { font-weight: 400; }
+.conditions .config-table thead th { font-weight: 600; color: var(--muted); }
+.conditions .profile { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.conditions .profile input[type="number"] { width: 72px; min-width: 45px; text-align: right; font-variant-numeric: tabular-nums; }
+.conditions .profile[data-included="false"] input[type="number"] { color: var(--muted); }
+.condition-unit { color: var(--muted); font-size: 11px; }
+.conditions .condition-revert { background: transparent; border: 0; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+.conditions .condition-revert:hover { color: var(--ink); }
+.conditions .condition-views button, .conditions .condition-spec-tabs button { border: 0; border-radius: 0; background: transparent; border-bottom: 2px solid transparent; }
+.conditions .condition-views button[aria-pressed="true"], .conditions .condition-spec-tabs button[aria-pressed="true"] { border-bottom-color: var(--accent); color: var(--ink); background: transparent; }
+.conditions .condition-history button { border: 0; background: transparent; }
+@media (max-width: 700px) { .conditions .profile { gap: 3px; } .conditions .profile input[type="number"] { width: 52px; } }
+
+.condition-profile-preset { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; font-weight: 400; }
+.condition-rule-grid > label { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-height: 42px; border-bottom: 1px solid var(--line); padding-block: 6px; }
+.condition-rule-grid > label > select { margin-left: auto; width: min(100%, 240px); }

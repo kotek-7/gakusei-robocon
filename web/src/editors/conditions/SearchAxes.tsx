@@ -47,43 +47,19 @@ export function SearchAxes({
                 <td>{values.length}</td>
                 <td>{(count / BigInt(values.length)).toLocaleString()}</td>
                 <td className="condition-axis-values">
-                  {values.map((value) => (
-                    <button
-                      type="button"
-                      key={String(value)}
-                      onClick={() =>
-                        change((next) => {
-                          if (team < 0) {
-                            if (key === "start") next.starts = [Number(value)];
-                            else next.layouts = [String(value)];
-                          } else if (kind === "caps")
-                            next.teams[team].caps[key] = [
-                              value as boolean | number,
-                            ];
-                          else next.teams[team].speeds[key] = [Number(value)];
-                        })
-                      }
-                    >
-                      {kind === "speeds"
-                        ? profileNames[Number(value)]
-                        : typeof value === "boolean"
-                          ? value
-                            ? "可能"
-                            : "不可"
-                          : key === "layout"
-                            ? value === "stacked"
-                              ? "2段積み"
-                              : "1段配置"
-                            : key === "start"
-                              ? [
-                                  "両側 標準",
-                                  "赤側 入替",
-                                  "青側 入替",
-                                  "両側 入替",
-                                ][Number(value)]
-                              : `${value}個`}
-                    </button>
-                  ))}
+                  <select aria-label={`${team < 0 ? "共通" : team ? "青" : "赤"} ${kind === "caps" ? model.caps[key] : kind === "speeds" ? model.profiles[key] : key}を1候補に固定`} value="" onChange={event => {
+                    const value = values[Number(event.target.value)];
+                    change(next => {
+                      if (team < 0) { if (key === "start") next.starts = [Number(value)]; else next.layouts = [String(value)]; }
+                      else if (kind === "caps") next.teams[team].caps[key] = [value as boolean | number];
+                      else next.teams[team].speeds[key] = [Number(value)];
+                    });
+                  }}>
+                    <option value="" disabled>値を選んで固定…</option>
+                    {values.map((value, index) => <option key={String(value)} value={index}>
+                      {kind === "speeds" ? profileNames[Number(value)] : typeof value === "boolean" ? value ? "可能" : "不可" : key === "layout" ? value === "stacked" ? "2段積み" : "1段配置" : key === "start" ? ["両側 標準", "赤側 入替", "青側 入替", "両側 入替"][Number(value)] : `${value}個`}
+                    </option>)}
+                  </select>
                 </td>
               </tr>
             ))}
