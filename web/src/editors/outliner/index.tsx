@@ -1,4 +1,5 @@
-import { useState } from "react";
+import "./commands";
+import { useEffect, useState } from "react";
 import { visibleRows } from "./tree";
 import { run } from "../../app/commands";
 import { useSearches } from "../../app/data";
@@ -34,7 +35,7 @@ function evidenceMenu(label: string, ev: CandidateEvidence): MenuItem[] {
   ];
 }
 
-function Outliner() {
+function Outliner({ area }: import("../registry").EditorProps) {
   const search = useSearch();
   const list = useSearches((s) => s.list);
   const ws = useWorkspaceData();
@@ -43,6 +44,12 @@ function Outliner() {
   const [q, setQ] = useState("");
   const [focused, setFocused] = useState<string | null>(null);
   const [pinnedOnly, setPinnedOnly] = useState(false);
+  useEffect(() => {
+    if (typeof area.state?.treeExpansion !== "boolean") return;
+    const expanded = area.state.treeExpansion;
+    const keys = ["searches", "cands", "markers", "views", "reviews", ...(search?.discovery?.runs ?? []).flatMap(r => [`run:${r.run}`, ...r.candidates.map(c => `cand:${r.run}:${c.id}`)])];
+    setOpen(Object.fromEntries(keys.map(key => [key, expanded])));
+  }, [area.state?.treeExpansionRequest]);
   if (!search) return <Empty title="探索がありません" />;
   const pins = new Set(ws?.pins ?? []);
   const toggle = (k: string) => () => setOpen((o) => ({ ...o, [k]: !(o[k] ?? k.startsWith("run:")) }));
@@ -110,6 +117,12 @@ function Outliner() {
       });
   rows.push({ id: "views", depth: 0, label: `保存した視点 ${ws?.bookmarks.length ?? 0}`, open: open.views, toggle: toggle("views") });
   for (const b of ws?.bookmarks ?? []) rows.push({ id: `bm:${b.id}`, depth: 1, label: b.name });
+  rows.push({ id: "reviews", depth: 0, label: `検討記録 ${ws?.reviews?.length ?? 0}`, open: open.reviews, toggle: toggle("reviews") });
+  for (const record of ws?.reviews ?? []) rows.push({ id: `review:${record.id}`, depth: 1, label: record.title, hint: `${record.time.toFixed(1)}秒`, active: record.node === node, act: () => run("review.restore", record), menu: () => [
+    { label: "経路・時刻を復元", run: () => run("review.restore", record) },
+    { label: "比較Aに設定", run: () => run("review.compareA", record) },
+    { label: "比較Bに設定", run: () => run("review.compareB", record) },
+  ] });
   const filtered = visibleRows(rows, q, pinnedOnly);
   const filtering = !!q.trim() || pinnedOnly;
   const focusId = filtered.find((row) => row.id === focused)?.id ?? filtered.find((row) => row.active)?.id ?? filtered[0]?.id;
@@ -120,6 +133,10 @@ function Outliner() {
         <button className="tool icon-only" aria-pressed={pinnedOnly} title="ピン留めのみ" onClick={() => setPinnedOnly(!pinnedOnly)}>
           <Icon name="pin" />
         </button>
+      </div>
+      <div className="outliner-tools">
+        <button onClick={() => run("outliner.expandAll", area.id)}>すべて展開</button>
+        <button onClick={() => run("outliner.collapseAll", area.id)}>すべて折りたたむ</button>
       </div>
       <ul className="tree" role="tree">
         {filtered.map((r) => (

@@ -3,6 +3,8 @@ import { graphNodes, type GraphScope } from "./view";
 import type { Graph as Data, Edge } from "../../engine/types";
 export function Graph({
   data,
+  scope,
+  onScope,
   selected,
   path,
   select,
@@ -11,6 +13,8 @@ export function Graph({
   onReveal,
 }: {
   data: Data;
+  scope: GraphScope;
+  onScope: (scope: GraphScope) => void;
   selected: number | null;
   path: number[];
   select: (n: number) => void;
@@ -18,7 +22,6 @@ export function Graph({
   onPage: (o: number) => void;
   onReveal: () => void;
 }) {
-  const [scope, setScope] = useState<GraphScope>("page");
   const nodes = useMemo(() => graphNodes(data, selected, path, scope), [data, selected, path, scope]);
   const frontier = nodes.filter((n) => !n.expanded);
   const [zoom, setZoom] = useState(1);
@@ -103,8 +106,8 @@ export function Graph({
             次の100局面
           </button>
         </div>
-        <label>表示 <select value={scope} onChange={(e) => setScope(e.target.value as GraphScope)}>
-          <option value="page">ページ全体</option><option value="neighbors">選択局面と前後</option><option value="path">選択経路</option>
+        <label>表示 <select value={scope} onChange={(e) => onScope(e.target.value as GraphScope)}>
+          <option value="page">ページ全体</option><option value="neighbors">選択局面と前後</option><option value="path">選択経路</option><option value="frontier">未展開と選択局面</option><option value="scored">得点ありと選択局面</option>
         </select></label>
         <span>表示 {nodes.length}局面 · 未展開 {frontier.length}</span>
         <button disabled={!frontier.length} onClick={nextFrontier}>次の未展開局面</button>

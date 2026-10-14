@@ -11,3 +11,12 @@ test("path filtering retains selected node and only endpoints of path edges", ()
   assert.deepEqual(graphNodes(data, null, [], "path"), []);
   assert.equal(graphNodes(data, null, [], "page"), data.nodes);
 });
+test("frontier and score views keep the current selection without hiding unknown boundaries", () => {
+  const graph = { ...data, nodes: [
+    { id: 1, expanded: true, scores: [0, 0] },
+    { id: 2, expanded: false, scores: [0, 0] },
+    { id: 3, expanded: true, scores: [0, 8] },
+  ] } as Graph;
+  assert.deepEqual(graphNodes(graph, 1, [], "frontier").map(n => n.id), [1, 2]);
+  assert.deepEqual(graphNodes(graph, 1, [], "scored").map(n => n.id), [1, 3]);
+});

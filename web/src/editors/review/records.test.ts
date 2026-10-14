@@ -20,3 +20,11 @@ test("copied review text carries human decisions and the replay boundary", () =>
   assert.match(text, /BR の復帰を確認/);
   assert.equal(text.includes("反転"), false);
 });
+
+test("sorting prioritizes unfinished reviews and replay time without mutating records", async () => {
+  const { sortRecords } = await import("./records");
+  assert.deepEqual(sortRecords(records, "created").map(r => r.id), ["two", "one"]);
+  assert.deepEqual(sortRecords(records, "time").map(r => r.id), ["one", "two"]);
+  assert.deepEqual(sortRecords(records, "status").map(r => r.id), ["one", "two"]);
+  assert.deepEqual(records.map(r => r.id), ["one", "two"]);
+});

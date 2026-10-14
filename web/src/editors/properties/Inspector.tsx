@@ -1,27 +1,14 @@
+import "./commands";
+import { stateDelta, objectStateLabel } from "./delta";
 import { objectNames } from "../common/labels";
 import { useEffect, useState } from "react";
-import { register, run } from "../../app/commands";
-import { fetchQuery } from "../../app/data";
-import { ui, useUI } from "../../app/store";
+import { run } from "../../app/commands";
+import { useQuery } from "../../app/data";
+import { useUI } from "../../app/store";
 
 import type { Action, Detail, Edge } from "../../engine/types";
 import { saveJSON } from "../../app/coreCommands";
 import { actionName, robotNames, locationName } from "../common/labels";
-
-register({
-  id: "properties.seekNode",
-  title: "選択局面の時刻へ移動",
-  category: "移動",
-  enabled: () => !!useUI.getState().session.search && useUI.getState().session.node !== null,
-  run: async () => {
-    const { search, node } = useUI.getState().session;
-    if (!search || node === null) return;
-    const detail = await fetchQuery("node.get", { search, node });
-    const current = useUI.getState().session;
-    if (current.search === search && current.node === node)
-      ui.patchPlayback({ time: detail.state.t, playing: false });
-  },
-});
 
 export function Inspector({
   detail,
@@ -36,6 +23,13 @@ export function Inspector({
   onEdge: (e: Edge) => void;
   onExpand: () => void;
 }) {
+  const [showChanges, setShowChanges] = useState(false);
+  const [predecessor, setPredecessor] = useState<number | null>(null);
+  const search = useUI(s => s.session.search);
+  const incomingNodes = [...new Set(detail.edges.filter(edge => edge.dst === detail.id).map(edge => edge.src))];
+  const previousNode = predecessor !== null && incomingNodes.includes(predecessor) ? predecessor : incomingNodes[0];
+  const previousQuery = useQuery("node.get", showChanges && search && previousNode !== undefined ? { search, node: previousNode } : null);
+  const changes = previousQuery.data ? stateDelta(previousQuery.data, detail) : null;
   const time = useUI((s) => s.playback.time);
   const [edgeQuery, setEdgeQuery] = useState("");
   const [objectQuery, setObjectQuery] = useState("");
@@ -101,6 +95,24 @@ export function Inspector({
         ムスティカ取得条件：赤 {detail.state.mandate[0] ? "成立" : "未成立"} ／
         青 {detail.state.mandate[1] ? "成立" : "未成立"}
       </p>
+      <details onToggle={e => setShowChanges(e.currentTarget.open)}>
+        <summary>直前の局面からの変化</summary>
+        {!incomingNodes.length ? <p className="muted">開始局面です</p> : <>
+          <label>比較元<select value={previousNode} onChange={e => setPredecessor(Number(e.target.value))}>{incomingNodes.map(id => <option value={id} key={id}>N{id}</option>)}</select></label>
+          {previousQuery.loading && !changes && <p className="muted">比較元を読み込み中</p>}
+          {previousQuery.error && <p role="alert">{previousQuery.error}</p>}
+          {changes && <>
+            <p className="tabular">経過 {changes.seconds}秒 · 得点変化 赤 {changes.scores[0] >= 0 ? "+" : ""}{changes.scores[0]} / 青 {changes.scores[1] >= 0 ? "+" : ""}{changes.scores[1]}</p>
+            <table><thead><tr><th>物体</th><th>変更前</th><th>変更後</th></tr></thead><tbody>
+              {changes.objects.map(({ before, after }) => <tr key={after.id}><th>{objectNames[after.kind]} {after.id}</th><td>{objectStateLabel(before, after)}</td><td>{objectStateLabel(after, before)}</td></tr>)}
+              {!changes.objects.length && <tr><td colSpan={3}>物体の変化なし</td></tr>}
+            </tbody></table>
+            {changes.robots.map(change => <p key={change.robot}>{robotNames[change.robot]}: {locationName(change.before.pos)} → {locationName(change.after.pos)} · {change.after.job ? actionName(change.after.job.action) : "動作終了"}</p>)}
+            <button onClick={() => run("nav.node", { node: previousNode })}>比較元の局面へ移動</button>
+            <button onClick={() => run("properties.exportDelta", changes)}>変化をJSON保存</button>
+          </>}
+        </>}
+      </details>
       <details open>
         <summary>選べる行動から次の局面へ</summary>
         {detail.actions.every((a) => a.length > 0) ? (
