@@ -20,6 +20,8 @@ function stats(a: MatchAnalysis) {
 
 function CompareEditor() {
   const [differencesOnly, setDifferencesOnly] = useState(false);
+  const [group, setGroup] = useState("all");
+  const [query, setQuery] = useState("");
   const compare = useUI((s) => s.session.compare);
   const time = useUI((s) => s.playback.time);
   const search = useSearch();
@@ -36,12 +38,12 @@ function CompareEditor() {
     );
   const sa = A && stats(A),
     sb = B && stats(B);
-  const nowA = A && sampleAt(A, time),
-    nowB = B && sampleAt(B, time);
+  const nowA = A && time >= A.start && time <= A.end ? sampleAt(A, time) : undefined,
+    nowB = B && time >= B.start && time <= B.end ? sampleAt(B, time) : undefined;
   const previous = changeTimes.findLast((t) => t < time - 0.001);
   const next = changeTimes.find((t) => t > time + 0.001);
   const seek = (t: number | undefined) => { if (t !== undefined) { ui.patchPlayback({ playing: false }); ui.seek(t); } };
-  const row = (label: string, a: React.ReactNode, b: React.ReactNode, diff?: number | null) => differencesOnly && A && B && a === b ? null : (
+  const row = (label: string, a: React.ReactNode, b: React.ReactNode, diff?: number | null, category = "score") => (group !== "all" && group !== category) || !label.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()) || (differencesOnly && A && B && a === b) ? null : (
     <tr key={label}>
       <th>{label}</th>
       <td className="tabular">{a ?? "—"}</td>
@@ -63,21 +65,25 @@ function CompareEditor() {
           `${t ? "青" : "赤"} ${{ place: "設置", flip: "反転", transfer: "搬送", retry: "リトライ", blocked: "実行不可" }[k]}`,
           sa?.count(k, t),
           sb?.count(k, t),
-          d(sa?.count(k, t), sb?.count(k, t)),
+          d(sa?.count(k, t), sb?.count(k, t)), "actions",
         ),
       ),
     ),
-    robotNames.map((n, r) => row(`${n} 稼働秒`, sa?.busy[r], sb?.busy[r], d(sa?.busy[r], sb?.busy[r]))),
+    robotNames.map((n, r) => row(`${n} 稼働秒`, sa?.busy[r], sb?.busy[r], d(sa?.busy[r], sb?.busy[r]), "robots")),
   ].flat(2).filter(Boolean);
   return (
     <div className="editor-scroll compare-editor">
       <p className="candidate-caveat">選んだ2経路の比較。構成・相手手順は各列の見出しで確認してください。</p>
       <div className="row">
+        <label>比較項目 <select value={group} onChange={(e) => setGroup(e.target.value)}><option value="all">すべて</option><option value="score">得点・取得条件</option><option value="actions">行動回数</option><option value="robots">機体の稼働時間</option></select></label>
+        <input type="search" aria-label="比較項目を検索" placeholder="比較項目を検索" value={query} onChange={(e) => setQuery(e.target.value)} />
+        {(group !== "all" || query || differencesOnly) && <button className="tool" onClick={() => { setGroup("all"); setQuery(""); setDifferencesOnly(false); }}>表示を戻す</button>}
         <label><input type="checkbox" checked={differencesOnly} disabled={!A || !B} onChange={(e) => setDifferencesOnly(e.target.checked)} /> 差がある項目だけ</label>
         <button className="tool" disabled={previous === undefined} onClick={() => seek(previous)}>前の点差変化</button>
         <button className="tool" disabled={next === undefined} onClick={() => seek(next)}>次の点差変化</button>
         <span className="muted">B−Aの変化 {changeTimes.length}か所</span>
       </div>
+      {A && B && <p className="muted">共通の再生範囲：{Math.max(A.start, B.start) <= Math.min(A.end, B.end) ? `${Math.max(A.start, B.start)}–${Math.min(A.end, B.end)}秒` : "なし"}。各経路の範囲外の得点は「—」で表示します。</p>}
       <table className="compare-table">
         <thead>
           <tr>
@@ -88,7 +94,7 @@ function CompareEditor() {
           </tr>
         </thead>
         <tbody>
-          {rows.length ? rows : <tr><td colSpan={4}>表示中の比較項目に差はありません。</td></tr>}
+          {rows.length ? rows : <tr><td colSpan={4}>条件に合う比較項目はありません。検索語・比較項目・差分表示を変更してください。</td></tr>}
         </tbody>
       </table>
       <div className="row">

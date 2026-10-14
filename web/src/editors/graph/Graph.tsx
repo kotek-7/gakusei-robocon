@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { graphNodes, type GraphScope } from "./view";
 import type { Graph as Data, Edge } from "../../engine/types";
 export function Graph({
   data,
@@ -17,16 +18,19 @@ export function Graph({
   onPage: (o: number) => void;
   onReveal: () => void;
 }) {
+  const [scope, setScope] = useState<GraphScope>("page");
+  const nodes = useMemo(() => graphNodes(data, selected, path, scope), [data, selected, path, scope]);
+  const frontier = nodes.filter((n) => !n.expanded);
   const [zoom, setZoom] = useState(1);
   const [fit, setFit] = useState(false);
   const viewport = useRef<HTMLDivElement>(null);
   const layout = useMemo(() => {
-    const times = [...new Set(data.nodes.map((n) => n.state.t))].sort(
+    const times = [...new Set(nodes.map((n) => n.state.t))].sort(
       (a, b) => a - b,
     );
     const counts = new Map<number, number>();
     const positions = new Map<number, { x: number; y: number }>();
-    for (const n of data.nodes) {
+    for (const n of nodes) {
       const row = counts.get(n.state.t) || 0;
       positions.set(n.id, {
         x: 40 + times.indexOf(n.state.t) * 185,
@@ -40,7 +44,7 @@ export function Graph({
       width: Math.max(600, times.length * 185 + 60),
       height: Math.max(175, ...[...counts.values()].map((n) => n * 90 + 90)),
     };
-  }, [data]);
+  }, [nodes]);
   function revealSelection() {
     const p = selected === null ? undefined : layout.positions.get(selected);
     const el = viewport.current;
@@ -72,7 +76,12 @@ export function Graph({
     observer.observe(element);
     return () => observer.disconnect();
   }, [fit, layout.width]);
-  const omitted = data.edges.filter((e) => !layout.positions.has(e.dst)).length;
+  const omitted = data.edges.filter((e) => layout.positions.has(e.src) && !layout.positions.has(e.dst)).length;
+  function nextFrontier() {
+    const index = frontier.findIndex((n) => n.id === selected);
+    const next = frontier[(index + 1) % frontier.length];
+    if (next) select(next.id);
+  }
   return (
     <section className="graph-panel" aria-label="状態遷移グラフ">
       <div className="graph-tools">
@@ -94,6 +103,11 @@ export function Graph({
             次の100局面
           </button>
         </div>
+        <label>表示 <select value={scope} onChange={(e) => setScope(e.target.value as GraphScope)}>
+          <option value="page">ページ全体</option><option value="neighbors">選択局面と前後</option><option value="path">選択経路</option>
+        </select></label>
+        <span>表示 {nodes.length}局面 · 未展開 {frontier.length}</span>
+        <button disabled={!frontier.length} onClick={nextFrontier}>次の未展開局面</button>
         <button onClick={revealSelection} disabled={selected === null}>
           選択局面を表示
         </button>
@@ -112,6 +126,8 @@ export function Graph({
           </select>
         </label>
       </div>
+      {scope !== "page" && <p className="muted">読み込み済みの{data.nodes.length}局面から絞り込み中。非表示の局面・ページ外の分岐も探索対象に残ります。</p>}
+      {!nodes.length && <p className="muted">このページには対象の局面がありません。「ページ全体」に戻すか、選択局面を表示してください。</p>}
       <div
         className="graph-scroll"
         ref={viewport}
@@ -169,7 +185,7 @@ export function Graph({
                   aria-label={`遷移 ${e.id}: 局面${e.src}から${e.dst}`}
                   onClick={() => chooseEdge(e)}
                   onKeyDown={(k) => {
-                    if (k.key === "Enter") chooseEdge(e);
+                    if (k.key === "Enter" || k.key === " ") { k.preventDefault(); chooseEdge(e); }
                   }}
                 >
                   <title>{`E${e.id}: N${e.src} → N${e.dst}`}</title>
@@ -177,7 +193,7 @@ export function Graph({
               </g>
             );
           })}
-          {data.nodes.map((n) => {
+          {nodes.map((n) => {
             const p = layout.positions.get(n.id)!;
             return (
               <g
@@ -228,7 +244,7 @@ export function Graph({
         <span>破線：未展開あり</span>
         <span>実線：展開済み</span>
         <span>二重枠：180秒</span>
-        <span>ページ外への遷移：{omitted}本（局面詳細から移動可）</span>
+        <span>表示外への遷移：{omitted}本（局面詳細から移動可）</span>
       </div>
     </section>
   );

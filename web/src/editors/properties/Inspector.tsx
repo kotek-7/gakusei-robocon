@@ -1,5 +1,5 @@
 import { objectNames } from "../common/labels";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { register, run } from "../../app/commands";
 import { fetchQuery } from "../../app/data";
 import { ui, useUI } from "../../app/store";
@@ -38,7 +38,11 @@ export function Inspector({
 }) {
   const time = useUI((s) => s.playback.time);
   const [edgeQuery, setEdgeQuery] = useState("");
+  const [objectQuery, setObjectQuery] = useState("");
+  const [objectKind, setObjectKind] = useState("all");
+  const objects = detail.state.objects.filter((o) => (objectKind === "all" || o.kind === objectKind) && `${o.id} ${objectNames[o.kind] || o.kind} ${locationName(o.loc)}`.toLocaleLowerCase().includes(objectQuery.trim().toLocaleLowerCase()));
   const [indices, setIndices] = useState([0, 0, 0, 0]);
+  useEffect(() => setIndices([0, 0, 0, 0]), [detail.id]);
   const outgoing = detail.edges.filter((e) => e.src === detail.id),
     incoming = detail.edges.filter((e) => e.dst === detail.id);
   const filteredOutgoing = outgoing.filter((edge) => {
@@ -174,6 +178,14 @@ export function Inspector({
       </button>
       <details>
         <summary>物体の所在・保持・搬送履歴</summary>
+        <div className="row">
+          <input type="search" aria-label="物体を検索" placeholder="物体ID・所在" value={objectQuery} onChange={(e) => setObjectQuery(e.target.value)} />
+          <select aria-label="物体の種別" value={objectKind} onChange={(e) => setObjectKind(e.target.value)}>
+            <option value="all">すべての種別</option>{[...new Set(detail.state.objects.map((o) => o.kind))].map((kind) => <option key={kind} value={kind}>{objectNames[kind] || kind}</option>)}
+          </select>
+          <span>{objects.length} / {detail.state.objects.length}個</span>
+          {(objectQuery || objectKind !== "all") && <button onClick={() => { setObjectQuery(""); setObjectKind("all"); }}>絞り込みを解除</button>}
+        </div>
         <table>
           <thead>
             <tr>
@@ -184,7 +196,8 @@ export function Inspector({
             </tr>
           </thead>
           <tbody>
-            {detail.state.objects.map((o) => (
+            {!objects.length && <tr><td colSpan={4}>一致する物体はありません</td></tr>}
+            {objects.map((o) => (
               <tr key={o.id}>
                 <td>{o.id}</td>
                 <td>{objectNames[o.kind] || o.kind}</td>

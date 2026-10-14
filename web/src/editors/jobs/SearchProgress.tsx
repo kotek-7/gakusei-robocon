@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { isEnabled } from "../../app/commands";
+import { saveJSON, startJob } from "../../app/coreCommands";
 import type { Search } from "../../engine/types";
 
 function duration(seconds: number) {
@@ -18,13 +20,14 @@ const stopLabels: Record<string, string> = {
 };
 
 export function DiscoveryProgress({ search, onDefinitions }: { search: Search; onDefinitions: () => void }) {
+  const [reason, setReason] = useState("all");
   const [allHistory, setAllHistory] = useState(false);
   const [improvementsOnly, setImprovementsOnly] = useState(false);
   const report = search.discovery;
   const running = search.status === "running" && search.job === "discovery";
   const pending = report?.metrics.pending || 0;
   const sessions = [...(report?.sessions || [])].reverse();
-  const filteredSessions = sessions.map((session, index) => ({ session, index })).filter(({ session }) => !improvementsOnly || session.newCandidates > 0 || session.newStrategies > 0 || session.scoreChanges.length > 0);
+  const filteredSessions = sessions.map((session, index) => ({ session, index })).filter(({ session }) => (reason === "all" || session.reason === reason) && (!improvementsOnly || session.newCandidates > 0 || session.newStrategies > 0 || session.scoreChanges.length > 0));
   const visibleSessions = allHistory ? filteredSessions : filteredSessions.slice(0, 3);
   return (
     <section className="discovery-progress" aria-label="候補探索の進み具合">
@@ -44,20 +47,24 @@ export function DiscoveryProgress({ search, onDefinitions }: { search: Search; o
       {!!report?.sessions.length && <div className="discovery-history">
         <div className="history-heading">
           <h3>計算履歴</h3>
+          <label>終了理由 <select value={reason} onChange={(e) => setReason(e.target.value)}><option value="all">すべて</option>{[...new Set(sessions.map((s) => s.reason))].map((value) => <option key={value} value={value}>{stopLabels[value] || value}</option>)}</select></label>
+          <button disabled={!filteredSessions.length} onClick={() => saveJSON({ search: search.id, scope: "保存済みの候補探索履歴", sessions: filteredSessions.map(({session}) => session) }, "discovery-history.json")}>絞った履歴を保存</button>
           <button className="tool" aria-pressed={improvementsOnly} onClick={() => setImprovementsOnly(!improvementsOnly)}>候補・得点の更新あり</button>
           {filteredSessions.length > 3 && <button onClick={() => setAllHistory(!allHistory)}>{allHistory ? "直近3回" : `全${filteredSessions.length}回`}</button>}
         </div>
+        <p className="muted">条件に一致 {filteredSessions.length} / {sessions.length}回 · 合計 {duration(filteredSessions.reduce((n, {session}) => n + session.seconds, 0))} · 候補増 {filteredSessions.reduce((n, {session}) => n + session.newCandidates, 0)} · 対応検査 {filteredSessions.reduce((n, {session}) => n + session.responses, 0)}件</p>
         <div className="progress-table" tabIndex={0} role="region" aria-label="候補探索の計算履歴">
           <table>
-            <thead><tr><th>時間</th><th>候補増</th><th>種類増</th><th>対応検査</th><th>得点更新</th><th>終了</th></tr></thead>
+            <thead><tr><th>時間</th><th>候補増</th><th>種類増</th><th>対応検査</th><th>得点更新</th><th>終了</th><th>再開</th></tr></thead>
             <tbody>{visibleSessions.map(({ session: s, index }) => <tr key={index}>
               <td>{index === 0 ? "直近 · " : `${index + 1}回前 · `}{duration(s.seconds)}</td>
               <td>+{s.newCandidates}</td><td>+{s.newStrategies}</td><td>+{s.responses}</td>
               <td>{s.scoreChanges.length ? <details className="score-changes"><summary>{s.scoreChanges.length}構成</summary><ul>{s.scoreChanges.map((v) => <li key={v.run}>C{v.run}: {v.before} → {v.after}点</li>)}</ul></details> : "なし"}</td>
               <td>{({ exhausted: "範囲内完了", time_limit: "時間上限", cancelled: "停止", resource_limit: "保存量上限", error: "エラー" } as Record<string, string>)[s.reason] || s.reason}</td>
+              <td><button disabled={!isEnabled("job.discover") || s.budget < 1} onClick={() => startJob("discovery", {seconds: s.budget})} title="保存済みの探索を、この回と同じ制限時間で続けます">{duration(s.budget)}で続ける</button></td>
             </tr>)}</tbody>
           </table>
-          {!visibleSessions.length && <p className="muted">候補・得点が更新された計算はありません</p>}
+          {!visibleSessions.length && <p className="muted">条件に一致する計算履歴はありません</p>}
         </div>
       </div>}
       <div className="history-footer">

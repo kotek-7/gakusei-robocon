@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { run as command } from "../../app/commands";
 import "./commands";
+import { worstCommonResponse } from "./evidence";
 import { profileNames } from "../common/labels";
 import type { CandidateEvidence, Goal, Search, Model, Variant } from "../../engine/types";
 
@@ -24,6 +25,8 @@ export function Candidates({
   const [run, setRun] = useState("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("discovery");
+  const [status, setStatus] = useState("all");
+  const [opponent, setOpponent] = useState("");
   const report = search.discovery;
   const selectedRun = report?.runs.find((r) => String(r.run) === run);
   function configuration(v: Variant) {
@@ -52,6 +55,7 @@ export function Candidates({
         candidate: c,
       })),
     ) || [];
+  const opponents = [...new Set(rows.filter((r) => run === "all" || String(r.run) === run).flatMap((r) => r.common))].sort();
   const visibleRows = rows
     .filter(({ run: r, candidate: c }) =>
       (run === "all" || String(r) === run) &&
@@ -59,14 +63,13 @@ export function Candidates({
         .toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()),
     )
     .map((row) => {
-      const comparable = row.candidate.responses.filter(
-        (x) => x.shared && x.opponent && row.common.includes(x.opponent),
-      );
-      const worst = comparable.reduce<CandidateEvidence | null>(
-        (lowest, x) => !lowest || margin(x) < margin(lowest) ? x : lowest, null,
-      );
+      const worst = worstCommonResponse(row.candidate, row.common, opponent);
       return { ...row, worst };
     })
+    .filter((row) => (!opponent || row.worst !== null) &&
+      (status !== "pending" || row.candidate.pending > 0) &&
+      (status !== "comparable" || row.worst !== null) &&
+      (status !== "blocked" || row.candidate.responses.some((x) => (!opponent || x.opponent === opponent) && !!x.blocked?.length)))
     .sort((a, b) => {
       if (sort === "baseline") return margin(b.candidate.baseline) - margin(a.candidate.baseline);
       if (sort === "pending") return b.candidate.pending - a.candidate.pending;
@@ -105,7 +108,7 @@ export function Candidates({
           <div className="candidate-controls">
             <label>
               表示する構成{" "}
-              <select value={run} onChange={(e) => setRun(e.target.value)}>
+              <select value={run} onChange={(e) => { setRun(e.target.value); setOpponent(""); }}>
                 <option value="all">すべて</option>
                 {report.runs.map((r) => (
                   <option key={r.run} value={r.run}>
@@ -128,13 +131,21 @@ export function Candidates({
                 <option value="pending">未比較が多い順</option>
               </select>
             </label>
-            {(query || run !== "all" || sort !== "discovery") && <button onClick={() => { setQuery(""); setRun("all"); setSort("discovery"); }}>表示を戻す</button>}
+            <label>検査状況 <select value={status} onChange={(e) => setStatus(e.target.value)}>
+              <option value="all">すべて</option><option value="comparable">共通比較あり</option><option value="pending">未比較あり</option><option value="blocked">実行不可あり</option>
+            </select></label>
+            <label>共通の相手手順 <select value={opponent} onChange={(e) => setOpponent(e.target.value)}>
+              <option value="">すべての共通手順</option>
+              {opponents.map((id) => <option value={id} key={id}>{id}</option>)}
+            </select></label>
+            {(query || run !== "all" || sort !== "discovery" || status !== "all" || opponent) && <button onClick={() => { setQuery(""); setRun("all"); setSort("discovery"); setStatus("all"); setOpponent(""); }}>表示を戻す</button>}
             <button onClick={() => command("compare.open")}>A/B比較を開く</button>
             <span>
               {visibleRows.length} / {rows.length}候補
             </span>
           </div>
           {selectedRun && <p>{configuration(selectedRun.variant)}</p>}
+          {opponent && <p className="candidate-caveat">相手手順 {opponent} に固定。同じ構成内で比較してください。全裁定分岐を検査済みの結果だけを表示しています。</p>}
           <p className="candidate-caveat">点差は確認済みの相手手順での結果です。全対応への保証ではありません。</p>
           <div
             className="candidate-table"
@@ -152,7 +163,7 @@ export function Candidates({
                     <br />赤 対 青
                   </th>
                   <th>相手の対応</th>
-                  <th>共通の相手手順での最小点差</th>
+                  <th>{opponent ? "指定した共通手順での最小点差" : "共通の相手手順での最小点差"}</th>
                   <th>計算した展開</th>
                 </tr>
               </thead>
@@ -183,7 +194,10 @@ export function Candidates({
                             : `${margin(worst) > 0 ? "+" : ""}${margin(worst)}点`}
                         </td>
                         <td>
-                          {worst && <button disabled={!worst.path.length} onClick={() => onOpen(r, worst)}>最小点差の経路</button>}
+                          {worst && <>
+                            <button disabled={!worst.path.length} onClick={() => onOpen(r, worst)}>最小点差の経路</button>
+                            {compareButtons(worst, `C${r} · ${c.id.slice(0, 8)} · 相手 ${c.responses.find((x) => x === worst)?.opponent ?? "共通手順"}`)}
+                          </>}
                           <details>
                             <summary>得点と経路</summary>
                             <p>相手待機：{score(c.baseline)}</p>
@@ -191,7 +205,7 @@ export function Candidates({
                               相手待機の経路を開く
                             </button>
                             {compareButtons(c.baseline, `C${r} · ${c.id.slice(0, 8)} · 相手待機`)}
-                            {c.responses.map((response, i) => (
+                            {c.responses.filter((response) => (!opponent || response.opponent === opponent) && (status !== "blocked" || !!response.blocked?.length)).map((response, i) => (
                               <div className="candidate-response" key={i}>
                                 <p>
                                   相手手順 <span title={response.opponent}>{response.opponent?.slice(0, 14)}</span>（
@@ -210,6 +224,7 @@ export function Candidates({
                                     </>
                                   )}
                                 </p>
+                                {!!response.blocked?.length && <details><summary>実行不可の時刻と理由</summary><ul>{response.blocked.map((b, j) => <li key={j}>{b.t}秒 · {['赤TR', '赤BR', '青TR', '青BR'][b.robot] ?? b.robot} · 手順{b.instruction + 1}：{b.reason}</li>)}</ul></details>}
                                 <button onClick={() => onOpen(r, response)}>
                                   対応{i + 1}の経路を開く
                                 </button>
