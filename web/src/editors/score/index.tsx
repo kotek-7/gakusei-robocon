@@ -1,3 +1,4 @@
+import { Icon } from "../../shell/icons";
 import { Help } from "../common/Help";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./score.css";
@@ -22,25 +23,26 @@ import { sampleAt, scoreRangeDelta } from "./range";
 function Header({ area }: EditorProps) {
   const mode = (area.state?.mode as string) ?? "both";
   return (
-    <div className="area-tools segmented" role="group" aria-label="グラフの種類">
+    <div className="area-tools score-header">
+      <fieldset className="score-options" aria-label="グラフの種類">
       {[
         ["both", "両チーム"],
         ["margin", "点差"],
         ["stack", "内訳"],
       ].map(([v, l]) => (
-        <button key={v} className="tool" aria-pressed={mode === v} onClick={() => layout.setAreaState(area.id, { mode: v })}>
-          {l}
-        </button>
+        <label key={v}><input type="radio" name={`score-mode-${area.id}`} value={v} checked={mode === v} onChange={() => layout.setAreaState(area.id, { mode: v })} />{l}</label>
       ))}
+      </fieldset>
       <button
-        className="tool"
+        className="tool icon-only"
         title="得点推移をCSVでコピー"
+        aria-label="得点推移をCSVでコピー"
         onClick={() => {
           const el = document.querySelector<HTMLElement>(`[data-score-csv="${area.id}"]`);
           if (el?.dataset.csv) navigator.clipboard.writeText(el.dataset.csv).then(() => ui.toast("CSVをコピーしました")).catch(ui.error);
         }}
       >
-        CSV
+        <Icon name="copy" />
       </button>
     </div>
   );
@@ -94,6 +96,13 @@ function Chart({ a, mode, horizon }: { a: MatchAnalysis; mode: string; horizon: 
   return (
     <div ref={ref} className="score-chart">
       <svg
+        role="slider" tabIndex={0} aria-label="得点グラフの再生位置" aria-valuemin={0} aria-valuemax={horizon} aria-valuenow={time} aria-valuetext={`${time.toFixed(1)}秒`}
+        onKeyDown={e => {
+          if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
+          e.preventDefault(); e.stopPropagation();
+          const next = e.key === "Home" ? 0 : e.key === "End" ? horizon : time + (e.key === "ArrowRight" ? 1 : -1) * (e.shiftKey ? 1 : 0.25);
+          ui.patchPlayback({ time: Math.max(0, Math.min(horizon, next)), playing: false });
+        }}
         width={w}
         height={h}
         onPointerDown={(e) => {
@@ -176,14 +185,14 @@ function ScoreEditor({ area }: EditorProps) {
   return (
     <div className="editor-scroll score-editor" data-score-csv={area.id} data-csv={csv}>
       <div className="area-tools" style={{ flexWrap: "wrap" }}>
-        <button className="tool" disabled={!previous} onClick={() => previous && ui.patchPlayback({ time: previous.t, playing: false })}>前の得点変化</button>
-        <button className="tool" disabled={!next} onClick={() => next && ui.patchPlayback({ time: next.t, playing: false })}>次の得点変化</button>
+        <button className="tool icon-only" title="前の得点変化へ" aria-label="前の得点変化へ" disabled={!previous} onClick={() => previous && ui.patchPlayback({ time: previous.t, playing: false })}><Icon name="prevEvent" /></button>
+        <button className="tool icon-only" title="次の得点変化へ" aria-label="次の得点変化へ" disabled={!next} onClick={() => next && ui.patchPlayback({ time: next.t, playing: false })}><Icon name="nextEvent" /></button>
         <span className="muted tabular">{changes.length}回</span>
       </div>
       <Chart a={analysis} mode={mode} horizon={search.config.horizon} />
       <div className="score-scope" role="group" aria-label="得点の集計範囲">
-        <button className="tool" aria-pressed={!rangeMode} onClick={() => layout.setAreaState(area.id, { scoreScope: "point" })}>再生位置</button>
-        <button className="tool" disabled={!range} aria-pressed={rangeMode} onClick={() => layout.setAreaState(area.id, { scoreScope: "range" })}>選択区間の増減</button>
+        <fieldset className="score-options" aria-label="集計対象"><label><input type="radio" name={`score-scope-${area.id}`} checked={!rangeMode} onChange={() => layout.setAreaState(area.id, { scoreScope: "point" })} />再生位置</label>
+        <label><input type="radio" name={`score-scope-${area.id}`} disabled={!range} checked={rangeMode} onChange={() => layout.setAreaState(area.id, { scoreScope: "range" })} />区間増減</label></fieldset>
         {rangeMode && range && <><button className="tool" onClick={() => ui.patchPlayback({ time: range[0], playing: false })}>開始へ</button><button className="tool" onClick={() => ui.patchPlayback({ time: range[1], playing: false })}>終了へ</button></>}
       </div>
       {rangeMode ? <>

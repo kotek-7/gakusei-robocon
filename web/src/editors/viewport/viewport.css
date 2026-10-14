@@ -1,0 +1,11 @@
+.viewport-header > .tool { border-color: transparent; background: transparent; }
+.viewport-header > .tool:hover { background: var(--surface-2); }
+.viewport-header > .tool[aria-pressed="true"] { color: var(--accent); background: var(--surface-2); }
+.viewport-header .header-field { margin-inline-start: 6px; padding-inline-start: 8px; border-inline-start: 1px solid var(--line); }
+.viewport-overlay-popover { position: fixed; inset: auto; margin: 0; width: 236px; max-height: calc(100dvh - 16px); overflow: auto; padding: 10px 12px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
+.viewport-overlay-popover fieldset { margin: 0; padding: 0; border: 0; }
+.viewport-overlay-popover fieldset + fieldset { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--line); }
+.viewport-overlay-popover legend { font-weight: 600; margin-bottom: 5px; }
+.viewport-overlay-popover label { display: flex; align-items: center; gap: 8px; min-height: 28px; cursor: pointer; }
+.viewport-overlay-popover input { margin: 0; accent-color: var(--accent); }
+.viewport-overlay-popover label:has(input:disabled) { color: var(--muted); cursor: default; }

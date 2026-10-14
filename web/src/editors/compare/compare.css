@@ -1,0 +1,7 @@
+.compare-filterbar { padding-block: 6px; border-bottom: 1px solid var(--line); }
+.compare-filterbar input[type="search"] { flex: 1; min-width: 120px; }
+.compare-navigation { display: flex; align-items: center; gap: 4px; margin-block: 6px; }
+.compare-navigation .tool, .compare-source .tool { border: 0; background: transparent; }
+.compare-navigation .tool:hover:not(:disabled), .compare-source .tool:hover { background: var(--hover); }
+.compare-source { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+.compare-source span { overflow-wrap: anywhere; }

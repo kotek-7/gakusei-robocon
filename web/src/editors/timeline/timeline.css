@@ -16,3 +16,14 @@
 .timeline-workbench .timeline-editor { overflow: auto; min-height: 0; }
 .timeline-transport { flex: 0 0 auto; border-top: 1px solid var(--line); padding: 3px 6px; overflow-x: auto; }
 .timeline-transport .transport { width: max-content; }
+
+.transport .transport-buttons, .transport .transport-range { display: flex; align-items: center; gap: 2px; }
+.transport .transport-buttons .tool, .transport > .tool { border: 0; background: transparent; border-radius: 3px; }
+.transport .transport-buttons .tool:hover, .transport > .tool:hover { background: var(--surface-2); }
+.transport .tool[aria-pressed="true"] { color: var(--accent); background: var(--surface-2); }
+.transport .transport-range { gap: 8px; margin-inline: 8px; padding-inline-start: 10px; border-inline-start: 1px solid var(--line); }
+.transport .range-switch, .transport .range-endpoint { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.transport .range-switch input { margin: 0; accent-color: var(--accent); }
+.transport .range-endpoint input { width: 64px; height: 24px; font-variant-numeric: tabular-nums; }
+.transport .range-endpoint > span { color: var(--muted); }
+.transport .transport-speed { width: 60px; border-color: transparent; background: transparent; }

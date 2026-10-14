@@ -1,3 +1,5 @@
+import { Icon } from "../../shell/icons";
+import "./compare.css";
 import { useMemo, useState } from "react";
 import { register, run } from "../../app/commands";
 import { useAnalysis, useSearch } from "../../app/session";
@@ -90,13 +92,14 @@ function CompareEditor() {
   return (
     <div className="editor-scroll compare-editor">
       <p className="candidate-caveat">選んだ2経路の比較。構成・相手手順は各列の見出しで確認してください。</p>
-      <div className="row">
+      <div className="row compare-filterbar">
         <label>比較項目 <select value={group} onChange={(e) => setGroup(e.target.value)}><option value="all">すべて</option><option value="score">得点・取得条件</option><option value="actions">行動回数</option><option value="robots">機体の稼働時間</option></select></label>
         <input type="search" aria-label="比較項目を検索" placeholder="比較項目を検索" value={query} onChange={(e) => setQuery(e.target.value)} />
         {(group !== "all" || query || differencesOnly) && <button className="tool" onClick={() => { setGroup("all"); setQuery(""); setDifferencesOnly(false); }}>表示を戻す</button>}
         <label><input type="checkbox" checked={differencesOnly} disabled={!A || !B} onChange={(e) => setDifferencesOnly(e.target.checked)} /> 差がある項目だけ</label>
-        <button className="tool" disabled={previous === undefined} onClick={() => seek(previous)}>前の点差変化</button>
-        <button className="tool" disabled={next === undefined} onClick={() => seek(next)}>次の点差変化</button>
+      </div><div className="compare-navigation" role="group" aria-label="点差変化をたどる">
+        <button className="tool icon-only" title="前の点差変化へ" aria-label="前の点差変化へ" disabled={previous === undefined} onClick={() => seek(previous)}><Icon name="prevEvent" /></button>
+        <button className="tool icon-only" title="次の点差変化へ" aria-label="次の点差変化へ" disabled={next === undefined} onClick={() => seek(next)}><Icon name="nextEvent" /></button>
         <span className="muted">B−Aの変化 {changeTimes.length}か所</span>
       </div>
       {A && B && <p className="muted">共通の再生範囲：{Math.max(A.start, B.start) <= Math.min(A.end, B.end) ? `${Math.max(A.start, B.start)}–${Math.min(A.end, B.end)}秒` : "なし"}。各経路の範囲外の得点は「—」で表示します。</p>}
@@ -105,20 +108,14 @@ function CompareEditor() {
         <thead>
           <tr>
             <th />
-            <th>A {compare.label[0]}</th>
-            <th>B {compare.label[1]}</th>
-            <th>B−A</th>
+            {[0, 1].map(side => <th key={side}><div className="compare-source"><span>{side ? "B" : "A"} {compare.label[side] || "未設定"}</span><button className="tool icon-only" title={`現在の経路を${side ? "B" : "A"}に設定`} aria-label={`現在の経路を${side ? "B" : "A"}に設定`} onClick={() => run(side ? "compare.setB" : "compare.setA")}><Icon name="pin" /></button></div></th>)}
+            <th><div className="compare-source"><span>B−A</span><button className="tool icon-only" title="AとBを入れ替え" aria-label="AとBを入れ替え" onClick={() => run("compare.swap")}><Icon name="swap" /></button></div></th>
           </tr>
         </thead>
         <tbody>
           {rows.length ? rows : <tr><td colSpan={4}>条件に合う比較項目はありません。検索語・比較項目・差分表示を変更してください。</td></tr>}
         </tbody>
       </table>
-      <div className="row">
-        <button className="tool" onClick={() => run("compare.setA")}>現在の経路をAに</button>
-        <button className="tool" onClick={() => run("compare.setB")}>現在の経路をBに</button>
-        <button className="tool" onClick={() => run("compare.swap")}>入れ替え</button>
-      </div>
     </div>
   );
 }

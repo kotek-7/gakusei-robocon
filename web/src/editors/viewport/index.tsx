@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { register, run } from "../../app/commands";
 import { definePrefs, usePref } from "../../app/prefs";
 import { layout, useLayout, findArea } from "../../app/layout";
@@ -18,6 +18,7 @@ import {
   type ViewName,
 } from "../../viewport/scene";
 import model from "../../engine/model-data.json";
+import "./viewport.css";
 
 /** Live scenes by area id, so commands act on the viewport under the pointer. */
 const scenes = new Map<string, SceneAPI>();
@@ -393,6 +394,25 @@ function entityMenu(ref: string | null, frame: Frame | null): MenuItem[] {
   return items;
 }
 
+function OverlayControls({ area }: EditorProps) {
+  const id = useId();
+  const [position, setPosition] = useState({ left: 0, top: 0 });
+  const overlays = { ...DEFAULT_OVERLAYS, ...(area.state?.overlays as Partial<Overlays>) };
+  const groups: [string, (keyof Overlays)[]][] = [["競技場", ["field", "xray", "grid", "zones"]], ["解析表示", ["labels", "spots", "trails", "routes", "ghost"]]];
+  return <>
+    <button className="tool viewport-menu" popoverTarget={id} title="表示レイヤー" onClick={e => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setPosition({ left: Math.max(8, Math.min(rect.left, window.innerWidth - 248)), top: Math.max(8, Math.min(rect.bottom + 4, window.innerHeight - 380)) });
+    }}><Icon name="layers" />表示<Icon name="chevron" size={12} /></button>
+    <div id={id} popover="auto" className="viewport-overlay-popover" style={position} aria-label="表示レイヤー">
+      {groups.map(([title, keys]) => <fieldset key={title}><legend>{title}</legend>{keys.map(key => <label key={key}>
+        <input type="checkbox" checked={overlays[key]} disabled={key === "xray" && !overlays.field} onChange={e => layout.setAreaState(area.id, { overlays: { ...overlays, [key]: e.currentTarget.checked } })} />
+        {OVERLAY_LABELS.find(([k]) => k === key)![1]}
+      </label>)}</fieldset>)}
+    </div>
+  </>;
+}
+
 function Header({ area }: EditorProps) {
   const ws = useWorkspaceData();
   const follow = area.state?.follow as string | null;
@@ -405,26 +425,16 @@ function Header({ area }: EditorProps) {
     useUI.setState({ menu: { x: r.left, y: r.bottom + 2, items } });
   };
   return (
-    <div className="area-tools">
-      <button className="tool" onClick={(e) => open(e, VIEW_LABELS.map(([v]) => ({ command: `viewport.view.${v}` })))}>
+    <div className="area-tools viewport-header">
+      <button className="tool viewport-menu" aria-haspopup="menu" onClick={(e) => open(e, VIEW_LABELS.map(([v]) => ({ command: `viewport.view.${v}` })))}>
         視点
         <Icon name="chevron" size={12} />
       </button>
-      <button
-        className="tool"
-        onClick={(e) =>
-          open(
-            e,
-            OVERLAY_LABELS.map(([k]) => ({ command: `viewport.overlay.${k}` })),
-          )
-        }
-      >
-        表示
-        <Icon name="chevron" size={12} />
-      </button>
+      <OverlayControls area={area} />
       <button
         className="tool icon-only"
         aria-pressed={!!follow}
+        aria-label="選択機体の追従"
         title={follow ? `${robotNames[Number(follow.slice(6))]}を追従中 (F)` : "選択した機体を追従 (F)"}
         disabled={!follow && !selection?.startsWith("robot:")}
         onClick={() => {
@@ -437,6 +447,7 @@ function Header({ area }: EditorProps) {
       <button
         className="tool icon-only"
         aria-pressed={!!area.state?.measuring}
+        aria-label="距離の計測"
         title="距離を測る (Shift+D)：2点をクリック"
         onClick={() => (useUI.setState({ activeArea: area.id, activeEditor: "viewport" }), run("viewport.measure"))}
       >
@@ -445,6 +456,8 @@ function Header({ area }: EditorProps) {
       <button
         className="tool"
         title="保存した視点"
+        aria-label="保存した視点"
+        aria-haspopup="menu"
         onClick={(e) =>
           open(e, [
             ...(ws?.bookmarks.length
@@ -473,7 +486,7 @@ function Header({ area }: EditorProps) {
         <Icon name="camera" />
         <Icon name="chevron" size={12} />
       </button>
-      <button className="tool icon-only" title="画像で保存 (F12)" onClick={() => (useUI.setState({ activeArea: area.id }), run("viewport.screenshot"))}>
+      <button className="tool icon-only" aria-label="画像で保存" title="画像で保存 (F12)" onClick={() => (useUI.setState({ activeArea: area.id }), run("viewport.screenshot"))}>
         <Icon name="download" />
       </button>
       <label className="header-field" title="この領域に表示する経路">

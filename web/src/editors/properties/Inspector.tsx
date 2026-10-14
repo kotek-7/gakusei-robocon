@@ -69,9 +69,9 @@ export function Inspector({
           青 <b>{detail.scores[1]}</b>
         </span>
       </div>
-      <nav className="inspector-tabs" aria-label="局面の表示内容">
-        {[["state", "局面"], ["changes", "変化"], ["actions", "行動・遷移"], ["objects", "物体"]].map(([id, label]) => <button key={id} className="tool" aria-pressed={tab === id} onClick={() => setTab(id)}>{label}</button>)}
-      </nav>
+      <label className="inspector-view">表示<select aria-label="局面の表示内容" value={tab} onChange={e => setTab(e.currentTarget.value)}>
+        <option value="state">機体の状態</option><option value="changes">直前からの変化</option><option value="actions">行動と遷移</option><option value="objects">物体の所在</option>
+      </select></label>
       {tab === "state" && <div>
       <table>
         <thead>
@@ -83,7 +83,7 @@ export function Inspector({
         <tbody>
           {detail.state.robots.map((r, i) => (
             <tr key={i}>
-              <th><button className="link" onClick={() => ui.select(`robot:${i}`)}>{robotNames[i]}</button></th>
+              <th><button className="entity-reference" onClick={() => ui.select(`robot:${i}`)}>{robotNames[i]}</button></th>
               <td>
                 {locationName(r.pos)}
                 <small>
@@ -116,7 +116,7 @@ export function Inspector({
               {!changes.objects.length && <tr><td colSpan={3}>物体の変化なし</td></tr>}
             </tbody></table>
             {changes.robots.map(change => <p key={change.robot}>{robotNames[change.robot]}: {locationName(change.before.pos)} → {locationName(change.after.pos)} · {change.after.job ? actionName(change.after.job.action) : "動作終了"}</p>)}
-            <button onClick={() => run("nav.node", { node: previousNode })}>比較元の局面へ移動</button>
+            <button className="entity-reference" onClick={() => run("nav.node", { node: previousNode })}>比較元の局面へ移動</button>
             <button onClick={() => run("properties.exportDelta", changes)}>変化をJSON保存</button>
           </>}
         </>}
@@ -160,7 +160,7 @@ export function Inspector({
         )}
       <div className="section-title">
         <h3>出る遷移 {outgoing.length}</h3>
-        <button disabled={busy || detail.expanded} onClick={onExpand}>
+        <button className="action-button" disabled={busy || detail.expanded} onClick={onExpand}>
           {detail.expanded ? "展開済み" : "この局面を展開"}
         </button>
       </div>
@@ -213,7 +213,7 @@ export function Inspector({
             {!objects.length && <tr><td colSpan={4}>一致する物体はありません</td></tr>}
             {objects.map((o) => (
               <tr key={o.id}>
-                <td><button className="link" onClick={() => ui.select(`obj:${o.id}`)}>{o.id}</button></td>
+                <td><button className="entity-reference" onClick={() => ui.select(`obj:${o.id}`)}>{o.id}</button></td>
                 <td>{objectNames[o.kind] || o.kind}</td>
                 <td>{locationName(o.loc)}</td>
                 <td>{o.delivered.map((v) => (v ? "有" : "無")).join(" / ")}</td>

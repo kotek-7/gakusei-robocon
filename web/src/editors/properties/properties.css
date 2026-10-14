@@ -8,3 +8,9 @@
 .property-grid dt, .property-grid dd { margin: 0; padding: 7px 4px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
 .property-grid dt { color: var(--muted); }
 .selection-actions { padding-block: 6px; }
+
+.inspector-view { display: flex; align-items: center; gap: 8px; margin-block: 8px; padding-block: 6px; border-block: 1px solid var(--line); }
+.inspector-view select { flex: 1; min-width: 0; }
+.inspector .entity-reference, .selection-inspector .entity-reference { display: inline; border: 0; border-radius: 0; padding: 0; min-height: auto; color: var(--accent); background: transparent; font: inherit; text-align: start; text-decoration: underline; text-underline-offset: 3px; }
+.selection-context .icon-only { border: 0; background: transparent; }
+.selection-actions { gap: 16px; }

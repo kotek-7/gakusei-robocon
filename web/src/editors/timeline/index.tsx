@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { register, run } from "../../app/commands";
 import { currentAnalysis } from "../../app/coreCommands";
 import { eventTimes, nextEventTime } from "./navigation";
+import { editRangeEndpoint } from "./rangeInput";
 import "./IntervalEditor";
 import "./timeline.css";
 import { findArea, useLayout, layout } from "../../app/layout";
@@ -111,6 +112,21 @@ register(
   })),
 );
 
+function RangeEndpoint({ endpoint, range, horizon }: { endpoint: 0 | 1; range: [number, number]; horizon: number }) {
+  const [draft, setDraft] = useState<string | null>(null);
+  const commit = () => {
+    if (draft !== null) {
+      const next = editRangeEndpoint(range, endpoint, draft, horizon);
+      if (next) ui.patchPlayback({ range: next });
+    }
+    setDraft(null);
+  };
+  return <label className="range-endpoint">{endpoint === 0 ? "開始" : "終了"}<input type="number" step="0.25" min={endpoint === 0 ? 0 : range[0]} max={endpoint === 0 ? range[1] : horizon}
+    aria-label={`選択区間の${endpoint === 0 ? "開始" : "終了"}秒`} value={draft ?? range[endpoint]}
+    onFocus={e => { setDraft(String(range[endpoint])); e.currentTarget.select(); }} onChange={e => setDraft(e.currentTarget.value)}
+    onBlur={commit} onKeyDown={e => { if (e.key === "Enter") e.currentTarget.blur(); if (e.key === "Escape") { e.stopPropagation(); setDraft(String(range[endpoint])); } }} /><span>秒</span></label>;
+}
+
 export function Transport({ compact = false, filteredEvents = false }: { compact?: boolean; filteredEvents?: boolean }) {
   const playing = useUI((s) => s.playback.playing);
   const dir = useUI((s) => s.playback.direction);
@@ -119,13 +135,15 @@ export function Transport({ compact = false, filteredEvents = false }: { compact
   const loop = useUI((s) => s.playback.loop);
   const range = useUI((s) => s.playback.range);
   const [edit, setEdit] = useState<string | null>(null);
+  const horizon = useSearch()?.config.horizon ?? 180;
   const btn = (icon: Parameters<typeof Icon>[0]["name"], cmd: string, title: string, pressed?: boolean) => (
-    <button className="tool icon-only" title={title} aria-pressed={pressed} onClick={() => run(cmd)}>
+    <button className="tool icon-only" title={title} aria-label={title} aria-pressed={pressed} onClick={() => run(cmd)}>
       <Icon name={icon} />
     </button>
   );
   return (
-    <div className="transport">
+    <div className="transport" role="group" aria-label="再生操作">
+      <div className="transport-buttons" role="group" aria-label="再生・移動">
       {btn("first", "play.start", "先頭へ (Home)")}
       {!compact && btn("prevEvent", filteredEvents ? "timeline.prevEvent" : "play.prevEvent", filteredEvents ? "前の表示イベント (↓)" : "前のイベント (↓)")}
       {btn("stepBack", "play.stepBack", "0.25秒戻る (←)")}
@@ -133,6 +151,7 @@ export function Transport({ compact = false, filteredEvents = false }: { compact
       <button
         className="tool icon-only play"
         title="再生・一時停止 (Space)"
+        aria-label={playing ? "一時停止" : "再生"}
         aria-pressed={playing && dir > 0}
         onClick={() => run("play.toggle")}
       >
@@ -141,6 +160,7 @@ export function Transport({ compact = false, filteredEvents = false }: { compact
       {btn("stepFwd", "play.stepFwd", "0.25秒進む (→)")}
       {!compact && btn("nextEvent", filteredEvents ? "timeline.nextEvent" : "play.nextEvent", filteredEvents ? "次の表示イベント (↑)" : "次のイベント (↑)")}
       {btn("last", "play.end", "末尾へ (End)")}
+      </div>
       <input
         className="time-field tabular"
         aria-label="再生位置（分:秒 または 秒）"
@@ -159,29 +179,14 @@ export function Transport({ compact = false, filteredEvents = false }: { compact
           } else if (e.key === "Escape") (e.target as HTMLInputElement).blur();
         }}
       />
-      <button
-        className="tool"
-        title="再生速度"
-        onClick={(e) => {
-          const r = e.currentTarget.getBoundingClientRect();
-          useUI.setState({ menu: { x: r.left, y: r.bottom + 2, items: [0.25, 0.5, 1, 2, 4, 8].map((s) => ({ command: `play.speed${s}` })) } });
-        }}
-      >
-        {speed}倍
-      </button>
-      <button className="tool icon-only" title="ループ (Ctrl+L)" aria-pressed={loop} onClick={() => run("play.loop")}>
-        <Icon name="loop" />
-      </button>
-      {!compact && (
-        <button
-          className="tool"
-          title="再生範囲（I で開始、O で終了、Alt+I で解除）"
-          aria-pressed={!!range}
-          onClick={() => run(range ? "play.clearRange" : "play.setIn")}
-        >
-          {range ? `${range[0].toFixed(1)}–${range[1].toFixed(1)}` : "範囲"}
-        </button>
-      )}
+      <select className="transport-speed" aria-label="再生速度" value={speed} onChange={e => run(`play.speed${e.target.value}`)}>
+        {[0.25, 0.5, 1, 2, 4, 8].map(value => <option key={value} value={value}>{value}倍</option>)}
+      </select>
+      <button className="tool icon-only" aria-label="ループ再生" title="ループ (Ctrl+L)" aria-pressed={loop} onClick={() => run("play.loop")}><Icon name="loop" /></button>
+      {!compact && <div className="transport-range" role="group" aria-label="選択区間">
+        <label className="range-switch"><input type="checkbox" checked={!!range} onChange={() => run(range ? "play.clearRange" : "play.setIn")} />区間</label>
+        {range && <><RangeEndpoint endpoint={0} range={range} horizon={horizon} /><RangeEndpoint endpoint={1} range={range} horizon={horizon} /></>}
+      </div>}
       {!compact && btn("marker", "marker.add", "マーカーを追加 (M)")}
     </div>
   );

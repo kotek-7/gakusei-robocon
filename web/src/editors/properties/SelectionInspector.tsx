@@ -1,3 +1,4 @@
+import { Icon } from "../../shell/icons";
 import { run } from "../../app/commands";
 import { layout } from "../../app/layout";
 import { useFrame } from "../../app/session";
@@ -16,8 +17,8 @@ export function SelectionInspector() {
   const carried = robot ? frame.objects.filter(o => o.loc === `robot${selection.slice(6)}`) : [];
   const name = robot ? robotNames[Number(selection.slice(6))] : object ? `${objectNames[object.kind] || object.kind} ${object.id}` : spot !== null ? `建設スポット S${spot}` : selection;
   return <div className="selection-inspector">
-    <div className="selection-breadcrumb"><button className="tool" onClick={() => ui.select(null)}>局面</button><span aria-hidden="true">/</span><strong>{name}</strong></div>
-    <div className="selection-context"><span className="tabular">{frame.t.toFixed(1)}秒時点</span><button className="tool" onClick={() => { layout.reveal("viewport"); run("viewport.frameSelected"); }}>中央に表示</button></div>
+    <div className="selection-breadcrumb"><button className="entity-reference" onClick={() => ui.select(null)}>局面</button><span aria-hidden="true">/</span><strong>{name}</strong></div>
+    <div className="selection-context"><span className="tabular">{frame.t.toFixed(1)}秒時点</span><button className="tool icon-only" title="選択対象を3D中央に表示" aria-label="選択対象を3D中央に表示" onClick={() => { layout.reveal("viewport"); run("viewport.frameSelected"); }}><Icon name="focus" /></button></div>
     {robot && <>
       <dl className="property-grid">
         <dt>位置</dt><dd>{locationName(robot.location)}</dd>
@@ -25,8 +26,8 @@ export function SelectionInspector() {
         <dt>運搬中</dt><dd>{robot.carry.length}個</dd>
         <dt>座標（m）</dt><dd className="tabular">{robot.p.map(v => v.toFixed(2)).join(" / ")}</dd>
       </dl>
-      <div className="selection-actions"><button className="tool" onClick={() => { layout.reveal("viewport"); run("viewport.follow"); }}>追従を切替</button><button className="tool" onClick={() => layout.reveal("events")}>動作履歴</button><button className="tool" onClick={() => layout.reveal("interval-analysis")}>区間解析</button></div>
-      {!!robot.carry.length && <table><thead><tr><th>運搬中の物体</th></tr></thead><tbody>{carried.map(o => <tr key={o.id}><td><button className="link" onClick={() => ui.select(`obj:${o.id}`)}>{objectNames[o.kind] || o.kind} {o.id}</button></td></tr>)}</tbody></table>}
+      <div className="selection-actions"><button className="entity-reference" onClick={() => layout.reveal("events")}>動作履歴</button><button className="entity-reference" onClick={() => layout.reveal("interval-analysis")}>区間解析</button></div>
+      {!!robot.carry.length && <table><thead><tr><th>運搬中の物体</th></tr></thead><tbody>{carried.map(o => <tr key={o.id}><td><button className="entity-reference" onClick={() => ui.select(`obj:${o.id}`)}>{objectNames[o.kind] || o.kind} {o.id}</button></td></tr>)}</tbody></table>}
     </>}
     {object && <dl className="property-grid">
       <dt>種類</dt><dd>{objectNames[object.kind] || object.kind}</dd>
@@ -36,6 +37,6 @@ export function SelectionInspector() {
       {object.loc.startsWith("tower") && <><dt>段</dt><dd>{object.layer + 1}</dd></>}
       <dt>搬送加点済み</dt><dd>赤 {object.delivered[0] ? "有" : "無"} / 青 {object.delivered[1] ? "有" : "無"}</dd>
     </dl>}
-    {spot !== null && <><table><thead><tr><th>段</th><th>物体</th><th>上面</th></tr></thead><tbody>{stack.map(o => <tr key={o.id}><td>{o.layer + 1}</td><td><button className="link" onClick={() => ui.select(`obj:${o.id}`)}>{objectNames[o.kind] || o.kind} {o.id}</button></td><td>{o.kind === "S" ? o.face ? "青" : "赤" : "—"}</td></tr>)}{!stack.length && <tr><td colSpan={3}>空き</td></tr>}</tbody></table><button className="tool" onClick={() => layout.reveal("spots")}>このスポットの履歴</button></>}
+    {spot !== null && <><table><thead><tr><th>段</th><th>物体</th><th>上面</th></tr></thead><tbody>{stack.map(o => <tr key={o.id}><td>{o.layer + 1}</td><td><button className="entity-reference" onClick={() => ui.select(`obj:${o.id}`)}>{objectNames[o.kind] || o.kind} {o.id}</button></td><td>{o.kind === "S" ? o.face ? "青" : "赤" : "—"}</td></tr>)}{!stack.length && <tr><td colSpan={3}>空き</td></tr>}</tbody></table><button className="entity-reference" onClick={() => layout.reveal("spots")}>このスポットの履歴</button></>}
   </div>;
 }

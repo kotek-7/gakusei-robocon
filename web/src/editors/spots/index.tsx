@@ -1,3 +1,5 @@
+import { Icon } from "../../shell/icons";
+import "./spots.css";
 import { register, run } from "../../app/commands";
 import { useState } from "react";
 import { layout } from "../../app/layout";
@@ -45,16 +47,14 @@ function Stack({ stack }: { stack: StackItem[] }) {
 function Header({ area }: EditorProps) {
   const mode = (area.state?.mode as string) ?? "map";
   return (
-    <div className="area-tools segmented">
+    <fieldset className="area-tools spot-view-choice" aria-label="建設スポットの表示">
       {[
         ["map", "配置図"],
         ["list", "一覧"],
       ].map(([v, l]) => (
-        <button key={v} className="tool" aria-pressed={mode === v} onClick={() => layout.setAreaState(area.id, { mode: v })}>
-          {l}
-        </button>
+        <label key={v}><input type="radio" name={`spot-view-${area.id}`} checked={mode === v} onChange={() => layout.setAreaState(area.id, { mode: v })} />{l}</label>
       ))}
-    </div>
+    </fieldset>
   );
 }
 
@@ -144,8 +144,8 @@ function SpotsEditor({ area }: EditorProps) {
         <section className="spot-history">
           <h3>S{sel} の履歴</h3>
           <div className="area-tools">
-            <button className="tool" disabled={!previous} onClick={() => previous && ui.patchPlayback({ time: previous.t, playing: false })}>前の変化</button>
-            <button className="tool" disabled={!next} onClick={() => next && ui.patchPlayback({ time: next.t, playing: false })}>次の変化</button>
+            <button className="tool icon-only" title="前の建設状態へ" aria-label="前の建設状態へ" disabled={!previous} onClick={() => previous && ui.patchPlayback({ time: previous.t, playing: false })}><Icon name="prevEvent" /></button>
+            <button className="tool icon-only" title="次の建設状態へ" aria-label="次の建設状態へ" disabled={!next} onClick={() => next && ui.patchPlayback({ time: next.t, playing: false })}><Icon name="nextEvent" /></button>
           </div>
           <ol>
             {selectedTrack.history.map((h, i) => (
@@ -154,7 +154,7 @@ function SpotsEditor({ area }: EditorProps) {
                   {h.t}秒
                 </button>
                 <Stack stack={h.stack} />
-                {(selectedTrack.history[i + 1]?.t ?? a.end) > h.t && <button className="tool" title="この建設状態が続いた区間を解析" onClick={() => run("spots.inspectChange", { spot: sel, start: h.t, end: selectedTrack.history[i + 1]?.t ?? a.end })}>{selectedTrack.history[i + 1] ? "次の変化まで" : "経路末尾まで"} {((selectedTrack.history[i + 1]?.t ?? a.end) - h.t).toFixed(1)}秒</button>}
+                {(selectedTrack.history[i + 1]?.t ?? a.end) > h.t && <button className="spot-duration" title="この建設状態が続いた区間を解析" onClick={() => run("spots.inspectChange", { spot: sel, start: h.t, end: selectedTrack.history[i + 1]?.t ?? a.end })}>{((selectedTrack.history[i + 1]?.t ?? a.end) - h.t).toFixed(1)}秒 <Icon name="forward" size={12} /></button>}
               </li>
             ))}
           </ol>

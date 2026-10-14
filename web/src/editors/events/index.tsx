@@ -1,3 +1,4 @@
+import { Icon } from "../../shell/icons";
 import { useMemo, useState } from "react";
 import { register, run } from "../../app/commands";
 import "./events.css";
@@ -78,13 +79,13 @@ function EventsEditor({ area }: EditorProps) {
     <div className="editor-scroll events-editor">
       <div className="event-navigation event-filterbar">
       <input className="filter" placeholder="絞り込み（例: 設置、赤BR）" value={q} onChange={(e) => setQ(e.target.value)} aria-label="動作履歴を絞り込み" />
-        <button className="tool" disabled={!rows.length} onClick={() => {
+        <button className="tool icon-only" title="表示中の履歴をCSVでコピー" aria-label="表示中の履歴をCSVでコピー" disabled={!rows.length} onClick={() => {
           const csv = [["秒", "機体", "段階", "行動"], ...rows.map((e) => [e.t, robotNames[e.robot], phaseNames[e.phase] || e.phase, actionName(e.action)])]
             .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\n");
           navigator.clipboard.writeText(csv).then(() => ui.toast("表示中の動作履歴をコピーしました")).catch(ui.error);
-        }}>CSV</button>
-        <button className="tool" disabled={!previous} onClick={() => previous && run("events.seek", previous)}>前の動作</button>
-        <button className="tool" disabled={!next} onClick={() => next && run("events.seek", next)}>次の動作</button>
+        }}><Icon name="copy" /></button>
+        <button className="tool icon-only" title="前の動作へ" aria-label="前の動作へ" disabled={!previous} onClick={() => previous && run("events.seek", previous)}><Icon name="prevEvent" /></button>
+        <button className="tool icon-only" title="次の動作へ" aria-label="次の動作へ" disabled={!next} onClick={() => next && run("events.seek", next)}><Icon name="nextEvent" /></button>
         <span className="muted tabular">{rows.length}件</span>
       </div>
       <table className="events-table">
