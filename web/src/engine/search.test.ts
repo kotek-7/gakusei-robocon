@@ -275,6 +275,25 @@ test("Worker runtime responds during computation, cancellation persists, and exa
   await db.close();
 });
 
+test("evaluation completion save failure emits an error instead of success", async () => {
+  class FailureAtCompletion extends Persistence {
+    override async save(st: Store) {
+      if (st.data.evaluation && st.data.job === null) throw new Error("completion save failed");
+      await super.save(st);
+    }
+  }
+  const db = new FailureAtCompletion(crypto.randomUUID());
+  const rt = new Runtime(db);
+  const reasons: string[] = [];
+  rt.subscribe((e) => { if (e.type === "job.finished") reasons.push(e.reason); });
+  const summary = await rt.call("search.create", { config: shortConfig() });
+  await rt.call("job.start", { search: summary.id, kind: "evaluation" });
+  await rt.wait(summary.id);
+  assert.equal((await rt.get(summary.id)).data.status, "error");
+  assert.deepEqual(reasons, ["error"]);
+  await db.close();
+});
+
 test("storage failure does not leave a phantom running job or discard the exportable graph", async () => {
   class FailingPersistence extends Persistence {
     fail = false;

@@ -229,6 +229,7 @@ export class Runtime {
       try {
         await this.persistence.save(st);
       } catch (e) {
+        reason = "error";
         st.data.status = "error";
         st.data.error = e instanceof Error ? e.message : String(e);
       }
