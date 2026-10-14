@@ -15,11 +15,8 @@ const PARTS: [keyof ScoreParts, string][] = [
   ["skyL2", "スカイ L2"],
   ["mustika", "ムスティカ"],
 ];
-export function sampleAt(a: MatchAnalysis, t: number) {
-  let s = a.samples[0];
-  for (const x of a.samples) if (x.t <= t + 1e-9) s = x;
-  return s;
-}
+export { sampleAt } from "./range";
+import { sampleAt, scoreRangeDelta } from "./range";
 
 function Header({ area }: EditorProps) {
   const mode = (area.state?.mode as string) ?? "both";
@@ -162,6 +159,7 @@ function ScoreEditor({ area }: EditorProps) {
   const analysis = useAnalysis().data;
   const search = useSearch();
   const time = useUI((s) => s.playback.time);
+  const range = useUI((s) => s.playback.range);
   const mode = (area.state?.mode as string) ?? "both";
   const changes = useMemo(() => (analysis?.samples ?? []).filter((sample, i, all) =>
     i > 0 && PARTS.some(([part]) => sample.parts.some((team, t) => team[part] !== all[i - 1].parts[t][part]))), [analysis]);
@@ -171,6 +169,7 @@ function ScoreEditor({ area }: EditorProps) {
     last = analysis.samples.at(-1)!;
   const previous = changes.findLast((sample) => sample.t < time - 1e-6);
   const next = changes.find((sample) => sample.t > time + 1e-6);
+  const rangeDelta = range ? scoreRangeDelta(analysis, range) : null;
   const csv = ["秒,赤,青,点差", ...analysis.samples.map((s) => `${s.t},${s.parts[0].total},${s.parts[1].total},${s.parts[0].total - s.parts[1].total}`)].join("\n");
   return (
     <div className="editor-scroll score-editor" data-score-csv={area.id} data-csv={csv}>
@@ -223,6 +222,24 @@ function ScoreEditor({ area }: EditorProps) {
           </tr>
         </tbody>
       </table>
+      {range && <details className="score-range" open>
+        <summary>区間の得点増減 {range[0].toFixed(1)}〜{range[1].toFixed(1)}秒</summary>
+        {!rangeDelta ? <p className="muted small">区間が経路外を含みます。タイムラインで経路内の区間を指定してください。</p> : <>
+          <div className="area-tools">
+            <button className="tool" onClick={() => ui.patchPlayback({ time: range[0], playing: false })}>開始へ</button>
+            <button className="tool" onClick={() => ui.patchPlayback({ time: range[1], playing: false })}>終了へ</button>
+          </div>
+          <table className="score-table"><thead><tr><th>採点項目</th><th>赤の増減</th><th>青の増減</th></tr></thead><tbody>
+            {[...PARTS, ["total", "合計"] as [keyof ScoreParts, string]].map(([key, label]) => <tr key={key}>
+              <th>{label}</th>{[0, 1].map((team) => {
+                const delta = rangeDelta[team][key];
+                return <td key={team} className="tabular">{delta > 0 ? "+" : ""}{delta}</td>;
+              })}
+            </tr>)}
+          </tbody></table>
+          <p className="muted small">終了時点の点数から開始時点の点数を引いた値です。</p>
+        </>}
+      </details>}
       <details className="muted small"><summary>集計条件</summary>持ち上げた物体は、その時点で塔から外れた扱いになります。</details>
     </div>
   );

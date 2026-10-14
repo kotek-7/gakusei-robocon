@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { layout } from "../../app/layout";
 import { useAnalysis, useSearch } from "../../app/session";
 import { ui, useUI } from "../../app/store";
@@ -54,6 +55,7 @@ function SpotsEditor({ area }: EditorProps) {
   const time = useUI((s) => s.playback.time);
   const selection = useUI((s) => s.session.selection);
   const mode = (area.state?.mode as string) ?? "map";
+  const [filter, setFilter] = useState("all");
   if (!search) return <Empty title="探索がありません" />;
   if (!a) return <Empty title="局面を選択すると建設スポットの状態を表示します" />;
   const sel = selection?.startsWith("spot:") ? Number(selection.slice(5)) : null;
@@ -62,6 +64,10 @@ function SpotsEditor({ area }: EditorProps) {
   const next = selectedTrack?.history.slice(1).find((entry) => entry.t > time + 1e-6);
   const stock = stockAt(a, time);
   const spots = model.spots as number[][];
+  const visibleSpots = a.spots.filter((track) => filter === "all" ||
+    (filter === "empty" && !at(track, time).length) ||
+    (filter === "unfinished" && at(track, time).length > 0 && !at(track, time).some((item) => item.kind === "S")) ||
+    (filter === "sky" && at(track, time).some((item) => item.kind === "S")));
   const flips = a.markers.filter((m) => m.kind === "flip" && m.t <= time);
   return (
     <div className="editor-scroll spots-editor">
@@ -76,10 +82,15 @@ function SpotsEditor({ area }: EditorProps) {
         </span>
         <span>反転 {flips.length}回</span>
       </div>
+      <div className="area-tools" style={{ flexWrap: "wrap" }}>
+        <select aria-label="建設スポットの状態で絞り込み" value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <option value="all">すべてのスポット</option><option value="empty">空き</option><option value="unfinished">アースのみ</option><option value="sky">スカイあり</option>
+        </select><span className="muted">{visibleSpots.length} / {a.spots.length}件</span>
+      </div>
       {mode === "map" ? (
         <div className="spot-map" role="group" aria-label="建設スポットの配置（上から見た図、左が赤）">
           <div className="spot-map-l2" />
-          {a.spots.map((track) => {
+          {visibleSpots.map((track) => {
             const s = spots[track.spot];
             const stack = at(track, time);
             return (
@@ -109,9 +120,9 @@ function SpotsEditor({ area }: EditorProps) {
             </tr>
           </thead>
           <tbody>
-            {a.spots.map((track) => (
+            {visibleSpots.map((track) => (
               <tr key={track.spot} aria-selected={sel === track.spot} onClick={() => ui.select(`spot:${track.spot}`)}>
-                <th>S{track.spot}</th>
+                <th><button className="link" onClick={() => ui.select(`spot:${track.spot}`)}>S{track.spot}</button></th>
                 <td>L{track.level}・{ownerName(track.owner)}</td>
                 <td><Stack stack={at(track, time)} /></td>
                 <td className="tabular">{Math.max(0, track.history.filter((h) => h.t <= time).length - 1)}回</td>

@@ -51,6 +51,10 @@ function EventsEditor({ area }: EditorProps) {
   const replay = useReplay().data;
   const search = useSearch();
   const time = useUI((s) => s.playback.time);
+  const range = useUI((s) => s.playback.range);
+  const selection = useUI((s) => s.session.selection);
+  const [scope, setScope] = useState("all");
+  const [rangeOnly, setRangeOnly] = useState(false);
   const [q, setQ] = useState("");
   const robots = (area.state?.robots as boolean[]) ?? [true, true, true, true];
   const phases = (area.state?.phases as string) ?? "finish";
@@ -59,10 +63,12 @@ function EventsEditor({ area }: EditorProps) {
       (replay?.events ?? []).filter(
         (e) =>
           robots[e.robot] &&
+          (scope !== "selected" || selection === `robot:${e.robot}`) &&
+          (!rangeOnly || !range || (e.t >= range[0] && e.t <= range[1])) &&
           (phases === "all" || e.phase === phases || (phases === "finish" && e.phase === "blocked")) &&
           (!q || actionName(e.action).includes(q) || robotNames[e.robot].includes(q)),
       ),
-    [replay, robots, phases, q],
+    [replay, robots, phases, q, scope, selection, rangeOnly, range],
   );
   if (!search) return <Empty title="探索がありません" />;
   if (!replay) return <Empty title="局面を選択すると経路の動作履歴を表示します" />;
@@ -72,6 +78,15 @@ function EventsEditor({ area }: EditorProps) {
   return (
     <div className="editor-scroll events-editor">
       <input className="filter" placeholder="絞り込み（例: 設置、赤BR）" value={q} onChange={(e) => setQ(e.target.value)} aria-label="動作履歴を絞り込み" />
+      <div className="event-navigation">
+        <button className="tool" aria-pressed={scope === "selected"} onClick={() => setScope(scope === "all" ? "selected" : "all")}>選択機体のみ</button>
+        <button className="tool" aria-pressed={rangeOnly} disabled={!range} onClick={() => setRangeOnly(!rangeOnly)}>再生範囲のみ</button>
+        <button className="tool" disabled={!rows.length} onClick={() => {
+          const csv = [["秒", "機体", "段階", "行動"], ...rows.map((e) => [e.t, robotNames[e.robot], phaseNames[e.phase] || e.phase, actionName(e.action)])]
+            .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\n");
+          navigator.clipboard.writeText(csv).then(() => ui.toast("表示中の動作履歴をコピーしました")).catch(ui.error);
+        }}>CSV</button>
+      </div>
       <div className="event-navigation">
         <button className="tool" disabled={!previous} onClick={() => previous && run("events.seek", previous)}>前の動作</button>
         <button className="tool" disabled={!next} onClick={() => next && run("events.seek", next)}>次の動作</button>
@@ -114,7 +129,7 @@ function EventsEditor({ area }: EditorProps) {
           ))}
         </tbody>
       </table>
-      {!rows.length && <p className="muted">該当する動作はありません</p>}
+      {!rows.length && <p className="muted">{scope === "selected" && !selection?.startsWith("robot:") ? "3Dまたはタイムラインで機体を選択してください" : "該当する動作はありません"}</p>}
     </div>
   );
 }

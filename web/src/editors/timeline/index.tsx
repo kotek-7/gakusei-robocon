@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { register, run } from "../../app/commands";
 import { currentAnalysis } from "../../app/coreCommands";
 import { eventTimes, nextEventTime } from "./navigation";
+import "./IntervalEditor";
+import "./timeline.css";
 import { findArea, useLayout, layout } from "../../app/layout";
 import { definePrefs, usePref } from "../../app/prefs";
 import { useAnalysis, useSearch, useSpan } from "../../app/session";

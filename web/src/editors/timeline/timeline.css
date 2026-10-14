@@ -1,0 +1,8 @@
+.timeline-inspector { padding: 6px 10px; }
+.interval-controls { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-block: 6px; }
+.interval-controls label { display: flex; gap: 4px; align-items: center; }
+.interval-controls input { width: 76px; }
+.interval-table { width: 100%; font-variant-numeric: tabular-nums; }
+.interval-table th, .interval-table td { white-space: nowrap; }
+.interval-table th { text-align: left; }
+.interval-table td { text-align: right; }
