@@ -26,7 +26,7 @@ function CompareEditor() {
   if (!compare.a && !compare.b)
     return (
       <Empty title="比較する経路が未設定です">
-        <p>局面を選んでから「探索 → 現在の経路をA（B）に設定」、またはアウトライナーの右クリックで設定します。</p>
+        <p>候補の「得点と経路」で比較A・Bに設定します。</p>
         <button className="tool" onClick={() => run("compare.setA")}>現在の経路をAに設定</button>
       </Empty>
     );
@@ -35,7 +35,7 @@ function CompareEditor() {
   const nowA = A && sampleAt(A, time),
     nowB = B && sampleAt(B, time);
   const row = (label: string, a: React.ReactNode, b: React.ReactNode, diff?: number | null) => (
-    <tr>
+    <tr key={label}>
       <th>{label}</th>
       <td className="tabular">{a ?? "—"}</td>
       <td className="tabular">{b ?? "—"}</td>
@@ -45,6 +45,7 @@ function CompareEditor() {
   const d = (x?: number, y?: number) => (x === undefined || y === undefined ? null : y - x);
   return (
     <div className="editor-scroll compare-editor">
+      <p className="candidate-caveat">選んだ2経路の比較。構成・相手手順は各列の見出しで確認してください。</p>
       <table className="compare-table">
         <thead>
           <tr>
@@ -59,8 +60,8 @@ function CompareEditor() {
           {row("末尾の得点", sa && `${sa.last.parts[0].total} 対 ${sa.last.parts[1].total}`, sb && `${sb.last.parts[0].total} 対 ${sb.last.parts[1].total}`)}
           {row("末尾の点差", sa && sa.last.parts[0].total - sa.last.parts[1].total, sb && sb.last.parts[0].total - sb.last.parts[1].total, d(sa ? sa.last.parts[0].total - sa.last.parts[1].total : undefined, sb ? sb.last.parts[0].total - sb.last.parts[1].total : undefined))}
           {row("末尾の時刻", A?.end, B?.end, d(A?.end, B?.end))}
-          {row("赤の取得条件", A?.mandate[0] ?? "未成立", B?.mandate[0] ?? "未成立")}
-          {row("青の取得条件", A?.mandate[1] ?? "未成立", B?.mandate[1] ?? "未成立")}
+          {row("赤の取得条件", A ? (A.mandate[0] === null ? "未成立" : `${A.mandate[0]}秒`) : compare.a ? "読込中" : "未設定", B ? (B.mandate[0] === null ? "未成立" : `${B.mandate[0]}秒`) : compare.b ? "読込中" : "未設定")}
+          {row("青の取得条件", A ? (A.mandate[1] === null ? "未成立" : `${A.mandate[1]}秒`) : compare.a ? "読込中" : "未設定", B ? (B.mandate[1] === null ? "未成立" : `${B.mandate[1]}秒`) : compare.b ? "読込中" : "未設定")}
           {(["place", "flip", "transfer", "retry", "blocked"] as const).map((k) =>
             [0, 1].map((t) =>
               row(

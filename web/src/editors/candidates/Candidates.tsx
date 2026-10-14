@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { run as command } from "../../app/commands";
+import "./commands";
 import { profileNames } from "../common/labels";
 import type { CandidateEvidence, Goal, Search, Model, Variant } from "../../engine/types";
 
@@ -48,6 +50,15 @@ export function Candidates({
         candidate: c,
       })),
     ) || [];
+  const compareButtons = (evidence: CandidateEvidence, label: string) => (
+    <span className="row">
+      {(["A", "B"] as const).map((side) => (
+        <button key={side} disabled={!evidence.path.length} onClick={() => command(`candidate.compare${side}`, { path: evidence.path, node: evidence.node, label })}>
+          比較{side}に設定
+        </button>
+      ))}
+    </span>
+  );
   return (
     <section className="evaluation candidates">
       <h2>発見した作戦候補</h2>
@@ -77,6 +88,7 @@ export function Candidates({
                 ))}
               </select>
             </label>
+            <button onClick={() => command("compare.open")}>A/B比較を開く</button>
             <span>
               {rows.filter((r) => run === "all" || String(r.run) === run).length}候補
             </span>
@@ -144,6 +156,7 @@ export function Candidates({
                             <button onClick={() => onOpen(r, c.baseline)}>
                               相手待機の経路を開く
                             </button>
+                            {compareButtons(c.baseline, `C${r} · ${c.id.slice(0, 8)} · 相手待機`)}
                             {c.responses.map((response, i) => (
                               <div className="candidate-response" key={i}>
                                 <p>
@@ -159,30 +172,14 @@ export function Candidates({
                                       <br />
                                       手順の実行条件が成立しない局面あり（
                                       {response.blocked.length}
-                                      件）。経路で確認できます。
-                                      <details className="candidate-scope">
-            <summary>探索範囲・未計算の分岐</summary>
-            <p>{report.scope}</p>
-          <p>
-            未探索の局面{" "}
-            {report.runs
-              .filter((r) => run === "all" || String(r.run) === run)
-              .reduce((n, r) => n + r.frontier, 0)
-              .toLocaleString()}
-            件。 生成済みの選択肢のうち未計算{" "}
-            {report.runs
-              .filter((r) => run === "all" || String(r.run) === run)
-              .reduce((n, r) => n + r.remainingChoices, 0)
-              .toLocaleString()}
-            組。 局面の展開で選択肢は増えます。
-          </p>
-          </details>
-        </>
+                                      件）。
+                                    </>
                                   )}
                                 </p>
                                 <button onClick={() => onOpen(r, response)}>
                                   対応{i + 1}の経路を開く
                                 </button>
+                                {compareButtons(response, `C${r} · ${c.id.slice(0, 8)} · 相手 ${response.opponent?.slice(0, 8) ?? i + 1}`)}
                               </div>
                             ))}
                           </details>
@@ -193,6 +190,23 @@ export function Candidates({
               </tbody>
             </table>
           </div>
+          <details className="candidate-scope">
+            <summary>探索範囲・未計算の分岐</summary>
+            <p>{report.scope}</p>
+            <p>
+              未探索の局面{" "}
+              {report.runs
+                .filter((r) => run === "all" || String(r.run) === run)
+                .reduce((n, r) => n + r.frontier, 0)
+                .toLocaleString()}
+              件。 生成済みの選択肢のうち未計算{" "}
+              {report.runs
+                .filter((r) => run === "all" || String(r.run) === run)
+                .reduce((n, r) => n + r.remainingChoices, 0)
+                .toLocaleString()}
+              組。 局面の展開で選択肢は増えます。
+            </p>
+          </details>
         </>
       )}
     </section>

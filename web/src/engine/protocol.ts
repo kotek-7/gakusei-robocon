@@ -23,7 +23,7 @@ export type Workspace = {
   markers: { id: string; t: number; name: string; color?: string }[];
   bookmarks: { id: string; name: string; camera: number[] }[];
   pins: string[];
-  ab: { a: number[] | null; b: number[] | null };
+  ab: { a: number[] | null; b: number[] | null; label?: [string, string] };
   notes: Record<string, string>;
   updated: number;
 };

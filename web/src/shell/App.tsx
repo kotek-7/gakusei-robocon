@@ -5,6 +5,7 @@ import { goToRoot } from "../app/coreCommands";
 import { startSync, useSearches } from "../app/data";
 import { useLayout } from "../app/layout";
 import { usePref } from "../app/prefs";
+import { installComparisonSync } from "../app/workspace";
 import { installRouter } from "../app/router";
 import { useSpan } from "../app/session";
 import { ui, useUI } from "../app/store";
@@ -96,10 +97,12 @@ export function App() {
   useEffect(() => {
     startSync();
     const a = installKeyboard();
+    const c = installComparisonSync();
     const b = installRouter();
     return () => {
       a();
       b();
+      c();
     };
   }, []);
   return (
