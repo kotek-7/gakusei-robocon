@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { run as command } from "../../app/commands";
 import "./commands";
 import { worstCommonResponse } from "./evidence";
@@ -17,12 +17,17 @@ export function Candidates({
   search,
   model,
   onOpen,
+  requestedRun,
+  runRequest,
 }: {
+  requestedRun?: string;
+  runRequest?: number;
   search: Search;
   model: Model;
   onOpen: (run: number, evidence: CandidateEvidence) => void;
 }) {
-  const [run, setRun] = useState("all");
+  const [run, setRun] = useState(requestedRun ?? "all");
+  useEffect(() => { if (requestedRun !== undefined) { setRun(requestedRun); setOpponent(""); setQuery(""); setStatus("all"); } }, [requestedRun, runRequest]);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("discovery");
   const [status, setStatus] = useState("all");
@@ -139,6 +144,11 @@ export function Candidates({
               {opponents.map((id) => <option value={id} key={id}>{id}</option>)}
             </select></label>
             {(query || run !== "all" || sort !== "discovery" || status !== "all" || opponent) && <button onClick={() => { setQuery(""); setRun("all"); setSort("discovery"); setStatus("all"); setOpponent(""); }}>表示を戻す</button>}
+            <button disabled={!visibleRows.length} onClick={() => command("candidate.exportVisible", {
+              version: 1, search: { id: search.id, name: search.name, config: search.config },
+              scope: "発見済み候補。全対応への保証なし", filters: { run, query, sort, status, opponent },
+              candidates: visibleRows.map(({ run, common, candidate, worst }) => ({ run, variant: report?.runs.find((r) => r.run === run)?.variant, commonOpponents: common, candidate, selectedWorst: worst })),
+            })}>表示候補を書き出す</button>
             <button onClick={() => command("compare.open")}>A/B比較を開く</button>
             <span>
               {visibleRows.length} / {rows.length}候補

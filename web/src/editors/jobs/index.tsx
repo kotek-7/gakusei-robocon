@@ -1,3 +1,4 @@
+import { Coverage } from "./Coverage";
 import { isEnabled, run } from "../../app/commands";
 import { layout } from "../../app/layout";
 import { usePref, setPref } from "../../app/prefs";
@@ -18,6 +19,7 @@ function JobsEditor() {
         </p>
       )}
       <DiscoveryProgress key={search.id} search={search} onDefinitions={() => layout.reveal("model", { section: "history" })} />
+      <Coverage search={search} />
       <EvaluationProgress search={search} />
       <section className="exact-panel" aria-label="詳細な全探索">
         <h3>詳細な全探索</h3>

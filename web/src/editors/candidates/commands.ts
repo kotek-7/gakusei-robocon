@@ -26,3 +26,12 @@ for (const side of ["a", "b"] as const) {
     },
   });
 }
+
+register({
+  id: "candidate.exportVisible", title: "表示候補を書き出す", category: "候補", hidden: true,
+  enabled: ({ args }) => !!args,
+  run: async ({ args }) => {
+    const { saveJSON } = await import("../../app/coreCommands");
+    saveJSON(args, "candidate-evidence.json");
+  },
+});
