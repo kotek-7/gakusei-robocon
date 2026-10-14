@@ -35,11 +35,18 @@ export function installComparisonSync() {
     if (!search) return;
     const original = useUI.getState().session.compare;
     (pending.get(search) ?? Promise.resolve()).catch(() => {}).then(() => fetchQuery("workspace.get", { search })).then((w) => {
-      if (disposed || version !== generation || useUI.getState().session.search !== search ||
-          useUI.getState().session.compare !== original) return;
+      if (disposed || version !== generation || useUI.getState().session.search !== search) return;
+      const current = useUI.getState().session.compare;
       restoring = true;
       try {
-        ui.patchSession({ compare: { a: w.ab.a, b: w.ab.b, label: w.ab.label ?? ["A", "B"] } });
+        ui.patchSession({ compare: {
+          a: current.a !== original.a ? current.a : w.ab.a,
+          b: current.b !== original.b ? current.b : w.ab.b,
+          label: [
+            current.label[0] !== original.label[0] ? current.label[0] : w.ab.label?.[0] ?? "A",
+            current.label[1] !== original.label[1] ? current.label[1] : w.ab.label?.[1] ?? "B",
+          ],
+        } });
       } finally { restoring = false; }
     }).catch(ui.error);
   };
@@ -49,7 +56,18 @@ export function installComparisonSync() {
       restore(s.session.search);
     } else if (!restoring && s.session.compare !== previous.session.compare && s.session.search) {
       const ab = structuredClone(s.session.compare);
-      updateWorkspace((w) => ({ ...w, ab })).catch(ui.error);
+      const changedA = s.session.compare.a !== previous.session.compare.a;
+      const changedB = s.session.compare.b !== previous.session.compare.b;
+      const changedLabelA = ab.label[0] !== previous.session.compare.label[0];
+      const changedLabelB = ab.label[1] !== previous.session.compare.label[1];
+      updateWorkspace((w) => ({ ...w, ab: {
+        a: changedA ? ab.a : w.ab.a,
+        b: changedB ? ab.b : w.ab.b,
+        label: [
+          changedLabelA ? ab.label[0] : w.ab.label?.[0] ?? "A",
+          changedLabelB ? ab.label[1] : w.ab.label?.[1] ?? "B",
+        ],
+      } })).catch(ui.error);
     }
   });
   return () => { disposed = true; unsubscribe(); };

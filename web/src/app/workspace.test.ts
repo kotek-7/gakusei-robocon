@@ -40,10 +40,15 @@ test("comparison sync restores labels and protects new edits from an in-flight r
   await settle();
   assert.deepEqual(saved.get("restore")?.ab.a, [7]);
   assert.deepEqual(useUI.getState().session.compare.a, [7]);
+  saved.set("race", { ...emptyWorkspace("race"), ab: { a: [10], b: [11], label: ["保存A", "保存B"] } });
   ui.openSearch("race");
   ui.patchSession({ compare: { a: [9], b: null, label: ["編集中", "B"] } });
   await settle();
   assert.deepEqual(useUI.getState().session.compare.a, [9]);
   assert.deepEqual(saved.get("race")?.ab.a, [9]);
+  assert.deepEqual(useUI.getState().session.compare.b, [11]);
+  assert.deepEqual(saved.get("race")?.ab.b, [11]);
+  assert.deepEqual(useUI.getState().session.compare.label, ["編集中", "保存B"]);
+  assert.deepEqual(saved.get("race")?.ab.label, ["編集中", "保存B"]);
   stop();
 });
