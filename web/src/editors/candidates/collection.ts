@@ -1,14 +1,13 @@
 import type { Candidate, Goal } from "../../engine/types";
 import data from "../../engine/model-data.json";
 import { worstCommonResponse } from "./evidence";
-import type { CandidateReview } from "./review";
 
 export type CandidateCollectionRow = { run: number; common: string[]; candidate: Candidate };
-export type QueryField = "id" | "plan" | "note" | "issue";
+export type QueryField = "id" | "plan" | "issue";
 export type QueryTerm = { field: QueryField | null; text: string; exclude: boolean };
 export type CandidateIndex = Record<QueryField, string>;
 const normalize = (text: string) => text.normalize("NFKC").toLocaleLowerCase();
-const fields: Record<string, QueryField> = { id: "id", 手順: "plan", plan: "plan", メモ: "note", note: "note", 理由: "issue", issue: "issue" };
+const fields: Record<string, QueryField> = { id: "id", 手順: "plan", plan: "plan", 理由: "issue", issue: "issue" };
 /** Whitespace means AND. Quotes keep phrases together. Unknown prefixes remain literal. */
 export function parseCandidateQuery(query: string): QueryTerm[] {
   const chunks = normalize(query).match(/(?:[^\s"]|"[^"]*"|"[^"]*$)+/g) ?? [];
@@ -37,12 +36,11 @@ function goalSearchText(goal: Goal): string {
   return `${action} ${goal.kind} ${location} ${goal.height === 2 ? "アース2段" : ""} ${goal.at === undefined ? "" : `${goal.at}秒開始`}`;
 }
 /** Plan/location words describe this candidate's plan, never an opponent's observed actions. */
-export function buildCandidateIndex(row: CandidateCollectionRow, decision?: CandidateReview["decisions"][string]): CandidateIndex {
+export function buildCandidateIndex(row: CandidateCollectionRow): CandidateIndex {
   const c = row.candidate;
   return {
     id: normalize(`C${row.run} ${c.id} ${c.baseline.strategy}`),
     plan: normalize(`${candidatePlanLabel(c.plan)} ${c.plan.map(goalSearchText).join(" ")}`),
-    note: normalize(decision?.note ?? ""),
     issue: normalize([c.baseline, ...c.responses].flatMap(e => e.blocked ?? []).map(issue => issue.reason).join(" ")),
   };
 }
@@ -81,8 +79,9 @@ export function mergeShortlistScope(current: string[], visibleKeys: string[], mo
   return mode === "add" ? [...new Set([...current, ...visibleKeys])] : current.filter(key => !scope.has(key));
 }
 
-export type CandidateFilterView = { run: string; query: string; sort: string; status: string; opponent: string; decision: string; shortlistOnly: boolean };
+export type CandidateFilterView = { run: string; query: string; sort: string; status: string; opponent: string; shortlistOnly: boolean };
 export type SavedCandidateView = { id: string; name: string; filters: CandidateFilterView };
 export function sameCandidateFilters(a: CandidateFilterView, b: CandidateFilterView): boolean {
-  return (Object.keys(a) as (keyof CandidateFilterView)[]).every(key => a[key] === b[key]) && (Object.keys(b) as (keyof CandidateFilterView)[]).every(key => a[key] === b[key]);
+  const keys: (keyof CandidateFilterView)[] = ["run", "query", "sort", "status", "opponent", "shortlistOnly"];
+  return keys.every(key => a[key] === b[key]);
 }

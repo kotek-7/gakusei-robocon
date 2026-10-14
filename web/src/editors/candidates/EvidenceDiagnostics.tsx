@@ -1,3 +1,4 @@
+import { Help } from "../common/Help";
 import { useEffect, useRef, useState } from "react";
 import type { CandidateEvidence } from "../../engine/types";
 import { activeDiagnostic, diagnosticRobotNames, diagnosticRows, filterDiagnostics, type ExecutionIssue } from "./diagnostics";
@@ -37,7 +38,7 @@ function Diagnostics({ evidence, onOpenAt }: {
   const name = (id: number) => diagnosticRobotNames[id] ?? `機体${id}`;
   if (!rows.length) return <p className="candidate-diagnostic-empty">この展開には実行不可の記録がありません。</p>;
   return <section className="candidate-diagnostics" aria-label="実行不可の検査">
-    <header><strong>実行不可 {rows.length}件</strong><span>初回 {rows[0].t}秒 · {name(rows[0].robot)}</span></header>
+    <header><strong>実行不可 {rows.length}件 <Help topic="results" text="各手順で最初に実行できなかった時刻です。待機後の成立は動作順で確認できます。" /></strong><span>初回 {rows[0].t}秒 · {name(rows[0].robot)}</span></header>
     <div className="candidate-diagnostic-filters">
       <label>機体 <select aria-label="実行不可の機体" value={robot} onChange={event => setRobot(event.target.value)}><option value="">すべて</option>{robotNames.map(id => <option key={id} value={id}>{name(id)}</option>)}</select></label>
       <label>理由 <select aria-label="実行不可の理由" value={reason} onChange={event => setReason(event.target.value)}><option value="">すべて</option>{reasons.map(value => <option key={value} value={value}>{value}</option>)}</select></label>
@@ -53,6 +54,5 @@ function Diagnostics({ evidence, onOpenAt }: {
       <button aria-label="次の実行不可を選択" disabled={index < 0 || index >= visible.length - 1} onClick={() => setSelected(visible[index + 1].key)}>次へ</button>
       <button disabled={!active || !evidence.path.length} onClick={() => { if (active) onOpenAt(active); }}>{active ? `${active.t}秒を3D表示` : "該当時刻を3D表示"}</button>
     </div>
-    <small className="muted">手順ごとに最初に実行できなかった時刻。待機後の成立は動作順で確認。</small>
   </section>;
 }

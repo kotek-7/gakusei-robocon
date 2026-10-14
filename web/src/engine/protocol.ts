@@ -47,7 +47,7 @@ export type Workspace = {
       name: string;
       filters: {
         run: string; query: string; sort: string; status: string;
-        opponent: string; decision: string; shortlistOnly: boolean;
+        opponent: string; decision?: string; shortlistOnly: boolean;
       };
     }[];
   };

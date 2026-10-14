@@ -4,7 +4,6 @@ import { CandidateQueryHelp, SavedCandidateViews } from "./SavedCandidateViews";
 import { CandidateRecovery, CandidateQueryMatch } from "./CandidateRecovery";
 import { EvidenceScoreDelta } from "./EvidenceScoreDelta";
 import { ResponseBrowser } from "./ResponseBrowser";
-import { CandidateDecision } from "./CandidateDecision";
 import { candidateKey, toggleShortlist, type CandidateReview } from "./review";
 import { ui } from "../../app/store";
 import { ComparisonMatrix } from "./ComparisonMatrix";
@@ -24,7 +23,7 @@ const margin = (x: CandidateEvidence) => x.scores[0] - x.scores[1];
 const score = (x: CandidateEvidence) => `${x.scores[0]} 対 ${x.scores[1]}`;
 
 export type CandidateView = {
-  selected: string; responseKey: string; run: string; query: string; sort: string; status: string; opponent: string; decision?: string; shortlistOnly?: boolean; requestHandled?: number;
+  selected: string; responseKey: string; run: string; query: string; sort: string; status: string; opponent: string; shortlistOnly?: boolean; requestHandled?: number;
 };
 
 export function Candidates({
@@ -49,20 +48,18 @@ export function Candidates({
   onOpen: (run: number, evidence: CandidateEvidence) => void;
 }) {
   const root = useRef<HTMLElement>(null);
-  const [drafts, setDrafts] = useState<CandidateReview["decisions"]>({});
-  const [decision, setDecision] = useState(initialView?.decision ?? "all");
   const [shortlistOnly, setShortlistOnly] = useState(initialView?.shortlistOnly ?? false);
   const saveReview = (edit: (value: CandidateReview) => CandidateReview) => onReviewChange(edit).catch(ui.error);
   const [selected, setSelected] = useState(initialView?.selected ?? "");
   const [responseKey, setResponseKey] = useState(initialView?.responseKey ?? "worst");
   const [run, setRun] = useState(initialView?.run ?? requestedRun ?? "all");
   const [requestHandled, setRequestHandled] = useState(initialView?.requestHandled);
-  useEffect(() => { if (requestedRun !== undefined && (runRequest !== requestHandled || !initialView)) { setRun(requestedRun); setOpponent(""); setQuery(""); setStatus("all"); setDecision("all"); setShortlistOnly(false); setRequestHandled(runRequest); } }, [requestedRun, runRequest]);
+  useEffect(() => { if (requestedRun !== undefined && (runRequest !== requestHandled || !initialView)) { setRun(requestedRun); setOpponent(""); setQuery(""); setStatus("all"); setShortlistOnly(false); setRequestHandled(runRequest); } }, [requestedRun, runRequest]);
   const [query, setQuery] = useState(initialView?.query ?? "");
   const [sort, setSort] = useState(initialView?.sort ?? "discovery");
   const [status, setStatus] = useState(initialView?.status ?? "all");
   const [opponent, setOpponent] = useState(initialView?.opponent ?? "");
-  useEffect(() => { onViewChange?.({ selected, responseKey, run, query, sort, status, opponent, requestHandled, decision, shortlistOnly }); }, [selected, responseKey, run, query, sort, status, opponent, requestHandled, decision, shortlistOnly]);
+  useEffect(() => { onViewChange?.({ selected, responseKey, run, query, sort, status, opponent, requestHandled, shortlistOnly }); }, [selected, responseKey, run, query, sort, status, opponent, requestHandled, shortlistOnly]);
   const report = search.discovery;
   const selectedRun = report?.runs.find((r) => String(r.run) === run);
   function configuration(v: Variant) {
@@ -92,16 +89,15 @@ export function Candidates({
       })),
     ) || [];
   const opponents = [...new Set(rows.filter((r) => run === "all" || String(r.run) === run).flatMap((r) => r.common))].sort();
-  const filters = {run, query, sort, status, opponent, decision, shortlistOnly};
+  const filters = {run, query, sort, status, opponent, shortlistOnly};
   function applyFilters(value: CandidateFilterView) {
-    setRun(value.run); setQuery(value.query); setSort(value.sort); setStatus(value.status); setOpponent(value.opponent); setDecision(value.decision); setShortlistOnly(value.shortlistOnly);
+    setRun(value.run); setQuery(value.query); setSort(value.sort); setStatus(value.status); setOpponent(value.opponent); setShortlistOnly(value.shortlistOnly);
   }
   const terms = parseCandidateQuery(query);
   const visibleRows = sortCandidateRows(rows
     .filter(row => { const {run: r, candidate: c} = row; return (run === "all" || String(r) === run) &&
       (!shortlistOnly || review.shortlist.includes(candidateKey(r, c.id))) &&
-      (decision === "all" || (review.decisions[candidateKey(r, c.id)]?.status ?? "open") === decision) &&
-      (terms.length === 0 || matchCandidateQuery(buildCandidateIndex(row, review.decisions[candidateKey(r,c.id)]), terms).matches);
+      (terms.length === 0 || matchCandidateQuery(buildCandidateIndex(row), terms).matches);
     })
     .map((row) => {
       const worst = worstCommonResponse(row.candidate, row.common, opponent);
@@ -124,18 +120,13 @@ export function Candidates({
     ...responses.map((evidence, index) => ({ key: responseIdentity(active.run, active.candidate.id, evidence), label: `対応${index + 1} · ${evidence.opponent?.slice(0, 14) ?? "相手手順"}`, evidence })),
   ] : [];
   const chosen = evidenceOptions.find(option => option.key === responseKey) ?? evidenceOptions[0];
-  function revealCandidate(key: string, editDecision: boolean) {
-    if (!visibleSet.has(key)) applyFilters({...filters, run:"all", query:"", status:"all", opponent:"", decision:"all", shortlistOnly:false});
+  function revealCandidate(key: string) {
+    if (!visibleSet.has(key)) applyFilters({...filters, run:"all", query:"", status:"all", opponent:"", shortlistOnly:false});
     if (!active || candidateKey(active.run,active.candidate.id) !== key) setResponseKey("worst");
     setSelected(key);
     requestAnimationFrame(() => {
-      if (editDecision) {
-        const details = root.current?.querySelector<HTMLDetailsElement>(".candidate-decision");
-        if (details) { details.open = true; details.querySelector("textarea")?.focus(); }
-      } else {
-        const row = [...(root.current?.querySelectorAll<HTMLTableRowElement>("tr[data-candidate-key]") ?? [])].find(row => row.dataset.candidateKey === key);
-        row?.focus(); row?.scrollIntoView({block:"nearest"});
-      }
+      const row = [...(root.current?.querySelectorAll<HTMLTableRowElement>("tr[data-candidate-key]") ?? [])].find(row => row.dataset.candidateKey === key);
+      row?.focus(); row?.scrollIntoView({block:"nearest"});
     });
   }
   function focusRegion(region: "list" | "comparison" | "inspector") {
@@ -187,13 +178,13 @@ export function Candidates({
             </label>
             <label>
               <span>候補を検索</span>
-              <input type="search" value={query} placeholder="手順・L1/L2・メモ・ID" onChange={(e) => setQuery(e.target.value)} />
+              <input type="search" value={query} placeholder="手順・L1/L2・ID" onChange={(e) => setQuery(e.target.value)} />
             </label>
             <label><input type="checkbox" checked={shortlistOnly} onChange={e => setShortlistOnly(e.target.checked)} />比較中のみ ({review.shortlist.length})</label>
+            <CandidateQueryHelp />
             <span className="candidate-count">{visibleRows.length} / {rows.length}候補</span>
-            <details className="candidate-display-options" onKeyDown={event => { if (event.key === "Escape") { event.currentTarget.open = false; event.currentTarget.querySelector("summary")?.focus(); } }}>
-              <summary>表示・出力{sort !== "discovery" || status !== "all" || opponent ? " •" : ""}</summary>
-              <div className="candidate-option-fields">
+          </div>
+          <div className="candidate-option-fields" role="group" aria-label="候補の表示条件">
             <label>
               並び順{" "}
               <select value={sort} onChange={(e) => setSort(e.target.value)}>
@@ -203,8 +194,6 @@ export function Candidates({
                 <option value="pending">未比較が多い順</option>
               </select>
             </label>
-            <CandidateQueryHelp />
-            <label>検討の判断<select value={decision} onChange={e => setDecision(e.target.value)}><option value="all">すべて</option><option value="open">未判定</option><option value="keep">残す</option><option value="dismiss">見送る</option></select></label>
             <label>検査状況 <select value={status} onChange={(e) => setStatus(e.target.value)}>
               <option value="all">すべて</option><option value="comparable">共通比較あり</option><option value="pending">未比較あり</option><option value="blocked">実行不可あり</option>
             </select></label>
@@ -212,18 +201,18 @@ export function Candidates({
               <option value="">すべての共通手順</option>
               {opponents.map((id) => <option value={id} key={id}>{id}</option>)}
             </select></label>
-            {(query || run !== "all" || sort !== "discovery" || status !== "all" || opponent || decision !== "all" || shortlistOnly) && <button onClick={() => { setQuery(""); setRun("all"); setSort("discovery"); setStatus("all"); setOpponent(""); setDecision("all"); setShortlistOnly(false); }}>表示を戻す</button>}
+            {(query || run !== "all" || sort !== "discovery" || status !== "all" || opponent || shortlistOnly) && <button onClick={() => { setQuery(""); setRun("all"); setSort("discovery"); setStatus("all"); setOpponent(""); setShortlistOnly(false); }}>表示を戻す</button>}
+          </div>
+          <div className="candidate-view-tools">
             <button className="action-button" disabled={!visibleRows.length} onClick={() => command("candidate.exportVisible", {
               version: 1, search: { id: search.id, name: search.name, config: search.config },
-              scope: "発見済み候補。全対応への保証なし", filters: { run, query, sort, status, opponent, decision, shortlistOnly }, review,
+              scope: "発見済み候補。全対応への保証なし", filters: { run, query, sort, status, opponent, shortlistOnly }, review,
               candidates: visibleRows.map(({ run, common, candidate, worst }) => ({ run, variant: report?.runs.find((r) => r.run === run)?.variant, commonOpponents: common, candidate, selectedWorst: worst })),
             })}>表示候補を書き出す</button>
             <SavedCandidateViews views={review.views ?? []} value={filters} disabled={!reviewReady} onApply={applyFilters}
               onSave={view => onReviewChange(current => ({...current, views: [...(current.views ?? []).filter(v => v.id !== view.id), view]}))}
               onDelete={id => onReviewChange(current => ({...current, views: (current.views ?? []).filter(v => v.id !== id)}))} />
 
-              </div>
-            </details>
           </div>
           {(sort !== "discovery" || status !== "all" || opponent) && <div className="candidate-active-filters" aria-label="適用中の表示条件">
             {sort !== "discovery" && <button onClick={() => setSort("discovery")} title="発見順に戻す">{({ worst: "最小点差順", baseline: "相手待機の点差順", pending: "未比較順" } as Record<string, string>)[sort]} ×</button>}
@@ -235,14 +224,12 @@ export function Candidates({
             <button disabled={!reviewReady || !visibleKeys.length || selectedVisibleCount === visibleKeys.length} onClick={() => saveReview(value => ({...value, shortlist: mergeShortlistScope(value.shortlist, visibleKeys, "add")}))}>表示中{visibleKeys.length}件を比較に追加</button>
             <button disabled={!reviewReady || !selectedVisibleCount} onClick={() => saveReview(value => ({...value, shortlist: mergeShortlistScope(value.shortlist, visibleKeys, "remove")}))}>表示中の比較を解除</button>
           </div>
-          <CandidateRecovery rows={rows} visibleKeys={visibleKeys} review={review} drafts={drafts} onReveal={revealCandidate} />
+          <CandidateRecovery rows={rows} visibleKeys={visibleKeys} shortlist={review.shortlist} onReveal={revealCandidate} />
           {run === "all" && ["worst", "baseline"].includes(sort) && <p className="candidate-caveat">構成ごとに点差順で表示</p>}
-          {decision !== "all" && <div className="candidate-active-filters"><button onClick={() => setDecision("all")}>判断：{{open: "未判定", keep: "残す", dismiss: "見送る"}[decision]} ×</button></div>}
           {selectedRun && <p>{configuration(selectedRun.variant)}</p>}
-          {opponent && <p className="candidate-caveat">相手手順 {opponent} に固定 · 同一構成内で比較 <Help topic="results" text="指定した相手手順について、全裁定分岐を検査済みの結果だけを表示しています。" /></p>}
-          <p className="candidate-caveat">確認済み手順の結果 · 全対応への保証なし <Help topic="results" text="点差は確認済みの相手手順での結果です。同じ構成・共通の相手手順で比較してください。" /></p>
           <nav className="candidate-region-nav" aria-label="作戦候補の領域へ移動">
             <button onClick={() => focusRegion("list")}>候補一覧</button>
+            <Help topic="results" text="同じ構成・共通の相手手順で比較します。確認済みの結果であり、全対応への保証はありません。" />
             <button disabled={!review.shortlist.length} onClick={() => focusRegion("comparison")}>横比較{review.shortlist.length ? ` · ${review.shortlist.length}` : ""}</button>
             <button disabled={!active || !chosen} onClick={() => focusRegion("inspector")}>選択候補の検査</button>
           </nav>
@@ -274,7 +261,7 @@ export function Candidates({
                   <div className="candidate-target-tools">
                     {query && <button onClick={() => setQuery("")}>検索語を解除</button>}
                     {shortlistOnly && <button onClick={() => setShortlistOnly(false)}>比較中のみを解除</button>}
-                    <button onClick={() => applyFilters({run:"all", query:"", sort:"discovery", status:"all", opponent:"", decision:"all", shortlistOnly:false})}>すべての候補を表示</button>
+                    <button onClick={() => applyFilters({run:"all", query:"", sort:"discovery", status:"all", opponent:"", shortlistOnly:false})}>すべての候補を表示</button>
                   </div></td></tr>}
                 {visibleRows.map(({ run: r, common, candidate: c, worst }) => {
                     return (
@@ -284,7 +271,7 @@ export function Candidates({
                         onKeyDown={event => navigateRow(event, () => { const evidence = worst ?? c.baseline; if (evidence.path.length) onOpen(r, evidence); })}
                         onDoubleClick={() => { const evidence = worst ?? c.baseline; if (evidence.path.length) onOpen(r, evidence); }}>
                         <td><input type="checkbox" aria-label={`C${r} ${c.id} を横比較`} checked={review.shortlist.includes(candidateKey(r,c.id))} disabled={!reviewReady} onClick={e => e.stopPropagation()} onDoubleClick={e => e.stopPropagation()} onChange={() => saveReview(value => toggleShortlist(value, candidateKey(r,c.id)))} /></td>
-                        <td><span>{candidatePlanLabel(c.plan)}</span><small className="candidate-identity" title={`作戦 ${c.baseline.strategy} / 展開 ${c.id}`}>{c.baseline.strategy.slice(0, 14)} · 展開 {c.id.slice(0, 14)}</small><small className="candidate-secondary">{{open: "", keep: "検討：残す", dismiss: "検討：見送る"}[review.decisions[candidateKey(r,c.id)]?.status ?? "open"]}</small>{terms.length > 0 && <CandidateQueryMatch fields={matchCandidateQuery(buildCandidateIndex({run:r, common, candidate:c},review.decisions[candidateKey(r,c.id)]),terms).fields} />}</td>
+                        <td><span>{candidatePlanLabel(c.plan)}</span><small className="candidate-identity" title={`作戦 ${c.baseline.strategy} / 展開 ${c.id}`}>{c.baseline.strategy.slice(0, 14)} · 展開 {c.id.slice(0, 14)}</small>{terms.length > 0 && <CandidateQueryMatch fields={matchCandidateQuery(buildCandidateIndex({run:r, common, candidate:c}),terms).fields} />}</td>
                         <td className="candidate-config-id">C{r}</td>
                         <td>{score(c.baseline)}</td>
                         <td>
@@ -303,7 +290,7 @@ export function Candidates({
             </table>
           </div>
           {!!review.shortlist.length && <div className="candidate-comparison-region" tabIndex={-1}><ComparisonMatrix rows={rows.filter(row => review.shortlist.includes(candidateKey(row.run,row.candidate.id)))} onOpen={onOpen} onInspect={(run, id, evidence) => {
-            revealCandidate(candidateKey(run,id),false);
+            revealCandidate(candidateKey(run,id));
             setStatus("all"); setOpponent("");
             const row = rows.find(row => row.run === run && row.candidate.id === id);
             setResponseKey(row?.candidate.baseline === evidence ? "baseline" : responseIdentity(run,id,evidence));
@@ -312,7 +299,6 @@ export function Candidates({
           </div>
           {active && chosen && <aside className="candidate-inspector" aria-label="選択候補の検査" tabIndex={-1}>
             <header><strong>C{active.run} · {active.candidate.id.slice(0, 14)}</strong><button className="candidate-text-action" onClick={() => focusRegion("list")}>一覧へ戻る</button></header>
-            {reviewReady && <CandidateDecision drafts={drafts} setDrafts={setDrafts} id={candidateKey(active.run,active.candidate.id)} value={review.decisions[candidateKey(active.run,active.candidate.id)]} onSave={value => onReviewChange(current => ({ ...current, decisions: {...current.decisions, [candidateKey(active.run,active.candidate.id)]: value} }))} />}
             <ResponseBrowser key={`${active.run}/${active.candidate.id}`} options={evidenceOptions} selectedKey={chosen.key} commonOpponents={active.common} onSelect={setResponseKey} onOpen={option => onOpen(active.run, option.evidence)} />
             <div className="candidate-target-tools" role="group" aria-label="選択展開の操作">
               <button className="primary" disabled={!chosen.evidence.path.length} onClick={() => onOpen(active.run, chosen.evidence)}>3Dに表示</button>

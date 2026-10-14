@@ -1,11 +1,9 @@
 .response-browser { min-width: 0; }
 .response-browser-heading { display: flex; gap: 6px 10px; align-items: baseline; flex-wrap: wrap; }
 .response-browser-heading > span, .response-browser-range, .response-browser-delta { color: var(--muted); font-size: 11px; }
-.response-browser-heading > details { margin-left: auto; max-width: 100%; }
-.response-browser-heading summary { cursor: pointer; font-size: 11px; }
-.response-browser-settings { display: grid; gap: 5px; padding: 7px 0; }
-.response-browser-settings label { display: grid; grid-template-columns: 5em minmax(0,1fr); align-items: center; gap: 6px; font-size: 11px; }
-.response-browser-settings select { width: 100%; min-width: 0; max-width: 250px; }
+.response-browser-settings { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 5px 8px; padding: 6px 0; }
+.response-browser-settings label { display: grid; grid-template-columns: auto minmax(0,1fr); min-width: 0; align-items: center; gap: 6px; font-size: 11px; }
+.response-browser-settings select { width: 100%; min-width: 0; }
 .response-browser-scope { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; padding: 5px 0; font-size: 11px; overflow-wrap: anywhere; }
 .response-browser-scope button { padding: 1px 4px; font-size: 11px; }
 .response-browser .candidate-evidence-list td:first-child { overflow-wrap: anywhere; }

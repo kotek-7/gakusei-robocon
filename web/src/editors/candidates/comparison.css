@@ -20,9 +20,7 @@
 .candidate-matrix-filters { display: flex; gap: 6px; flex-wrap: wrap; padding-block: 5px; border-bottom: 1px solid var(--line); }
 .candidate-matrix-filters label, .candidate-matrix-tools label { display: flex; gap: 4px; align-items: center; min-width: 0; flex-wrap: wrap; }
 .candidate-matrix-filters input { width: 115px; min-width: 60px; }
-.candidate-matrix-filters select, .candidate-matrix-tools select { max-width: 240px; }
-.candidate-matrix-blocked { flex: 1 0 100%; overflow-wrap: anywhere; }
-.candidate-matrix-blocked ul { padding-left: 20px; }
+.candidate-matrix-filters select, .candidate-matrix-tools select { min-width: 0; max-width: min(240px, 100%); }
 
 .candidate-matrix-spread { display: block; font-size: 10px; font-weight: normal; color: var(--muted); }
 .candidates .candidate-matrix-cell { display: grid; height: auto; min-height: var(--row); padding: 4px; gap: 2px; justify-items: start; white-space: normal; }
