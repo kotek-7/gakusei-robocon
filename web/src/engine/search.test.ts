@@ -14,7 +14,11 @@ import { Planner, choices, fixedChoice } from "./planner";
 const shortConfig = () => ({ ...defaults(), horizon: 2 });
 const finish = (st: Store) => {
   let count = 0;
-  while (st.batch(100)) assert.ok(++count < 1000);
+  // A time slice can expire before its first operation under CPU contention.
+  while (!st.summary().complete) {
+    assert.ok(++count < 1000);
+    st.batch(100);
+  }
 };
 test("exact graph agrees with independent recursive traversal; resumed graph is identical", async () => {
   const c = shortConfig(),
