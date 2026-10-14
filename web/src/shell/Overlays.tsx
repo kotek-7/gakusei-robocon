@@ -154,6 +154,8 @@ function useGotoItems(q: string): Item[] {
 function Palette({ mode }: { mode: "commands" | "goto" }) {
   const [q, setQ] = useState(mode === "commands" ? ">" : "");
   const [index, setIndex] = useState(0);
+  const [availableOnly, setAvailableOnly] = useState(false);
+  const listRef = useRef<HTMLUListElement>(null);
   const recent = useCommands((s) => s.recent);
   useCommands((s) => s.version);
   const commandMode = q.startsWith(">");
@@ -164,6 +166,7 @@ function Palette({ mode }: { mode: "commands" | "goto" }) {
     if (commandMode) {
       list = allCommands()
         .filter((c) => !c.hidden)
+        .filter((c) => !availableOnly || isEnabled(c.id))
         .map((c) => ({
           id: c.id,
           label: `${c.category}: ${c.title}`,
@@ -185,8 +188,9 @@ function Palette({ mode }: { mode: "commands" | "goto" }) {
       });
     else scored.sort((a, b) => (b.s ?? 0) - (a.s ?? 0));
     return scored.map((x) => x.it).slice(0, 80);
-  }, [commandMode, query, goto, recent]);
-  useEffect(() => setIndex(0), [q]);
+  }, [commandMode, query, goto, recent, availableOnly]);
+  useEffect(() => setIndex(0), [q, availableOnly]);
+  useEffect(() => { listRef.current?.children[index]?.scrollIntoView({ block: "nearest" }); }, [index]);
   const choose = (it: Item | undefined) => {
     if (!it || it.disabled) return;
     ui.open(null);
@@ -201,19 +205,26 @@ function Palette({ mode }: { mode: "commands" | "goto" }) {
           value={q}
           placeholder="候補・マーカーを検索。> コマンド  # 局面  : 時刻  @ 選択  ? 一覧"
           aria-label="検索"
+          role="combobox"
+          aria-expanded="true"
+          aria-controls="command-results"
+          aria-activedescendant={items[index] ? `command-result-${index}` : undefined}
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "ArrowDown") setIndex((i) => Math.min(items.length - 1, i + 1));
+            if (e.nativeEvent.isComposing) return;
+            if (e.key === "ArrowDown") setIndex((i) => Math.max(0, Math.min(items.length - 1, i + 1)));
             else if (e.key === "ArrowUp") setIndex((i) => Math.max(0, i - 1));
             else if (e.key === "Enter") choose(items[index]);
             else return;
             e.preventDefault();
           }}
         />
-        <ul className="palette-list" role="listbox">
+        {commandMode && <div className="palette-filters"><button className="tool" aria-pressed={availableOnly} onClick={() => setAvailableOnly(!availableOnly)}>実行できる操作だけ</button><span className="muted">{items.length}件{items.length === 80 ? "まで表示" : ""}</span></div>}
+        <ul ref={listRef} id="command-results" className="palette-list" role="listbox" aria-label="検索結果">
           {items.map((it, i) => (
             <li
               key={it.id}
+              id={`command-result-${i}`}
               role="option"
               aria-selected={i === index}
               aria-disabled={it.disabled}

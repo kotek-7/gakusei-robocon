@@ -375,6 +375,7 @@ button.primary:hover:not(:disabled) {
   position: relative;
 }
 .menubar-button {
+  white-space: nowrap;
   height: 26px;
   padding: 0 8px;
   border: 0;
@@ -431,6 +432,13 @@ button.primary:hover:not(:disabled) {
 }
 .search-switcher select:first-child {
   max-width: 220px;
+}
+@media (max-width: 1150px) {
+  .topbar { height: auto; min-height: 34px; flex-wrap: wrap; padding: 4px 6px; }
+  .menubar { flex-shrink: 0; flex-wrap: wrap; max-width: 100%; }
+  .workspace-tabs { order: 2; flex: 1 0 100%; margin-left: 0; padding-left: 0; border-left: 0; }
+  .search-switcher { margin-left: auto; max-width: 100%; min-width: 0; }
+  .search-switcher select:first-child { min-width: 0; flex: 1; }
 }
 .shell-error {
   padding: 6px 12px;
@@ -761,6 +769,7 @@ button.status-item:hover {
   overflow: auto;
   max-height: 52vh;
 }
+.palette-filters { display: flex; align-items: center; gap: 8px; padding: 0 8px 6px; }
 .palette-item {
   display: flex;
   align-items: center;
