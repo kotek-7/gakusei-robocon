@@ -14,6 +14,7 @@ import { ContextMenuHost } from "./Menu";
 import { Dock } from "./Dock";
 import { OverlayHost, Toasts } from "./Overlays";
 import { StatusBar } from "./StatusBar";
+import { QuickActions } from "./QuickActions";
 import { TopBar } from "./TopBar";
 
 /** Advances the playhead with real time while playing. */
@@ -110,6 +111,7 @@ export function App() {
   return (
     <div className="shell">
       {!zen && <TopBar />}
+      {!zen && <QuickActions />}
       {error && (
         <div className="shell-error" role="alert">
           ブラウザ内の計算処理を開始できません。{error}
