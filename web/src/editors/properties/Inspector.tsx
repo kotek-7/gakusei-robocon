@@ -1,8 +1,28 @@
 import { objectNames } from "../common/labels";
 import { useState } from "react";
+import { register, run } from "../../app/commands";
+import { fetchQuery } from "../../app/data";
+import { ui, useUI } from "../../app/store";
+
 import type { Action, Detail, Edge } from "../../engine/types";
 import { saveJSON } from "../../app/coreCommands";
 import { actionName, robotNames, locationName } from "../common/labels";
+
+register({
+  id: "properties.seekNode",
+  title: "選択局面の時刻へ移動",
+  category: "移動",
+  enabled: () => !!useUI.getState().session.search && useUI.getState().session.node !== null,
+  run: async () => {
+    const { search, node } = useUI.getState().session;
+    if (!search || node === null) return;
+    const detail = await fetchQuery("node.get", { search, node });
+    const current = useUI.getState().session;
+    if (current.search === search && current.node === node)
+      ui.patchPlayback({ time: detail.state.t, playing: false });
+  },
+});
+
 export function Inspector({
   detail,
   busy,
@@ -16,6 +36,7 @@ export function Inspector({
   onEdge: (e: Edge) => void;
   onExpand: () => void;
 }) {
+  const time = useUI((s) => s.playback.time);
   const [indices, setIndices] = useState([0, 0, 0, 0]);
   const outgoing = detail.edges.filter((e) => e.src === detail.id),
     incoming = detail.edges.filter((e) => e.dst === detail.id);
@@ -25,6 +46,12 @@ export function Inspector({
         <h2>選択局面 N{detail.id}</h2>
         <span>{detail.state.t}秒</span>
       </div>
+      {Math.abs(time - detail.state.t) > 0.001 && (
+        <div className="section-title">
+          <span className="muted">再生位置 {time.toFixed(1)}秒</span>
+          <button onClick={() => run("properties.seekNode")}>局面の時刻へ移動</button>
+        </div>
+      )}
       <div className="scoreline">
         <span className="red-text">
           赤 <b>{detail.scores[0]}</b>

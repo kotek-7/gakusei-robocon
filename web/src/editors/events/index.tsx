@@ -1,10 +1,24 @@
 import { useMemo, useState } from "react";
+import { register, run } from "../../app/commands";
+import "./events.css";
 import { layout } from "../../app/layout";
 import { useReplay, useSearch } from "../../app/session";
 import { ui, useUI } from "../../app/store";
 import { Empty } from "../common/Empty";
 import { actionName, phaseNames, robotNames } from "../common/labels";
 import { defineEditor, type EditorProps } from "../registry";
+
+register({
+  id: "events.seek",
+  title: "動作の時刻へ移動",
+  category: "移動",
+  hidden: true,
+  run: ({ args }) => {
+    const event = args as { t: number; robot: number };
+    ui.patchPlayback({ time: event.t, playing: false });
+    ui.select(`robot:${event.robot}`);
+  },
+});
 
 function Header({ area }: EditorProps) {
   const robots = (area.state?.robots as boolean[]) ?? [true, true, true, true];
@@ -70,11 +84,21 @@ function EventsEditor({ area }: EditorProps) {
               key={i}
               className={i === current ? "current" : e.t > time ? "future" : ""}
               onClick={() => {
-                ui.patchPlayback({ time: e.t, playing: false });
-                ui.select(`robot:${e.robot}`);
+                run("events.seek", e);
               }}
             >
-              <td className="tabular">{e.t}</td>
+              <td className="tabular">
+                <button
+                  className="event-seek"
+                  aria-label={`${e.t}秒 ${robotNames[e.robot]} ${actionName(e.action)}へ移動`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    run("events.seek", e);
+                  }}
+                >
+                  {e.t}
+                </button>
+              </td>
               <td className={e.robot >> 1 ? "blue-text" : "red-text"}>{robotNames[e.robot]}</td>
               <td>{phaseNames[e.phase] || e.phase}</td>
               <td>{actionName(e.action)}</td>

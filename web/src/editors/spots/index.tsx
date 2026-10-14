@@ -59,10 +59,11 @@ function SpotsEditor({ area }: EditorProps) {
   const sel = selection?.startsWith("spot:") ? Number(selection.slice(5)) : null;
   const stock = stockAt(a, time);
   const spots = model.spots as number[][];
-  const flips = a.markers.filter((m) => m.kind === "flip");
+  const flips = a.markers.filter((m) => m.kind === "flip" && m.t <= time);
   return (
     <div className="editor-scroll spots-editor">
       <div className="stock-line">
+        <span className="tabular">{time.toFixed(1)}秒時点</span>
         <span>共有スカイ残り <b className="tabular">{stock.groundSky}</b>/12</span>
         <span>
           保管 <b className="red-text tabular">{stock.store[0]}</b> / <b className="blue-text tabular">{stock.store[1]}</b>
@@ -101,7 +102,7 @@ function SpotsEditor({ area }: EditorProps) {
               <th>スポット</th>
               <th>種類</th>
               <th>現在</th>
-              <th>変化</th>
+              <th>現在までの変化</th>
             </tr>
           </thead>
           <tbody>
@@ -110,7 +111,7 @@ function SpotsEditor({ area }: EditorProps) {
                 <th>S{track.spot}</th>
                 <td>L{track.level}・{ownerName(track.owner)}</td>
                 <td><Stack stack={at(track, time)} /></td>
-                <td className="tabular">{track.history.length - 1}回</td>
+                <td className="tabular">{Math.max(0, track.history.filter((h) => h.t <= time).length - 1)}回</td>
               </tr>
             ))}
           </tbody>

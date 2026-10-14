@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { layout } from "../../app/layout";
-import { useAnalysis, useSearch, useSpan } from "../../app/session";
+import { useAnalysis, useSearch } from "../../app/session";
 import { ui, useUI } from "../../app/store";
 import type { MatchAnalysis, ScoreParts } from "../../engine/analysis";
 import { Empty } from "../common/Empty";
@@ -161,7 +161,6 @@ function ScoreEditor({ area }: EditorProps) {
   const analysis = useAnalysis().data;
   const search = useSearch();
   const time = useUI((s) => s.playback.time);
-  const [, end] = useSpan();
   const mode = (area.state?.mode as string) ?? "both";
   if (!search) return <Empty title="探索がありません" />;
   if (!analysis) return <Empty title="局面を選択すると得点の推移を表示します" />;
@@ -177,7 +176,7 @@ function ScoreEditor({ area }: EditorProps) {
             <th>{time.toFixed(1)}秒時点</th>
             <th className="red-text">赤</th>
             <th className="blue-text">青</th>
-            <th>末尾 {end}秒</th>
+            <th>経路末尾 {analysis.end}秒（赤 / 青）</th>
           </tr>
         </thead>
         <tbody>
@@ -208,13 +207,13 @@ function ScoreEditor({ area }: EditorProps) {
           </tr>
           <tr>
             <th>ムスティカ取得条件</th>
-            <td className="tabular">{analysis.mandate[0] !== null ? `${analysis.mandate[0]}秒` : "未成立"}</td>
-            <td className="tabular">{analysis.mandate[1] !== null ? `${analysis.mandate[1]}秒` : "未成立"}</td>
-            <td />
+            <td className="tabular">{analysis.mandate[0] !== null && analysis.mandate[0] <= time ? `${analysis.mandate[0]}秒に成立` : "未成立"}</td>
+            <td className="tabular">{analysis.mandate[1] !== null && analysis.mandate[1] <= time ? `${analysis.mandate[1]}秒に成立` : "未成立"}</td>
+            <td>{analysis.mandate.map((t) => t === null ? "未成立" : `${t}秒`).join(" / ")}</td>
           </tr>
         </tbody>
       </table>
-      <p className="muted small">得点は経路上の各局面の値。動作中に持ち上げた物体は、その時点で塔から外れた扱いになる。</p>
+      <details className="muted small"><summary>集計条件</summary>持ち上げた物体は、その時点で塔から外れた扱いになります。</details>
     </div>
   );
 }
