@@ -1,10 +1,18 @@
-import type { Action, Config, Search } from "../explorer/types";
+
 import { MODEL, countConfigs, validateConfig } from "./model";
 import { Store } from "./store";
 import { Persistence, exportSearch, importSearch } from "./persistence";
 import { DiscoveryEngine, metrics, scopeComplete } from "./discovery";
 import { analyze } from "./evaluation";
 import { assert, pauseTurn } from "./util";
+import type { Search } from "./types";
+import type {
+  Backup,
+  EngineEvent,
+  Method,
+  Params,
+  Result,
+} from "./protocol";
 class Cancelled extends Error {}
 // Bounded worker memory: pause with all frontiers intact rather than lose data to a tab crash.
 export const NODE_LIMIT = 50000,
@@ -12,7 +20,15 @@ export const NODE_LIMIT = 50000,
 export class Runtime {
   private cache = new Map<string, Store>();
   private jobs = new Map<string, { cancel: boolean; done: Promise<void> }>();
+  private listeners = new Set<(e: EngineEvent) => void>();
   constructor(public persistence = new Persistence()) {}
+  subscribe(listener: (e: EngineEvent) => void) {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+  private emit(e: EngineEvent) {
+    for (const l of this.listeners) l(e);
+  }
   async initialize() {
     await this.persistence.recover();
   }
@@ -29,9 +45,20 @@ export class Runtime {
         this.cache.delete(id);
     }
   }
-  async get(id: string) {
-    if (!this.cache.has(id)) this.remember(await this.persistence.load(id));
-    return this.cache.get(id)!;
+  private loading = new Map<string, Promise<Store>>();
+  async get(id: string): Promise<Store> {
+    const cached = this.cache.get(id);
+    if (cached) return cached;
+    // Concurrent queries share one load so a search never has two live copies.
+    let pending = this.loading.get(id);
+    if (!pending) {
+      pending = this.persistence
+        .load(id)
+        .then((st) => (this.remember(st), st))
+        .finally(() => this.loading.delete(id));
+      this.loading.set(id, pending);
+    }
+    return pending;
   }
   async list() {
     const saved = await this.persistence.list();
@@ -68,6 +95,7 @@ export class Runtime {
     const job = { cancel: false, done: Promise.resolve() };
     this.jobs.set(st.data.id, job);
     job.done = this.work(st, kind, job, budget, seconds, options.node);
+    this.emit({ type: "search.changed", search: st.summary() });
     return st.summary();
   }
   private async work(
@@ -95,6 +123,7 @@ export class Runtime {
       }
       if (force || now - lastSave >= 1000) {
         await this.persistence.save(st);
+        this.emit({ type: "search.changed", search: st.summary() });
         lastSave = performance.now();
       }
     };
@@ -201,6 +230,8 @@ export class Runtime {
         st.data.error = e instanceof Error ? e.message : String(e);
       }
       this.jobs.delete(st.data.id);
+      this.emit({ type: "search.changed", search: st.summary() });
+      this.emit({ type: "job.finished", search: st.data.id, kind, reason });
     }
   }
   async pause(id: string) {
@@ -214,88 +245,113 @@ export class Runtime {
   async wait(id: string) {
     await this.jobs.get(id)?.done;
   }
-  async request(path: string, body?: unknown): Promise<unknown> {
-    const [pathname, query] = path.split("?"),
-      parts = pathname.split("/"),
-      q = new URLSearchParams(query),
-      op = parts[2];
-    const input = (body ?? {}) as {
-      budget?: number;
-      node?: number;
-      seconds?: number;
-      index: number;
-      red: Action[];
-      blue: Action[];
-      edges: number[];
-    };
-    if (path === "model") return MODEL;
-    if (path === "validate") return validateConfig(body);
-    if (path === "import") {
-      const st = importSearch(body);
-      await this.persistence.save(st);
-      this.remember(st);
-      return st.summary();
-    }
-    if (path === "searches") {
-      if (body === undefined) return this.list();
-      const st = Store.create(body as Config);
-      await this.persistence.save(st);
-      this.remember(st);
-      return st.summary();
-    }
-    assert(
-      parts[0] === "searches" && parts[1],
-      "指定されたデータが見つかりません",
-    );
-    const st = await this.get(parts[1]);
-    const num = (k: string, d: number) => {
-      const n = Number(q.get(k) ?? d);
-      assert(Number.isSafeInteger(n) && n >= 0, "番号が不正です");
-      return n;
-    };
-    switch (op) {
-      case undefined:
-        return st.summary();
-      case "graph":
-        return st.graph(
-          num("run", 0),
-          num("offset", 0),
-          Math.min(200, Math.max(1, num("limit", 100))),
-        );
-      case "node":
-        return st.detail(num("id", 1));
-      case "export":
-        return exportSearch(st);
-      case "replay":
-        return st.replay(input.edges);
-      case "discover":
-        return this.start(st, "discovery", input);
-      case "start":
-        return this.start(st, "exact", input);
-      case "evaluate":
-        return this.start(st, "evaluation");
-      case "pause":
-        return this.pause(st.data.id);
-      case "delete":
-        assert(!this.jobs.has(st.data.id), "停止してから削除してください");
-        await this.persistence.remove(st.data.id);
-        this.cache.delete(st.data.id);
-        return null;
-      case "run":
-      case "step": {
-        assert(
-          !this.jobs.has(st.data.id),
-          "探索または集計を停止してから操作してください",
-        );
-        const result =
-          op === "run"
-            ? (st.ensureRun(input.index), st.summary())
-            : { edges: st.step(input.node!, input.red, input.blue) };
-        await this.persistence.save(st);
-        return result;
-      }
-      default:
-        throw new Error("指定された操作が見つかりません");
-    }
+  /** Typed entry point used by the Worker. */
+  async call<M extends Method>(method: M, params: Params<M>): Promise<Result<M>> {
+    const handler = this.handlers[method] as (p: Params<M>) => Promise<Result<M>> | Result<M>;
+    assert(handler, "指定された操作が見つかりません");
+    return handler(params);
   }
+  private idle(st: Store) {
+    assert(
+      !this.jobs.has(st.data.id),
+      "探索または集計を停止してから操作してください",
+    );
+  }
+  private async commit(st: Store) {
+    await this.persistence.save(st);
+    this.emit({ type: "search.changed", search: st.summary() });
+    return st.summary();
+  }
+  private handlers: {
+    [M in Method]: (p: Params<M>) => Promise<Result<M>> | Result<M>;
+  } = {
+    "model.get": () => MODEL,
+    "config.validate": ({ config }) => validateConfig(config),
+    "search.list": () => this.list(),
+    "search.get": async ({ search }) => (await this.get(search)).summary(),
+    "search.export": async ({ search }) =>
+      exportSearch(
+        await this.get(search),
+        await this.persistence.workspace(search),
+      ),
+    "graph.page": async ({ search, run, offset, limit = 100 }) => {
+      assert(
+        [run, offset, limit].every((n) => Number.isSafeInteger(n) && n >= 0),
+        "番号が不正です",
+      );
+      return (await this.get(search)).graph(
+        run,
+        offset,
+        Math.min(200, Math.max(1, limit)),
+      );
+    },
+    "graph.locate": async ({ search, node }) =>
+      (await this.get(search)).locate(node),
+    "node.get": async ({ search, node }) => (await this.get(search)).detail(node),
+    "path.toNode": async ({ search, node }) =>
+      (await this.get(search)).path(node),
+    "replay.get": async ({ search, edges }) =>
+      (await this.get(search)).replay(edges),
+    "analysis.match": async ({ search, edges }) =>
+      (await this.get(search)).analysis(edges),
+    "workspace.get": ({ search }) => this.persistence.workspace(search),
+    "search.create": async ({ config }) => {
+      const st = Store.create(config);
+      this.remember(st);
+      return this.commit(st);
+    },
+    "search.import": async ({ backup }) => {
+      const st = importSearch(backup),
+        workspace = (backup as Backup).workspace;
+      this.remember(st);
+      if (workspace)
+        await this.persistence.putWorkspace({ ...workspace, id: st.data.id });
+      return this.commit(st);
+    },
+    "search.duplicate": async ({ search, name }) => {
+      const source = await this.get(search);
+      this.idle(source);
+      const backup = exportSearch(source);
+      const st = importSearch(JSON.parse(JSON.stringify(backup)));
+      st.data.config.name = name ?? `${source.c.name} のコピー`;
+      this.remember(st);
+      return this.commit(st);
+    },
+    "search.rename": async ({ search, name }) => {
+      const st = await this.get(search);
+      assert(typeof name === "string" && name.trim(), "名前を入力してください");
+      st.data.config.name = name.trim().slice(0, 80);
+      return this.commit(st);
+    },
+    "search.delete": async ({ search }) => {
+      assert(!this.jobs.has(search), "停止してから削除してください");
+      await this.persistence.remove(search);
+      this.cache.delete(search);
+      this.emit({ type: "search.removed", id: search });
+      return null;
+    },
+    "run.ensure": async ({ search, index }) => {
+      const st = await this.get(search);
+      this.idle(st);
+      st.ensureRun(index);
+      return this.commit(st);
+    },
+    "node.step": async ({ search, node, red, blue }) => {
+      const st = await this.get(search);
+      this.idle(st);
+      const edges = st.step(node, red, blue);
+      await this.commit(st);
+      return { edges };
+    },
+    "job.start": async ({ search, kind, ...options }) => {
+      assert(
+        ["discovery", "exact", "evaluation"].includes(kind),
+        "計算の種類が不正です",
+      );
+      return this.start(await this.get(search), kind, options);
+    },
+    "job.pause": ({ search }) => this.pause(search),
+    "workspace.put": ({ search, workspace }) =>
+      this.persistence.putWorkspace({ ...workspace, id: search }),
+  };
 }

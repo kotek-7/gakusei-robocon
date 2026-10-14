@@ -3,7 +3,7 @@ import type {
   Evaluation,
   EvaluationProgress,
   Strategy,
-} from "../explorer/types";
+} from "./types";
 import { scores, winner } from "./model";
 import {
   CLASS_VERSION,

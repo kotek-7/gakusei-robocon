@@ -120,6 +120,15 @@ test("IndexedDB backup restores continuation, rejects foreign/corrupt files, and
   assert.equal(loaded.data.status, "paused");
   assert.equal(loaded.data.job, null);
   assert.deepEqual(loaded.data.nodes, st.data.nodes);
+  // Incremental checkpoint: only new edges and touched nodes are written.
+  loaded.batch(5);
+  await db.save(loaded);
+  assert.deepEqual(loaded.dirty.size, 0);
+  const again = await db.load(st.data.id);
+  assert.deepEqual(again.data.nodes, loaded.data.nodes);
+  assert.deepEqual(again.data.edges, loaded.data.edges);
+  const ws = await db.putWorkspace({ ...(await db.workspace(st.data.id)), pins: ["n:1"] });
+  assert.deepEqual((await db.workspace(st.data.id)).pins, ws.pins);
   const restored = importSearch(JSON.parse(JSON.stringify(exportSearch(st))));
   assert.notEqual(restored.data.id, st.data.id);
   finish(restored);
@@ -244,23 +253,17 @@ test("Worker runtime responds during computation, cancellation persists, and exa
   const db = new Persistence(crypto.randomUUID()),
     rt = new Runtime(db);
   await rt.initialize();
-  const st = (await rt.request(
-    "searches",
-    defaults(),
-  )) as import("../explorer/types").Search;
-  await rt.request(`searches/${st.id}/discover`, { seconds: 60 });
+  const st = await rt.call("search.create", { config: defaults() });
+  await rt.call("job.start", { search: st.id, kind: "discovery", seconds: 60 });
   assert.equal((await rt.list())[0].status, "running");
   await new Promise((r) => setTimeout(r, 100));
   await rt.pause(st.id);
   assert.equal((await db.load(st.id)).data.status, "paused");
-  const short = (await rt.request(
-    "searches",
-    shortConfig(),
-  )) as import("../explorer/types").Search;
-  await rt.request(`searches/${short.id}/start`, { budget: 1000 });
+  const short = await rt.call("search.create", { config: shortConfig() });
+  await rt.call("job.start", { search: short.id, kind: "exact", budget: 1000 });
   await rt.wait(short.id);
   assert.ok((await rt.get(short.id)).summary().complete);
-  await rt.request(`searches/${short.id}/evaluate`, {});
+  await rt.call("job.start", { search: short.id, kind: "evaluation" });
   await rt.wait(short.id);
   assert.equal(
     (await rt.get(short.id)).data.evaluation?.runs[0].guarantee?.winUpper,
@@ -279,13 +282,10 @@ test("storage failure does not leave a phantom running job or discard the export
   }
   const db = new FailingPersistence(crypto.randomUUID()),
     rt = new Runtime(db);
-  const summary = (await rt.request(
-    "searches",
-    shortConfig(),
-  )) as import("../explorer/types").Search;
+  const summary = await rt.call("search.create", { config: shortConfig() });
   db.fail = true;
   await assert.rejects(
-    rt.request(`searches/${summary.id}/start`, { budget: 100 }),
+    rt.call("job.start", { search: summary.id, kind: "exact", budget: 100 }),
     /保存容量/,
   );
   const st = await rt.get(summary.id);
@@ -293,7 +293,7 @@ test("storage failure does not leave a phantom running job or discard the export
   assert.equal(st.data.job, null);
   assert.equal(exportSearch(st).search.nodes.length, 1);
   db.fail = false;
-  await rt.request(`searches/${summary.id}/start`, { budget: 100 });
+  await rt.call("job.start", { search: summary.id, kind: "exact", budget: 100 });
   await rt.wait(summary.id);
   assert.ok(st.summary().complete);
   await db.close();

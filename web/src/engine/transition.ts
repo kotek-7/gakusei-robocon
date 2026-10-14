@@ -1,4 +1,4 @@
-import type { Action, Config, State, Variant } from "../explorer/types";
+import type { Action, Config, State, Variant } from "./types";
 import {
   action,
   concreteLegal,

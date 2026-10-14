@@ -2,6 +2,7 @@
 import { Runtime } from "./runtime";
 import { initSolver } from "./linear";
 import wasmURL from "highs/runtime?url";
+import { QUERY_METHODS, type RequestMessage, type WorkerMessage } from "./protocol";
 const worker = self as unknown as DedicatedWorkerGlobalScope;
 let runtime: Promise<Runtime> | undefined;
 function initialize(): Promise<Runtime> {
@@ -36,24 +37,27 @@ function initialize(): Promise<Runtime> {
     throw e;
   }));
 }
-// Serialize commands; compute jobs yield independently so pause stays responsive.
+let subscribed = false;
+const post = (message: WorkerMessage) => worker.postMessage(message);
+// Queries run as they arrive; commands are serialized so writes keep their order.
+// Compute jobs yield independently, so pause and reads stay responsive.
 let commands = Promise.resolve();
-worker.onmessage = ({
-  data,
-}: {
-  data: { id: number; path: string; body?: unknown };
-}) => {
-  commands = commands.then(async () => {
+worker.onmessage = ({ data }: { data: RequestMessage }) => {
+  const run = async () => {
     try {
       const app = await initialize();
-      if (data.path.endsWith("/evaluate")) await initSolver(wasmURL);
-      const result = await app.request(data.path, data.body);
-      worker.postMessage({ id: data.id, result });
+      if (!subscribed) {
+        subscribed = true;
+        app.subscribe((event) => post({ event }));
+      }
+      if (data.method === "job.start" && (data.params as { kind: string }).kind === "evaluation")
+        await initSolver(wasmURL);
+      const result = await app.call(data.method, data.params as never);
+      post({ id: data.id, result });
     } catch (e) {
-      worker.postMessage({
-        id: data.id,
-        error: e instanceof Error ? e.message : String(e),
-      });
+      post({ id: data.id, error: e instanceof Error ? e.message : String(e) });
     }
-  });
+  };
+  if (QUERY_METHODS.has(data.method)) void run();
+  else commands = commands.then(run);
 };

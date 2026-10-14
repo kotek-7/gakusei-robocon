@@ -1,4 +1,4 @@
-import type { Frame, Replay, State } from "../explorer/types";
+import type { Frame, Replay, State } from "./types";
 import { EDGES, nodeAt, payload, ROBOT_NAMES, scores, SPOTS } from "./model";
 import { assert } from "./util";
 import type { StoredEdge } from "./store";

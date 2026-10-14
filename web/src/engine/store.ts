@@ -8,7 +8,7 @@ import type {
   Search,
   State,
   Variant,
-} from "../explorer/types";
+} from "./types";
 import {
   configAt,
   countConfigs,
@@ -20,6 +20,7 @@ import {
 } from "./model";
 import { successors, type Outcome, type Event } from "./transition";
 import { frame, replay } from "./presentation";
+import { analyzeMatch } from "./analysis";
 import { assert, key } from "./util";
 import type { DiscoveryState } from "./discovery";
 import { publicDiscovery } from "./discovery";
@@ -60,6 +61,9 @@ export type StoredSearch = {
 /** Worker-local graph. Persistence checkpoints the complete continuation atomically. */
 export class Store {
   data: StoredSearch;
+  /** Rows already in IndexedDB; nodes changed since then are in `dirty`. */
+  saved = { nodes: 0, edges: 0 };
+  dirty = new Set<number>();
   private nodeKeys = new Map<string, number>();
   private edgeKeys = new Map<string, number>();
   outgoing = new Map<number, StoredEdge[]>();
@@ -219,6 +223,7 @@ export class Store {
         processed++;
       }
       n.expanded = n.cursor === total;
+      this.dirty.add(n.id);
     }
     return processed;
   }
@@ -280,11 +285,7 @@ export class Store {
     return {
       ...n,
       ...snapshot(n.state),
-      offset:
-        Math.floor(
-          this.data.nodes.filter((x) => x.run === n.run && x.id < id).length /
-            100,
-        ) * 100,
+      offset: this.locate(id).offset,
       variant: v,
       edges: [
         ...(this.outgoing.get(id) || []),
@@ -296,6 +297,26 @@ export class Store {
       frame: frame(n.state),
       path: this.path(id),
     };
+  }
+  locate(id: number) {
+    const n = this.node(id);
+    return {
+      run: n.run,
+      offset:
+        Math.floor(
+          this.data.nodes.filter((x) => x.run === n.run && x.id < id).length /
+            100,
+        ) * 100,
+    };
+  }
+  analysis(ids: number[]) {
+    assert(Array.isArray(ids) && ids.every(Number.isInteger), "不正な経路です");
+    const edges = ids.map((id) => this.edge(id));
+    return analyzeMatch(
+      edges,
+      new Map(edges.map((e) => [e.dst, this.node(e.dst).state])),
+      this.c.rules.conflict === "branch",
+    );
   }
   replay(ids: number[]) {
     assert(Array.isArray(ids) && ids.every(Number.isInteger), "不正な経路です");

@@ -1,5 +1,5 @@
 /** Hints only reorder choices; they never remove primitive operations. */
-import type { Action, Config, Goal, State, Variant } from "../explorer/types";
+import type { Action, Config, Goal, State, Variant } from "./types";
 import {
   action,
   demand,

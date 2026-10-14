@@ -5,7 +5,7 @@ import type {
   Obj,
   State,
   Variant,
-} from "../explorer/types";
+} from "./types";
 import data from "./model-data.json";
 import { assert, clone, combinations, equal, key } from "./util";
 export const MODEL = data.model as Model;

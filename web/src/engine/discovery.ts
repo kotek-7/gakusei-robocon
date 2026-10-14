@@ -5,7 +5,7 @@ import type {
   DiscoverySession,
   Goal,
   State,
-} from "../explorer/types";
+} from "./types";
 import {
   action,
   countConfigs,
