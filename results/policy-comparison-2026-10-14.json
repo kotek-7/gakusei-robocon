@@ -1,0 +1,925 @@
+{
+  "config": {
+    "version": "browser-1",
+    "name": "新しい探索",
+    "scenario": "start",
+    "horizon": 180,
+    "rules": {
+      "retry_payload": "retain",
+      "br_ramp": false,
+      "sky_relocate": false,
+      "repeat_transfer": false,
+      "placed_mustika": false,
+      "conflict": "branch",
+      "mandate": "simultaneous"
+    },
+    "profiles": {
+      "move": [
+        0.8,
+        0.5,
+        0.3
+      ],
+      "pick": [
+        1,
+        2,
+        4
+      ],
+      "place": [
+        2,
+        4,
+        7
+      ],
+      "flip": [
+        2,
+        4,
+        8
+      ],
+      "handover": [
+        1,
+        2,
+        4
+      ],
+      "retry": [
+        5,
+        10,
+        15
+      ]
+    },
+    "teams": [
+      {
+        "caps": {
+          "ramp": [
+            true
+          ],
+          "stairs1": [
+            true
+          ],
+          "stairs2": [
+            true
+          ],
+          "flip": [
+            true
+          ],
+          "reposition": [
+            true
+          ],
+          "earth": [
+            true
+          ],
+          "sky": [
+            true
+          ],
+          "mustika": [
+            true
+          ],
+          "direct": [
+            true
+          ],
+          "mixed": [
+            true
+          ],
+          "capacity_tr": [
+            3
+          ],
+          "capacity_br": [
+            2
+          ]
+        },
+        "speeds": {
+          "move": [
+            0
+          ],
+          "pick": [
+            1
+          ],
+          "place": [
+            1
+          ],
+          "flip": [
+            1
+          ],
+          "handover": [
+            1
+          ],
+          "retry": [
+            1
+          ]
+        }
+      },
+      {
+        "caps": {
+          "ramp": [
+            true
+          ],
+          "stairs1": [
+            true
+          ],
+          "stairs2": [
+            true
+          ],
+          "flip": [
+            true
+          ],
+          "reposition": [
+            true
+          ],
+          "earth": [
+            true
+          ],
+          "sky": [
+            true
+          ],
+          "mustika": [
+            true
+          ],
+          "direct": [
+            true
+          ],
+          "mixed": [
+            true
+          ],
+          "capacity_tr": [
+            3
+          ],
+          "capacity_br": [
+            2
+          ]
+        },
+        "speeds": {
+          "move": [
+            1
+          ],
+          "pick": [
+            1
+          ],
+          "place": [
+            1
+          ],
+          "flip": [
+            1
+          ],
+          "handover": [
+            1
+          ],
+          "retry": [
+            1
+          ]
+        }
+      }
+    ],
+    "starts": [
+      0
+    ],
+    "layouts": [
+      "stacked"
+    ]
+  },
+  "discoveryVersion": 2,
+  "seconds": 76.010711554,
+  "complete": true,
+  "candidates": [
+    {
+      "id": "Q-safe",
+      "score": [
+        185,
+        0
+      ],
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 0
+        },
+        {
+          "kind": "build",
+          "spot": 1
+        }
+      ],
+      "responses": [
+        {
+          "opponent": "QO-safe",
+          "score": [
+            185,
+            130
+          ]
+        },
+        {
+          "opponent": "QO-earth",
+          "score": [
+            185,
+            210
+          ]
+        },
+        {
+          "opponent": "QO-mustika",
+          "score": [
+            185,
+            310
+          ]
+        },
+        {
+          "opponent": "QO-thief",
+          "score": [
+            185,
+            60
+          ]
+        },
+        {
+          "opponent": "QO-sky",
+          "score": [
+            185,
+            115
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q-earth",
+      "score": [
+        240,
+        0
+      ],
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 6
+        },
+        {
+          "kind": "build",
+          "spot": 7
+        },
+        {
+          "kind": "build",
+          "spot": 8
+        },
+        {
+          "kind": "build",
+          "spot": 9
+        }
+      ],
+      "responses": [
+        {
+          "opponent": "QO-safe",
+          "score": [
+            240,
+            130
+          ]
+        },
+        {
+          "opponent": "QO-earth",
+          "score": [
+            180,
+            155
+          ]
+        },
+        {
+          "opponent": "QO-mustika",
+          "score": [
+            225,
+            250
+          ]
+        },
+        {
+          "opponent": "QO-thief",
+          "score": [
+            240,
+            60
+          ]
+        },
+        {
+          "opponent": "QO-sky",
+          "score": [
+            240,
+            115
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q-hybrid",
+      "score": [
+        420,
+        0
+      ],
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 0
+        },
+        {
+          "kind": "build",
+          "spot": 4
+        },
+        {
+          "kind": "mustika"
+        }
+      ],
+      "responses": [
+        {
+          "opponent": "QO-safe",
+          "score": [
+            420,
+            130
+          ]
+        },
+        {
+          "opponent": "QO-earth",
+          "score": [
+            420,
+            210
+          ]
+        },
+        {
+          "opponent": "QO-mustika",
+          "score": [
+            420,
+            310
+          ]
+        },
+        {
+          "opponent": "QO-thief",
+          "score": [
+            380,
+            100
+          ]
+        },
+        {
+          "opponent": "QO-sky",
+          "score": [
+            420,
+            110
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q-upper",
+      "score": [
+        325,
+        0
+      ],
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 6
+        },
+        {
+          "kind": "build",
+          "spot": 7
+        }
+      ],
+      "responses": [
+        {
+          "opponent": "QO-safe",
+          "score": [
+            325,
+            130
+          ]
+        },
+        {
+          "opponent": "QO-earth",
+          "score": [
+            325,
+            155
+          ]
+        },
+        {
+          "opponent": "QO-mustika",
+          "score": [
+            325,
+            310
+          ]
+        },
+        {
+          "opponent": "QO-thief",
+          "score": [
+            150,
+            205
+          ]
+        },
+        {
+          "opponent": "QO-sky",
+          "score": [
+            325,
+            115
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q-mustika",
+      "score": [
+        560,
+        0
+      ],
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 6
+        },
+        {
+          "kind": "build",
+          "spot": 7
+        },
+        {
+          "kind": "mustika"
+        }
+      ],
+      "responses": [
+        {
+          "opponent": "QO-safe",
+          "score": [
+            560,
+            130
+          ]
+        },
+        {
+          "opponent": "QO-earth",
+          "score": [
+            560,
+            155
+          ]
+        },
+        {
+          "opponent": "QO-mustika",
+          "score": [
+            560,
+            310
+          ]
+        },
+        {
+          "opponent": "QO-thief",
+          "score": [
+            150,
+            205
+          ]
+        },
+        {
+          "opponent": "QO-sky",
+          "score": [
+            560,
+            115
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q-opportunist",
+      "score": [
+        420,
+        0
+      ],
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 0
+        },
+        {
+          "kind": "build",
+          "spot": 4
+        },
+        {
+          "kind": "mustika"
+        }
+      ],
+      "responses": [
+        {
+          "opponent": "QO-safe",
+          "score": [
+            420,
+            130
+          ]
+        },
+        {
+          "opponent": "QO-earth",
+          "score": [
+            420,
+            210
+          ]
+        },
+        {
+          "opponent": "QO-mustika",
+          "score": [
+            460,
+            145
+          ]
+        },
+        {
+          "opponent": "QO-thief",
+          "score": [
+            380,
+            100
+          ]
+        },
+        {
+          "opponent": "QO-sky",
+          "score": [
+            420,
+            110
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q-thief",
+      "score": [
+        90,
+        0
+      ],
+      "plan": [],
+      "responses": [
+        {
+          "opponent": "QO-safe",
+          "score": [
+            90,
+            130
+          ]
+        },
+        {
+          "opponent": "QO-earth",
+          "score": [
+            90,
+            210
+          ]
+        },
+        {
+          "opponent": "QO-mustika",
+          "score": [
+            155,
+            230
+          ]
+        },
+        {
+          "opponent": "QO-thief",
+          "score": [
+            90,
+            60
+          ]
+        },
+        {
+          "opponent": "QO-sky",
+          "score": [
+            90,
+            115
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q-late",
+      "score": [
+        185,
+        0
+      ],
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 0
+        },
+        {
+          "kind": "build",
+          "spot": 1
+        }
+      ],
+      "responses": [
+        {
+          "opponent": "QO-safe",
+          "score": [
+            185,
+            130
+          ]
+        },
+        {
+          "opponent": "QO-earth",
+          "score": [
+            185,
+            210
+          ]
+        },
+        {
+          "opponent": "QO-mustika",
+          "score": [
+            265,
+            230
+          ]
+        },
+        {
+          "opponent": "QO-thief",
+          "score": [
+            185,
+            60
+          ]
+        },
+        {
+          "opponent": "QO-sky",
+          "score": [
+            185,
+            115
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q-sky",
+      "score": [
+        175,
+        0
+      ],
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 0
+        },
+        {
+          "kind": "build",
+          "spot": 4
+        }
+      ],
+      "responses": [
+        {
+          "opponent": "QO-safe",
+          "score": [
+            175,
+            130
+          ]
+        },
+        {
+          "opponent": "QO-earth",
+          "score": [
+            175,
+            210
+          ]
+        },
+        {
+          "opponent": "QO-mustika",
+          "score": [
+            175,
+            310
+          ]
+        },
+        {
+          "opponent": "QO-thief",
+          "score": [
+            175,
+            60
+          ]
+        },
+        {
+          "opponent": "QO-sky",
+          "score": [
+            135,
+            135
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q-transport",
+      "score": [
+        90,
+        0
+      ],
+      "plan": [],
+      "responses": [
+        {
+          "opponent": "QO-safe",
+          "score": [
+            90,
+            130
+          ]
+        },
+        {
+          "opponent": "QO-earth",
+          "score": [
+            90,
+            210
+          ]
+        },
+        {
+          "opponent": "QO-mustika",
+          "score": [
+            90,
+            310
+          ]
+        },
+        {
+          "opponent": "QO-thief",
+          "score": [
+            90,
+            60
+          ]
+        },
+        {
+          "opponent": "QO-sky",
+          "score": [
+            90,
+            115
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q-safe-reverse",
+      "score": [
+        185,
+        0
+      ],
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 1
+        },
+        {
+          "kind": "build",
+          "spot": 0
+        }
+      ],
+      "responses": [
+        {
+          "opponent": "QO-safe",
+          "score": [
+            185,
+            130
+          ]
+        },
+        {
+          "opponent": "QO-earth",
+          "score": [
+            185,
+            210
+          ]
+        },
+        {
+          "opponent": "QO-mustika",
+          "score": [
+            185,
+            310
+          ]
+        },
+        {
+          "opponent": "QO-thief",
+          "score": [
+            185,
+            60
+          ]
+        },
+        {
+          "opponent": "QO-sky",
+          "score": [
+            185,
+            115
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q-hybrid-reverse",
+      "score": [
+        420,
+        0
+      ],
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 4
+        },
+        {
+          "kind": "build",
+          "spot": 0
+        },
+        {
+          "kind": "mustika"
+        }
+      ],
+      "responses": [
+        {
+          "opponent": "QO-safe",
+          "score": [
+            420,
+            130
+          ]
+        },
+        {
+          "opponent": "QO-earth",
+          "score": [
+            420,
+            210
+          ]
+        },
+        {
+          "opponent": "QO-mustika",
+          "score": [
+            420,
+            310
+          ]
+        },
+        {
+          "opponent": "QO-thief",
+          "score": [
+            145,
+            100
+          ]
+        },
+        {
+          "opponent": "QO-sky",
+          "score": [
+            420,
+            110
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q-upper-reverse",
+      "score": [
+        325,
+        0
+      ],
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 7
+        },
+        {
+          "kind": "build",
+          "spot": 6
+        }
+      ],
+      "responses": [
+        {
+          "opponent": "QO-safe",
+          "score": [
+            325,
+            130
+          ]
+        },
+        {
+          "opponent": "QO-earth",
+          "score": [
+            325,
+            155
+          ]
+        },
+        {
+          "opponent": "QO-mustika",
+          "score": [
+            325,
+            310
+          ]
+        },
+        {
+          "opponent": "QO-thief",
+          "score": [
+            150,
+            205
+          ]
+        },
+        {
+          "opponent": "QO-sky",
+          "score": [
+            325,
+            115
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q-learned-6-7-0-1",
+      "score": [
+        560,
+        0
+      ],
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 6
+        },
+        {
+          "kind": "build",
+          "spot": 7
+        },
+        {
+          "kind": "mustika"
+        }
+      ],
+      "responses": []
+    },
+    {
+      "id": "Q-learned-6-7-0-0",
+      "score": [
+        325,
+        0
+      ],
+      "plan": [
+        {
+          "kind": "build",
+          "spot": 6
+        },
+        {
+          "kind": "build",
+          "spot": 7
+        }
+      ],
+      "responses": []
+    }
+  ]
+}

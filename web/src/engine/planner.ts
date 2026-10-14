@@ -12,9 +12,11 @@ import {
 } from "./model";
 import { compare, equal } from "./util";
 export type Intent =
-  { kind: "travel"; dest: string } | { kind: "until"; at: number };
+  | { kind: "travel"; dest: string }
+  | { kind: "until"; at: number };
 export type Instruction =
-  Intent | { kind: "operation"; at: string; action: Action; demand: string };
+  | Intent
+  | { kind: "operation"; at: string; action: Action; demand: string };
 export type Choice = [Action, Intent | null];
 export type Failure = {
   robot: number;
@@ -154,7 +156,26 @@ export class Planner {
       need = { M: 1 };
       target = `pillar${team}`;
     } else if (g.kind === "deliver") {
-      need = this.v.teams[team].caps.earth ? { E: 1 } : { S: 1 };
+      const resource =
+        g.resource ||
+        ["E", "S"].find(
+          (k) =>
+            this.v.teams[team].caps[k === "E" ? "earth" : "sky"] &&
+            s.objects.some(
+              (o) =>
+                o.kind === k &&
+                [
+                  k === "E" ? `store${team}` : "groundSky",
+                  `robot${r}`,
+                ].includes(o.loc) &&
+                !o.delivered[team],
+            ),
+        );
+      if (!resource && !held.length) return wait;
+      need = {
+        [resource || held[0].kind]:
+          g.amount ?? Number(this.v.teams[team].caps.capacity_tr),
+      };
       target = transfer;
     } else {
       const len = tower(s, g.spot!).length;
@@ -251,7 +272,7 @@ export function choices(
       const a = p.route(pos, commitment!.dest, r)?.[1][0];
       return [[a && opts.some((x) => equal(x, a)) ? a : wait, commitment]];
     }
-    return [[action("delay", { seconds: 1 }), commitment]];
+    return [[opts.find((a) => a.kind === "delay") || wait, commitment]];
   }
   const result: Choice[] = opts
     .filter((a) => !["move", "delay"].includes(a.kind))
@@ -352,7 +373,11 @@ export function fixedChoice(
         index++;
         continue;
       }
-      return [[[action("delay", { seconds: 1 }), ins]], index + 1, null];
+      return [
+        [[opts.find((a) => a.kind === "delay") || wait, ins]],
+        index + 1,
+        null,
+      ];
     } else
       for (const a of opts) {
         const { objects: _, ...desc } = a;

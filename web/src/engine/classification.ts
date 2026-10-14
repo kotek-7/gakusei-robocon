@@ -4,7 +4,7 @@ import type { Event } from "./transition";
 import { key } from "./util";
 export const digest = (x: unknown) =>
   bytesToHex(sha256(new TextEncoder().encode(key(x))));
-export const CLASS_VERSION = "browser-milestones-1";
+export const CLASS_VERSION = "browser-milestones-2";
 export function tokens(events: Event[]): string[] {
   return events
     .filter((e) => !["wait", "delay", "continue"].includes(e.action.kind))
@@ -53,7 +53,16 @@ export function classification(sig: string[][]): [string, string[][]] {
           const e = JSON.parse(raw);
           if (
             e[1] !== "finish" ||
-            !["place", "flip", "take", "placeM", "takeM"].includes(e[2])
+            ![
+              "place",
+              "flip",
+              "take",
+              "placeM",
+              "takeM",
+              "drop",
+              "give",
+              "retry",
+            ].includes(e[2])
           )
             return [];
           e[5] = (e[5] || [])

@@ -175,7 +175,7 @@ function firstCandidate(kind: string, enabled = true, minimum = 0) {
   for (let i = 0; i < 5000; i++) {
     engine.tick();
     const found = engine.d.runs[0].candidates.find(
-      (a) => a.baseline.scores[0] >= minimum,
+      (a) => !a.policy && a.baseline.scores[0] >= minimum,
     );
     if (found) return { st, found };
   }

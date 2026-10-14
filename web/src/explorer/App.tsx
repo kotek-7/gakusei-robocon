@@ -365,7 +365,7 @@ export function App() {
         <main className="empty">
           <h2>計算プロセスに接続しています</h2>
           <p>
-            ローカル起動コマンド：<code>python3 -m explorer</code>
+            ブラウザ内の計算処理を準備しています。
           </p>
         </main>
       ) : editing || !search ? (

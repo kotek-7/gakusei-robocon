@@ -53,6 +53,11 @@ export class Runtime {
       Number.isInteger(seconds) && seconds >= 1 && seconds <= 86400,
       "候補探索の時間は1〜86400秒の整数です",
     );
+    if (kind === "discovery")
+      assert(
+        !st.data.discovery || st.data.discovery.version === 2,
+        "旧方式の結果は保存したまま、同じ構成で新しい探索を作成してください。",
+      );
     if (options.node !== undefined) st.node(options.node);
     st.data.status = kind === "evaluation" ? "evaluating" : "running";
     st.data.job = kind;

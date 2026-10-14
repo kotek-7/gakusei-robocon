@@ -5,6 +5,7 @@ import type {
   DiscoverySession,
   Goal,
   State,
+  StrategyPolicy,
 } from "../explorer/types";
 import {
   action,
@@ -35,9 +36,16 @@ import {
 } from "./classification";
 import { successors } from "./transition";
 import type { Store } from "./store";
-import { combination, equal, key } from "./util";
+import {
+  policySeeds,
+  policyOpponents,
+  policyGoal,
+  policyAction,
+  policyFromPlan,
+} from "./policy";
+import { assert, combination, equal, key } from "./util";
 export const SCOPE =
-  "候補探索：両チームの取得個数・混載・床／直接受け渡し・建設途中の切替・先行搬送を探索します。移動は作業地点までの最短経路、待機は次の動作完了または終了直前の反転開始までに限定します。未探索の分岐を保存して続行できます。候補は到達経路の代表例で、最適性・勝率・点差の保証ではありません。";
+  "条件付き作戦13案を5種類の能動的な相手と比較し、主要な得点源・切替条件・必要機構を示します。用意した13案に加え、行動探索や対抗手から最大8案を組み立て直して比較します。全戦略の網羅ではありません。並行する行動探索では、両チームの取得個数・混載・床／直接受け渡し・建設途中の切替・先行搬送を探索します。移動は最短経路です。条件付き作戦は待機中に1秒刻みで条件を確認します。行動探索の待機は次の動作完了か終了直前の反転開始に限定し、保存手順では絶対時刻として再現します。未探索の分岐を保存して続行できます。作戦の比較と行動経路の例を区別して表示します。最適性・勝率・全相手への点差を保証しません。";
 type Context = {
   commitments: (Intent | null)[];
   indices: number[];
@@ -60,6 +68,7 @@ type DNode = {
   priority: number;
 };
 type DJob = {
+  policies?: Record<string, StrategyPolicy>;
   id: number;
   run: number;
   mode: "baseline" | "counter" | "compare";
@@ -71,6 +80,7 @@ type DJob = {
   done: boolean;
 };
 type DRun = {
+  policyOpponents?: Record<string, StrategyPolicy>;
   candidates: (Candidate & { script: Instruction[][] })[];
   opponents: Record<string, Instruction[][]>;
   tested: number;
@@ -81,6 +91,7 @@ type DRun = {
   commonOpponents: string[];
 };
 export type DiscoveryState = {
+  version?: number;
   elapsed: number;
   schedule: number;
   runs: Record<string, DRun>;
@@ -96,6 +107,7 @@ export type DiscoveryState = {
   }[];
 };
 export const emptyDiscovery = (): DiscoveryState => ({
+  version: 2,
   elapsed: 0,
   schedule: 0,
   runs: {},
@@ -136,7 +148,10 @@ export function publicDiscovery(st: Store): Discovery | null {
   if (!d) return null;
   return {
     elapsed: d.elapsed,
-    scope: SCOPE,
+    scope:
+      d.version === 2
+        ? SCOPE
+        : "旧方式の結果です。新方式の比較には同じ構成で新しい探索を作成してください。",
     complete: false,
     scopeComplete: scopeComplete(st),
     stopReason: scopeComplete(st) ? "exhausted" : d.stopReason,
@@ -144,17 +159,47 @@ export function publicDiscovery(st: Store): Discovery | null {
     sessions: d.sessions,
     runs: Object.entries(d.runs)
       .sort((a, b) => Number(a[0]) - Number(b[0]))
-      .map(([k, r]) => ({
-        run: Number(k),
-        variant: st.run(Number(k)).variant,
-        tested: r.tested,
-        frontier: r.frontier,
-        remainingChoices: r.remainingChoices,
-        scopeComplete: r.complete,
-        commonOpponents: r.commonOpponents,
-        firstCandidateSeconds: r.firstCandidateSeconds,
-        candidates: r.candidates.map(({ script: _, ...a }) => a),
-      })),
+      .map(([k, r]) => {
+        const compared = new Map<string, Set<string>>();
+        for (const job of d.jobs)
+          if (job.run === Number(k) && job.mode === "compare" && job.done) {
+            if (!compared.has(job.candidate))
+              compared.set(job.candidate, new Set());
+            compared.get(job.candidate)!.add(job.opponent);
+          }
+        const core = r.candidates.filter(
+          (a) => a.policy && !a.policy.derivedFrom,
+        );
+        const opponents = Object.keys(r.policyOpponents || {});
+        const common = opponents.filter(
+          (id) =>
+            core.length === policySeeds().length &&
+            core.every((a) => compared.get(a.id)?.has(id)),
+        );
+        return {
+          run: Number(k),
+          variant: st.run(Number(k)).variant,
+          tested: r.tested,
+          frontier: r.frontier,
+          remainingChoices: r.remainingChoices,
+          scopeComplete: r.complete,
+          commonOpponents: r.commonOpponents,
+          policyOpponents: Object.fromEntries(
+            Object.entries(r.policyOpponents || {}).map(([id, p]) => [
+              id,
+              p.name,
+            ]),
+          ),
+          policyCommonOpponents: common,
+          policyComparisonComplete:
+            opponents.length > 0 && common.length === opponents.length,
+          firstCandidateSeconds: r.firstCandidateSeconds,
+          candidates: r.candidates.map(({ script: _, ...a }) => ({
+            ...a,
+            comparedOpponents: [...(compared.get(a.id) || [])],
+          })),
+        };
+      }),
   };
 }
 function alternatives(
@@ -177,14 +222,19 @@ function alternatives(
     )
       blocked.push(f);
   };
-  for (let t = 0; t < 2; t++)
-    if (!hints[t] || p.achieved(s, hints[t]!, t))
+  for (let t = 0; t < 2; t++) {
+    const policy = job.policies?.[t];
+    if (policy) hints[t] = policyGoal(p, s, t, policy, hints[t]);
+    else if (!hints[t] || p.achieved(s, hints[t]!, t))
       hints[t] = p.goals(s, t)[0] || null;
+  }
   for (let r = 0; r < 4; r++) {
     const t = r >> 1,
       fixed = job.scripts[t];
     let opts: Choice[];
-    if (fixed) {
+    if (job.policies?.[t]) {
+      opts = [[policyAction(p, s, r, hints[t]), null]];
+    } else if (fixed) {
       let f;
       [opts, indices[r], f] = fixedChoice(
         p,
@@ -209,7 +259,7 @@ function alternatives(
       opts = choices(p, s, r, ctx.commitments[r], hint, p.destinations.get(r));
     }
     const g = hints[t];
-    if (!fixed && r % 2 === 0 && g?.kind === "flip") {
+    if (!fixed && !job.policies?.[t] && r % 2 === 0 && g?.kind === "flip") {
       const held = payload(s, r).length > 0;
       const useful = ([a, i]: Choice) =>
         ["drop", "give"].includes(a.kind) ||
@@ -221,7 +271,7 @@ function alternatives(
           (b[0].objects?.length || 0) - (a[0].objects?.length || 0),
       );
     }
-    if (!fixed && r % 2 && g?.kind === "build") {
+    if (!fixed && !job.policies?.[t] && r % 2 && g?.kind === "build") {
       const len = tower(s, g.spot!).length,
         need: Record<string, number> = {
           E: Math.max(0, 2 - len),
@@ -246,12 +296,16 @@ function alternatives(
   for (let t = 0; t < 2; t++) {
     const r = t * 2,
       [aa, bb] = options.slice(r, r + 2);
+    if (job.policies?.[t]) continue;
     if (job.scripts[t]) {
       const a = aa[0][0],
         b = bb[0][0];
       if ((a.kind === "give" || b.kind === "receive") && !matched([a, b])) {
         for (const rr of [r, r + 1])
-          if (!s.robots[rr].job) {
+          if (
+            !s.robots[rr].job &&
+            ["give", "receive"].includes(options[rr][0][0].kind)
+          ) {
             options[rr] = [
               [action("wait", { seconds: p.c.horizon - s.t }), null],
             ];
@@ -290,9 +344,16 @@ export class DiscoveryEngine {
   private planners = new Map<number, Planner>();
   private stateKeys = new Map<string, number>();
   constructor(public st: Store) {
+    assert(
+      !st.data.discovery || st.data.discovery.version === 2,
+      "旧方式の候補探索は再開できません。結果を書き出して保存し、同じ構成で新しい探索を作成してください。",
+    );
     this.d = st.data.discovery ??= emptyDiscovery();
     for (const row of this.d.nodes)
-      this.stateKeys.set(key([row.job, row.node, row.context]), row.id);
+      this.stateKeys.set(
+        key([row.job, row.node, row.context, row.hints]),
+        row.id,
+      );
   }
   private newJob(
     run: number,
@@ -300,6 +361,7 @@ export class DiscoveryEngine {
     candidate = "",
     opponent = "",
     scripts: Record<string, Instruction[][]> = {},
+    policies: Record<string, StrategyPolicy> = {},
   ) {
     if (
       this.d.jobs.some(
@@ -307,7 +369,9 @@ export class DiscoveryEngine {
           j.run === run &&
           j.mode === mode &&
           j.candidate === candidate &&
-          j.opponent === opponent,
+          j.opponent === opponent &&
+          ((mode === "baseline" && candidate !== "") ||
+            equal(j.policies || {}, policies)),
       )
     )
       return;
@@ -318,6 +382,7 @@ export class DiscoveryEngine {
       candidate,
       opponent,
       scripts,
+      policies,
       active: null,
       ticks: 0,
       done: false,
@@ -348,7 +413,7 @@ export class DiscoveryEngine {
     hints: (Goal | null)[],
     priority: number,
   ): DNode {
-    const k = key([job, node, context]),
+    const k = key([job, node, context, hints]),
       old = this.stateKeys.get(k);
     if (old) return this.d.nodes[old - 1];
     const row: DNode = {
@@ -484,13 +549,18 @@ export class DiscoveryEngine {
       const point = scores(outs[i].state),
         priority =
           job.mode === "counter" ? point[1] - point[0] : point[0] - point[1];
+      const additions = adds.map((ins) =>
+        ins?.kind === "operation" && ins.action.kind === "wait"
+          ? { kind: "until" as const, at: outs[i].state.t }
+          : ins,
+      );
       const child = this.addState(
         job.id,
         this.st.edge(eid).dst,
         ctx,
         row!.id,
         eid,
-        adds,
+        additions,
         row!.hints,
         priority,
       );
@@ -499,7 +569,7 @@ export class DiscoveryEngine {
         src: row!.id,
         dst: child.id,
         edge: eid,
-        additions: adds,
+        additions,
       });
       if (first === null && !child.done) first = child.id;
     });
@@ -511,11 +581,61 @@ export class DiscoveryEngine {
     job: DJob,
     [ev, scripts, plan]: ReturnType<DiscoveryEngine["evidence"]>,
   ) {
+    if (
+      (job.mode === "baseline" && !job.policies?.[0]) ||
+      job.mode === "counter"
+    ) {
+      const team = job.mode === "counter" ? 1 : 0;
+      const discovered =
+        team === 0
+          ? plan
+          : ev.path
+              .flatMap((id) => this.st.edge(id).events)
+              .filter(
+                (e) =>
+                  e.robot >> 1 === team &&
+                  e.phase === "finish" &&
+                  ["place", "flip", "placeM"].includes(e.action.kind),
+              )
+              .map((e) => ({
+                kind:
+                  e.action.kind === "place"
+                    ? "build"
+                    : e.action.kind === "flip"
+                      ? "flip"
+                      : "mustika",
+                ...(e.action.spot !== undefined ? { spot: e.action.spot } : {}),
+              }));
+      const learned = policyFromPlan(
+        discovered,
+        job.mode === "counter" ? "対抗手の探索" : "行動の探索",
+        team,
+      );
+      if (
+        learned &&
+        this.d.jobs.filter(
+          (j) =>
+            j.run === job.run &&
+            j.mode === "baseline" &&
+            j.policies?.[0]?.derivedFrom,
+        ).length < 8
+      )
+        this.newJob(
+          job.run,
+          "baseline",
+          "Q-" + learned.id,
+          "",
+          {},
+          { 0: learned },
+        );
+    }
     if (job.mode === "baseline") {
-      const id = "P-" + digest(scripts.slice(0, 2));
+      const policy = job.policies?.[0];
+      const id = policy ? "Q-" + policy.id : "P-" + digest(scripts.slice(0, 2));
       if (data.candidates.some((a) => a.id === id)) return;
       data.candidates.push({
         id,
+        ...(policy ? { policy } : {}),
         plan,
         script: scripts.slice(0, 2),
         baseline: ev,
@@ -524,23 +644,54 @@ export class DiscoveryEngine {
       });
       if (data.firstCandidateSeconds === null && ev.scores[0] > 0)
         data.firstCandidateSeconds = this.d.elapsed;
-      this.newJob(job.run, "counter", id, "", { 0: scripts.slice(0, 2) });
+      this.newJob(
+        job.run,
+        "counter",
+        id,
+        "",
+        policy ? {} : { 0: scripts.slice(0, 2) },
+        policy ? { 0: policy } : {},
+      );
+      for (const [oid, opponent] of Object.entries(data.policyOpponents || {}))
+        this.newJob(
+          job.run,
+          "compare",
+          id,
+          oid,
+          policy ? {} : { 0: scripts.slice(0, 2) },
+          { ...(policy ? { 0: policy } : {}), 1: opponent },
+        );
       for (const [oid, script] of Object.entries(data.opponents))
-        this.newJob(job.run, "compare", id, oid, {
-          0: scripts.slice(0, 2),
-          1: script,
-        });
+        this.newJob(
+          job.run,
+          "compare",
+          id,
+          oid,
+          {
+            ...(policy ? {} : { 0: scripts.slice(0, 2) }),
+            1: script,
+          },
+          policy ? { 0: policy } : {},
+        );
     } else {
       const candidate = data.candidates.find((a) => a.id === job.candidate)!,
         oid = job.opponent || "O-" + digest(scripts.slice(2));
       if (job.mode === "counter" && !data.opponents[oid]) {
         data.opponents[oid] = scripts.slice(2);
         for (const a of data.candidates)
-          this.newJob(job.run, "compare", a.id, oid, {
-            0: a.script,
-            1: scripts.slice(2),
-          });
+          this.newJob(
+            job.run,
+            "compare",
+            a.id,
+            oid,
+            {
+              ...(a.policy ? {} : { 0: a.script }),
+              1: scripts.slice(2),
+            },
+            a.policy ? { 0: a.policy } : {},
+          );
       }
+      if (!candidate) return;
       const prev = candidate.responses.find(
         (x) => x.opponent === oid && equal(x.path, ev.path),
       );
@@ -571,6 +722,13 @@ export class DiscoveryEngine {
       firstCandidateSeconds: null,
       commonOpponents: [],
     });
+    if (!data.policyOpponents) {
+      data.policyOpponents = Object.fromEntries(
+        policyOpponents().map((p) => ["QO-" + p.id, p]),
+      );
+      for (const policy of policySeeds())
+        this.newJob(run, "baseline", "Q-" + policy.id, "", {}, { 0: policy });
+    }
     this.newJob(run, "baseline");
     const mode = (["baseline", "counter", "compare"] as const)[data.tested % 3];
     const all = this.d.jobs.filter((j) => j.run === run && !j.done),
@@ -583,8 +741,22 @@ export class DiscoveryEngine {
         a.ticks - b.ticks ||
         a.id - b.id,
     );
+    const bounded = all.filter(
+      (j) =>
+        (j.mode === "baseline" && j.policies?.[0]) ||
+        (j.mode === "compare" && j.policies?.[0] && j.policies?.[1]),
+    );
+    bounded.sort(
+      (a, b) =>
+        Number(!!a.policies?.[0]?.derivedFrom) -
+          Number(!!b.policies?.[0]?.derivedFrom) ||
+        Number(a.mode !== "baseline") - Number(b.mode !== "baseline") ||
+        a.id - b.id,
+    );
     const job =
-      ordered[0] || all.sort((a, b) => a.ticks - b.ticks || a.id - b.id)[0];
+      (data.tested % 4 !== 3 ? bounded[0] : undefined) ||
+      ordered[0] ||
+      all.sort((a, b) => a.ticks - b.ticks || a.id - b.id)[0];
     if (job) {
       const result = this.expand(this.planners.get(run)!, job);
       if (result) this.record(data, job, result);
@@ -604,7 +776,11 @@ export class DiscoveryEngine {
         0,
       );
       data.complete = jobs.every((j) => j.done);
-      let common = new Set(Object.keys(data.opponents));
+      const opponents = [
+        ...Object.keys(data.opponents),
+        ...Object.keys(data.policyOpponents || {}),
+      ];
+      let common = new Set(opponents);
       for (const a of data.candidates) {
         const confirmed = new Set(
           jobs
@@ -614,9 +790,7 @@ export class DiscoveryEngine {
             .map((j) => j.opponent),
         );
         common = new Set([...common].filter((o) => confirmed.has(o)));
-        a.pending = Object.keys(data.opponents).filter(
-          (o) => !confirmed.has(o),
-        ).length;
+        a.pending = opponents.filter((o) => !confirmed.has(o)).length;
       }
       data.commonOpponents = data.candidates.length ? [...common].sort() : [];
     }

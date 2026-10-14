@@ -182,6 +182,8 @@ export type Replay = {
 };
 
 export type Goal = {
+  resource?: string;
+  amount?: number;
   kind: string;
   spot?: number;
   count?: number;
@@ -196,7 +198,23 @@ export type CandidateEvidence = {
   milestones: string[][];
   blocked?: { robot: number; t: number; instruction: number; reason: string }[];
 };
+export type StrategyPolicy = {
+  derivedFrom?: string;
+  id: string;
+  name: string;
+  family: string;
+  targets: number[];
+  height: number;
+  mustika: boolean;
+  opportunistic: boolean;
+  lateFlip: boolean;
+  skyFirst: number;
+  requirements: string[];
+  conditions: string[];
+};
 export type Candidate = {
+  policy?: StrategyPolicy;
+  comparedOpponents?: string[];
   id: string;
   plan: Goal[];
   baseline: CandidateEvidence;
@@ -209,7 +227,13 @@ export type Candidate = {
   pending: number;
 };
 export type EvaluationProgress = {
-  phase: "loading" | "histories" | "statistics" | "guarantees" | "saving" | "complete";
+  phase:
+    | "loading"
+    | "histories"
+    | "statistics"
+    | "guarantees"
+    | "saving"
+    | "complete";
   state: "running" | "complete" | "cancelled" | "interrupted" | "error";
   done: number;
   total: number | null;
@@ -249,6 +273,9 @@ export type Discovery = {
     remainingChoices: number;
     scopeComplete: boolean;
     commonOpponents: string[];
+    policyOpponents?: Record<string, string>;
+    policyComparisonComplete?: boolean;
+    policyCommonOpponents?: string[];
     variant: Variant;
     firstCandidateSeconds: number | null;
     candidates: Candidate[];
