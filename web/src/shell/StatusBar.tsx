@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { run } from "../app/commands";
 import { useDetail, useSearch, useSpan } from "../app/session";
 import { useUI } from "../app/store";
@@ -31,6 +32,24 @@ const fmt = (t: number) => {
   return `${m}:${s.toFixed(2).padStart(5, "0")}`;
 };
 
+/** Elapsed share of the requested discovery time; the job may stop earlier. */
+function JobMeter({ startedAt, seconds }: { startedAt: number; seconds: number }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 500);
+    return () => clearInterval(t);
+  }, []);
+  const elapsed = Math.min(seconds, (now - startedAt) / 1000);
+  return (
+    <span className="status-item" title="指定時間に対する経過。探索範囲を終えると早く止まる">
+      <span className="meter">
+        <span style={{ width: `${(elapsed / seconds) * 100}%` }} />
+      </span>
+      {Math.floor(elapsed)}/{seconds}秒
+    </span>
+  );
+}
+
 export function StatusBar() {
   const show = usePref<boolean>("ui.statusBar");
   const search = useSearch();
@@ -43,7 +62,10 @@ export function StatusBar() {
   const selection = useUI((s) => s.session.selection);
   const busy = useUI((s) => Object.values(s.busy).some(Boolean));
   const [, end] = useSpan();
-  if (!show) return null;
+  const jobRun = useUI((s) => (search ? s.jobRun[search.id] : undefined));
+  const unread = useUI((s) => s.notices.filter((n) => !n.read).length);
+  const zen = useUI((s) => s.zen);
+  if (!show || zen) return null;
   const d = search?.discovery;
   const job = search?.job;
   const progress = search?.evaluationProgress;
@@ -54,11 +76,20 @@ export function StatusBar() {
           <>
             <button
               className={`status-item status-${search.status}`}
-              title="進捗を表示"
-              onClick={() => run("nav.goto")}
+              title="計算と進捗を表示"
+              onClick={() => run("view.revealJobs")}
             >
               {job ? `${JOB[job]}中` : STATUS[search.status] ?? search.status}
             </button>
+            {job === "discovery" && jobRun?.kind === "discovery" && (
+              <JobMeter startedAt={jobRun.startedAt} seconds={jobRun.seconds} />
+            )}
+            {job && (
+              <button className="status-item" title="計算を停止 (Ctrl+.)" onClick={() => run("job.pause")}>
+                <Icon name="stop" size={10} />
+                停止
+              </button>
+            )}
             {job === "evaluation" && progress && (
               <span className="status-item">
                 {progress.completedRuns}/{progress.totalRuns}構成
@@ -98,7 +129,10 @@ export function StatusBar() {
           {range ? ` · 範囲 ${range[0].toFixed(1)}–${range[1].toFixed(1)}` : ""}
         </span>
         <button className="status-item" onClick={() => run("app.shortcuts")} title="ショートカット一覧 (F1)">
-          ショートカット
+          キー
+        </button>
+        <button className="status-item" onClick={() => run("view.notifications")} title="通知の一覧">
+          通知{unread ? ` ${unread}` : ""}
         </button>
       </div>
     </footer>

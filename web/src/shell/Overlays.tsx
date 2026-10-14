@@ -83,6 +83,29 @@ function useGotoItems(q: string): Item[] {
   return useMemo(() => {
     const items: Item[] = [];
     const t = q.trim();
+    if (t === "?") {
+      for (const [prefix, text] of [
+        [">", "コマンドを実行"],
+        ["#", "局面IDへ移動（例: #120）"],
+        [":", "時刻へ移動（例: :73.5）"],
+        ["@", "機体・スポット・物体を選択（例: @赤BR、@S6）"],
+      ])
+        items.push({ id: `help${prefix}`, label: `${prefix}  ${text}`, group: "ヘルプ", run: () => ui.open({ kind: "palette", mode: prefix === ">" ? "commands" : "goto" }) });
+      return items;
+    }
+    if (t.startsWith("@")) {
+      const w = t.slice(1).toLowerCase();
+      const ents: [string, string][] = [
+        ...["赤TR", "赤BR", "青TR", "青BR"].map((n, i): [string, string] => [n, `robot:${i}`]),
+        ...Array.from({ length: 10 }, (_, i): [string, string] => [`S${i} 建設スポット`, `spot:${i}`]),
+      ];
+      for (const [label, ref] of ents)
+        if (!w || label.toLowerCase().includes(w))
+          items.push({ id: ref, label: `${label} を選択`, group: "選択", run: () => ui.select(ref as never) });
+      const obj = w.match(/^(?:obj|物体)?\s*(\d+)$/);
+      if (obj) items.push({ id: `obj${obj[1]}`, label: `物体 ${obj[1]} を選択`, group: "選択", run: () => ui.select(`obj:${obj[1]}`) });
+      return items;
+    }
     const num = t.replace(/^[nN#]/, "");
     if (/^\d+$/.test(num))
       items.push({ id: `node${num}`, label: `局面 N${num} へ移動`, group: "局面", run: () => run("nav.node", { node: Number(num) }) });
@@ -152,8 +175,8 @@ function Palette({ mode }: { mode: "commands" | "goto" }) {
         }));
     } else list = goto;
     const scored = list
-      .map((it) => ({ it, s: fuzzy(query, it.label + " " + (it.hint ?? "")) }))
-      .filter((x) => x.s !== null || x.it.group === "局面" || x.it.group === "時刻");
+      .map((it) => ({ it, s: fuzzy(/^[@?#:]/.test(query) ? "" : query, it.label + " " + (it.hint ?? "")) }))
+      .filter((x) => x.s !== null || ["局面", "時刻", "選択", "ヘルプ"].includes(x.it.group));
     if (!query && commandMode)
       scored.sort((a, b) => {
         const ra = recent.indexOf(a.it.id),
@@ -176,7 +199,7 @@ function Palette({ mode }: { mode: "commands" | "goto" }) {
           autoFocus
           className="palette-input"
           value={q}
-          placeholder="局面ID・:秒・候補・マーカー。> でコマンド"
+          placeholder="候補・マーカーを検索。> コマンド  # 局面  : 時刻  @ 選択  ? 一覧"
           aria-label="検索"
           onChange={(e) => setQ(e.target.value)}
           onKeyDown={(e) => {
@@ -206,7 +229,7 @@ function Palette({ mode }: { mode: "commands" | "goto" }) {
           {!items.length && <li className="palette-empty">一致する項目がありません</li>}
         </ul>
         <p className="palette-foot">
-          {commandMode ? "Enterで実行 · 先頭の > を消すと移動" : "数字で局面 · :73.5 で時刻 · > でコマンド"}
+          {commandMode ? "Enterで実行 · 先頭の > を消すと移動" : "# 局面 · : 時刻 · @ 選択 · > コマンド · ? 一覧"}
         </p>
       </div>
     </Modal>
@@ -479,6 +502,36 @@ function Confirm({ title, body, danger, resolve }: { title: string; body?: strin
   );
 }
 
+function Notices() {
+  const notices = useUI((s) => s.notices);
+  useEffect(() => {
+    useUI.setState((s) => ({ notices: s.notices.map((n) => ({ ...n, read: true })) }));
+  }, []);
+  return (
+    <Modal label="通知" onClose={() => ui.open(null)}>
+      <div className="prefs-head">
+        <h2>通知</h2>
+        <span className="topbar-spacer" />
+        <button className="tool" disabled={!notices.length} onClick={() => useUI.setState({ notices: [] })}>
+          すべて消去
+        </button>
+        <button className="tool icon-only" title="閉じる" onClick={() => ui.open(null)}>
+          <Icon name="close" />
+        </button>
+      </div>
+      <ul className="notice-list">
+        {[...notices].reverse().map((n) => (
+          <li key={n.id} className={n.tone}>
+            <time className="tabular muted">{new Date(n.at).toLocaleTimeString()}</time>
+            <span>{n.text}</span>
+          </li>
+        ))}
+        {!notices.length && <li className="muted">この画面を開いてからの通知はありません</li>}
+      </ul>
+    </Modal>
+  );
+}
+
 function About() {
   return (
     <Modal label="このアプリについて" onClose={() => ui.open(null)}>
@@ -514,6 +567,8 @@ export function OverlayHost() {
       return <Confirm {...o} />;
     case "about":
       return <About />;
+    case "notices":
+      return <Notices />;
   }
 }
 

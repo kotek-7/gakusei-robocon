@@ -1,7 +1,7 @@
 /** Commands that are not tied to one editor: files, searches, jobs, playback, layout, navigation. */
 import { call } from "./client";
 import { register } from "./commands";
-import { fetchQuery, upsertSearch, useSearches } from "./data";
+import { fetchQuery, onJobFinished, upsertSearch, useSearches } from "./data";
 import { layout, useLayout } from "./layout";
 import { getPref, setPref } from "./prefs";
 import { shareURL } from "./router";
@@ -72,13 +72,17 @@ export function startJob(kind: "discovery" | "exact" | "evaluation", extra: { se
   const search = searchId();
   if (!search) return;
   return act(`job.${kind}`, async () => {
+    const seconds = extra.seconds ?? Number(getPref("job.discoverySeconds"));
     const s = await call("job.start", {
       search,
       kind,
-      seconds: extra.seconds ?? Number(getPref("job.discoverySeconds")),
+      seconds,
       budget: extra.budget ?? Number(getPref("job.exactBudget")),
       node: extra.node,
     });
+    useUI.setState((st) => ({
+      jobRun: { ...st.jobRun, [search]: { kind, startedAt: Date.now(), seconds, elapsedBase: s.discovery?.elapsed ?? 0 } },
+    }));
     upsertSearch(s);
   });
 }
@@ -97,7 +101,47 @@ async function jumpEvent(dir: 1 | -1, kinds?: string[]) {
   if (next !== undefined) ui.patchPlayback({ time: next, playing: false });
 }
 
+const REASONS: Record<string, string> = {
+  time_limit: "指定時間で停止",
+  exhausted: "対象範囲を探索済み",
+  cancelled: "停止しました",
+  resource_limit: "保存量の上限で中断",
+  error: "エラーで中断",
+};
+onJobFinished((e) => {
+  useUI.setState((s) => {
+    const jobRun = { ...s.jobRun };
+    delete jobRun[e.search];
+    return { jobRun };
+  });
+  const s = useSearches.getState().list.find((x) => x.id === e.search);
+  const name = { discovery: "候補探索", exact: "全探索", evaluation: "評価" }[e.kind];
+  const reason = REASONS[e.reason] ?? e.reason;
+  if (e.kind === "discovery" && s?.discovery?.metrics.candidates)
+    ui.toast(`${name}: ${reason}。候補 ${s.discovery.metrics.candidates}`, e.reason === "error" ? "error" : "info", {
+      label: "最高点の候補を開く",
+      command: "candidate.openBest",
+    });
+  else ui.toast(`${name}: ${reason}`, e.reason === "error" ? "error" : "info");
+});
+
 register(
+  {
+    id: "candidate.openBest",
+    title: "相手待機で最高点の候補を開く",
+    category: "探索",
+    enabled: () => !!current()?.discovery?.metrics.candidates,
+    run: async () => {
+      const runs = current()?.discovery?.runs ?? [];
+      const all = runs.flatMap((r) => r.candidates);
+      if (!all.length) return;
+      const best = all.reduce((a, b) =>
+        b.baseline.scores[0] - b.baseline.scores[1] > a.baseline.scores[0] - a.baseline.scores[1] ? b : a,
+      );
+      await goToNode(best.baseline.node, best.baseline.path);
+      layout.reveal("viewport");
+    },
+  },
   // File
   {
     id: "search.new",
@@ -746,6 +790,55 @@ register(
     title: "このアプリについて",
     category: "ヘルプ",
     run: () => ui.open({ kind: "about" }),
+  },
+  {
+    id: "view.zen",
+    title: "集中表示（メニューとステータスバーを隠す）",
+    category: "表示",
+    keys: ["F11"],
+    checked: () => useUI.getState().zen,
+    run: () => useUI.setState((s) => ({ zen: !s.zen })),
+  },
+  {
+    id: "view.notifications",
+    title: "通知の一覧",
+    category: "表示",
+    run: () => ui.open({ kind: "notices" }),
+  },
+  {
+    id: "view.revealJobs",
+    title: "計算と進捗を表示",
+    category: "表示",
+    run: () => layout.reveal("jobs"),
+  },
+  {
+    id: "layout.export",
+    title: "ワークスペース配置を書き出す",
+    category: "ウィンドウ",
+    run: () => saveJSON({ format: "robocon-layout", version: 2, workspaces: useLayout.getState().workspaces }, "workspaces.json"),
+  },
+  {
+    id: "layout.import",
+    title: "ワークスペース配置を読み込む…",
+    category: "ウィンドウ",
+    run: async () => {
+      const f = await pickFile();
+      if (!f) return;
+      const data = JSON.parse(await f.text());
+      if (data?.format !== "robocon-layout" || !Array.isArray(data.workspaces) || !data.workspaces.length)
+        throw new Error("ワークスペース配置のファイルではありません");
+      useLayout.setState({ workspaces: data.workspaces, active: data.workspaces[0].id, mounted: [data.workspaces[0].id], maximized: null });
+      ui.toast(`${data.workspaces.length}個のワークスペースを読み込みました`);
+    },
+  },
+  {
+    id: "workspace.new",
+    title: "新しいワークスペース",
+    category: "ウィンドウ",
+    run: async () => {
+      const name = await ui.prompt("ワークスペースの名前", "新しいワークスペース");
+      if (name?.trim()) layout.create(name.trim());
+    },
   },
   {
     id: "select.clear",

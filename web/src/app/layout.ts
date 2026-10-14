@@ -225,6 +225,21 @@ export const layout = {
       mounted: [...s.mounted, id],
     });
   },
+  create(name: string) {
+    const id = nid("w");
+    useLayout.setState((s) => ({
+      workspaces: [...s.workspaces, { id, name, root: S("row", [70, 30], [A("viewport"), A("properties")]) }],
+      active: id,
+      mounted: [...s.mounted, id],
+    }));
+  },
+  move(id: string, to: number) {
+    useLayout.setState((s) => {
+      const list = s.workspaces.filter((w) => w.id !== id);
+      list.splice(Math.max(0, Math.min(list.length, to)), 0, s.workspaces.find((w) => w.id === id)!);
+      return { workspaces: list };
+    });
+  },
   rename(id: string, name: string) {
     useLayout.setState((s) => ({
       workspaces: s.workspaces.map((w) => (w.id === id ? { ...w, name } : w)),

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCommands } from "../app/commands";
 import { useSearches } from "../app/data";
 import { layout, useLayout } from "../app/layout";
@@ -58,6 +58,10 @@ function menus(): [string, MenuItem[]][] {
         C("view.zoomReset"),
         SEP,
         C("area.maximize"),
+        C("view.zen"),
+        SEP,
+        C("view.notifications"),
+        C("view.revealJobs"),
       ],
     ],
     [
@@ -101,6 +105,7 @@ function menus(): [string, MenuItem[]][] {
         C("job.evaluate"),
         C("job.pause"),
         SEP,
+        C("candidate.openBest"),
         C("run.next"),
         SEP,
         C("compare.setA"),
@@ -131,11 +136,15 @@ function menus(): [string, MenuItem[]][] {
         C("area.splitCol"),
         C("area.close"),
         SEP,
+        C("workspace.new"),
         C("workspace.duplicate"),
         C("workspace.rename"),
         C("workspace.remove"),
         C("workspace.reset"),
         C("workspace.resetAll"),
+        SEP,
+        C("layout.export"),
+        C("layout.import"),
       ],
     ],
     ["ヘルプ", [C("app.palette"), C("app.shortcuts"), SEP, C("app.about")]],
@@ -146,6 +155,21 @@ function MenuBar() {
   const [open, setOpen] = useState<number | null>(null);
   useCommands((s) => s.version);
   const list = open === null ? null : menus();
+  // F10 opens the menu bar, as in desktop applications; arrows move between menus.
+  useEffect(() => {
+    const key = (e: KeyboardEvent) => {
+      if (e.key === "F10" && !useUI.getState().overlay) {
+        e.preventDefault();
+        setOpen((o) => (o === null ? 0 : null));
+      } else if (open !== null && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
+        const n = menus().length;
+        setOpen((o) => ((o ?? 0) + (e.key === "ArrowRight" ? 1 : n - 1)) % n);
+        e.preventDefault();
+      } else if (open !== null && e.key === "Escape") setOpen(null);
+    };
+    window.addEventListener("keydown", key, true);
+    return () => window.removeEventListener("keydown", key, true);
+  }, [open]);
   return (
     <nav className="menubar" aria-label="メニュー" onPointerLeave={() => {}}>
       {menus().map(([name], i) => (
@@ -176,6 +200,8 @@ function MenuBar() {
 function WorkspaceTabs() {
   const workspaces = useLayout((s) => s.workspaces);
   const active = useLayout((s) => s.active);
+  const [dragging, setDragging] = useState<string | null>(null);
+  const [over, setOver] = useState<number | null>(null);
   return (
     <div className="workspace-tabs" role="tablist" aria-label="ワークスペース">
       {workspaces.map((w, i) => (
@@ -183,14 +209,35 @@ function WorkspaceTabs() {
           key={w.id}
           role="tab"
           aria-selected={w.id === active}
-          className="workspace-tab"
+          className={`workspace-tab${over === i && dragging !== w.id ? " drag-over" : ""}`}
           title={i < 9 ? `Ctrl+${i + 1}` : undefined}
+          draggable
+          onDragStart={(e) => {
+            setDragging(w.id);
+            e.dataTransfer.effectAllowed = "move";
+          }}
+          onDragOver={(e) => {
+            if (!dragging) return;
+            e.preventDefault();
+            setOver(i);
+          }}
+          onDragEnd={() => {
+            setDragging(null);
+            setOver(null);
+          }}
+          onDrop={(e) => {
+            e.preventDefault();
+            if (dragging) layout.move(dragging, i);
+            setDragging(null);
+            setOver(null);
+          }}
           onClick={() => layout.activate(w.id)}
           onDoubleClick={() => run("workspace.rename")}
           onContextMenu={(e) => {
             layout.activate(w.id);
             ui.contextMenu(e, [
               { command: "workspace.rename" },
+              { command: "workspace.new" },
               { command: "workspace.duplicate" },
               { command: "workspace.reset" },
               { separator: true },
@@ -201,7 +248,7 @@ function WorkspaceTabs() {
           {w.name}
         </button>
       ))}
-      <button className="tool icon-only" title="ワークスペースを複製" onClick={() => run("workspace.duplicate")}>
+      <button className="tool icon-only" title="新しいワークスペース" onClick={() => run("workspace.new")}>
         <Icon name="plus" size={14} />
       </button>
     </div>

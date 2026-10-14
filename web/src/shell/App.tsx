@@ -89,6 +89,7 @@ export function App() {
   const mounted = useLayout((s) => s.mounted);
   const active = useLayout((s) => s.active);
   const error = useSearches((s) => s.error);
+  const zen = useUI((s) => s.zen);
   useTheme();
   usePlaybackClock();
   useAutoOpen();
@@ -103,7 +104,7 @@ export function App() {
   }, []);
   return (
     <div className="shell">
-      <TopBar />
+      {!zen && <TopBar />}
       {error && (
         <div className="shell-error" role="alert">
           ブラウザ内の計算処理を開始できません。{error}

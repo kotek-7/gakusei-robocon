@@ -35,6 +35,7 @@ export type Overlay =
   | { kind: "prefs"; tab?: string }
   | { kind: "shortcuts" }
   | { kind: "about" }
+  | { kind: "notices" }
   | { kind: "prompt"; title: string; value: string; resolve: (v: string | null) => void }
   | { kind: "confirm"; title: string; body?: string; danger?: boolean; resolve: (v: boolean) => void };
 export type MenuItem =
@@ -57,6 +58,12 @@ type UIState = {
   history: { node: number | null; path: number[] | null; selection: EntityRef | null; time: number }[];
   historyIndex: number;
   busy: Record<string, boolean>;
+  /** Every notification of this session, newest last (the notification center). */
+  notices: { id: number; text: string; tone: Toast["tone"]; at: number; read: boolean }[];
+  /** Jobs started from this tab: when and with what time budget. */
+  jobRun: Record<string, { kind: string; startedAt: number; seconds: number; elapsedBase: number }>;
+  /** Hide the menu bar and status bar (F11). */
+  zen: boolean;
 };
 
 const emptySession = (search: string | null = null): Session => ({
@@ -81,6 +88,9 @@ export const useUI = create<UIState>(() => ({
   history: [],
   historyIndex: -1,
   busy: {},
+  notices: [],
+  jobRun: {},
+  zen: false,
 }));
 
 const set = useUI.setState;
@@ -128,7 +138,10 @@ export const ui = {
   },
   toast(text: string, tone: Toast["tone"] = "info", action?: Toast["action"]) {
     const id = Date.now() + Math.random();
-    set((s) => ({ toasts: [...s.toasts.slice(-3), { id, text, tone, action }] }));
+    set((s) => ({
+      toasts: [...s.toasts.slice(-3), { id, text, tone, action }],
+      notices: [...s.notices, { id, text, tone, at: Date.now(), read: false }].slice(-100),
+    }));
     setTimeout(
       () => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
       tone === "error" ? 9000 : 4500,

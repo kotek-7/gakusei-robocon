@@ -5,7 +5,7 @@
  */
 import { useEffect, useSyncExternalStore } from "react";
 import { create } from "zustand";
-import type { Method, Params, Queries, Result } from "../engine/protocol";
+import type { EngineEvent, Method, Params, Queries, Result } from "../engine/protocol";
 import type { Search } from "../engine/types";
 import { call, onEngineEvent } from "./client";
 
@@ -183,12 +183,19 @@ export function upsertSearch(s: Search) {
   }
 }
 
+const finishListeners = new Set<(e: Extract<EngineEvent, { type: "job.finished" }>) => void>();
+export function onJobFinished(l: (e: Extract<EngineEvent, { type: "job.finished" }>) => void) {
+  finishListeners.add(l);
+  return () => void finishListeners.delete(l);
+}
+
 let started = false;
 export function startSync() {
   if (started) return;
   started = true;
   onEngineEvent((e) => {
     if (e.type === "search.changed") upsertSearch(e.search);
+    else if (e.type === "job.finished") for (const l of finishListeners) l(e);
     else if (e.type === "search.removed") {
       useSearches.setState((st) => ({
         list: st.list.filter((x) => x.id !== e.id),
