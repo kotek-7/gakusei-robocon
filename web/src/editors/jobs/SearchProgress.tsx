@@ -19,11 +19,13 @@ const stopLabels: Record<string, string> = {
 
 export function DiscoveryProgress({ search, onDefinitions }: { search: Search; onDefinitions: () => void }) {
   const [allHistory, setAllHistory] = useState(false);
+  const [improvementsOnly, setImprovementsOnly] = useState(false);
   const report = search.discovery;
   const running = search.status === "running" && search.job === "discovery";
   const pending = report?.metrics.pending || 0;
   const sessions = [...(report?.sessions || [])].reverse();
-  const visibleSessions = allHistory ? sessions : sessions.slice(0, 3);
+  const filteredSessions = sessions.map((session, index) => ({ session, index })).filter(({ session }) => !improvementsOnly || session.newCandidates > 0 || session.newStrategies > 0 || session.scoreChanges.length > 0);
+  const visibleSessions = allHistory ? filteredSessions : filteredSessions.slice(0, 3);
   return (
     <section className="discovery-progress" aria-label="候補探索の進み具合">
       <details className="discovery-details">
@@ -42,18 +44,20 @@ export function DiscoveryProgress({ search, onDefinitions }: { search: Search; o
       {!!report?.sessions.length && <div className="discovery-history">
         <div className="history-heading">
           <h3>計算履歴</h3>
-          {sessions.length > 3 && <button onClick={() => setAllHistory(!allHistory)}>{allHistory ? "直近3回" : `全${sessions.length}回`}</button>}
+          <button className="tool" aria-pressed={improvementsOnly} onClick={() => setImprovementsOnly(!improvementsOnly)}>候補・得点の更新あり</button>
+          {filteredSessions.length > 3 && <button onClick={() => setAllHistory(!allHistory)}>{allHistory ? "直近3回" : `全${filteredSessions.length}回`}</button>}
         </div>
         <div className="progress-table" tabIndex={0} role="region" aria-label="候補探索の計算履歴">
           <table>
             <thead><tr><th>時間</th><th>候補増</th><th>種類増</th><th>対応検査</th><th>得点更新</th><th>終了</th></tr></thead>
-            <tbody>{visibleSessions.map((s, i) => <tr key={i}>
-              <td>{i === 0 ? "直近 · " : ""}{duration(s.seconds)}</td>
+            <tbody>{visibleSessions.map(({ session: s, index }) => <tr key={index}>
+              <td>{index === 0 ? "直近 · " : `${index + 1}回前 · `}{duration(s.seconds)}</td>
               <td>+{s.newCandidates}</td><td>+{s.newStrategies}</td><td>+{s.responses}</td>
               <td>{s.scoreChanges.length ? <details className="score-changes"><summary>{s.scoreChanges.length}構成</summary><ul>{s.scoreChanges.map((v) => <li key={v.run}>C{v.run}: {v.before} → {v.after}点</li>)}</ul></details> : "なし"}</td>
               <td>{({ exhausted: "範囲内完了", time_limit: "時間上限", cancelled: "停止", resource_limit: "保存量上限", error: "エラー" } as Record<string, string>)[s.reason] || s.reason}</td>
             </tr>)}</tbody>
           </table>
+          {!visibleSessions.length && <p className="muted">候補・得点が更新された計算はありません</p>}
         </div>
       </div>}
       <div className="history-footer">

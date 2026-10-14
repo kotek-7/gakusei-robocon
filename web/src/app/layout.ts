@@ -256,11 +256,15 @@ export const layout = {
     });
   },
   /** Show an editor: activate a workspace that has it, or swap it into the active area. */
-  reveal(editor: string) {
+  reveal(editor: string, state?: Record<string, unknown>) {
     const s = useLayout.getState();
     const cur = s.workspaces.find((w) => w.id === s.active)!;
-    if (leaves(cur.root).some((l) => l.editor === editor)) return;
-    const other = s.workspaces.find((w) => leaves(w.root).some((l) => l.editor === editor));
-    if (other) layout.activate(other.id);
+    const target = leaves(cur.root).find((l) => l.editor === editor);
+    const other = target ? cur : s.workspaces.find((w) => leaves(w.root).some((l) => l.editor === editor));
+    const area = target ?? (other && leaves(other.root).find((l) => l.editor === editor));
+    if (!other || !area) return;
+    if (other.id !== s.active) layout.activate(other.id);
+    if (s.maximized && s.maximized !== area.id) useLayout.setState({ maximized: null });
+    if (state) layout.setAreaState(area.id, state);
   },
 };

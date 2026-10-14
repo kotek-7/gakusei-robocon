@@ -17,7 +17,7 @@ function JobsEditor() {
           {search.error}
         </p>
       )}
-      <DiscoveryProgress search={search} onDefinitions={() => layout.reveal("model")} />
+      <DiscoveryProgress key={search.id} search={search} onDefinitions={() => layout.reveal("model", { section: "history" })} />
       <EvaluationProgress search={search} />
       <section className="exact-panel" aria-label="詳細な全探索">
         <h3>詳細な全探索</h3>
