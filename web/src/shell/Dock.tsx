@@ -1,4 +1,3 @@
-import { Help } from "../editors/common/Help";
 import { useRef, type ReactNode } from "react";
 import {
   layout,
@@ -84,6 +83,7 @@ export function areaMenu(area: AreaLeaf): MenuItem[] {
   return [
     ...[...groups].map(([g, items]) => ({ label: g, submenu: items })),
     { separator: true },
+    ...(area.tabs && area.tabs.length > 1 ? [{ label: "このタブを隣に分離", run: () => layout.detachTab(area.id) }] : []),
     { command: "area.splitRow", args: area.id },
     { command: "area.splitCol", args: area.id },
     { command: "area.maximize", args: area.id },
@@ -109,7 +109,25 @@ function Area({ area, compactActive }: { area: AreaLeaf; compactActive: string }
       onPointerDownCapture={focus}
       onFocusCapture={focus}
     >
-      <header
+      {area.tabs && <div className="dock-title"><div className="dock-tabs" role="tablist" aria-label="この領域の表示">
+        {area.tabs.map((editor, index) => <button key={editor} role="tab"
+          id={`${area.id}-tab-${editor}`} aria-controls={`${area.id}-panel`}
+          aria-selected={area.editor === editor} tabIndex={area.editor === editor ? 0 : -1}
+          onClick={() => layout.setEditor(area.id, editor)}
+          onKeyDown={e => {
+            const offset = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+            if (!offset && e.key !== "Home" && e.key !== "End") return;
+            e.preventDefault();
+            const next = e.key === "Home" ? 0 : e.key === "End" ? area.tabs!.length - 1 : (index + offset + area.tabs!.length) % area.tabs!.length;
+            layout.setEditor(area.id, area.tabs![next]);
+            document.getElementById(`${area.id}-tab-${area.tabs![next]}`)?.focus();
+          }}>{getEditor(editor)?.title ?? editor}</button>)}
+      </div><button className="tool icon-only" title="領域の配置と種類" aria-haspopup="menu" onClick={e => {
+          const r = e.currentTarget.getBoundingClientRect();
+          useUI.setState({ menu: { x: r.left, y: r.bottom + 2, items: areaMenu(area) } });
+        }}><Icon name="chevron" size={12} /></button>
+        <button className="tool icon-only area-max" title={maximized ? "元に戻す (Ctrl+Space)" : "最大化 (Ctrl+Space)"} aria-pressed={maximized} onClick={() => layout.toggleMaximize(area.id)}><Icon name="maximize" /></button></div>}
+      {(!area.tabs || def?.Header) && <header
         className="area-header"
         onDoubleClick={(e) => {
           if (e.target === e.currentTarget) layout.toggleMaximize(area.id);
@@ -118,6 +136,7 @@ function Area({ area, compactActive }: { area: AreaLeaf; compactActive: string }
           if (e.target === e.currentTarget) ui.contextMenu(e, areaMenu(area), def?.title);
         }}
       >
+        {!area.tabs && <>
         <button
           className="area-type"
           title="エディタの種類を変更"
@@ -130,8 +149,10 @@ function Area({ area, compactActive }: { area: AreaLeaf; compactActive: string }
           {def?.title ?? area.editor}
           <Icon name="chevron" size={12} />
         </button>
-        {area.editor !== "model" && <Help topic={({ conditions: "conditions", candidates: "search", jobs: "search", evaluation: "results", compare: "results", timeline: "timeline", score: "timeline", "interval-analysis": "timeline", properties: "graph", graph: "graph", review: "storage", outliner: "storage", viewport: "model", events: "timeline" } as Record<string, string>)[area.editor] ?? "model"} />}
+        </>}
+
         {def?.Header && <def.Header area={area} />}
+        {!area.tabs && <>
         <span className="area-spacer" />
         <button
           className="tool icon-only area-max"
@@ -141,9 +162,10 @@ function Area({ area, compactActive }: { area: AreaLeaf; compactActive: string }
         >
           <Icon name="maximize" />
         </button>
-      </header>
-      <div className="area-body">
-        {def ? <def.Component area={area} /> : <p className="empty">不明なエディタ</p>}
+        </>}
+      </header>}
+      <div className="area-body" id={`${area.id}-panel`} role={area.tabs ? "tabpanel" : undefined} aria-labelledby={area.tabs ? `${area.id}-tab-${area.editor}` : undefined}>
+        {def ? <def.Component key={area.editor} area={area} /> : <p className="empty">不明なエディタ</p>}
       </div>
     </section>
   );

@@ -10,6 +10,9 @@ export type AreaLeaf = {
   kind: "area";
   id: string;
   editor: string;
+  /** Alternative tools sharing this dock; only the selected editor is visible. */
+  tabs?: string[];
+  tabStates?: Record<string, Record<string, unknown> | undefined>;
   /** Editor-specific view state (zoom, filters...). */
   state?: Record<string, unknown>;
 };
@@ -32,6 +35,7 @@ const A = (editor: string, state?: Record<string, unknown>): AreaLeaf => ({
   editor,
   state,
 });
+const T = (...tabs: string[]): AreaLeaf => ({ ...A(tabs[0]), tabs });
 const S = (dir: "row" | "col", sizes: number[], children: AreaNode[]): AreaSplit => ({
   kind: "split",
   id: nid("s"),
@@ -45,18 +49,18 @@ export function defaultWorkspaces(): Workspace[] {
     {
       id: "analysis",
       name: "試合解析",
-      root: S("row", [18, 60, 22], [
-        S("col", [55, 45], [A("outliner"), A("events")]),
+      root: S("row", [20, 55, 25], [
+        T("outliner", "events"),
         S("col", [66, 34], [A("viewport"), A("timeline")]),
-        S("col", [58, 42], [A("properties"), A("score")]),
+        T("properties", "score", "spots"),
       ]),
     },
     {
       id: "discover",
       name: "探索",
       root: S("row", [70, 30], [
-        S("col", [62, 38], [A("candidates"), A("jobs")]),
-        S("col", [55, 45], [A("viewport"), A("score")]),
+        T("candidates", "jobs"),
+        S("col", [60, 40], [A("viewport"), T("score", "properties")]),
       ]),
     },
     {
@@ -64,7 +68,7 @@ export function defaultWorkspaces(): Workspace[] {
       name: "状態グラフ",
       root: S("row", [64, 36], [
         S("col", [72, 28], [A("graph"), A("timeline")]),
-        S("col", [45, 55], [A("viewport"), A("properties")]),
+        S("col", [45, 55], [A("viewport"), T("properties", "jobs")]),
       ]),
     },
     {
@@ -78,7 +82,7 @@ export function defaultWorkspaces(): Workspace[] {
     {
       id: "evaluate",
       name: "評価",
-      root: S("row", [68, 32], [A("evaluation"), S("col", [50, 50], [A("viewport"), A("jobs")])]),
+      root: S("row", [68, 32], [T("evaluation", "jobs"), S("col", [60, 40], [A("viewport"), A("score")])]),
     },
     {
       id: "conditions",
@@ -119,7 +123,7 @@ type LayoutState = {
   /** Workspaces mounted at least once; kept alive so 3D scenes are not rebuilt. */
   mounted: string[];
 };
-const STORAGE = "robocon.layout.v2";
+const STORAGE = "robocon.layout.v3";
 const initial = (): LayoutState => {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE) || "null");
@@ -135,6 +139,15 @@ const initial = (): LayoutState => {
 };
 export const useLayout = create<LayoutState>(initial);
 useLayout.subscribe((s) => {
+  // Layout mutations must never leave keyboard commands aimed at a hidden editor.
+  const workspace = s.workspaces.find(w => w.id === s.active);
+  if (workspace) {
+    const areas = leaves(workspace.root);
+    const current = useUI.getState();
+    const area = areas.find(a => a.id === (s.maximized ?? current.activeArea)) ?? areas[0];
+    if (area && (current.activeArea !== area.id || current.activeEditor !== area.editor))
+      useUI.setState({ activeArea: area.id, activeEditor: area.editor });
+  }
   try {
     localStorage.setItem(
       STORAGE,
@@ -182,6 +195,11 @@ export const leaves = (n: AreaNode): AreaLeaf[] =>
 
 export const layout = {
   activate(id: string) {
+    const target = useLayout.getState().workspaces.find(w => w.id === id);
+    if (!target) return;
+    const areas = leaves(target.root);
+    const active = areas.find(a => a.id === useUI.getState().activeArea) ?? areas[0];
+    useUI.setState({ activeArea: active.id, activeEditor: active.editor });
     useLayout.setState((s) => ({
       active: id,
       maximized: null,
@@ -189,7 +207,13 @@ export const layout = {
     }));
   },
   setEditor(area: string, editor: string) {
-    updateActive((r) => mapNode(r, area, (n) => ({ ...(n as AreaLeaf), editor, state: undefined })));
+    updateActive((r) => mapNode(r, area, (n) => {
+      if (n.kind !== "area" || n.editor === editor) return n;
+      const tabStates = { ...n.tabStates, [n.editor]: n.state };
+      return { ...n, editor, tabs: n.tabs ? [...new Set([...n.tabs, editor])] : undefined,
+        tabStates, state: tabStates[editor] };
+    }));
+    useUI.setState({ activeArea: area, activeEditor: editor });
   },
   setAreaState(area: string, patch: Record<string, unknown>) {
     useLayout.setState((s) => ({
@@ -201,6 +225,23 @@ export const layout = {
           ) ?? w.root,
       })),
     }));
+  },
+  detachTab(area: string) {
+    let detached: AreaLeaf | undefined;
+    updateActive(r => mapNode(r, area, n => {
+      if (n.kind !== "area" || !n.tabs || n.tabs.length < 2) return n;
+      const remaining = n.tabs.filter(editor => editor !== n.editor);
+      const editor = remaining[0];
+      detached = A(n.editor, n.state);
+      return S("row", [50, 50], [
+        { ...n, editor, tabs: remaining, state: n.tabStates?.[editor] },
+        detached,
+      ]);
+    }));
+    if (detached) {
+      useLayout.setState({ maximized: null });
+      useUI.setState({ activeArea: detached.id, activeEditor: detached.editor });
+    }
   },
   split(area: string, dir: "row" | "col") {
     updateActive((r) =>
@@ -287,11 +328,11 @@ export const layout = {
   reveal(editor: string, state?: Record<string, unknown>) {
     const s = useLayout.getState();
     const cur = s.workspaces.find((w) => w.id === s.active)!;
-    const target = leaves(cur.root).find((l) => l.editor === editor);
-    const other = target ? cur : s.workspaces.find((w) => leaves(w.root).some((l) => l.editor === editor));
-    const area = target ?? (other && leaves(other.root).find((l) => l.editor === editor));
+    const target = leaves(cur.root).find((l) => (l.editor === editor || l.tabs?.includes(editor)));
+    const other = target ? cur : s.workspaces.find((w) => leaves(w.root).some((l) => (l.editor === editor || l.tabs?.includes(editor))));
+    const area = target ?? (other && leaves(other.root).find((l) => (l.editor === editor || l.tabs?.includes(editor))));
     if (!other || !area) {
-      const template = defaultWorkspaces().find(w => leaves(w.root).some(l => l.editor === editor));
+      const template = defaultWorkspaces().find(w => leaves(w.root).some(l => (l.editor === editor || l.tabs?.includes(editor))));
       const id = nid("w");
       const leaf = A(editor, state);
       const workspace = template ? { ...template, id } : { id, name: editor, root: leaf };
@@ -299,12 +340,15 @@ export const layout = {
         workspaces: [...current.workspaces, workspace],
         active: id, mounted: [...current.mounted, id], maximized: null,
       }));
-      if (state && template) layout.setAreaState(leaves(workspace.root).find(l => l.editor === editor)!.id, state);
-      useUI.setState({ activeArea: leaves(workspace.root).find(l => l.editor === editor)!.id, activeEditor: editor });
+      const shown = leaves(workspace.root).find(l => l.editor === editor || l.tabs?.includes(editor))!;
+      if (shown.editor !== editor) layout.setEditor(shown.id, editor);
+      if (state && template) layout.setAreaState(leaves(workspace.root).find(l => (l.editor === editor || l.tabs?.includes(editor)))!.id, state);
+      useUI.setState({ activeArea: leaves(workspace.root).find(l => (l.editor === editor || l.tabs?.includes(editor)))!.id, activeEditor: editor });
       return;
     }
     if (other.id !== s.active) layout.activate(other.id);
     if (s.maximized && s.maximized !== area.id) useLayout.setState({ maximized: null });
+    if (area.editor !== editor) layout.setEditor(area.id, editor);
     if (state) layout.setAreaState(area.id, state);
     useUI.setState({ activeArea: area.id, activeEditor: editor });
   },

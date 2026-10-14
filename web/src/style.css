@@ -2002,3 +2002,26 @@ tr[aria-selected="true"] th {
 .quick-actions { display: flex; align-items: center; gap: 8px; padding: 3px 8px; background: var(--chrome); min-width: 0; }
 .quick-actions-list { display: flex; gap: 4px; flex: 1; min-width: 0; overflow-x: auto; }
 .quick-actions-list > button { flex: none; }
+
+/* Application commands, workspaces, and editor tools occupy distinct rails. */
+.workspace-bar { display: flex; align-items: center; min-width: 0; min-height: 34px; gap: 12px; padding: 0 6px; border-bottom: 1px solid var(--line); background: var(--surface-2); }
+.workspace-bar .workspace-tabs { flex: 1; margin: 0; padding: 0; border: 0; }
+.search-controls { display: flex; flex: none; gap: 4px; align-items: center; }
+.search-controls select { max-width: 90px; }
+.dock-tabs { display: flex; min-width: 0; flex: none; overflow-x: auto; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.dock-tabs button { flex: none; border: 0; border-radius: 0; border-bottom: 2px solid transparent; background: transparent; height: 30px; padding: 0 9px; white-space: nowrap; color: var(--muted); }
+.dock-tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); background: var(--surface); }
+.dock-tabs button:hover { background: var(--hover); }
+.area-header .area-tools { overflow-x: auto; scrollbar-width: thin; }
+.area-header > .area-type, .area-header > .area-max { flex: none; }
+@media (max-width: 700px) {
+  .workspace-bar { flex-wrap: wrap; gap: 0; }
+  .workspace-bar .workspace-tabs { flex-basis: 100%; }
+  .search-controls { padding: 3px 0; margin-left: auto; }
+  .topbar .menubar { overflow-x: auto; flex-wrap: nowrap; width: 100%; order: 2; }
+  .topbar .search-switcher { margin-left: 0; flex: 1; }
+}
+.dock-title { display: flex; align-items: center; flex: none; min-width: 0; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+.dock-title .dock-tabs { flex: 1; border-bottom: 0; }
+.dock-title > button { flex: none; }
+.workspace-bar .workspace-tabs { order: 0; }

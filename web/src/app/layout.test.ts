@@ -30,3 +30,70 @@ test("saved documentation workspace is removed without changing other workspaces
   assert.deepEqual(result, workspaces);
   assert.ok(separateDocumentation([{ id: "documentation", name: "ドキュメント", root: { kind: "area", id: "doc", editor: "model" } }]).length);
 });
+
+import { useUI } from "./store";
+
+test("revealing an inactive dock tab keeps the workspace and restores tab state", () => {
+  layout.resetAll();
+  const w = useLayout.getState().workspaces.find(w => w.id === "analysis")!;
+  const area = leaves(w.root).find(a => a.tabs?.includes("properties"))!;
+  layout.setAreaState(area.id, { query: "robot" });
+  const count = useLayout.getState().workspaces.length;
+  layout.reveal("score", { mode: "range" });
+  assert.equal(useLayout.getState().active, "analysis");
+  assert.equal(useLayout.getState().workspaces.length, count);
+  assert.equal(useUI.getState().activeEditor, "score");
+  layout.reveal("properties");
+  const restored = leaves(useLayout.getState().workspaces.find(w => w.id === "analysis")!.root).find(a => a.id === area.id)!;
+  assert.deepEqual(restored.state, { query: "robot" });
+  layout.reveal("score");
+  assert.equal(leaves(useLayout.getState().workspaces.find(w => w.id === "analysis")!.root).find(a => a.id === area.id)!.state?.mode, "range");
+});
+
+test("workspace changes and tab switches update keyboard scope to a visible editor", () => {
+  layout.resetAll();
+  layout.reveal("events");
+  layout.activate("conditions");
+  assert.equal(useUI.getState().activeEditor, "conditions");
+  assert.ok(leaves(useLayout.getState().workspaces.find(w => w.id === "conditions")!.root).some(a => a.id === useUI.getState().activeArea));
+  layout.activate("analysis");
+  assert.equal(useUI.getState().activeEditor, "events");
+});
+
+test("revealing a template's inactive tab selects it when creating its workspace", () => {
+  const workspaces = defaultWorkspaces().filter(w => w.id === "conditions");
+  useLayout.setState({ workspaces, active: "conditions", mounted: ["conditions"], maximized: null });
+  layout.reveal("events", { query: "test" });
+  const area = leaves(useLayout.getState().workspaces.find(w => w.id === useLayout.getState().active)!.root).find(a => a.editor === "events")!;
+  assert.ok(area);
+  assert.equal(area.state?.query, "test");
+  assert.equal(useUI.getState().activeArea, area.id);
+});
+
+test("reset, close and removal keep keyboard focus in a visible area", () => {
+  layout.resetAll();
+  layout.reveal("score");
+  layout.resetActive();
+  let w = useLayout.getState().workspaces.find(w => w.id === useLayout.getState().active)!;
+  assert.ok(leaves(w.root).some(a => a.id === useUI.getState().activeArea && a.editor === useUI.getState().activeEditor));
+  layout.close(useUI.getState().activeArea!);
+  w = useLayout.getState().workspaces.find(w => w.id === useLayout.getState().active)!;
+  assert.ok(leaves(w.root).some(a => a.id === useUI.getState().activeArea));
+  layout.remove(w.id);
+  w = useLayout.getState().workspaces.find(w => w.id === useLayout.getState().active)!;
+  assert.ok(leaves(w.root).some(a => a.id === useUI.getState().activeArea));
+});
+
+test("a dock tab can be detached for simultaneous inspection without losing its state", () => {
+  layout.resetAll();
+  layout.reveal("score", { mode: "range" });
+  layout.toggleMaximize(useUI.getState().activeArea!);
+  layout.detachTab(useUI.getState().activeArea!);
+  const areas = leaves(useLayout.getState().workspaces.find(w => w.id === "analysis")!.root);
+  const score = areas.find(a => a.editor === "score")!;
+  assert.equal(score.state?.mode, "range");
+  assert.equal(useLayout.getState().maximized, null);
+  assert.equal(useUI.getState().activeArea, score.id);
+  assert.ok(areas.some(a => a.editor === "properties"));
+  assert.ok(!areas.find(a => a.editor === "properties")!.tabs?.includes("score"));
+});

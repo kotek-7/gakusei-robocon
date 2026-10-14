@@ -165,7 +165,7 @@ export function conflicts(): Map<string, string[]> {
 const TYPING = /^(INPUT|TEXTAREA|SELECT)$/;
 export function installKeyboard() {
   const handler = (e: KeyboardEvent) => {
-    if (e.isComposing) return;
+    if (e.isComposing || e.defaultPrevented) return;
     const c = chord(e);
     const target = e.target as HTMLElement | null;
     const typing =

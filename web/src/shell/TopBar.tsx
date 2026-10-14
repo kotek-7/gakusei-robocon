@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useCommands } from "../app/commands";
 import { useSearches } from "../app/data";
-import { layout, useLayout } from "../app/layout";
+import { layout, leaves, useLayout } from "../app/layout";
 import { useSearch } from "../app/session";
 import { ui, useUI, type MenuItem } from "../app/store";
 import { allEditors } from "../editors/registry";
@@ -260,27 +260,18 @@ function WorkspaceTabs() {
   );
 }
 
-function SearchSwitcher() {
+function SearchControls() {
   const search = useSearch();
-  const list = useSearches((s) => s.list);
+  const workspace = useLayout(s => s.workspaces.find(w => w.id === s.active));
+  const editors = workspace ? leaves(workspace.root).flatMap(a => [a.editor, ...(a.tabs ?? [])]) : [];
+  const active = editors.includes("candidates") ? "discover" : editors.includes("evaluation") ? "evaluate" : editors.includes("graph") || editors.includes("jobs") ? "graph" : "";
   const busy = useUI((s) => s.busy);
   usePref("job.discoverySeconds");
   const runningJob = search?.status === "running" || search?.status === "evaluating";
+  if (!["discover", "evaluate", "graph"].includes(active)) return null;
   return (
-    <div className="search-switcher">
-      <select
-        aria-label="開いている探索"
-        value={search?.id ?? ""}
-        onChange={(e) => run("search.open", e.target.value)}
-      >
-        {!search && <option value="">探索なし</option>}
-        {list.map((s) => (
-          <option key={s.id} value={s.id}>
-            {s.name}
-          </option>
-        ))}
-      </select>
-      <select
+    <div className="search-controls">
+      {active === "discover" && <select
         aria-label="候補探索の時間"
         title="候補探索の時間（設定の既定値も変わります）"
         value={String(getPref("job.discoverySeconds"))}
@@ -299,12 +290,16 @@ function SearchSwitcher() {
             {l}
           </option>
         ))}
-      </select>
+      </select>}
       {runningJob ? (
         <button className="tool danger" onClick={() => run("job.pause")} disabled={busy.pause} title="計算を停止 (Ctrl+.)">
           <Icon name="stop" size={14} />
           停止
         </button>
+      ) : active === "evaluate" ? (
+        <button className="tool primary" disabled={!isEnabled("job.evaluate")} onClick={() => run("job.evaluate")}>評価を計算</button>
+      ) : active === "graph" ? (
+        <button className="tool" onClick={() => run("view.revealJobs")}>計算と進捗</button>
       ) : (
         <button
           className="tool primary"
@@ -321,8 +316,10 @@ function SearchSwitcher() {
 }
 
 export function TopBar() {
+  const search = useSearch();
+  const list = useSearches(s => s.list);
   return (
-    <header className="topbar">
+    <><header className="topbar">
       <span className="app-mark" title="作戦探索 · NHK学生ロボコン2027">
         <svg width="18" height="18" viewBox="0 0 28 28" aria-hidden="true">
           <path d="M5 14H14M14 14L23 5M14 14L23 23" fill="none" stroke="currentColor" strokeWidth="2.4" />
@@ -332,9 +329,21 @@ export function TopBar() {
         </svg>
       </span>
       <MenuBar />
-      <WorkspaceTabs />
       <span className="topbar-spacer" />
-      <SearchSwitcher />
+      <div className="search-switcher">
+        <select
+        aria-label="開いている探索"
+        value={search?.id ?? ""}
+        onChange={(e) => run("search.open", e.target.value)}
+      >
+        {!search && <option value="">探索なし</option>}
+        {list.map((s) => (
+          <option key={s.id} value={s.id}>
+            {s.name}
+          </option>
+        ))}
+      </select>
+      </div>
       <button className="tool icon-only" title="コマンドを検索 (Ctrl+Shift+P)" onClick={() => run("app.palette")}>
         <Icon name="search" />
       </button>
@@ -342,5 +351,6 @@ export function TopBar() {
         <Icon name="gear" />
       </button>
     </header>
+    <div className="workspace-bar"><WorkspaceTabs /><SearchControls /></div></>
   );
 }
