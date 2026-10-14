@@ -29,9 +29,10 @@ export type Command = {
 };
 
 const registry = new Map<string, Command>();
-type Registry = { version: number; overrides: Record<string, string[]>; recent: string[] };
+type Registry = { version: number; overrides: Record<string, string[]>; recent: string[]; pinned: string[] };
 const KEYMAP = "robocon.keymap.v1",
-  RECENT = "robocon.recent.v1";
+  RECENT = "robocon.recent.v1",
+  PINNED = "robocon.pinnedCommands.v1";
 const load = <T,>(k: string, d: T): T => {
   try {
     return JSON.parse(localStorage.getItem(k) || "null") ?? d;
@@ -50,6 +51,7 @@ export const useCommands = create<Registry>(() => ({
   version: 0,
   overrides: load(KEYMAP, {}),
   recent: load(RECENT, []),
+  pinned: (() => { const value = load<unknown>(PINNED, []); return Array.isArray(value) ? [...new Set(value.filter((x): x is string => typeof x === "string"))] : []; })(),
 }));
 
 export function register(...commands: Command[]) {
@@ -86,6 +88,20 @@ export function run(id: string, args?: unknown) {
   } catch (e) {
     ui.error(e);
   }
+}
+
+/** Pin command identities, never arguments or stale editor selections. */
+export function togglePinned(id: string) {
+  if (!registry.has(id) || registry.get(id)?.hidden) return;
+  useCommands.setState((s) => {
+    const pinned = s.pinned.includes(id) ? s.pinned.filter((x) => x !== id) : [...s.pinned, id];
+    save(PINNED, pinned);
+    return { pinned };
+  });
+}
+export function clearRecent() {
+  save(RECENT, []);
+  useCommands.setState({ recent: [] });
 }
 
 export function keysFor(id: string): string[] {

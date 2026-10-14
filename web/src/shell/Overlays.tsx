@@ -155,6 +155,11 @@ function Palette({ mode }: { mode: "commands" | "goto" }) {
   const [q, setQ] = useState(mode === "commands" ? ">" : "");
   const [index, setIndex] = useState(0);
   const [availableOnly, setAvailableOnly] = useState(false);
+  const [category, setCategory] = useState("");
+  const [pinnedOnly, setPinnedOnly] = useState(false);
+  const pinned = useCommands((s) => s.pinned);
+  const registryVersion = useCommands((s) => s.version);
+  const categories = [...new Set(allCommands().filter(c => !c.hidden).map(c => c.category))].sort();
   const listRef = useRef<HTMLUListElement>(null);
   const recent = useCommands((s) => s.recent);
   useCommands((s) => s.version);
@@ -166,6 +171,8 @@ function Palette({ mode }: { mode: "commands" | "goto" }) {
     if (commandMode) {
       list = allCommands()
         .filter((c) => !c.hidden)
+        .filter((c) => !category || c.category === category)
+        .filter((c) => !pinnedOnly || pinned.includes(c.id))
         .filter((c) => !availableOnly || isEnabled(c.id))
         .map((c) => ({
           id: c.id,
@@ -184,12 +191,12 @@ function Palette({ mode }: { mode: "commands" | "goto" }) {
       scored.sort((a, b) => {
         const ra = recent.indexOf(a.it.id),
           rb = recent.indexOf(b.it.id);
-        return (ra < 0 ? 99 : ra) - (rb < 0 ? 99 : rb);
+        return Number(pinned.includes(b.it.id)) - Number(pinned.includes(a.it.id)) || (ra < 0 ? 99 : ra) - (rb < 0 ? 99 : rb);
       });
     else scored.sort((a, b) => (b.s ?? 0) - (a.s ?? 0));
     return scored.map((x) => x.it).slice(0, 80);
-  }, [commandMode, query, goto, recent, availableOnly]);
-  useEffect(() => setIndex(0), [q, availableOnly]);
+  }, [commandMode, query, goto, recent, availableOnly, pinned, pinnedOnly, category, registryVersion]);
+  useEffect(() => setIndex(0), [q, availableOnly, pinnedOnly, category]);
   useEffect(() => { listRef.current?.children[index]?.scrollIntoView({ block: "nearest" }); }, [index]);
   const choose = (it: Item | undefined) => {
     if (!it || it.disabled) return;
@@ -219,7 +226,7 @@ function Palette({ mode }: { mode: "commands" | "goto" }) {
             e.preventDefault();
           }}
         />
-        {commandMode && <div className="palette-filters"><button className="tool" aria-pressed={availableOnly} onClick={() => setAvailableOnly(!availableOnly)}>実行できる操作だけ</button><span className="muted">{items.length}件{items.length === 80 ? "まで表示" : ""}</span></div>}
+        {commandMode && <div className="palette-filters"><select aria-label="操作の分類" value={category} onChange={e => setCategory(e.target.value)}><option value="">すべての分類</option>{categories.map(c => <option key={c}>{c}</option>)}</select><button className="tool" aria-pressed={pinnedOnly} onClick={() => setPinnedOnly(!pinnedOnly)}>固定した操作</button><button className="tool" aria-pressed={availableOnly} onClick={() => setAvailableOnly(!availableOnly)}>実行できる操作だけ</button><span className="muted">{items.length}件{items.length === 80 ? "まで表示" : ""}</span></div>}
         <ul ref={listRef} id="command-results" className="palette-list" role="listbox" aria-label="検索結果">
           {items.map((it, i) => (
             <li
@@ -233,12 +240,17 @@ function Palette({ mode }: { mode: "commands" | "goto" }) {
               onClick={() => choose(it)}
             >
               <span className="palette-label">{it.label}</span>
+              {commandMode && pinned.includes(it.id) && <span className="muted">固定</span>}
               {it.hint && <span className="palette-hint">{it.hint}</span>}
               {it.keys && <kbd>{it.keys}</kbd>}
             </li>
           ))}
           {!items.length && <li className="palette-empty">一致する項目がありません</li>}
         </ul>
+        {commandMode && <div className="palette-filters">
+          <button className="tool" disabled={!items[index]} aria-pressed={!!items[index] && pinned.includes(items[index].id)} onClick={() => { const item = items[index]; if (item) run("command.pin", item.id); }}>選択した操作を{items[index] && pinned.includes(items[index].id) ? "固定解除" : "固定"}</button>
+          <button className="tool" disabled={!recent.length} onClick={() => run("command.clearRecent")}>使用履歴を消去</button>
+        </div>}
         <p className="palette-foot">
           {commandMode ? "Enterで実行 · 先頭の > を消すと移動" : "# 局面 · : 時刻 · @ 選択 · > コマンド · ? 一覧"}
         </p>

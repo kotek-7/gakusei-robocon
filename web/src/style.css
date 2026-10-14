@@ -789,7 +789,7 @@ button.status-item:hover {
   overflow: auto;
   max-height: 52vh;
 }
-.palette-filters { display: flex; align-items: center; gap: 8px; padding: 0 8px 6px; }
+.palette-filters { flex-wrap: wrap; display: flex; align-items: center; gap: 8px; padding: 0 8px 6px; }
 .palette-item {
   display: flex;
   align-items: center;
@@ -805,7 +805,9 @@ button.status-item:hover {
   opacity: 0.5;
 }
 .palette-label {
-  flex: none;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  flex: 0 1 auto;
 }
 .palette-hint {
   flex: 1;
