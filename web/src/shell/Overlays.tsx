@@ -197,6 +197,7 @@ function Palette({ mode }: { mode: "commands" | "goto" }) {
     return scored.map((x) => x.it).slice(0, 80);
   }, [commandMode, query, goto, recent, availableOnly, pinned, pinnedOnly, category, registryVersion]);
   useEffect(() => setIndex(0), [q, availableOnly, pinnedOnly, category]);
+  useEffect(() => setIndex(i => Math.max(0, Math.min(i, items.length - 1))), [items.length]);
   useEffect(() => { listRef.current?.children[index]?.scrollIntoView({ block: "nearest" }); }, [index]);
   const choose = (it: Item | undefined) => {
     if (!it || it.disabled) return;

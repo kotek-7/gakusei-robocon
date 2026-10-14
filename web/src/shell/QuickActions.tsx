@@ -8,8 +8,10 @@ export function QuickActions() {
   useCommands(s => s.version);
   useCommands(s => s.overrides);
   const activeEditor = useUI(s => s.activeEditor);
+  useUI(s => s.activeArea);
   useUI(s => s.session);
   useUI(s => s.busy);
+  useUI(s => s.playback.range);
   useSearches(s => s.list);
   const commands = pinned.map(getCommand).filter(c => c && !c.hidden);
   if (!commands.length) return null;

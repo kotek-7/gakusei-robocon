@@ -1545,6 +1545,15 @@ tr[aria-selected="true"] th {
   background: var(--selected);
 }
 
+/* The 3D overlay keeps its dark surface in both application themes. */
+.viewport-robots tr[aria-selected="true"] td,
+.viewport-robots tr[aria-selected="true"] th {
+  background: #173d3a;
+}
+.viewport-robots tr[aria-selected="true"] td:not(.muted) {
+  color: #e5ecef;
+}
+
 /* Events, outliner, compare */
 .events-editor .filter,
 .outliner .filter {
