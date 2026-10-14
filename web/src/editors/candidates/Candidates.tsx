@@ -1,3 +1,5 @@
+import { evidenceKey } from "../strategy-detail/selection";
+import "../strategy-detail/commands";
 import "./candidates.css";
 import { buildCandidateIndex, candidatePlanLabel, parseCandidateQuery, matchCandidateQuery, sortCandidateRows, mergeShortlistScope, type CandidateFilterView } from "./collection";
 import { CandidateQueryHelp, SavedCandidateViews } from "./SavedCandidateViews";
@@ -299,6 +301,8 @@ export function Candidates({
           </div>
           {active && chosen && <aside className="candidate-inspector" aria-label="選択候補の検査" tabIndex={-1}>
             <header><strong>C{active.run} · {active.candidate.id.slice(0, 14)}</strong><button className="candidate-text-action" onClick={() => focusRegion("list")}>一覧へ戻る</button></header>
+            <div className="candidate-strategy-heading"><strong>{candidatePlanLabel(active.candidate.plan)}</strong><span>相手待機時の完了順</span></div>
+            <button className="primary" onClick={() => command("strategy.inspect", {search: search.id, run: active.run, candidate: active.candidate.id, evidence: evidenceKey(active.run, active.candidate, chosen.evidence)})}>作戦を詳しく見る</button>
             <ResponseBrowser key={`${active.run}/${active.candidate.id}`} options={evidenceOptions} selectedKey={chosen.key} commonOpponents={active.common} onSelect={setResponseKey} onOpen={option => onOpen(active.run, option.evidence)} />
             <div className="candidate-target-tools" role="group" aria-label="選択展開の操作">
               <button className="primary" disabled={!chosen.evidence.path.length} onClick={() => onOpen(active.run, chosen.evidence)}>3Dに表示</button>

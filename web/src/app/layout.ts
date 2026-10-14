@@ -64,6 +64,11 @@ export function defaultWorkspaces(): Workspace[] {
       ]),
     },
     {
+      id: "strategy",
+      name: "作戦詳細",
+      root: S("row", [60, 40], [A("strategy-detail"), S("col", [65, 35], [A("viewport"), T("timeline", "events", "score")])]),
+    },
+    {
       id: "graph",
       name: "状態グラフ",
       root: S("row", [64, 36], [

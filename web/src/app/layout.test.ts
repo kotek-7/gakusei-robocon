@@ -97,3 +97,18 @@ test("a dock tab can be detached for simultaneous inspection without losing its 
   assert.ok(areas.some(a => a.editor === "properties"));
   assert.ok(!areas.find(a => a.editor === "properties")!.tabs?.includes("score"));
 });
+
+test("strategy details opens alongside replay without replacing the candidate workspace", () => {
+  const workspaces = defaultWorkspaces().filter(w => w.id !== "strategy");
+  const discover = workspaces.find(w => w.id === "discover")!;
+  useLayout.setState({workspaces, active:"discover", mounted:["discover"], maximized:null});
+  const selection = {search:"s", run:0, candidate:"p", evidence:"baseline"};
+  layout.reveal("strategy-detail", {strategySelection:selection});
+  const state = useLayout.getState();
+  assert.deepEqual(state.workspaces.find(w => w.id === "discover"), discover);
+  const opened = state.workspaces.find(w => w.id === state.active)!;
+  assert.deepEqual(leaves(opened.root).map(a => a.editor), ["strategy-detail", "viewport", "timeline"]);
+  assert.deepEqual(leaves(opened.root)[0].state?.strategySelection,selection);
+  layout.reveal("strategy-detail");
+  assert.equal(useLayout.getState().workspaces.length,state.workspaces.length);
+});

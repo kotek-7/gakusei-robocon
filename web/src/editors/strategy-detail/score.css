@@ -1,0 +1,19 @@
+.strategy-score { border-top: 1px solid var(--line); padding-top: 12px; }
+.strategy-score > header, .strategy-score-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
+.strategy-score > header h3 { margin: 0; }
+.strategy-score-controls { margin-block: 10px; }
+.strategy-score-controls label { display: flex; align-items: center; gap: 5px; }
+.strategy-score-controls > span { color: var(--muted); }
+.strategy-score-scroll { max-width: 100%; overflow: auto; }
+.strategy-score table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.strategy-score th, .strategy-score td { padding: 5px 8px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+.strategy-score th:first-child, .strategy-score td:first-child { text-align: left; }
+.strategy-score thead th { color: var(--muted); background: var(--surface); position: sticky; top: 0; }
+.strategy-score .link { border: 0; background: transparent; padding: 2px 0; text-decoration: underline; text-underline-offset: 3px; text-align: left; }
+.strategy-score [aria-pressed="true"] { color: var(--accent); font-weight: 600; }
+.strategy-score-events { max-height: 240px; }
+.strategy-score tr[data-selected] { background: var(--selected); }
+.strategy-score-context { margin-top: 10px; }
+.strategy-score-context p { margin-block: 6px 10px; }
+.strategy-score-context ul { padding-left: 18px; margin-block: 6px; }
+.strategy-score-context li { margin-bottom: 5px; overflow-wrap: anywhere; }

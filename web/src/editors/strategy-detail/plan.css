@@ -1,0 +1,29 @@
+.strategy-plan { min-width: 0; }
+.strategy-plan section + section { margin-top: 20px; }
+.strategy-plan header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.strategy-plan h3 { margin: 0; font-size: 13px; }
+.strategy-plan-tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-block: 6px; }
+.strategy-plan-tools label { display: flex; align-items: center; gap: 5px; min-width: 0; }
+.strategy-plan-tools select { max-width: 100%; min-width: 0; }
+.strategy-plan-tools > span { color: var(--muted); font-variant-numeric: tabular-nums; }
+.strategy-plan-table { overflow: auto; }
+.strategy-plan table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.strategy-plan th, .strategy-plan td { padding: 7px 6px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.strategy-plan th { color: var(--muted); font-weight: normal; white-space: nowrap; }
+.strategy-plan td small { display: block; margin-top: 3px; color: var(--muted); }
+.strategy-plan .strategy-spot-link { padding: 0; min-height: 24px; height: auto; background: none; border: 0; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.strategy-configuration { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 0 24px; }
+.strategy-configuration dl { margin: 0; }
+.strategy-configuration dl > div { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding-block: 6px; }
+.strategy-configuration dt { overflow-wrap: anywhere; }
+.strategy-configuration dd { margin: 0; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.strategy-instruction-track { margin-top: 12px; }
+.strategy-instruction-track h4 { font-size: 12px; margin: 0 0 6px; }
+.strategy-instruction-track h4 span { font-weight: normal; color: var(--muted); margin-left: 6px; }
+.strategy-instruction-track > ol { padding-left: 28px; margin: 0; }
+.strategy-instruction-track > ol > li { padding: 6px 0 7px 4px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.strategy-instruction-track strong { font-weight: 500; }
+.strategy-instruction-location { display: block; color: var(--muted); margin-top: 3px; }
+.strategy-instruction-track ul { padding-left: 16px; margin: 5px 0 0; }
+.strategy-instruction-track ul li { overflow-wrap: anywhere; }
+.strategy-instruction-failure { color: var(--warning, var(--text)); margin: 5px 0 0; }
