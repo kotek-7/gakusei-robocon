@@ -1,3 +1,10 @@
+import type { Instruction } from "./planner";
+
+export type CandidateInstructions = {
+  red: Instruction[][];
+  blue: Instruction[][] | null;
+};
+
 export type Action = {
   kind: string;
   dest?: string;

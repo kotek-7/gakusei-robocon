@@ -4,7 +4,7 @@ import { Store } from "./store";
 import { Persistence, exportSearch, importSearch } from "./persistence";
 import { DiscoveryEngine, metrics, scopeComplete } from "./discovery";
 import { analyze } from "./evaluation";
-import { assert, pauseTurn } from "./util";
+import { assert, clone, pauseTurn } from "./util";
 import type { Search } from "./types";
 import type {
   Backup,
@@ -273,6 +273,28 @@ export class Runtime {
     "config.validate": ({ config }) => validateConfig(config),
     "search.list": () => this.list(),
     "search.get": async ({ search }) => (await this.get(search)).summary(),
+    "candidate.instructions": async ({ search, run, candidate, opponent }) => {
+      assert(Number.isSafeInteger(run) && run >= 0, "構成番号が不正です");
+      const st = await this.get(search);
+      const data = st.data.discovery?.runs[run];
+      assert(data, "この構成の候補探索が見つかりません");
+      const selected = data.candidates.find((entry) => entry.id === candidate);
+      assert(selected, "作戦候補が見つかりません");
+      assert(
+        Array.isArray(selected.script) && selected.script.length === 2 && selected.script.every(Array.isArray),
+        "この作戦の固定指示は保存されていません",
+      );
+      let blue = null;
+      if (opponent !== undefined) {
+        assert(data.opponents && Object.hasOwn(data.opponents, opponent), "相手の作戦が見つかりません");
+        blue = data.opponents[opponent];
+        assert(
+          Array.isArray(blue) && blue.length === 2 && blue.every(Array.isArray),
+          "この相手の固定指示は保存されていません",
+        );
+      }
+      return clone({ red: selected.script, blue });
+    },
     "search.export": async ({ search }) =>
       exportSearch(
         await this.get(search),

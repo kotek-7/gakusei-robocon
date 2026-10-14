@@ -4,6 +4,7 @@
  */
 import type {
   Action,
+  CandidateInstructions,
   Config,
   Detail,
   Graph,
@@ -68,6 +69,10 @@ export interface Queries {
   "search.list": Def<void, Search[]>;
   "search.get": Def<{ search: string }, Search>;
   "search.export": Def<{ search: string }, Backup>;
+  "candidate.instructions": Def<
+    { search: string; run: number; candidate: string; opponent?: string },
+    CandidateInstructions
+  >;
   "graph.page": Def<
     { search: string; run: number; offset: number; limit?: number },
     Graph
@@ -116,6 +121,7 @@ export const QUERY_METHODS = new Set<Method>([
   "search.list",
   "search.get",
   "search.export",
+  "candidate.instructions",
   "graph.page",
   "graph.locate",
   "node.get",
