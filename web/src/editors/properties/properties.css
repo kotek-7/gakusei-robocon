@@ -1,2 +1,10 @@
 .inspector-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: 10px 0; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
 .inspector-tabs button[aria-pressed="true"] { color: var(--accent); border-color: currentColor; font-weight: 600; }
+
+.selection-breadcrumb, .selection-context, .selection-actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.selection-breadcrumb { padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.selection-context { justify-content: space-between; padding-block: 6px; color: var(--muted); }
+.property-grid { display: grid; grid-template-columns: minmax(74px, 1fr) minmax(0, 2fr); margin: 0 0 8px; }
+.property-grid dt, .property-grid dd { margin: 0; padding: 7px 4px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.property-grid dt { color: var(--muted); }
+.selection-actions { padding-block: 6px; }

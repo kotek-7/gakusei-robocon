@@ -191,8 +191,6 @@ function Header({ area }: EditorProps) {
   const lanes = (area.state?.lanes as boolean[]) ?? [true, true, true, true];
   return (
     <div className="area-tools">
-      <Transport filteredEvents />
-      <span className="area-sep" />
       <button className="tool" title="表示・移動するイベントを選ぶ" onClick={(e) => {
         const r = e.currentTarget.getBoundingClientRect();
         useUI.setState({ menu: { x: r.left, y: r.bottom + 2, items: Object.keys({ all: "すべて", ...MARKER_LABEL }).map((kind) => ({ command: `timeline.event.${kind}` })) } });
@@ -339,6 +337,7 @@ function Timeline({ area }: EditorProps) {
 
   if (!search) return null;
   return (
+    <div className="timeline-workbench">
     <div
       className="timeline-editor"
       ref={ref}
@@ -484,6 +483,8 @@ function Timeline({ area }: EditorProps) {
         </div>
       )}
       {!analysis && <div className="timeline-empty">局面を選択すると、その局面までの経路の動作を表示します</div>}
+    </div>
+    <div className="timeline-transport"><Transport filteredEvents /></div>
     </div>
   );
 }

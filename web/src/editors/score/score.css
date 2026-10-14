@@ -5,3 +5,5 @@
 .score-editor .score-table th:first-child { width: 28%; }
 .score-editor .score-table th:nth-child(2),
 .score-editor .score-table th:nth-child(3) { width: 12%; }
+
+.score-scope { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; padding-block: 6px; border-bottom: 1px solid var(--line); }

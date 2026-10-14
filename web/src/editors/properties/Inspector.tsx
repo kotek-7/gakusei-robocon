@@ -1,13 +1,12 @@
 import "./commands";
 import "./properties.css";
 import { Help } from "../common/Help";
-import { DetailView } from "../common/DetailView";
 import { stateDelta, objectStateLabel } from "./delta";
 import { objectNames } from "../common/labels";
 import { useEffect, useState } from "react";
 import { run } from "../../app/commands";
 import { useQuery } from "../../app/data";
-import { useUI } from "../../app/store";
+import { ui, useUI } from "../../app/store";
 
 import type { Action, Detail, Edge } from "../../engine/types";
 import { saveJSON } from "../../app/coreCommands";
@@ -51,7 +50,7 @@ export function Inspector({
     <section className="inspector">
       <div className="section-title">
         <h2>選択局面 N{detail.id}</h2>
-        <span>{detail.state.t}秒</span>
+        <span>{detail.state.t}秒</span><button className="tool" title="局面JSONを保存" onClick={() => saveJSON(detail.state, `state-${detail.id}.json`)}>保存</button>
       </div>
       {Math.abs(time - detail.state.t) > 0.001 && (
         <div className="section-title">
@@ -84,7 +83,7 @@ export function Inspector({
         <tbody>
           {detail.state.robots.map((r, i) => (
             <tr key={i}>
-              <th>{robotNames[i]}</th>
+              <th><button className="link" onClick={() => ui.select(`robot:${i}`)}>{robotNames[i]}</button></th>
               <td>
                 {locationName(r.pos)}
                 <small>
@@ -181,7 +180,7 @@ export function Inspector({
         ))}
       </div>
       {!!outgoing.length && !filteredOutgoing.length && <p className="muted">該当する遷移はありません</p>}
-      <DetailView label={`入る遷移 ${incoming.length}件`} title="入る遷移">
+      <details className="incoming-transitions"><summary>入る遷移 {incoming.length}件</summary>
         <div className="edge-list">
           {incoming.map((e) => (
             <button key={e.id} onClick={() => onEdge(e)}>
@@ -189,11 +188,8 @@ export function Inspector({
             </button>
           ))}
         </div>
-      </DetailView>
+      </details>
       </section>}
-      <button onClick={() => saveJSON(detail.state, `state-${detail.id}.json`)}>
-        局面JSONを保存
-      </button>
       {tab === "objects" && <section>
         <h3>物体の所在・加点状況 <Help topic="model" text="各物体の現在の所在と、赤・青それぞれの搬送による加点済み状態を表示します。" /></h3>
         <div className="row">
@@ -217,7 +213,7 @@ export function Inspector({
             {!objects.length && <tr><td colSpan={4}>一致する物体はありません</td></tr>}
             {objects.map((o) => (
               <tr key={o.id}>
-                <td>{o.id}</td>
+                <td><button className="link" onClick={() => ui.select(`obj:${o.id}`)}>{o.id}</button></td>
                 <td>{objectNames[o.kind] || o.kind}</td>
                 <td>{locationName(o.loc)}</td>
                 <td>{o.delivered.map((v) => (v ? "有" : "無")).join(" / ")}</td>

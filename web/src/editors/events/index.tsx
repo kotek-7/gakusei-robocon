@@ -25,18 +25,17 @@ function Header({ area }: EditorProps) {
   const phases = (area.state?.phases as string) ?? "finish";
   return (
     <div className="area-tools">
-      <div className="segmented">
-        {robotNames.map((n, i) => (
-          <button
-            key={n}
-            className={`tool ${i >> 1 ? "blue-text" : "red-text"}`}
-            aria-pressed={robots[i]}
-            onClick={() => layout.setAreaState(area.id, { robots: robots.map((v, j) => (j === i ? !v : v)) })}
-          >
-            {n}
-          </button>
-        ))}
-      </div>
+      <button className="tool" aria-haspopup="menu" onClick={e => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        useUI.setState({ menu: { x: rect.left, y: rect.bottom + 2, items: [
+          ...robotNames.map((name, i) => ({ label: name, checked: robots[i], run: () => layout.setAreaState(area.id, { robots: robots.map((v, j) => j === i ? !v : v) }) })),
+          { separator: true },
+          { label: "選択機体のみ", checked: area.state?.scope === "selected", run: () => layout.setAreaState(area.id, { scope: area.state?.scope === "selected" ? "all" : "selected" }) },
+          { label: "再生範囲のみ", checked: !!area.state?.rangeOnly, disabled: !useUI.getState().playback.range, run: () => layout.setAreaState(area.id, { rangeOnly: !area.state?.rangeOnly }) },
+          { separator: true },
+          { label: "絞り込みを解除", run: () => layout.setAreaState(area.id, { robots: [true, true, true, true], scope: "all", rangeOnly: false }) },
+        ] } });
+      }}>対象 {area.state?.scope === "selected" ? "選択機体" : `${robots.filter(Boolean).length}機体`}{area.state?.rangeOnly ? "・区間内" : ""}</button>
       <select value={phases} aria-label="段階" onChange={(e) => layout.setAreaState(area.id, { phases: e.target.value })}>
         <option value="all">開始・完了・不可</option>
         <option value="finish">完了と不可</option>
@@ -53,8 +52,8 @@ function EventsEditor({ area }: EditorProps) {
   const time = useUI((s) => s.playback.time);
   const range = useUI((s) => s.playback.range);
   const selection = useUI((s) => s.session.selection);
-  const [scope, setScope] = useState("all");
-  const [rangeOnly, setRangeOnly] = useState(false);
+  const scope = area.state?.scope ?? "all";
+  const rangeOnly = !!area.state?.rangeOnly;
   const [q, setQ] = useState("");
   const robots = (area.state?.robots as boolean[]) ?? [true, true, true, true];
   const phases = (area.state?.phases as string) ?? "finish";
@@ -77,17 +76,13 @@ function EventsEditor({ area }: EditorProps) {
   const next = rows.find((e) => e.t > time + 1e-6);
   return (
     <div className="editor-scroll events-editor">
+      <div className="event-navigation event-filterbar">
       <input className="filter" placeholder="絞り込み（例: 設置、赤BR）" value={q} onChange={(e) => setQ(e.target.value)} aria-label="動作履歴を絞り込み" />
-      <div className="event-navigation">
-        <button className="tool" aria-pressed={scope === "selected"} onClick={() => setScope(scope === "all" ? "selected" : "all")}>選択機体のみ</button>
-        <button className="tool" aria-pressed={rangeOnly} disabled={!range} onClick={() => setRangeOnly(!rangeOnly)}>再生範囲のみ</button>
         <button className="tool" disabled={!rows.length} onClick={() => {
           const csv = [["秒", "機体", "段階", "行動"], ...rows.map((e) => [e.t, robotNames[e.robot], phaseNames[e.phase] || e.phase, actionName(e.action)])]
             .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(",")).join("\n");
           navigator.clipboard.writeText(csv).then(() => ui.toast("表示中の動作履歴をコピーしました")).catch(ui.error);
         }}>CSV</button>
-      </div>
-      <div className="event-navigation">
         <button className="tool" disabled={!previous} onClick={() => previous && run("events.seek", previous)}>前の動作</button>
         <button className="tool" disabled={!next} onClick={() => next && run("events.seek", next)}>次の動作</button>
         <span className="muted tabular">{rows.length}件</span>

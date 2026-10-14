@@ -171,6 +171,7 @@ function ScoreEditor({ area }: EditorProps) {
   const previous = changes.findLast((sample) => sample.t < time - 1e-6);
   const next = changes.find((sample) => sample.t > time + 1e-6);
   const rangeDelta = range ? scoreRangeDelta(analysis, range) : null;
+  const rangeMode = area.state?.scoreScope === "range" && !!range;
   const csv = ["秒,赤,青,点差", ...analysis.samples.map((s) => `${s.t},${s.parts[0].total},${s.parts[1].total},${s.parts[0].total - s.parts[1].total}`)].join("\n");
   return (
     <div className="editor-scroll score-editor" data-score-csv={area.id} data-csv={csv}>
@@ -180,7 +181,17 @@ function ScoreEditor({ area }: EditorProps) {
         <span className="muted tabular">{changes.length}回</span>
       </div>
       <Chart a={analysis} mode={mode} horizon={search.config.horizon} />
-      <table className="score-table">
+      <div className="score-scope" role="group" aria-label="得点の集計範囲">
+        <button className="tool" aria-pressed={!rangeMode} onClick={() => layout.setAreaState(area.id, { scoreScope: "point" })}>再生位置</button>
+        <button className="tool" disabled={!range} aria-pressed={rangeMode} onClick={() => layout.setAreaState(area.id, { scoreScope: "range" })}>選択区間の増減</button>
+        {rangeMode && range && <><button className="tool" onClick={() => ui.patchPlayback({ time: range[0], playing: false })}>開始へ</button><button className="tool" onClick={() => ui.patchPlayback({ time: range[1], playing: false })}>終了へ</button></>}
+      </div>
+      {rangeMode ? <>
+        <div className="tabular muted">{range![0].toFixed(1)}〜{range![1].toFixed(1)}秒</div>
+        {!rangeDelta ? <p className="muted">経路内の区間を指定してください。</p> : <table className="score-table"><thead><tr><th>採点項目</th><th>赤の増減</th><th>青の増減</th></tr></thead><tbody>
+          {[...PARTS, ["total", "合計"] as [keyof ScoreParts, string]].map(([key, label]) => <tr key={key}><th>{label}</th>{[0, 1].map(team => <td key={team} className="tabular">{rangeDelta[team][key] > 0 ? "+" : ""}{rangeDelta[team][key]}</td>)}</tr>)}
+        </tbody></table>}
+      </> : <table className="score-table">
         <thead>
           <tr>
             <th>{time.toFixed(1)}秒時点</th>
@@ -222,25 +233,7 @@ function ScoreEditor({ area }: EditorProps) {
             <td>{analysis.mandate.map((t) => t === null ? "未成立" : `${t}秒`).join(" / ")}</td>
           </tr>
         </tbody>
-      </table>
-      {range && <section className="score-range">
-        <h3>区間の得点増減 {range[0].toFixed(1)}〜{range[1].toFixed(1)}秒 <Help topic="results" text="終了時点の点数から開始時点の点数を引いた値です。" /></h3>
-        {!rangeDelta ? <p className="muted small">区間が経路外を含みます。タイムラインで経路内の区間を指定してください。</p> : <>
-          <div className="area-tools">
-            <button className="tool" onClick={() => ui.patchPlayback({ time: range[0], playing: false })}>開始へ</button>
-            <button className="tool" onClick={() => ui.patchPlayback({ time: range[1], playing: false })}>終了へ</button>
-          </div>
-          <table className="score-table"><thead><tr><th>採点項目</th><th>赤の増減</th><th>青の増減</th></tr></thead><tbody>
-            {[...PARTS, ["total", "合計"] as [keyof ScoreParts, string]].map(([key, label]) => <tr key={key}>
-              <th>{label}</th>{[0, 1].map((team) => {
-                const delta = rangeDelta[team][key];
-                return <td key={team} className="tabular">{delta > 0 ? "+" : ""}{delta}</td>;
-              })}
-            </tr>)}
-          </tbody></table>
-
-        </>}
-      </section>}
+      </table>}
       <span className="muted small">集計条件 <Help topic="model" text="持ち上げた物体は、その時点で塔から外れた扱いになります。" /></span>
     </div>
   );
