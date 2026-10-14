@@ -5,7 +5,7 @@ import "./help.css";
 
 let showingHelp = false;
 
-export function Help({ topic, text }: { topic: string; text?: string }) {
+export function Help({ topic, title, text }: { topic: string; title?: string; text?: string }) {
   const id = useId(), button = useRef<HTMLButtonElement>(null), bubble = useRef<HTMLDivElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const frame = useRef(0);
@@ -14,6 +14,7 @@ export function Help({ topic, text }: { topic: string; text?: string }) {
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ left: 8, top: 8 });
   const article = helpArticles[resolveHelpTopic(topic)];
+  const subject = title ?? article.title;
   const cancel = () => clearTimeout(timer.current);
   const hide = () => { cancelAnimationFrame(frame.current); cancel(); pinned.current = false; bubble.current?.hidePopover(); setOpen(false); };
   const show = () => {
@@ -32,17 +33,17 @@ export function Help({ topic, text }: { topic: string; text?: string }) {
   const later = () => { cancel(); if (!pinned.current) timer.current = setTimeout(hide, 200); };
   useEffect(() => () => { clearTimeout(timer.current); cancelAnimationFrame(frame.current); }, []);
   return <>
-    <button ref={button} type="button" className="help-trigger" aria-label={`${article.title}のヘルプ`} aria-describedby={open ? id : undefined} aria-expanded={open}
+    <button ref={button} type="button" className="help-trigger" aria-label={`${subject}のヘルプ`} aria-describedby={open ? id : undefined} aria-expanded={open}
       onPointerEnter={e => { if (e.pointerType !== "touch") show(); }} onPointerLeave={later}
       onFocus={() => { if (!restoringFocus.current) show(); }} onBlur={e => { if (!bubble.current?.contains(e.relatedTarget as Node)) later(); }}
       onClick={() => { if (pinned.current) hide(); else { show(); pinned.current = true; } }}><span aria-hidden="true">?</span></button>
-    {createPortal(<div ref={bubble} id={id} popover="auto" role="dialog" aria-label={`${article.title}のヘルプ`} className="help-bubble" style={position}
+    {createPortal(<div ref={bubble} id={id} popover="auto" role="dialog" aria-label={`${subject}のヘルプ`} className="help-bubble" style={position}
       onToggle={e => { const shown = (e.nativeEvent as ToggleEvent).newState === "open"; setOpen(shown); if (!shown) pinned.current = false; }}
       onPointerEnter={cancel} onPointerLeave={later} onFocus={cancel}
       onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget as Node) && e.relatedTarget !== button.current) later(); }}
       onKeyDown={e => { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); hide(); restoringFocus.current = true; button.current?.focus(); restoringFocus.current = false; } }}>
-      <div className="help-title"><strong>{article.title}</strong><button type="button" className="tool" aria-label="ヘルプを閉じる" onClick={hide}>閉じる</button></div>
       <p>{text ?? article.summary}</p>
+      <div className="help-actions"><button type="button" className="tool" aria-label="ヘルプを閉じる" onClick={hide}>閉じる</button></div>
     </div>, document.body)}
   </>;
 }

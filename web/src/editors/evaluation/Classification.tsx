@@ -50,7 +50,7 @@ export function Classification({
     <details className="classification"><summary>共通する動作で絞り込む</summary>
       <div className="classification-navigation" aria-label="分類の階層">
         {trail.map((_, index) => <button key={index} aria-current={index === trail.length - 1 ? "location" : undefined} className="classification-path" onClick={() => { setPath(validPath.slice(0, index)); onSelect(index === 0 ? null : trail[index].ids); }}>{index ? `${index}組目` : "全作戦"}</button>)}
-        <Help topic="results" text="動作の開始・完了などを同時刻ごとにまとめ、共通する先頭の動作から分類をたどれます。" />
+        <Help topic="results" title="作戦分類" text="作戦分類は、動作の順序や同時性が共通する試合展開のまとまりです。先頭の動作から順に選んで絞り込めます。" />
       </div>
       <p className="muted">この分岐に {current.ids.length} 作戦</p>
       <table>

@@ -231,7 +231,7 @@ export function Candidates({
           {selectedRun && <p>{configuration(selectedRun.variant)}</p>}
           <nav className="candidate-region-nav" aria-label="作戦候補の領域へ移動">
             <button onClick={() => focusRegion("list")}>候補一覧</button>
-            <Help topic="results" text="同じ構成・共通の相手手順で比較します。確認済みの結果であり、全対応への保証はありません。" />
+            <Help topic="results" title="候補一覧" text="候補一覧は、探索で見つかった作戦を選んで比較する表です。同じ機体構成・相手手順での結果を確認できます。" />
             <button disabled={!review.shortlist.length} onClick={() => focusRegion("comparison")}>横比較{review.shortlist.length ? ` · ${review.shortlist.length}` : ""}</button>
             <button disabled={!active || !chosen} onClick={() => focusRegion("inspector")}>選択候補の検査</button>
           </nav>
@@ -314,7 +314,7 @@ export function Candidates({
             <EvidenceDiagnostics key={responseIdentity(active.run,active.candidate.id,chosen.evidence)} evidence={chosen.evidence} onOpenAt={issue => command("candidate.inspectIssue", { evidence: chosen.evidence, issue })} />
           </aside>}
           </div>
-          <footer className="candidate-status">未探索 {report.runs.filter(r => run === "all" || String(r.run) === run).reduce((n, r) => n + r.frontier, 0).toLocaleString()}局面 · 未計算 {report.runs.filter(r => run === "all" || String(r.run) === run).reduce((n, r) => n + r.remainingChoices, 0).toLocaleString()}組 <Help topic="search" text={report.scope} /></footer>
+          <footer className="candidate-status">未探索 {report.runs.filter(r => run === "all" || String(r.run) === run).reduce((n, r) => n + r.frontier, 0).toLocaleString()}局面 · 未計算 {report.runs.filter(r => run === "all" || String(r.run) === run).reduce((n, r) => n + r.remainingChoices, 0).toLocaleString()}組 <Help topic="search" title="未探索・未計算" text="未探索は、見つかった局面のうち、まだ先の行動を調べていない件数です。未計算は、まだ結果を求めていない行動の組合せ数です。" /></footer>
         </>
       )}
     </section>

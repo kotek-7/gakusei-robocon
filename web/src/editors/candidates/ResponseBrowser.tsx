@@ -19,7 +19,7 @@ export function ResponseBrowser({ options, selectedKey, commonOpponents, onSelec
   const group = groups.find(group => group.opponent === opponent);
   const reset = () => {setFilter("all"); setOpponent("");};
   return <section className="response-browser" aria-label="検査した展開を調べる">
-    <div className="response-browser-heading"><strong>検査した展開</strong><span>{options.filter(isResponse).length}対応 · {groups.length}相手</span><Help topic="results" text="共通比較は候補間で同じ相手手順を検査した結果です。行を選び、Enterで3Dに表示します。" /></div>
+    <div className="response-browser-heading"><strong>検査した展開</strong><span>{options.filter(isResponse).length}対応 · {groups.length}相手</span><Help topic="results" title="検査した展開" text="検査した展開は、候補を相手の手順と組み合わせて計算した試合の流れです。行を選んでEnterを押すと3Dで確認できます。" /></div>
     <div className="response-browser-settings" role="group" aria-label="展開の絞込・順序">
       <label>検査対象<select aria-label="展開の検査対象" value={filter} onChange={event => setFilter(event.target.value as ResponseFilter)}>
         <option value="all">すべて</option><option value="common">共通比較のみ</option><option value="exploratory">共通比較外</option><option value="blocked">実行不可あり</option><option value="negative">赤の点差が負</option>

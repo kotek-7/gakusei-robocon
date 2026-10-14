@@ -18,7 +18,7 @@ export function SearchAxes({
     <section className="condition-axes">
       <h3>
         構成の組合せ {count.toLocaleString()} · 複数候補の項目 {axes.length}
-      <Help topic="conditions" text="各項目の候補数を掛け合わせた構成数です。試合展開や計算時間の見積りではありません。" /></h3>
+      <Help topic="conditions" title="構成の組合せ" text="構成の組合せは、選んだ能力・数値・初期配置から作る設定の総数です。各項目の候補数を掛け合わせて求めます。" /></h3>
       {!axes.length ? (
         <p>すべての項目が1つの値に固定されています。</p>
       ) : (

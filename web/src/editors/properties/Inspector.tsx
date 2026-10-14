@@ -104,7 +104,7 @@ export function Inspector({
       </p>
       </div>}
       {tab === "changes" && <section>
-        <h3>直前の局面からの変化 <Help topic="graph" text="比較元の局面と選択局面の時刻・得点・物体・機体の変化を表示します。入る遷移が複数ある場合は比較元を選べます。" /></h3>
+        <h3>直前の局面からの変化 <Help topic="graph" title="直前の局面からの変化" text="直前の局面からの変化は、時刻・得点・物体・機体の差分です。直前の局面が複数ある場合は、比較元を選べます。" /></h3>
         {!incomingNodes.length ? <p className="muted">開始局面です</p> : <>
           <label>比較元<select value={previousNode} onChange={e => setPredecessor(Number(e.target.value))}>{incomingNodes.map(id => <option value={id} key={id}>N{id}</option>)}</select></label>
           {previousQuery.loading && !changes && <p className="muted">比較元を読み込み中</p>}
@@ -122,7 +122,7 @@ export function Inspector({
         </>}
       </section>}
       {tab === "actions" && <section>
-        <h3>次の局面を計算 <Help topic="graph" text="双方の行動を指定して1分岐を計算します。選択していない分岐も探索対象に残ります。" /></h3>
+        <h3>次の局面を計算 <Help topic="graph" title="次の局面" text="次の局面は、選んだ行動の結果として進む試合の状態です。赤・青それぞれの行動を指定して計算できます。" /></h3>
         {detail.actions.every((a) => a.length > 0) ? (
           <>
 
@@ -191,7 +191,7 @@ export function Inspector({
       </details>
       </section>}
       {tab === "objects" && <section>
-        <h3>物体の所在・加点状況 <Help topic="model" text="各物体の現在の所在と、赤・青それぞれの搬送による加点済み状態を表示します。" /></h3>
+        <h3>物体の所在・加点状況 <Help topic="model" title="物体の所在・加点状況" text="物体の所在・加点状況は、各物体の現在位置と搬送による得点の記録です。赤・青それぞれの加点状況を確認できます。" /></h3>
         <div className="row">
           <input type="search" aria-label="物体を検索" placeholder="物体ID・所在" value={objectQuery} onChange={(e) => setObjectQuery(e.target.value)} />
           <select aria-label="物体の種別" value={objectKind} onChange={(e) => setObjectKind(e.target.value)}>

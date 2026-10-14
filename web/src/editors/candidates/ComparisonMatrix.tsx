@@ -35,7 +35,7 @@ export function ComparisonMatrix({ rows, onOpen, onInspect, onRemove, onClear }:
   const points = (evidence: CandidateEvidence) => { const value = evidence.scores[0] - evidence.scores[1]; return `${value > 0 ? "+" : ""}${value}点`; };
   if (!rows.length) return null;
   return <section className="candidate-matrix" aria-label="取り置いた候補の同条件比較">
-    <header><strong>候補を並べて比較 · {rows.length}件 <Help topic="results" text="同じ構成・相手手順で比較します。点差は確認済みの全裁定の最小値で、未発見の相手手順への保証はありません。点差を選ぶと展開を検査できます。" /></strong><button onClick={onClear}>比較を解除</button></header>
+    <header><strong>候補を並べて比較 · {rows.length}件 <Help topic="results" title="候補の横比較" text="候補の横比較は、同じ機体構成・相手手順で候補ごとの点差を見る表です。点差には確認済みの裁定の最小値を表示し、選ぶと試合展開を確認できます。" /></strong><button onClick={onClear}>比較を解除</button></header>
     <div className="candidate-matrix-filters">
       <label>相手手順を検索 <input type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="手順ID" /></label>
       <label>表示 <select aria-label="比較表の表示対象" value={filter} onChange={e => setFilter(e.target.value)}><option value="all">全共通手順</option><option value="different">候補間で点差が異なる手順</option><option value="blocked">実行不可を含む手順</option><option value="red-blocked">赤に実行不可がある手順</option><option value="blue-blocked">青に実行不可がある手順</option><option value="arbitration">裁定で点差が変わる手順</option></select></label>
