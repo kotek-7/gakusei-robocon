@@ -537,10 +537,11 @@ button.primary:hover:not(:disabled) {
 }
 .area-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 2px;
-  height: 30px;
-  padding: 0 2px 0 2px;
+  min-height: 30px;
+  padding: 2px;
   background: var(--surface-2);
   border-bottom: 1px solid var(--line);
   overflow: hidden;
@@ -2013,7 +2014,13 @@ tr[aria-selected="true"] th {
 .dock-tabs button { flex: none; border: 0; border-radius: 0; border-bottom: 2px solid transparent; background: transparent; height: 30px; padding: 0 9px; white-space: nowrap; color: var(--muted); }
 .dock-tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); background: var(--surface); }
 .dock-tabs button:hover { background: var(--hover); }
-.area-header .area-tools { overflow-x: auto; scrollbar-width: thin; }
+.area-header .area-tools {
+  /* Wrap controls instead of squeezing a scrollbar into the control row. */
+  flex: 1 1 240px;
+  flex-wrap: wrap;
+  overflow: visible;
+}
+.area-header .area-tools > * { flex-shrink: 0; }
 .area-header > .area-type, .area-header > .area-max { flex: none; }
 @media (max-width: 700px) {
   .workspace-bar { flex-wrap: wrap; gap: 0; }
