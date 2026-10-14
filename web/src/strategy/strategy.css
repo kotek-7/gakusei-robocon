@@ -1,0 +1,149 @@
+.strategy-workspace {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.policy-library {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+.policy-library input,
+.policy-library select {
+  width: 100%;
+  min-width: 0;
+}
+.policy-list {
+  max-height: 60vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.policy-list button {
+  text-align: left;
+  overflow-wrap: anywhere;
+  width: 100%;
+}
+.policy-editor {
+  min-width: 0;
+  max-width: 800px;
+}
+.policy-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.policy-section-heading h3,
+.policy-section-heading h4 {
+  margin: 12px 0;
+}
+.policy-form {
+  min-width: 0;
+}
+.policy-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.policy-field .field {
+  flex: 1;
+  min-width: 0;
+}
+.policy-field input[type="number"] {
+  width: 90px;
+}
+.policy-field > button {
+  flex: none;
+  font-size: 0.85rem;
+}
+.policy-reference {
+  margin: 8px 0 20px;
+}
+.policy-targets {
+  padding-left: 24px;
+}
+.policy-targets li {
+  padding: 6px 0;
+}
+.policy-targets li > span {
+  display: inline-block;
+  margin-right: 12px;
+}
+.policy-targets details {
+  display: inline-block;
+  vertical-align: top;
+}
+.policy-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 0;
+}
+.policy-actions button {
+  font-size: 0.85rem;
+}
+.policy-warning {
+  font-size: 0.9rem;
+}
+.policy-variants {
+  margin-top: 24px;
+}
+.policy-variants ul {
+  list-style: none;
+  padding: 0;
+}
+.policy-variants li {
+  margin: 16px 0;
+}
+.policy-variants p {
+  font-size: 0.85rem;
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+}
+.policy-variants input {
+  margin-right: 8px;
+}
+.policy-item-menu {
+  flex: none;
+}
+.policy-item-menu[open] {
+  max-width: 240px;
+}
+.policy-editor summary {
+  cursor: pointer;
+}
+.policy-editor summary:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+@media (max-width: 700px) {
+  .strategy-workspace {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .policy-list {
+    max-height: 180px;
+  }
+  .policy-field {
+    align-items: flex-start;
+  }
+  .policy-section-heading {
+    align-items: flex-start;
+  }
+  .policy-section-heading h3 {
+    overflow-wrap: anywhere;
+  }
+  .policy-targets li > span {
+    display: block;
+  }
+  .policy-field .field {
+    flex-wrap: wrap;
+  }
+  .policy-library {
+    padding: 0;
+  }
+}

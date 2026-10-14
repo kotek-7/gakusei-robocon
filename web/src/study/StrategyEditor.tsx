@@ -1,150 +1,200 @@
-import { MODEL } from "../engine/model";
+import { useState } from "react";
 import type { StrategyPolicy } from "../engine/types";
-import { requirements, spotNames, type Study } from "./state";
+import { activeConfig, type Study } from "./state";
+import { PolicyForm } from "../strategy/PolicyForm";
+import { Variants } from "../strategy/Variants";
+import { copyPolicy } from "../strategy/operations";
+import "../strategy/strategy.css";
 export function StrategyEditor({
   study,
-  policy,
   busy,
-  edit,
   update,
-  setSelected,
+  selected,
+  onSelect,
 }: {
   study: Study;
-  policy: StrategyPolicy;
   busy: boolean;
-  edit: (p: Partial<StrategyPolicy>) => void;
   update: (s: Study) => void;
-  setSelected: (id: string) => void;
+  selected: string;
+  onSelect: (id: string) => void;
 }) {
+  const [side, setSide] = useState<"policies" | "opponents">("policies");
+  const [opponent, setOpponent] = useState(study.opponents[0].id);
+  const [search, setSearch] = useState("");
+  const [feature, setFeature] = useState("all");
+  const [notice, setNotice] = useState("");
+  const list = study[side];
+  const policy =
+    list.find((p) => p.id === (side === "policies" ? selected : opponent)) ||
+    list[0];
+  const select = (id: string) =>
+    side === "policies" ? onSelect(id) : setOpponent(id);
+  const write = (items: StrategyPolicy[]) =>
+    update({ ...study, [side]: items });
+  const add = (p: StrategyPolicy) => {
+    if (list.length >= 100) return;
+    write([...list, p]);
+    select(p.id);
+    setSearch("");
+    setFeature("all");
+  };
+  const shown = list.filter(
+    (p) =>
+      p.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) &&
+      (feature === "all" ||
+        (feature === "build" && p.targets.length > 0) ||
+        (feature === "flip" && (p.opportunistic || p.lateFlip)) ||
+        (feature === "transport" && !p.targets.length)),
+  );
+  const other = side === "policies" ? "opponents" : "policies";
   return (
-    <>
-      <h3>{policy.name}</h3>
-      <p className="muted">
-        必要な機能：
-        {requirements(policy)
-          .map(
-            (k) =>
-              `${MODEL.caps[k]}${study.config.teams[0].caps[k][0] ? "" : "（未設定）"}`,
-          )
-          .join("、")}
-        。移動には対象階層への経路も必要です。
-      </p>
-      <fieldset disabled={busy}>
+    <section className="strategy-workspace" aria-label="作戦編集">
+      <aside className="policy-library">
         <label className="field">
-          作戦名
-          <input
-            maxLength={80}
-            value={policy.name}
-            onChange={(e) => edit({ name: e.target.value })}
-          />
+          編集する作戦
+          <select
+            value={side}
+            onChange={(e) => {
+              setSide(e.target.value as typeof side);
+              setSearch("");
+              setNotice("");
+            }}
+          >
+            <option value="policies">自分</option>
+            <option value="opponents">相手</option>
+          </select>
         </label>
-        <h4>建設する順序</h4>
-        <ol className="targets">
-          {policy.targets.map((spot, i) => (
-            <li key={`${spot}-${i}`}>
-              <span>{spotNames[spot]}</span>
+        <input
+          type="search"
+          aria-label="作戦名を検索"
+          placeholder="作戦名を検索"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <select
+          aria-label="作戦の特徴"
+          value={feature}
+          onChange={(e) => setFeature(e.target.value)}
+        >
+          <option value="all">すべての作戦</option>
+          <option value="build">建設する</option>
+          <option value="flip">反転する</option>
+          <option value="transport">建設せず搬送する</option>
+        </select>
+        <div className="policy-list" aria-label="作戦一覧">
+          {shown.map((p) => (
+            <button
+              key={p.id}
+              className="strategy-item"
+              aria-pressed={p.id === policy.id}
+              onClick={() => select(p.id)}
+            >
+              {p.name}
+            </button>
+          ))}
+          {!shown.length && (
+            <p>
+              該当する作戦はありません。
               <button
-                aria-label={`${spotNames[spot]}を前へ`}
-                disabled={!i}
                 onClick={() => {
-                  const targets = [...policy.targets];
-                  [targets[i - 1], targets[i]] = [targets[i], targets[i - 1]];
-                  edit({ targets });
+                  setSearch("");
+                  setFeature("all");
                 }}
               >
-                前へ
+                絞り込みを解除
               </button>
-              <button
-                aria-label={`${spotNames[spot]}を削除`}
-                onClick={() =>
-                  edit({
-                    targets: policy.targets.filter((_, j) => i !== j),
-                  })
-                }
-              >
-                削除
-              </button>
-            </li>
-          ))}
-        </ol>
-        <select
-          aria-label="建設目標を追加"
-          value=""
-          onChange={(e) =>
-            edit({
-              targets: [...policy.targets, Number(e.target.value)],
+            </p>
+          )}
+        </div>
+        <button
+          disabled={busy || list.length >= 100}
+          onClick={() =>
+            add({
+              id: crypto.randomUUID(),
+              name: "新しい作戦",
+              targets: [],
+              height: 1,
+              mustika: false,
+              opportunistic: false,
+              lateFlip: false,
+              skyFirst: 0,
             })
           }
         >
-          <option value="">建設目標を追加</option>
-          {Object.entries(spotNames)
-            .filter(([i]) => !policy.targets.includes(Number(i)))
-            .map(([i, name]) => (
-              <option key={i} value={i}>
-                {name}
-              </option>
-            ))}
-        </select>
-        <label className="field">
-          各塔の目標
-          <select
-            value={policy.height}
-            onChange={(e) => edit({ height: Number(e.target.value) })}
-          >
-            <option value="1">アース1段</option>
-            <option value="2">アース2段</option>
-            <option value="3">スカイまで完成</option>
-          </select>
-        </label>
-        <h4>状況に応じた切替</h4>
-        {(
-          [
-            ["mustika", "取得権と残り時間があればムスティカへ"],
-            ["opportunistic", "空荷のBRで相手の完成塔を反転"],
-            ["lateFlip", "残り30秒で相手塔の反転を優先"],
-          ] as const
-        ).map(([key, label]) => (
-          <label className="field" key={key}>
-            {label}
-            <input
-              type="checkbox"
-              checked={policy[key]}
-              onChange={(e) => edit({ [key]: e.target.checked })}
-            />
-          </label>
-        ))}
-        <label className="field">
-          建設前に確保するスカイ
-          <input
-            type="number"
-            min="0"
-            max="12"
-            value={policy.skyFirst}
-            onChange={(e) =>
-              edit({
-                skyFirst: Math.max(
-                  0,
-                  Math.min(12, Math.floor(Number(e.target.value))),
-                ),
-              })
-            }
-          />
-        </label>
-        <p>
-          判断の優先順：ムスティカ → 反転 → スカイ確保 → 建設 →
-          搬送。目標を達成した場合や資材が不足する場合は次の目標へ進みます。
-        </p>
-        <button
-          disabled={study.policies.length === 1}
-          onClick={() => {
-            const policies = study.policies.filter((p) => p.id !== policy.id);
-            update({ ...study, policies });
-            setSelected(policies[0].id);
-          }}
-        >
-          この作戦を削除
+          作戦を追加
         </button>
-      </fieldset>
-    </>
+        <small>{list.length} / 100件</small>
+      </aside>
+      <div className="policy-editor">
+        <div className="policy-section-heading">
+          <h3>{policy.name}</h3>
+          <details className="policy-item-menu">
+            <summary>作戦の操作</summary>
+            <div className="policy-actions">
+              <button
+                disabled={busy || list.length >= 100}
+                onClick={() => add(copyPolicy(policy))}
+              >
+                複製
+              </button>
+              <button
+                disabled={busy}
+                onClick={() =>
+                  document
+                    .querySelector<HTMLInputElement>(
+                      '.policy-editor input[aria-label="作戦名"]',
+                    )
+                    ?.focus()
+                }
+              >
+                名前を変更
+              </button>
+              <button
+                disabled={busy || study[other].length >= 100}
+                onClick={() => {
+                  update({
+                    ...study,
+                    [other]: [...study[other], copyPolicy(policy, policy.name)],
+                  });
+                  setNotice(
+                    `${side === "policies" ? "相手" : "自分"}の作戦に「${policy.name}」をコピーしました。`,
+                  );
+                }}
+              >
+                {side === "policies" ? "相手" : "自分"}側へコピー
+              </button>
+              <button
+                disabled={busy || list.length <= 1}
+                onClick={() => {
+                  const remaining = list.filter((p) => p.id !== policy.id);
+                  write(remaining);
+                  select(remaining[0].id);
+                }}
+              >
+                削除
+              </button>
+            </div>
+          </details>
+        </div>
+        {notice && <p role="status">{notice}</p>}
+        <PolicyForm
+          key={`${side}:${policy.id}`}
+          policy={policy}
+          config={activeConfig(study)}
+          team={side === "policies" ? 0 : 1}
+          busy={busy}
+          onChange={(next) =>
+            write(list.map((p) => (p.id === next.id ? next : p)))
+          }
+        />
+        <Variants
+          key={`${side}:${policy.id}:${JSON.stringify(policy)}`}
+          policy={policy}
+          existing={list}
+          onAccept={write}
+          busy={busy}
+        />
+      </div>
+    </section>
   );
 }

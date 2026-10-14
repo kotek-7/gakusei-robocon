@@ -1,203 +1,185 @@
-import { Comparison } from "./Comparison";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Comparison, type Pair } from "../comparison/Comparison";
 import { Conditions } from "./Conditions";
 import { StrategyEditor } from "./StrategyEditor";
-import { loadMatches, saveMatch, matchKey } from "./persistence";
-import { useEffect, useRef, useState } from "react";
+import { activeCondition, type Study } from "./state";
+import { useNotebook } from "../notebook/useNotebook";
+import { NotebookMenu } from "../notebook/NotebookMenu";
+import { useExecution } from "../execution/useExecution";
+import { useRunData } from "../execution/useRunData";
+import { ExecutionStatus } from "../execution/ExecutionStatus";
+import { runKey } from "../execution/identity";
+import type { Priority, RunInput } from "../execution/types";
+import { ReplayWorkspace } from "../replay/ReplayWorkspace";
 import { configAt, initial } from "../engine/model";
 import { frame } from "../engine/presentation";
-import { actionName } from "../engine/labels";
-import { Viewport } from "../viewport/Viewport";
-import type { StrategyPolicy } from "../engine/types";
-import type { Match } from "./match";
-import { alternatives, createStudy, readStudy, type Study } from "./state";
-
-const storageKey = "robocon-strategy-notebook-1";
-function load() {
-  try {
-    const raw = localStorage.getItem(storageKey);
-    return {
-      study: raw ? readStudy(JSON.parse(raw)) : createStudy(),
-      error: "",
-    };
-  } catch {
-    return {
-      study: createStudy(),
-      error:
-        "保存したノートを読み込めませんでした。保存ファイルから読み込めます。",
-    };
-  }
-}
-const boot = load();
+import type { Config } from "../engine/types";
+import { defaults, usePreferences } from "../ui/preferences";
+import "./workspace.css";
 export function App() {
-  const [study, setStudy] = useState<Study>(boot.study),
-    [selected, setSelected] = useState(boot.study.policies[0].id),
-    [tab, setTab] = useState("compare");
-  const [results, setResults] = useState<Record<string, Match>>({}),
-    [busy, setBusy] = useState(false),
-    [restoring, setRestoring] = useState(true),
-    [error, setError] = useState(boot.error);
-  const [opponent, setOpponent] = useState(boot.study.opponents[0].id),
-    [priority, setPriority] = useState<"red" | "blue">("red"),
-    [time, setTime] = useState(0),
-    [playing, setPlaying] = useState(false);
-  useEffect(() => {
-    let cancelled = false;
-    setRestoring(true);
-    loadMatches(study)
-      .then((saved) => {
-        if (!cancelled) setResults((current) => ({ ...saved, ...current }));
-      })
-      .catch(() => {
-        if (!cancelled)
-          setError("比較結果を端末から読み込めません。再計算はできます。");
-      })
-      .finally(() => {
-        if (!cancelled) setRestoring(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [study]);
-  const matchSection = useRef<HTMLElement | null>(null);
-  const worker = useRef<Worker | null>(null),
-    input = useRef<HTMLInputElement>(null);
-  useEffect(() => () => worker.current?.terminate(), []);
+  const notebook = useNotebook(),
+    { study } = notebook,
+    execution = useExecution(),
+    { queue, summaries, ready } = execution;
+  const [selected, setSelected] = useState(study.policies[0].id),
+    [opponent, setOpponent] = useState(study.opponents[0].id),
+    [priority, setPriority] = useState<Priority>("red"),
+    [tab, setTab] = useState("compare"),
+    [baseline, setBaseline] = useState(""),
+    [settings, setSettings] = useState(false),
+    [layoutReset, setLayoutReset] = useState(0),
+    [prefs, setPrefs] = usePreferences();
+  const replayHost = useRef<HTMLDivElement>(null),
+    container = useRef<HTMLDivElement>(null);
   const policy =
-    study.policies.find((p) => p.id === selected) || study.policies[0];
-  const match = results[matchKey(policy.id, opponent, priority)];
-  useEffect(() => {
-    setTime(0);
-    setPlaying(false);
-  }, [selected, opponent, priority]);
-  useEffect(() => {
-    if (!playing || !match) return;
-    const id = setInterval(
-      () =>
-        setTime((t) => {
-          if (t >= match.frames.length - 1) {
-            setPlaying(false);
-            return t;
-          }
-          return t + 1;
-        }),
-      100,
+      study.policies.find((p) => p.id === selected) || study.policies[0],
+    other =
+      study.opponents.find((p) => p.id === opponent) || study.opponents[0],
+    condition = activeCondition(study);
+  const input: RunInput = {
+    config: condition.config,
+    conditionName: condition.name,
+    red: policy,
+    blue: other,
+    priority,
+  };
+  const key = runKey(input),
+    base = study.policies.find((p) => p.id === baseline),
+    baseKey = base ? runKey({ ...input, red: base }) : "";
+  const loaded = useRunData(key, summaries[key]?.completedAt),
+    baseLoaded = useRunData(
+      baseKey,
+      baseKey && baseKey !== key ? summaries[baseKey]?.completedAt : undefined,
     );
-    return () => clearInterval(id);
-  }, [playing, match]);
+  const initialFrame = useMemo(
+    () => frame(initial(condition.config, configAt(condition.config, 0))),
+    [condition.config],
+  );
+  const error =
+    notebook.error || execution.error || loaded.error || baseLoaded.error;
   function update(next: Study) {
-    setStudy(next);
-    setResults({});
-    setTime(0);
-    setPlaying(false);
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(next));
-      setError("");
-    } catch {
-      setError("端末に保存できません。ファイルに保存してください。");
-    }
+    if (!queue.busy) notebook.update(next);
   }
-  function edit(patch: Partial<StrategyPolicy>) {
+  function run(pairs: Pair[], force = false) {
+    if (!ready || queue.busy) return;
+    const inputs = pairs
+      .flatMap((pair) => {
+        const red = study.policies.find((p) => p.id === pair.red),
+          blue = study.opponents.find((p) => p.id === pair.blue);
+        return red && blue
+          ? (["red", "blue"] as const).map((priority) => ({
+              config: condition.config,
+              conditionName: condition.name,
+              red,
+              blue,
+              priority,
+            }))
+          : [];
+      })
+      .filter((j) => force || !summaries[runKey(j)]);
+    void queue.enqueue(inputs, force);
+  }
+  const allPairs = useMemo(
+    () =>
+      study.policies.flatMap((p) =>
+        study.opponents.map((o) => ({ red: p.id, blue: o.id })),
+      ),
+    [study.policies, study.opponents],
+  );
+  const allKeys = useMemo(
+    () =>
+      study.policies.flatMap((red) =>
+        study.opponents.flatMap((blue) =>
+          (["red", "blue"] as const).map((priority) =>
+            runKey({
+              config: condition.config,
+              conditionName: condition.name,
+              red,
+              blue,
+              priority,
+            }),
+          ),
+        ),
+      ),
+    [condition, study.policies, study.opponents],
+  );
+  const done = allKeys.reduce((n, key) => n + Number(!!summaries[key]), 0);
+  function sweep(cases: { name: string; config: Config }[]) {
+    if (!ready || queue.busy || !cases.length) return;
+    const conditions = cases.map((c) => ({
+      ...c,
+      id: crypto.randomUUID(),
+      notes: "",
+    }));
     update({
       ...study,
-      policies: study.policies.map((p) =>
-        p.id === policy.id ? { ...p, ...patch } : p,
+      conditions: [...study.conditions, ...conditions],
+      activeConditionId: conditions[0].id,
+    });
+    void queue.enqueue(
+      conditions.flatMap((c) =>
+        (["red", "blue"] as const).map((priority) => ({
+          config: c.config,
+          conditionName: c.name,
+          red: policy,
+          blue: other,
+          priority,
+        })),
       ),
-    });
-  }
-  function stop() {
-    worker.current?.terminate();
-    worker.current = null;
-    setBusy(false);
-  }
-  function run() {
-    setBusy(true);
-    setError("");
-    const jobs = study.policies
-      .flatMap((red) =>
-        study.opponents.flatMap((blue) =>
-          (["red", "blue"] as const).map((priority) => ({
-            config: study.config,
-            red,
-            blue,
-            priority,
-          })),
-        ),
-      )
-      .filter((j) => !results[matchKey(j.red.id, j.blue.id, j.priority)]);
-    const w = new Worker(new URL("./worker.ts", import.meta.url), {
-      type: "module",
-    });
-    worker.current = w;
-    const next = () => {
-      const job = jobs.shift();
-      if (job) w.postMessage(job);
-      else stop();
-    };
-    w.onmessage = ({ data }) => {
-      if (data.error) {
-        setError(data.error);
-        stop();
-        return;
-      }
-      const m = data.result as Match;
-      saveMatch(study, m).catch(() =>
-        setError(
-          "比較結果を端末に保存できませんでした。画面上では引き続き確認できます。",
-        ),
-      );
-      setResults((r) => ({ ...r, [matchKey(m.red, m.blue, m.priority)]: m }));
-      next();
-    };
-    w.onerror = () => {
-      setError("計算を中断しました。完了した対戦は確認できます。");
-      stop();
-    };
-    next();
-  }
-  const total = study.policies.length * study.opponents.length * 2,
-    done = Object.keys(results).length;
-  function save() {
-    const url = URL.createObjectURL(
-      new Blob([JSON.stringify(study, null, 2)], { type: "application/json" }),
     );
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "作戦ノート.json";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setTab("compare");
   }
+  function select(red: string, blue: string) {
+    setSelected(red);
+    setOpponent(blue);
+    if (innerWidth < 1100)
+      replayHost.current?.scrollIntoView({ block: "start" });
+  }
+  useEffect(() => {
+    const key = (e: KeyboardEvent) => {
+      if (
+        (e.target as HTMLElement).closest(
+          "input,textarea,select,[contenteditable=true]",
+        )
+      )
+        return;
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        e.key.toLowerCase() === "z" &&
+        !queue.busy
+      ) {
+        e.preventDefault();
+        e.shiftKey ? notebook.redo() : notebook.undo();
+      }
+    };
+    window.addEventListener("keydown", key);
+    return () => window.removeEventListener("keydown", key);
+  }, [notebook, queue.busy]);
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${prefs.compact ? "compact" : ""}`}>
       <header>
         <div>
           <h1>作戦ノート</h1>
           <span className="competition-name">NHK学生ロボコン2027</span>
         </div>
-        <div className="toolbar">
-          <button onClick={save}>ファイルに保存</button>
-          <button disabled={busy} onClick={() => input.current?.click()}>
-            読み込む
+        <NotebookMenu
+          {...notebook}
+          busy={queue.busy}
+          onError={notebook.setError}
+          update={update}
+        >
+          <button onClick={() => setSettings((v) => !v)}>
+            表示と再生の設定
           </button>
-          <input
-            hidden
-            ref={input}
-            type="file"
-            accept="application/json"
-            onChange={async (e) => {
-              try {
-                const file = e.target.files?.[0];
-                if (!file) return;
-                const next = readStudy(JSON.parse(await file.text()));
-                update(next);
-                setSelected(next.policies[0].id);
-                setOpponent(next.opponents[0].id);
-              } catch (err) {
-                setError(String(err));
-              }
-              e.target.value = "";
+          <button
+            onClick={() => {
+              setPrefs({ ...prefs, paneWidth: defaults.paneWidth });
+              setLayoutReset((n) => n + 1);
             }}
-          />
-        </div>
+          >
+            レイアウトを戻す
+          </button>
+        </NotebookMenu>
       </header>
       <nav aria-label="検討の手順">
         {[
@@ -214,253 +196,284 @@ export function App() {
           </button>
         ))}
       </nav>
+      {settings && (
+        <section className="settings-panel" aria-label="表示と再生の設定">
+          <div className="toolbar">
+            <label>
+              <input
+                type="checkbox"
+                checked={prefs.compact}
+                onChange={(e) =>
+                  setPrefs({ ...prefs, compact: e.target.checked })
+                }
+              />
+              表示を詰める
+            </label>
+            <label>
+              再生速度
+              <select
+                value={prefs.speed}
+                onChange={(e) =>
+                  setPrefs({ ...prefs, speed: Number(e.target.value) })
+                }
+              >
+                {[0.5, 1, 2, 5, 10].map((v) => (
+                  <option key={v} value={v}>
+                    {v}倍
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={prefs.labels}
+                onChange={(e) =>
+                  setPrefs({ ...prefs, labels: e.target.checked })
+                }
+              />
+              名前を表示
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={prefs.trails}
+                onChange={(e) =>
+                  setPrefs({ ...prefs, trails: e.target.checked })
+                }
+              />
+              移動履歴を表示
+            </label>
+            <button onClick={() => setPrefs(defaults)}>設定を戻す</button>
+            <button onClick={() => setSettings(false)}>閉じる</button>
+          </div>
+        </section>
+      )}
       {error && (
         <p role="alert" className="error">
           {error}
         </p>
       )}
       <main>
-        {tab === "conditions" ? (
-          <Conditions study={study} busy={busy} update={update} />
-        ) : (
-          <>
-            <div className="section-heading">
-              <div>
-                <h2>{tab === "strategy" ? "作戦編集" : "作戦比較"}</h2>
-                <p>
-                  {tab === "strategy"
-                    ? "建設順と、状況に応じた切替を設定します。"
-                    : `${study.policies.length}作戦・${study.opponents.length}種類の相手・180秒`}
-                </p>
+        <div hidden={tab !== "conditions"}>
+          <Conditions
+            study={study}
+            busy={queue.busy || !ready}
+            update={update}
+            onSweep={sweep}
+          />
+        </div>
+        <div hidden={tab === "conditions"}>
+          <div className="section-heading">
+            <div>
+              <h2>{tab === "strategy" ? "作戦編集" : "作戦比較"}</h2>
+              <p>
+                {study.policies.length}作戦・{study.opponents.length}
+                種類の相手・180秒
+              </p>
+            </div>
+            <div className="toolbar">
+              <label>
+                条件
+                <select
+                  disabled={queue.busy}
+                  value={condition.id}
+                  onChange={(e) =>
+                    update({ ...study, activeConditionId: e.target.value })
+                  }
+                >
+                  {study.conditions.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <span role="status">
+                {ready
+                  ? `${done} / ${allPairs.length * 2} 試合`
+                  : "保存結果を読込中"}
+              </span>
+              {queue.busy ? (
+                <button onClick={() => queue.pause()}>一時停止</button>
+              ) : (
+                <button
+                  className="primary"
+                  disabled={!ready || done === allPairs.length * 2}
+                  onClick={() => run(allPairs)}
+                >
+                  {done === allPairs.length * 2
+                    ? "比較完了"
+                    : done
+                      ? "未計算を比較"
+                      : "全作戦を比較"}
+                </button>
+              )}
+            </div>
+          </div>
+          <div
+            className="study-workspace"
+            ref={container}
+            style={
+              {
+                "--replay-width": `${prefs.paneWidth}px`,
+              } as React.CSSProperties
+            }
+          >
+            <div className="work-pane">
+              <div hidden={tab !== "compare"}>
+                <Comparison
+                  study={study}
+                  results={summaries}
+                  jobs={[...queue.jobs]}
+                  selected={policy.id}
+                  opponent={other.id}
+                  priority={priority}
+                  onPriority={setPriority}
+                  onSelect={select}
+                  baseline={baseline}
+                  onBaseline={setBaseline}
+                  onRun={run}
+                  busy={queue.busy || !ready}
+                />
               </div>
-              <div className="toolbar">
-                <span role="status">
-                  {restoring ? "保存結果を読込中" : `${done} / ${total} 試合`}
-                </span>
-                {busy ? (
-                  <button onClick={stop}>一時停止</button>
-                ) : (
-                  <button
-                    className="primary"
-                    disabled={restoring || done === total}
-                    onClick={run}
-                  >
-                    {done === total
-                      ? "比較完了"
-                      : done
-                        ? "続きから比較"
-                        : "全作戦を比較"}
-                  </button>
-                )}
+              <div hidden={tab !== "strategy"}>
+                <StrategyEditor
+                  study={study}
+                  busy={queue.busy}
+                  update={update}
+                  selected={policy.id}
+                  onSelect={setSelected}
+                />
               </div>
             </div>
             <div
-              className={`workspace ${tab === "compare" ? "compare-workspace" : "edit-workspace"}`}
-            >
-              {tab === "strategy" && (
-                <aside aria-label="作戦一覧">
-                  <button
-                    disabled={busy || study.policies.length >= 100}
-                    onClick={() => {
-                      const p = {
-                        ...structuredClone(policy),
-                        id: crypto.randomUUID(),
-                        name: `${policy.name}の別案`,
-                      };
-                      update({ ...study, policies: [...study.policies, p] });
-                      setSelected(p.id);
-                      setTab("strategy");
-                    }}
+              className="pane-divider"
+              role="separator"
+              aria-label="3Dパネルの幅"
+              aria-orientation="vertical"
+              aria-valuenow={prefs.paneWidth}
+              aria-valuemin={360}
+              aria-valuemax={850}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (["ArrowLeft", "ArrowRight", "Home"].includes(e.key)) {
+                  e.preventDefault();
+                  setPrefs({
+                    ...prefs,
+                    paneWidth:
+                      e.key === "Home"
+                        ? 480
+                        : Math.max(
+                            360,
+                            Math.min(
+                              850,
+                              prefs.paneWidth +
+                                (e.key === "ArrowLeft" ? 20 : -20),
+                            ),
+                          ),
+                  });
+                }
+              }}
+              onPointerDown={(e) => {
+                e.currentTarget.setPointerCapture(e.pointerId);
+              }}
+              onPointerMove={(e) => {
+                if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+                  const right =
+                    container.current!.getBoundingClientRect().right;
+                  setPrefs({
+                    ...prefs,
+                    paneWidth: Math.max(360, Math.min(850, right - e.clientX)),
+                  });
+                }
+              }}
+            />
+            <section ref={replayHost} className="replay-host">
+              <div className="match-title">
+                <h3>{policy.name}</h3>
+                <button
+                  onClick={() =>
+                    setTab(tab === "compare" ? "strategy" : "compare")
+                  }
+                >
+                  {tab === "compare" ? "作戦を編集" : "比較に戻る"}
+                </button>
+              </div>
+              <div className="toolbar match-selectors">
+                <label>
+                  相手
+                  <select
+                    value={other.id}
+                    onChange={(e) => setOpponent(e.target.value)}
                   >
-                    複製して編集
-                  </button>
-                  <button
-                    disabled={busy || study.policies.length >= 93}
-                    onClick={() => {
-                      const variants = alternatives(policy, study.policies);
-                      if (!variants.length) {
-                        setError("この作戦の比較用の別案は追加済みです。");
-                        return;
-                      }
-                      update({
-                        ...study,
-                        policies: [...study.policies, ...variants],
-                      });
-                    }}
+                    {study.opponents.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  競合
+                  <select
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value as Priority)}
                   >
-                    条件を変えた別案を追加
-                  </button>
-                  {study.policies.map((p) => (
+                    <option value="red">赤優先</option>
+                    <option value="blue">青優先</option>
+                  </select>
+                </label>
+              </div>
+              {!loaded.match && (
+                <p className="table-note">
+                  {summaries[key]
+                    ? "再生データを読込中。"
+                    : "この対戦は未計算です。"}
+                  {!summaries[key] && (
                     <button
-                      key={p.id}
-                      className="strategy-item"
-                      aria-pressed={policy.id === p.id}
-                      onClick={() => setSelected(p.id)}
+                      disabled={!ready || queue.busy}
+                      onClick={() => run([{ red: policy.id, blue: other.id }])}
                     >
-                      <strong>{p.name}</strong>
-                      <small>
-                        {p.targets.length
-                          ? `${p.targets.length}本を${p.height === 3 ? "完成" : `${p.height}段まで建設`}`
-                          : "搬送主体"}
-                        {p.mustika ? " · ムスティカ" : ""}
-                        {p.opportunistic || p.lateFlip ? " · 反転" : ""}
-                      </small>
+                      この対戦を計算
                     </button>
-                  ))}
-                </aside>
+                  )}
+                </p>
               )}
-              <section
-                className={`detail ${tab === "compare" ? "compare-detail" : ""}`}
-              >
-                {tab === "strategy" ? (
-                  <StrategyEditor
-                    {...{ study, policy, busy, edit, update, setSelected }}
-                  />
-                ) : (
-                  <Comparison
-                    study={study}
-                    results={results}
-                    selected={policy.id}
-                    opponent={opponent}
-                    priority={priority}
-                    onPriority={setPriority}
-                    onSelect={(id, other) => {
-                      setSelected(id);
-                      setOpponent(other);
-                      setTime(0);
-                      setPlaying(false);
-                      if (window.innerWidth < 1100)
-                        matchSection.current?.scrollIntoView({
-                          block: "start",
-                        });
-                    }}
-                  />
-                )}
-                <section className="match-section" ref={matchSection}>
-                  <div className="match-title">
-                    <h3>{policy.name}</h3>
-                    <button
-                      onClick={() => {
-                        setTab(tab === "compare" ? "strategy" : "compare");
-                        window.scrollTo({ top: 0 });
-                      }}
-                    >
-                      {tab === "compare" ? "作戦を編集" : "比較に戻る"}
-                    </button>
-                  </div>
-                  <div className="toolbar">
-                    <label>
-                      相手{" "}
-                      <select
-                        value={opponent}
-                        onChange={(e) => setOpponent(e.target.value)}
-                      >
-                        {study.opponents.map((p) => (
-                          <option key={p.id} value={p.id}>
-                            {p.name}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      競合{" "}
-                      <select
-                        value={priority}
-                        onChange={(e) =>
-                          setPriority(e.target.value as "red" | "blue")
-                        }
-                      >
-                        <option value="red">赤優先</option>
-                        <option value="blue">青優先</option>
-                      </select>
-                    </label>
-                  </div>
-                  {!match && (
-                    <p>
-                      この対戦は未計算です。上の「全作戦を比較」で計算を始められます。
-                    </p>
-                  )}
-                  <Viewport
-                    frame={
-                      match?.frames[time] ||
-                      frame(initial(study.config, configAt(study.config, 0)))
-                    }
-                    replaying={Boolean(match)}
-                  />
-                  {match && (
-                    <>
-                      <div className="playback">
-                        <button
-                          onClick={() => {
-                            if (time === match.frames.length - 1) setTime(0);
-                            setPlaying(!playing);
-                          }}
-                        >
-                          {playing ? "停止" : "再生"}
-                        </button>
-                        <input
-                          aria-label="再生時刻"
-                          type="range"
-                          min="0"
-                          max={match.frames.length - 1}
-                          value={time}
-                          onChange={(e) => {
-                            setPlaying(false);
-                            setTime(Number(e.target.value));
-                          }}
-                        />
-                        <span>
-                          {time} / {study.config.horizon}秒
-                        </span>
-                      </div>
-                      <details>
-                        <summary>得点と競合の履歴</summary>
-                        <div className="event-list">
-                          {match.events
-                            .filter(
-                              (e) =>
-                                e.phase === "blocked" ||
-                                (e.phase === "finish" &&
-                                  ["place", "placeM", "flip", "drop"].includes(
-                                    e.action.kind,
-                                  )),
-                            )
-                            .map((e, i) => (
-                              <p key={i}>
-                                <button
-                                  onClick={() => {
-                                    setTime(e.t);
-                                    setPlaying(false);
-                                  }}
-                                >
-                                  {e.t}秒
-                                </button>{" "}
-                                {["赤TR", "赤BR", "青TR", "青BR"][e.robot]} ·{" "}
-                                {actionName(e.action)}
-                                {e.phase === "blocked"
-                                  ? "（競合で不成立）"
-                                  : ""}
-                              </p>
-                            ))}
-                        </div>
-                      </details>
-                    </>
-                  )}
-                </section>
-              </section>
-            </div>
-          </>
-        )}
+              <ReplayWorkspace
+                layoutReset={layoutReset}
+                match={loaded.match}
+                baselineMatch={baseLoaded.match}
+                runKey={key}
+                label={`${condition.name} · ${policy.name} 対 ${other.name} · ${priority === "red" ? "赤" : "青"}優先`}
+                baselineLabel={
+                  base
+                    ? `${condition.name} · ${base.name} 対 ${other.name} · ${priority === "red" ? "赤" : "青"}優先`
+                    : undefined
+                }
+                initialFrame={initialFrame}
+                notes={study.notes}
+                onNotes={(notes) => notebook.update({ ...study, notes })}
+                preferences={prefs}
+                active={tab !== "conditions"}
+              />
+            </section>
+          </div>
+        </div>
       </main>
+      <ExecutionStatus queue={queue} ready={ready} />
       <footer>
         <details>
           <summary>この検討で扱う範囲</summary>
           <p>
             ABUロボコン2027 Rulebook
-            v1.1を競技ルールの前提とします。180秒、搬送・建設・反転・ムスティカの得点を扱います。移動は定めた経路、操作は指定時間で成功し、受け渡しは床経由で行うモデルです。衝突回避、姿勢制御、通信、重量、成功率と製作工数は評価しません。
+            v1.1を前提に、180秒の搬送・建設・反転・ムスティカを比較します。移動は定めた経路、操作は指定時間で成功するモデルです。
           </p>
           <p>
-            作戦は目標順と条件による方策です。任意の行動列・待機時刻・相手戦術を網羅しません。必要な機構がないと実行可能な次の目標または搬送へ移ります。機体条件・作戦・完了した比較結果は端末に保存されます。ファイル保存には機体条件と作戦を含みます。
+            衝突回避、姿勢制御、通信、重量、成功率と製作工数は評価しません。作戦は目標順と条件による方策で、すべての行動列や相手戦術を網羅するものではありません。
+          </p>
+          <p>
+            ノートと計算結果はこの端末に保存します。ファイルには作戦・条件・場面メモを保存し、再生結果は再計算できます。
           </p>
         </details>
       </footer>

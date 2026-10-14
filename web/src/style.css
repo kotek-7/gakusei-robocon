@@ -112,14 +112,14 @@ small {
   margin: auto;
   padding: 0 28px;
 }
-header {
+.app-shell > header {
   height: 76px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
 }
-header > div:first-child {
+.app-shell > header > div:first-child {
   display: flex;
   align-items: baseline;
   gap: 20px;
@@ -134,7 +134,7 @@ header > div:first-child {
   gap: 8px;
   flex-wrap: wrap;
 }
-header .toolbar button {
+.app-shell > header .toolbar button {
   border-color: transparent;
   font-size: 13px;
 }
@@ -622,14 +622,14 @@ footer p {
   .app-shell {
     padding: 0 16px;
   }
-  header {
+  .app-shell > header {
     height: auto;
     min-height: 72px;
     flex-wrap: wrap;
     padding: 16px 0;
     gap: 8px;
   }
-  header > div:first-child {
+  .app-shell > header > div:first-child {
     gap: 10px;
     flex-wrap: wrap;
   }
@@ -639,10 +639,10 @@ footer p {
   .competition-name {
     font-size: 10px;
   }
-  header .toolbar {
+  .app-shell > header .toolbar {
     margin-left: auto;
   }
-  header .toolbar button {
+  .app-shell > header .toolbar button {
     min-height: 28px;
     padding: 3px 5px;
     font-size: 12px;
@@ -745,6 +745,17 @@ footer p {
 
 .mobile-hint {
   display: none;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 @media (max-width: 650px) {
   .mobile-hint {

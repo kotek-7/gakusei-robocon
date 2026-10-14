@@ -1,0 +1,108 @@
+.conditions-editor {
+  max-width: 1100px;
+}
+.condition-selector {
+  align-items: start;
+  margin: 20px 0;
+}
+.condition-selector label {
+  font-size: 13px;
+}
+.condition-selector select {
+  max-width: 100%;
+}
+.conditions-editor details {
+  margin: 0;
+}
+.condition-group {
+  margin-top: 28px;
+}
+.condition-group h3 {
+  margin: 0;
+}
+.condition-group > .toolbar {
+  margin-bottom: 8px;
+}
+.condition-table {
+  table-layout: fixed;
+}
+.condition-table th:first-child {
+  width: 35%;
+}
+.condition-table th:last-child {
+  width: 20%;
+}
+.condition-table td {
+  vertical-align: top;
+}
+.condition-table input[type="number"] {
+  width: 100%;
+  max-width: 110px;
+  min-width: 0;
+}
+.condition-table input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 18px;
+  min-height: 18px;
+  height: 18px;
+}
+.condition-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 8px 0;
+}
+.condition-actions button {
+  text-align: left;
+  font-size: 12px;
+  white-space: normal;
+}
+.condition-actions input {
+  max-width: 100%;
+}
+.conditions-editor > fieldset > details {
+  margin-top: 24px;
+}
+.conditions-editor textarea {
+  display: block;
+  margin-top: 8px;
+  width: 100%;
+  min-height: 90px;
+  font: inherit;
+  padding: 8px;
+  border: 1px solid var(--line);
+}
+.condition-sweep {
+  margin-top: 20px;
+  padding: 16px 0;
+  border-block: 1px solid var(--line);
+  font-size: 13px;
+}
+.condition-sweep > .toolbar {
+  margin-top: 8px;
+}
+.condition-sweep input {
+  max-width: 100%;
+}
+@media (max-width: 650px) {
+  .condition-table th,
+  .condition-table td {
+    padding: 8px 4px;
+  }
+  .condition-table th:first-child {
+    width: 30%;
+  }
+  .condition-table th:last-child {
+    width: 24%;
+  }
+  .condition-actions button {
+    padding: 4px;
+  }
+  .condition-table input {
+    padding: 5px;
+  }
+  .condition-selector {
+    flex-direction: column;
+  }
+}

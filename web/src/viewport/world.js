@@ -2,6 +2,8 @@ import * as T from "three";
 import cad from "./generated/field.json";
 import { createRobots } from "./robots.js";
 import { box } from "./primitives.js";
+import { SPOTS } from "../engine/model";
+import { headingAt } from "./heading";
 export function createWorld(scene) {
   const material = (color) =>
     new T.MeshStandardMaterial({ color, roughness: 0.85 });
@@ -49,6 +51,25 @@ export function createWorld(scene) {
   grid.visible = false;
   scene.add(grid);
   const robots = createRobots(scene, materials);
+  const entities = new Map();
+  robots.forEach((g, i) => {
+    g.userData.semanticId = `robot:${i}`;
+    entities.set(`robot:${i}`, g);
+  });
+  SPOTS.forEach((p, i) => {
+    const g = new T.Mesh(
+      new T.CylinderGeometry(0.34, 0.34, 0.12, 16),
+      new T.MeshBasicMaterial({
+        transparent: true,
+        opacity: 0.01,
+        depthWrite: false,
+      }),
+    );
+    g.position.set(p[0], p[1] + 0.06, p[2]);
+    g.userData.semanticId = `tower:${i}`;
+    scene.add(g);
+    entities.set(`tower:${i}`, g);
+  });
   const objects = new Map();
   function object(o) {
     const g = new T.Group();
@@ -78,20 +99,22 @@ export function createWorld(scene) {
       );
       g.add(ring);
     }
+    g.userData.semanticId = `object:${o.id}`;
+    entities.set(`object:${o.id}`, g);
     scene.add(g);
     return g;
   }
-  function update(frame) {
+  function update(frame, frames = []) {
     frame.robots.forEach((r, i) => {
-      const g = robots[i],
-        old = g.position.clone();
+      const g = robots[i];
       g.position.set(...r.p);
-      if (old.distanceTo(g.position) > 0.001)
-        g.rotation.y = Math.atan2(g.position.x - old.x, g.position.z - old.z);
+      g.rotation.y = headingAt(frames, frame, i);
     });
+    for (const g of objects.values()) g.visible = false;
     for (const o of frame.objects) {
       if (!objects.has(o.id)) objects.set(o.id, object(o));
       const g = objects.get(o.id);
+      g.visible = true;
       g.position.set(...o.p);
       if (o.kind === "S")
         g.rotation.set(
@@ -101,5 +124,5 @@ export function createWorld(scene) {
         );
     }
   }
-  return { grid, update };
+  return { grid, update, entities };
 }

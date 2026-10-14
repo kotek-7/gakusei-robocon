@@ -1,32 +1,37 @@
 import test from "node:test";
+import { createHash } from "node:crypto";
 import assert from "node:assert/strict";
-import { createStudy, readStudy, alternatives } from "./state";
+import { createStudy, readStudy, alternatives, activeConfig } from "./state";
 import { simulate } from "./match";
 import { scores } from "../engine/model";
 
-test("all strategy families finish against a building and a stealing opponent under both priorities", () => {
+test("130 matches preserve scores and event timing across the architecture change", () => {
   const s = createStudy();
+  const snapshots: unknown[] = [];
   for (const p of s.policies)
-    for (const o of s.opponents.filter((p) =>
-      ["mustika", "thief"].includes(p.id),
-    ))
+    for (const o of s.opponents)
       for (const priority of ["red", "blue"] as const) {
-        const m = simulate(s.config, p, o, priority);
+        const m = simulate(activeConfig(s), p, o, priority);
+        snapshots.push([p.id, o.id, priority, m.scores, m.events]);
         assert.equal(m.frames.length, 181);
         assert.equal(m.frames.at(-1)!.t, 180);
         assert.deepEqual(m.frames.at(-1)!.scores, m.scores);
         assert.ok(m.scores.every(Number.isFinite));
         assert.ok(m.events.every((e) => e.t >= 0 && e.t <= 180));
       }
+  assert.equal(
+    createHash("sha256").update(JSON.stringify(snapshots)).digest("hex"),
+    "4ce90eaed92c1f25e62d2cca383dea32e5b11c9f790066dfdda0768fd5022a3a",
+  );
 });
 test("editable policies change tower construction and repeat deterministically", () => {
   const s = createStudy();
-  s.config.teams[0].speeds.move = [0];
+  activeConfig(s).teams[0].speeds.move = [0];
   const idle = { ...s.policies[0], id: "idle", targets: [], mustika: false };
-  s.config.teams[1].caps.capacity_tr = [0];
-  s.config.teams[1].caps.capacity_br = [0];
+  activeConfig(s).teams[1].caps.capacity_tr = [0];
+  activeConfig(s).teams[1].caps.capacity_br = [0];
   const safe = s.policies.find((p) => p.id === "safe")!;
-  const m = simulate(s.config, safe, idle, "red");
+  const m = simulate(activeConfig(s), safe, idle, "red");
   assert.ok(
     [0, 1].every((i) =>
       m.frames
@@ -34,13 +39,13 @@ test("editable policies change tower construction and repeat deterministically",
         .objects.some((o) => o.loc === `tower${i}` && o.kind === "S"),
     ),
   );
-  const earth = simulate(s.config, { ...safe, height: 2 }, idle, "red");
+  const earth = simulate(activeConfig(s), { ...safe, height: 2 }, idle, "red");
   assert.ok(
     !earth.frames
       .at(-1)!
       .objects.some((o) => o.loc.startsWith("tower") && o.kind === "S"),
   );
-  assert.deepEqual(simulate(s.config, safe, idle, "red"), m);
+  assert.deepEqual(simulate(activeConfig(s), safe, idle, "red"), m);
 });
 test("imports reject ambiguous machine conditions and malformed policies", () => {
   const s = createStudy();
@@ -49,7 +54,7 @@ test("imports reject ambiguous machine conditions and malformed policies", () =>
   unnamed.policies[0].name = "";
   assert.equal(readStudy(unnamed).policies[0].name, "名前のない作戦");
   const bad = structuredClone(s);
-  bad.config.teams[0].speeds.move = [0, 1];
+  activeConfig(bad).teams[0].speeds.move = [0, 1];
   assert.throws(() => readStudy(bad));
   const invalid = structuredClone(s);
   invalid.policies[0].targets = [2];
@@ -73,7 +78,7 @@ test("unrelated opponent travel does not change construction timing", async () =
   const { successors } = await import("../engine/transition");
   const walk = (trips: number) => {
     const study = createStudy(),
-      c = study.config,
+      c = activeConfig(study),
       v = configAt(c, 0),
       p = new Planner(c, v);
     let s = initial(c, v),

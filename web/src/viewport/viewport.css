@@ -1,0 +1,95 @@
+.interactive-viewer {
+  min-width: 0;
+}
+.interactive-viewer .viewport {
+  position: relative;
+  overflow: hidden;
+}
+.viewport-menus {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+.viewport-menus details {
+  position: relative;
+  margin: 0;
+}
+.viewport-menus summary {
+  cursor: pointer;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--line, #bfc7c8);
+  border-radius: 4px;
+  font-size: 0.82rem;
+}
+.viewport-menus summary:focus-visible {
+  outline: 2px solid var(--accent, #08786e);
+  outline-offset: 2px;
+}
+.viewport-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 210px;
+  max-height: min(65vh, 480px);
+  overflow: auto;
+  padding: 0.65rem;
+  background: var(--surface, #fff);
+  color: var(--ink, #172c2d);
+  border: 1px solid var(--line, #bbc7c7);
+  box-shadow: 0 6px 16px #0002;
+}
+.viewport-menu button {
+  text-align: left;
+  width: 100%;
+}
+.viewport-menu label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+}
+.viewport-menu select {
+  min-width: 0;
+  max-width: 160px;
+  flex: 1;
+}
+.viewport-object-label {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -100%);
+  color: white;
+  background: #10171ee6;
+  border-radius: 2px;
+  padding: 1px 4px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.viewport-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.78rem;
+  border-top: 1px solid var(--line, #bbc7c7);
+}
+.viewport-status button {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.35rem;
+}
+@media (max-width: 650px) {
+  .viewport-menu {
+    position: absolute;
+    right: -30px;
+    max-width: calc(100vw - 32px);
+  }
+  .interactive-viewer .viewer-tools {
+    align-items: start;
+    flex-wrap: wrap;
+  }
+}
