@@ -1,3 +1,4 @@
+import { Comparison } from "./Comparison";
 import { Conditions } from "./Conditions";
 import { StrategyEditor } from "./StrategyEditor";
 import { loadMatches, saveMatch, matchKey } from "./persistence";
@@ -33,6 +34,7 @@ export function App() {
     [tab, setTab] = useState("compare");
   const [results, setResults] = useState<Record<string, Match>>({}),
     [busy, setBusy] = useState(false),
+    [restoring, setRestoring] = useState(true),
     [error, setError] = useState(boot.error);
   const [opponent, setOpponent] = useState(boot.study.opponents[0].id),
     [priority, setPriority] = useState<"red" | "blue">("red"),
@@ -40,6 +42,7 @@ export function App() {
     [playing, setPlaying] = useState(false);
   useEffect(() => {
     let cancelled = false;
+    setRestoring(true);
     loadMatches(study)
       .then((saved) => {
         if (!cancelled) setResults((current) => ({ ...saved, ...current }));
@@ -47,6 +50,9 @@ export function App() {
       .catch(() => {
         if (!cancelled)
           setError("比較結果を端末から読み込めません。再計算はできます。");
+      })
+      .finally(() => {
+        if (!cancelled) setRestoring(false);
       });
     return () => {
       cancelled = true;
@@ -164,8 +170,8 @@ export function App() {
     <div className="app-shell">
       <header>
         <div>
-          <p className="eyebrow">NHK学生ロボコン2027</p>
           <h1>作戦ノート</h1>
+          <span className="competition-name">NHK学生ロボコン2027</span>
         </div>
         <div className="toolbar">
           <button onClick={save}>ファイルに保存</button>
@@ -195,9 +201,9 @@ export function App() {
       </header>
       <nav aria-label="検討の手順">
         {[
-          ["conditions", "1 機体条件"],
-          ["strategy", "2 作戦を組む"],
-          ["compare", "3 比較する"],
+          ["compare", "作戦比較"],
+          ["strategy", "作戦編集"],
+          ["conditions", "機体条件"],
         ].map(([id, name]) => (
           <button
             key={id}
@@ -220,27 +226,23 @@ export function App() {
           <>
             <div className="section-heading">
               <div>
-                <h2>
-                  {tab === "strategy"
-                    ? "目標と切替条件を決める"
-                    : "相手ごとの得点差を比べる"}
-                </h2>
+                <h2>{tab === "strategy" ? "作戦編集" : "作戦比較"}</h2>
                 <p>
                   {tab === "strategy"
-                    ? "建設の順序と、相手の動きに応じた判断を作戦として保存します。"
-                    : "全作戦を同じ相手・同じ機体条件で対戦させます。"}
+                    ? "建設順と、状況に応じた切替を設定します。"
+                    : `${study.policies.length}作戦・${study.opponents.length}種類の相手・180秒`}
                 </p>
               </div>
               <div className="toolbar">
                 <span role="status">
-                  {done} / {total} 試合
+                  {restoring ? "保存結果を読込中" : `${done} / ${total} 試合`}
                 </span>
                 {busy ? (
                   <button onClick={stop}>一時停止</button>
                 ) : (
                   <button
                     className="primary"
-                    disabled={done === total}
+                    disabled={restoring || done === total}
                     onClick={run}
                   >
                     {done === total
@@ -252,132 +254,100 @@ export function App() {
                 )}
               </div>
             </div>
-            <div className="workspace">
-              <aside aria-label="作戦一覧">
-                <button
-                  disabled={busy}
-                  onClick={() => {
-                    const p = {
-                      ...structuredClone(policy),
-                      id: crypto.randomUUID(),
-                      name: `${policy.name}の別案`,
-                    };
-                    update({ ...study, policies: [...study.policies, p] });
-                    setSelected(p.id);
-                    setTab("strategy");
-                  }}
-                >
-                  選択した作戦から別案を作る
-                </button>
-                <button
-                  disabled={busy || study.policies.length >= 93}
-                  onClick={() => {
-                    const variants = alternatives(policy, study.policies);
-                    if (!variants.length) {
-                      setError("この作戦の比較用の別案は追加済みです。");
-                      return;
-                    }
-                    update({
-                      ...study,
-                      policies: [...study.policies, ...variants],
-                    });
-                  }}
-                >
-                  目標順・切替条件の別案を追加
-                </button>
-                {study.policies.map((p) => (
+            <div
+              className={`workspace ${tab === "compare" ? "compare-workspace" : "edit-workspace"}`}
+            >
+              {tab === "strategy" && (
+                <aside aria-label="作戦一覧">
                   <button
-                    key={p.id}
-                    className="strategy-item"
-                    aria-pressed={policy.id === p.id}
-                    onClick={() => setSelected(p.id)}
+                    disabled={busy || study.policies.length >= 100}
+                    onClick={() => {
+                      const p = {
+                        ...structuredClone(policy),
+                        id: crypto.randomUUID(),
+                        name: `${policy.name}の別案`,
+                      };
+                      update({ ...study, policies: [...study.policies, p] });
+                      setSelected(p.id);
+                      setTab("strategy");
+                    }}
                   >
-                    <strong>{p.name}</strong>
-                    <small>
-                      {p.targets.length
-                        ? `${p.targets.length}本を${p.height === 3 ? "完成" : `${p.height}段まで建設`}`
-                        : "搬送主体"}
-                      {p.mustika ? " · ムスティカ" : ""}
-                      {p.opportunistic || p.lateFlip ? " · 反転" : ""}
-                    </small>
+                    複製して編集
                   </button>
-                ))}
-              </aside>
-              <section className="detail">
+                  <button
+                    disabled={busy || study.policies.length >= 93}
+                    onClick={() => {
+                      const variants = alternatives(policy, study.policies);
+                      if (!variants.length) {
+                        setError("この作戦の比較用の別案は追加済みです。");
+                        return;
+                      }
+                      update({
+                        ...study,
+                        policies: [...study.policies, ...variants],
+                      });
+                    }}
+                  >
+                    条件を変えた別案を追加
+                  </button>
+                  {study.policies.map((p) => (
+                    <button
+                      key={p.id}
+                      className="strategy-item"
+                      aria-pressed={policy.id === p.id}
+                      onClick={() => setSelected(p.id)}
+                    >
+                      <strong>{p.name}</strong>
+                      <small>
+                        {p.targets.length
+                          ? `${p.targets.length}本を${p.height === 3 ? "完成" : `${p.height}段まで建設`}`
+                          : "搬送主体"}
+                        {p.mustika ? " · ムスティカ" : ""}
+                        {p.opportunistic || p.lateFlip ? " · 反転" : ""}
+                      </small>
+                    </button>
+                  ))}
+                </aside>
+              )}
+              <section
+                className={`detail ${tab === "compare" ? "compare-detail" : ""}`}
+              >
                 {tab === "strategy" ? (
                   <StrategyEditor
                     {...{ study, policy, busy, edit, update, setSelected }}
                   />
                 ) : (
-                  <>
-                    <h3>作戦 × 相手</h3>
-                    <p className="muted">
-                      各セルは赤の得点 −
-                      青の得点。左が赤優先、右が青優先です。数値を選ぶとその試合を再生できます。
-                    </p>
-                    <div className="table-scroll">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>自分の作戦</th>
-                            {study.opponents.map((p) => (
-                              <th key={p.id}>{p.name}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {study.policies.map((p) => (
-                            <tr
-                              key={p.id}
-                              className={
-                                p.id === policy.id ? "selected-row" : ""
-                              }
-                            >
-                              <th>
-                                <button onClick={() => setSelected(p.id)}>
-                                  {p.name}
-                                </button>
-                              </th>
-                              {study.opponents.map((o) => (
-                                <td key={o.id}>
-                                  {(["red", "blue"] as const).map((pr) => {
-                                    const m = results[matchKey(p.id, o.id, pr)];
-                                    return (
-                                      <button
-                                        key={pr}
-                                        disabled={!m}
-                                        title={`${pr === "red" ? "赤" : "青"}優先`}
-                                        aria-label={`${p.name} 対 ${o.name}・${pr === "red" ? "赤" : "青"}優先${m ? `・得点差 ${m.scores[0] - m.scores[1]}` : "・未計算"}`}
-                                        onClick={() => {
-                                          setSelected(p.id);
-                                          setOpponent(o.id);
-                                          setPriority(pr);
-                                          matchSection.current?.scrollIntoView({
-                                            block: "start",
-                                          });
-                                          setTime(0);
-                                        }}
-                                      >
-                                        {m
-                                          ? `${m.scores[0] - m.scores[1] > 0 ? "+" : ""}${m.scores[0] - m.scores[1]}`
-                                          : "—"}
-                                      </button>
-                                    );
-                                  })}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    <p className="muted">
-                      2条件の結果は最悪値・最良値や実大会の勝率を保証しません。相手は目標順を自陣側に置き換えて実行します。
-                    </p>
-                  </>
+                  <Comparison
+                    study={study}
+                    results={results}
+                    selected={policy.id}
+                    opponent={opponent}
+                    priority={priority}
+                    onPriority={setPriority}
+                    onSelect={(id, other) => {
+                      setSelected(id);
+                      setOpponent(other);
+                      setTime(0);
+                      setPlaying(false);
+                      if (window.innerWidth < 1100)
+                        matchSection.current?.scrollIntoView({
+                          block: "start",
+                        });
+                    }}
+                  />
                 )}
                 <section className="match-section" ref={matchSection}>
-                  <h3>{policy.name}の試合</h3>
+                  <div className="match-title">
+                    <h3>{policy.name}</h3>
+                    <button
+                      onClick={() => {
+                        setTab(tab === "compare" ? "strategy" : "compare");
+                        window.scrollTo({ top: 0 });
+                      }}
+                    >
+                      {tab === "compare" ? "作戦を編集" : "比較に戻る"}
+                    </button>
+                  </div>
                   <div className="toolbar">
                     <label>
                       相手{" "}
@@ -407,7 +377,7 @@ export function App() {
                   </div>
                   {!match && (
                     <p>
-                      この対戦は未計算です。「全作戦を比較」で計算できます。
+                      この対戦は未計算です。上の「全作戦を比較」で計算を始められます。
                     </p>
                   )}
                   <Viewport
@@ -444,7 +414,7 @@ export function App() {
                         </span>
                       </div>
                       <details>
-                        <summary>得点につながる操作・競合を確認</summary>
+                        <summary>得点と競合の履歴</summary>
                         <div className="event-list">
                           {match.events
                             .filter(

@@ -67,11 +67,7 @@ export function Viewport({
         <span>表示時刻の得点</span>
         <span className="blue-text">青 {frame.scores[1]}</span>
       </div>
-      <div
-        className="viewport"
-        ref={host}
-        aria-label="試合の3D表示"
-      >
+      <div className="viewport" ref={host} aria-label="試合の3D表示">
         {error && (
           <p role="alert" className="render-error">
             3Dを開始できません。WebGLを確認してください。局面表・得点は利用できます。
@@ -79,24 +75,27 @@ export function Viewport({
         )}
       </div>
       {replaying && (
-        <table className="replay-robots">
-          <caption>再生時刻の機体状態</caption>
-          <tbody>
-            {frame.robots.map((r) => (
-              <tr key={r.id}>
-                <th>{r.id}</th>
-                <td>
-                  {r.action ? actionName(r.action) : "待機"}
-                  <small>
-                    {locationName(r.location)}
-                    {r.state === "move" ? " から移動中" : ""} · 保持{" "}
-                    {r.carry.length}個
-                  </small>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <details className="robot-detail">
+          <summary>機体の状態</summary>
+          <table className="replay-robots">
+            <caption>再生時刻の機体状態</caption>
+            <tbody>
+              {frame.robots.map((r) => (
+                <tr key={r.id}>
+                  <th>{r.id}</th>
+                  <td>
+                    {r.action ? actionName(r.action) : "待機"}
+                    <small>
+                      {locationName(r.location)}
+                      {r.state === "move" ? " から移動中" : ""} · 保持{" "}
+                      {r.carry.length}個
+                    </small>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </details>
       )}
       <p className="view-note">
         ドラッグで回転・右ドラッグで移動。代表機体と有限経路の表示です。

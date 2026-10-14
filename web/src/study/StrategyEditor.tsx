@@ -52,7 +52,7 @@ export function StrategyEditor({
                   edit({ targets });
                 }}
               >
-                ↑
+                前へ
               </button>
               <button
                 aria-label={`${spotNames[spot]}を削除`}

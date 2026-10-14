@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-13T04:58:10.402408+00:00",
+  "generatedAt": "2026-10-14T10:34:10.740007+00:00",
   "title": "Design System: 学生ロボコン 作戦ノート",
   "extensions": {
     "colorMeta": {
@@ -16,20 +16,6 @@
           "oklch(72% 0.0827 188.05)",
           "oklch(84% 0.0827 188.05)",
           "oklch(95% 0.0827 188.05)"
-        ]
-      },
-      "paper": {
-        "role": "neutral",
-        "displayName": "paper",
-        "tonalRamp": [
-          "oklch(15% 0.0028 128.49)",
-          "oklch(26% 0.0028 128.49)",
-          "oklch(38% 0.0028 128.49)",
-          "oklch(49% 0.0028 128.49)",
-          "oklch(61% 0.0028 128.49)",
-          "oklch(72% 0.0028 128.49)",
-          "oklch(84% 0.0028 128.49)",
-          "oklch(95% 0.0028 128.49)"
         ]
       },
       "surface": {
@@ -50,154 +36,126 @@
         "role": "neutral",
         "displayName": "ink",
         "tonalRamp": [
-          "oklch(15% 0.0180 220.25)",
-          "oklch(26% 0.0180 220.25)",
-          "oklch(38% 0.0180 220.25)",
-          "oklch(49% 0.0180 220.25)",
-          "oklch(61% 0.0180 220.25)",
-          "oklch(72% 0.0180 220.25)",
-          "oklch(84% 0.0180 220.25)",
-          "oklch(95% 0.0180 220.25)"
+          "oklch(15% 0.0183 179.29)",
+          "oklch(26% 0.0183 179.29)",
+          "oklch(38% 0.0183 179.29)",
+          "oklch(49% 0.0183 179.29)",
+          "oklch(61% 0.0183 179.29)",
+          "oklch(72% 0.0183 179.29)",
+          "oklch(84% 0.0183 179.29)",
+          "oklch(95% 0.0183 179.29)"
         ]
       },
       "muted": {
         "role": "neutral",
         "displayName": "muted",
         "tonalRamp": [
-          "oklch(15% 0.0206 229.39)",
-          "oklch(26% 0.0206 229.39)",
-          "oklch(38% 0.0206 229.39)",
-          "oklch(49% 0.0206 229.39)",
-          "oklch(61% 0.0206 229.39)",
-          "oklch(72% 0.0206 229.39)",
-          "oklch(84% 0.0206 229.39)",
-          "oklch(95% 0.0206 229.39)"
+          "oklch(15% 0.0167 168.67)",
+          "oklch(26% 0.0167 168.67)",
+          "oklch(38% 0.0167 168.67)",
+          "oklch(49% 0.0167 168.67)",
+          "oklch(61% 0.0167 168.67)",
+          "oklch(72% 0.0167 168.67)",
+          "oklch(84% 0.0167 168.67)",
+          "oklch(95% 0.0167 168.67)"
         ]
       },
       "line": {
         "role": "neutral",
         "displayName": "line",
         "tonalRamp": [
-          "oklch(15% 0.0091 179.57)",
-          "oklch(26% 0.0091 179.57)",
-          "oklch(38% 0.0091 179.57)",
-          "oklch(49% 0.0091 179.57)",
-          "oklch(61% 0.0091 179.57)",
-          "oklch(72% 0.0091 179.57)",
-          "oklch(84% 0.0091 179.57)",
-          "oklch(95% 0.0091 179.57)"
-        ]
-      },
-      "control-line": {
-        "role": "neutral",
-        "displayName": "control-line",
-        "tonalRamp": [
-          "oklch(15% 0.0150 180.58)",
-          "oklch(26% 0.0150 180.58)",
-          "oklch(38% 0.0150 180.58)",
-          "oklch(49% 0.0150 180.58)",
-          "oklch(61% 0.0150 180.58)",
-          "oklch(72% 0.0150 180.58)",
-          "oklch(84% 0.0150 180.58)",
-          "oklch(95% 0.0150 180.58)"
-        ]
-      },
-      "control-hover": {
-        "role": "neutral",
-        "displayName": "control-hover",
-        "tonalRamp": [
-          "oklch(15% 0.0094 171.79)",
-          "oklch(26% 0.0094 171.79)",
-          "oklch(38% 0.0094 171.79)",
-          "oklch(49% 0.0094 171.79)",
-          "oklch(61% 0.0094 171.79)",
-          "oklch(72% 0.0094 171.79)",
-          "oklch(84% 0.0094 171.79)",
-          "oklch(95% 0.0094 171.79)"
+          "oklch(15% 0.0084 157.08)",
+          "oklch(26% 0.0084 157.08)",
+          "oklch(38% 0.0084 157.08)",
+          "oklch(49% 0.0084 157.08)",
+          "oklch(61% 0.0084 157.08)",
+          "oklch(72% 0.0084 157.08)",
+          "oklch(84% 0.0084 157.08)",
+          "oklch(95% 0.0084 157.08)"
         ]
       },
       "selected": {
         "role": "primary",
         "displayName": "selected",
         "tonalRamp": [
-          "oklch(15% 0.0212 178.33)",
-          "oklch(26% 0.0212 178.33)",
-          "oklch(38% 0.0212 178.33)",
-          "oklch(49% 0.0212 178.33)",
-          "oklch(61% 0.0212 178.33)",
-          "oklch(72% 0.0212 178.33)",
-          "oklch(84% 0.0212 178.33)",
-          "oklch(95% 0.0212 178.33)"
+          "oklch(15% 0.0138 174.16)",
+          "oklch(26% 0.0138 174.16)",
+          "oklch(38% 0.0138 174.16)",
+          "oklch(49% 0.0138 174.16)",
+          "oklch(61% 0.0138 174.16)",
+          "oklch(72% 0.0138 174.16)",
+          "oklch(84% 0.0138 174.16)",
+          "oklch(95% 0.0138 174.16)"
+        ]
+      },
+      "wash": {
+        "role": "neutral",
+        "displayName": "wash",
+        "tonalRamp": [
+          "oklch(15% 0.0034 145.55)",
+          "oklch(26% 0.0034 145.55)",
+          "oklch(38% 0.0034 145.55)",
+          "oklch(49% 0.0034 145.55)",
+          "oklch(61% 0.0034 145.55)",
+          "oklch(72% 0.0034 145.55)",
+          "oklch(84% 0.0034 145.55)",
+          "oklch(95% 0.0034 145.55)"
+        ]
+      },
+      "control-line": {
+        "role": "neutral",
+        "displayName": "control-line",
+        "tonalRamp": [
+          "oklch(15% 0.0146 162.39)",
+          "oklch(26% 0.0146 162.39)",
+          "oklch(38% 0.0146 162.39)",
+          "oklch(49% 0.0146 162.39)",
+          "oklch(61% 0.0146 162.39)",
+          "oklch(72% 0.0146 162.39)",
+          "oklch(84% 0.0146 162.39)",
+          "oklch(95% 0.0146 162.39)"
         ]
       },
       "selected-ink": {
         "role": "primary",
         "displayName": "selected-ink",
         "tonalRamp": [
-          "oklch(15% 0.0708 186.59)",
-          "oklch(26% 0.0708 186.59)",
-          "oklch(38% 0.0708 186.59)",
-          "oklch(49% 0.0708 186.59)",
-          "oklch(61% 0.0708 186.59)",
-          "oklch(72% 0.0708 186.59)",
-          "oklch(84% 0.0708 186.59)",
-          "oklch(95% 0.0708 186.59)"
+          "oklch(15% 0.0673 184.58)",
+          "oklch(26% 0.0673 184.58)",
+          "oklch(38% 0.0673 184.58)",
+          "oklch(49% 0.0673 184.58)",
+          "oklch(61% 0.0673 184.58)",
+          "oklch(72% 0.0673 184.58)",
+          "oklch(84% 0.0673 184.58)",
+          "oklch(95% 0.0673 184.58)"
         ]
       },
-      "focus": {
+      "accent-hover": {
         "role": "primary",
-        "displayName": "focus",
+        "displayName": "accent-hover",
         "tonalRamp": [
-          "oklch(15% 0.1098 186.10)",
-          "oklch(26% 0.1098 186.10)",
-          "oklch(38% 0.1098 186.10)",
-          "oklch(49% 0.1098 186.10)",
-          "oklch(61% 0.1098 186.10)",
-          "oklch(72% 0.1098 186.10)",
-          "oklch(84% 0.1098 186.10)",
-          "oklch(95% 0.1098 186.10)"
-        ]
-      },
-      "header": {
-        "role": "neutral",
-        "displayName": "header",
-        "tonalRamp": [
-          "oklch(15% 0.0274 176.97)",
-          "oklch(26% 0.0274 176.97)",
-          "oklch(38% 0.0274 176.97)",
-          "oklch(49% 0.0274 176.97)",
-          "oklch(61% 0.0274 176.97)",
-          "oklch(72% 0.0274 176.97)",
-          "oklch(84% 0.0274 176.97)",
-          "oklch(95% 0.0274 176.97)"
-        ]
-      },
-      "table-head": {
-        "role": "neutral",
-        "displayName": "table-head",
-        "tonalRamp": [
-          "oklch(15% 0.0058 153.77)",
-          "oklch(26% 0.0058 153.77)",
-          "oklch(38% 0.0058 153.77)",
-          "oklch(49% 0.0058 153.77)",
-          "oklch(61% 0.0058 153.77)",
-          "oklch(72% 0.0058 153.77)",
-          "oklch(84% 0.0058 153.77)",
-          "oklch(95% 0.0058 153.77)"
+          "oklch(15% 0.0702 186.51)",
+          "oklch(26% 0.0702 186.51)",
+          "oklch(38% 0.0702 186.51)",
+          "oklch(49% 0.0702 186.51)",
+          "oklch(61% 0.0702 186.51)",
+          "oklch(72% 0.0702 186.51)",
+          "oklch(84% 0.0702 186.51)",
+          "oklch(95% 0.0702 186.51)"
         ]
       },
       "team-red": {
         "role": "secondary",
         "displayName": "team-red",
         "tonalRamp": [
-          "oklch(15% 0.1702 24.21)",
-          "oklch(26% 0.1702 24.21)",
-          "oklch(38% 0.1702 24.21)",
-          "oklch(49% 0.1702 24.21)",
-          "oklch(61% 0.1702 24.21)",
-          "oklch(72% 0.1702 24.21)",
-          "oklch(84% 0.1702 24.21)",
-          "oklch(95% 0.1702 24.21)"
+          "oklch(15% 0.1547 21.99)",
+          "oklch(26% 0.1547 21.99)",
+          "oklch(38% 0.1547 21.99)",
+          "oklch(49% 0.1547 21.99)",
+          "oklch(61% 0.1547 21.99)",
+          "oklch(72% 0.1547 21.99)",
+          "oklch(84% 0.1547 21.99)",
+          "oklch(95% 0.1547 21.99)"
         ]
       },
       "team-blue": {
@@ -217,10 +175,7 @@
     },
     "typographyMeta": {
       "headline": {
-        "purpose": "探索名"
-      },
-      "title": {
-        "purpose": "領域見出し"
+        "purpose": "アプリ名と画面見出し"
       },
       "section": {
         "purpose": "小見出し"
@@ -228,24 +183,26 @@
       "body": {
         "purpose": "本文と通常操作"
       },
-      "score": {
-        "purpose": "両チーム得点"
+      "label": {
+        "purpose": "表と補足"
       }
     },
     "shadows": [],
-    "motion": [],
+    "motion": [
+      {
+        "name": "button-background",
+        "value": "background-color 0.15s",
+        "purpose": "ボタン背景の変化。動きを減らす設定では無効。"
+      }
+    ],
     "breakpoints": [
       {
-        "name": "stacked",
-        "value": "760px"
+        "name": "stacked-comparison",
+        "value": "1099px"
       },
       {
-        "name": "compact",
-        "value": "1050px"
-      },
-      {
-        "name": "wide",
-        "value": "1600px"
+        "name": "mobile",
+        "value": "650px"
       }
     ]
   },
@@ -254,84 +211,67 @@
       "name": "通常操作",
       "kind": "button",
       "refersTo": "button-secondary",
-      "description": "計算や移動に使う通常ボタン。",
-      "html": "<button class=\"ds-secondary\">選択局面を表示</button>",
-      "css": ".ds-secondary{font-family:\"Noto Sans JP\", \"Yu Gothic\", system-ui, sans-serif;font-size:14px;border:1px solid #aebbb8;border-radius:4px;padding:7px 11px;min-height:36px;line-height:1.35;cursor:pointer;background:var(--surface, #fff);color:var(--ink, #202c30);}.ds-secondary:hover:not(:disabled){background:#e6eeeb;border-color:#7c928b;}.ds-secondary:focus-visible{outline:3px solid var(--focus, #009d92);outline-offset:3px;}.ds-secondary:disabled{opacity:.5;cursor:default;}"
+      "description": "試合計算の開始・中断。",
+      "html": "<button class=\"ds-secondary\">一時停止</button>",
+      "css": ".ds-secondary{font-family:system-ui, \"Noto Sans JP\", sans-serif;font-size:14px;border:1px solid #bcc7c1;border-radius:4px;background:#fff;color:var(--ink,#24312e);padding:7px 11px;min-height:36px;cursor:pointer;transition:background-color .15s;}.ds-secondary:hover:not(:disabled){background:var(--wash,#f5f7f5);}.ds-secondary:focus-visible{outline:2px solid var(--accent,#006b65);outline-offset:3px;}.ds-secondary:disabled{color:#758078;cursor:default;background:var(--wash,#f5f7f5);}@media(prefers-reduced-motion:reduce){.ds-secondary{transition:none;}}"
     },
     {
       "name": "主操作",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "合法行動を計算する主操作。",
-      "html": "<button class=\"ds-primary\">選んだ行動を計算</button>",
-      "css": ".ds-primary{font-family:\"Noto Sans JP\", \"Yu Gothic\", system-ui, sans-serif;font-size:14px;border:1px solid #aebbb8;border-radius:4px;padding:7px 11px;min-height:36px;line-height:1.35;cursor:pointer;background:var(--accent, #006b65);color:#fff;border-color:var(--accent, #006b65);}.ds-primary:focus-visible{outline:3px solid var(--focus, #009d92);outline-offset:3px;}.ds-primary:disabled{opacity:.5;cursor:default;}.ds-primary:hover:not(:disabled){background:#00554f;color:#fff;border-color:#00554f;}"
-    },
-    {
-      "name": "押下状態",
-      "kind": "button",
-      "refersTo": "button-selected",
-      "description": "視点などの選択状態。",
-      "html": "<button class=\"ds-selected\" aria-pressed=\"true\">上面</button>",
-      "css": ".ds-selected{font-family:\"Noto Sans JP\", \"Yu Gothic\", system-ui, sans-serif;font-size:14px;border:1px solid #aebbb8;border-radius:4px;padding:7px 11px;min-height:36px;line-height:1.35;cursor:pointer;background:#d6e9e4;color:#00554f;border-color:var(--accent, #006b65);}.ds-selected:hover{background:#e6eeeb;border-color:#7c928b;}.ds-selected:focus-visible{outline:3px solid var(--focus, #009d92);outline-offset:3px;}"
+      "description": "試合計算の開始・中断。",
+      "html": "<button class=\"ds-primary\">全作戦を比較</button>",
+      "css": ".ds-primary{font-family:system-ui, \"Noto Sans JP\", sans-serif;font-size:14px;border:1px solid #bcc7c1;border-radius:4px;background:#fff;color:var(--ink,#24312e);padding:7px 11px;min-height:36px;cursor:pointer;transition:background-color .15s;background:var(--accent,#006b65);color:#fff;border-color:var(--accent,#006b65);}.ds-primary:hover:not(:disabled){background:#00544e;}.ds-primary:focus-visible{outline:2px solid var(--accent,#006b65);outline-offset:3px;}.ds-primary:disabled{color:#758078;cursor:default;background:var(--wash,#f5f7f5);}@media(prefers-reduced-motion:reduce){.ds-primary{transition:none;}}"
     },
     {
       "name": "数値入力",
       "kind": "input",
       "refersTo": "field",
-      "description": "独立して編集する性能値。",
-      "html": "<label class=\"ds-label\">移動速度<input class=\"ds-field\" type=\"number\" value=\"1\" step=\"0.1\"></label>",
-      "css": ".ds-label{font-family:\"Noto Sans JP\", \"Yu Gothic\", system-ui, sans-serif;font-size:14px;display:flex;flex-direction:column;gap:6px;color:var(--muted, #536168);}.ds-field{font-family:\"Noto Sans JP\", \"Yu Gothic\", system-ui, sans-serif;font-size:14px;padding:7px 9px;border:1px solid #aebbb8;border-radius:4px;background:#fff;color:var(--ink, #202c30);font-variant-numeric:tabular-nums;caret-color:var(--accent, #006b65);}.ds-field:focus-visible{outline:3px solid var(--focus, #009d92);outline-offset:3px;}"
+      "description": "機体条件を編集する入力。",
+      "html": "<label class=\"ds-label\">走行速度 <input class=\"ds-field\" type=\"number\" value=\"1\" step=\"0.1\"></label>",
+      "css": ".ds-label{font-family:system-ui, \"Noto Sans JP\", sans-serif;font-size:13px;color:var(--ink,#24312e);}.ds-field{font-family:system-ui, \"Noto Sans JP\", sans-serif;font-size:14px;border:1px solid #bcc7c1;border-radius:4px;background:#fff;color:var(--ink,#24312e);padding:7px 11px;min-height:36px;width:80px;caret-color:var(--accent,#006b65);}.ds-field:focus-visible{outline:2px solid var(--accent,#006b65);outline-offset:3px;}"
     },
     {
-      "name": "表示切替",
+      "name": "画面移動",
       "kind": "nav",
       "refersTo": "navigation",
-      "description": "グラフ・評価・モデルの現在位置。",
-      "html": "<nav class=\"ds-nav\" aria-label=\"探索表示\"><button aria-current=\"page\">グラフ</button><button>評価</button><button>モデル</button></nav>",
-      "css": ".ds-nav{display:flex;gap:8px;background:#fff;border-bottom:1px solid var(--line, #d4dcda);}.ds-nav button{font-family:\"Noto Sans JP\", \"Yu Gothic\", system-ui, sans-serif;font-size:14px;padding:13px 16px;border:0;border-bottom:3px solid transparent;border-radius:0;background:none;color:var(--ink, #202c30);cursor:pointer;}.ds-nav button[aria-current]{border-bottom-color:var(--accent, #006b65);color:var(--accent, #006b65);font-weight:650;}.ds-nav button:hover{background:#e6eeeb;}.ds-nav button:focus-visible{outline:3px solid var(--focus, #009d92);outline-offset:3px;}"
+      "description": "比較・編集・機体条件を切り替える。",
+      "html": "<nav class=\"ds-nav\" aria-label=\"検討の手順\"><button aria-current=\"page\">作戦比較</button><button>作戦編集</button><button>機体条件</button></nav>",
+      "css": ".ds-nav{display:flex;gap:24px;border-bottom:1px solid var(--line,#dce2de);}.ds-nav button{font-family:system-ui, \"Noto Sans JP\", sans-serif;font-size:14px;border:1px solid #bcc7c1;border-radius:4px;background:#fff;color:var(--ink,#24312e);padding:7px 11px;min-height:36px;cursor:pointer;min-width:70px;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;padding:10px 2px;color:var(--muted,#58645f);}.ds-nav button[aria-current=\"page\"]{color:var(--ink,#24312e);font-weight:650;border-bottom-color:var(--ink,#24312e);}.ds-nav button:hover{background:var(--wash,#f5f7f5);}.ds-nav button:focus-visible{outline:2px solid var(--accent,#006b65);outline-offset:3px;}"
     },
     {
-      "name": "条件の作業面",
-      "kind": "card",
-      "refersTo": "work-surface",
-      "description": "境界だけで区切る条件編集領域。",
-      "html": "<section class=\"ds-surface\"><h2>探索条件</h2><p>能力と数値スペックを設定します。</p></section>",
-      "css": ".ds-surface{font-family:\"Noto Sans JP\", \"Yu Gothic\", system-ui, sans-serif;font-size:14px;padding:24px;background:var(--surface, #fff);border:1px solid var(--line, #d4dcda);color:var(--ink, #202c30);}.ds-surface h2{font-size:18px;font-weight:650;margin:0;}.ds-surface p{color:var(--muted, #536168);line-height:1.75;margin:10px 0;}"
+      "name": "選択した得点差",
+      "kind": "button",
+      "refersTo": "score-selected",
+      "description": "作戦と相手を選んで対応する試合を表示する。",
+      "html": "<button class=\"ds-score\" aria-pressed=\"true\" aria-label=\"自陣確保 対 アース先行・得点差 20\">+20</button>",
+      "css": ".ds-score{font-family:system-ui, \"Noto Sans JP\", sans-serif;font-size:14px;border:1px solid #bcc7c1;border-radius:4px;background:#fff;color:var(--ink,#24312e);padding:7px 11px;min-height:36px;cursor:pointer;min-width:45px;padding:7px 4px;font-size:13px;font-weight:550;font-variant-numeric:tabular-nums;background:var(--selected,#e5f1ed);color:#004e47;border-color:var(--accent,#006b65);}.ds-score:hover{background:var(--wash,#f5f7f5);}.ds-score:focus-visible{outline:2px solid var(--accent,#006b65);outline-offset:3px;}@media(max-width:650px){.ds-score{min-height:42px;}}"
+    },
+    {
+      "name": "競合優先側",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "比較表に表示する競合条件を選ぶ。",
+      "html": "<label class=\"ds-priority\">競合時の優先側 <select><option>自分（赤）</option><option>相手（青）</option></select></label>",
+      "css": ".ds-priority{font-family:system-ui, \"Noto Sans JP\", sans-serif;font-size:12px;display:flex;align-items:center;gap:8px;color:var(--ink,#24312e);}.ds-priority select{font-family:system-ui, \"Noto Sans JP\", sans-serif;font-size:14px;border:1px solid #bcc7c1;border-radius:4px;background:#fff;color:var(--ink,#24312e);padding:7px 11px;min-height:36px;font-size:12px;min-height:32px;padding:4px 8px;}.ds-priority select:focus-visible{outline:2px solid var(--accent,#006b65);outline-offset:3px;}"
     }
   ],
   "narrative": {
     "northStar": "競技分析の作業台",
-    "overview": "競技の条件表、状態遷移グラフ、3D、選択局面を同じ作業面で扱う操作画面。淡い紙色に白い作業領域を置き、細い境界と見出しで区切る。ヒーロー、装飾的な指標カード、作戦の解釈名は設けない。\n\n日本語を読んで条件を編集し、数値と局面を照合できる密度を保つ。システムサンセリフはOperateモードの既存方針であり、実際のCADを描く3Dが機体と競技場の視覚資料になる。",
+    "overview": "白いページで機体条件、編集できる作戦、同条件の対戦比較を扱う。余白と細い罫線で領域を分け、数値から選んだ試合の動きまで追える密度を保つ。",
     "keyCharacteristics": [
-      "白い表とグラフを中心にした作業面。",
-      "選択を青緑、チームを赤と青で表示。",
-      "数値の桁を揃え、状態を文字と枠線でも区別。",
-      "狭い画面では作業領域を縦に並べ、グラフと表はスクロールで読む。"
+      "白い面と控えめな中間色で表と編集項目を読みやすくする。",
+      "ティールは操作と選択、赤と青は競技上の所属を示す。",
+      "得点差の選択と試合表示を同じ条件でつなぐ。"
     ],
-    "rules": [
-      {
-        "name": "The State Meaning Rule",
-        "body": "青緑は操作・選択に使う。赤と青の組はチームの識別に使い、選択局面は太枠と「選択」の文字も併記する。",
-        "section": "colors"
-      },
-      {
-        "name": "The Flat Workbench Rule",
-        "body": "作業領域は白い面と細い境界で区切る。影や多重カードで階層を増やさない。",
-        "section": "elevation"
-      }
-    ],
+    "rules": [],
     "dos": [
-      "Do 本文は14px以上を基本にし、日本語の読みやすさを優先する。",
-      "Do 数値には等幅数字を使い、得点・時刻・局面IDを照合できるようにする。",
-      "Do 未展開、展開済み、終了、選択を文字や枠線でも区別する。",
-      "Do 再生時刻の得点・機体状態と選択局面の情報を別の見出しで示す。",
-      "Do 狭い画面では操作を折り返し、グラフと比較表にスクロール領域を残す。"
+      "Do 数値に適用条件と単位を近接表示する。",
+      "Do 狭い画面でも作戦名を追えるようにし、表の横スクロールを維持する。",
+      "Do 選択と未計算の状態を枠や文字でも示す。"
     ],
     "donts": [
-      "Don't ヒーローや装飾的な指標カードを追加する。",
-      "Don't 作戦の解釈名を画面の分類として発明する。",
-      "Don't グラフ全体を収めるためにラベルを自動縮小する。",
-      "Don't 色だけで局面や操作の状態を伝える。",
+      "Don't 赤青を操作の選択色として使う。",
       "Don't 影やカードの入れ子で作業領域を装飾する。"
     ]
   }
