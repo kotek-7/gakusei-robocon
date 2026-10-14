@@ -2000,6 +2000,6 @@ tr[aria-selected="true"] th {
   box-shadow: inset 2px 0 0 var(--accent);
 }
 
-.quick-actions { display: flex; align-items: center; gap: 8px; padding: 3px 8px; background: var(--panel); min-width: 0; }
+.quick-actions { display: flex; align-items: center; gap: 8px; padding: 3px 8px; background: var(--chrome); min-width: 0; }
 .quick-actions-list { display: flex; gap: 4px; flex: 1; min-width: 0; overflow-x: auto; }
 .quick-actions-list > button { flex: none; }
