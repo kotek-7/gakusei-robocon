@@ -13,3 +13,4 @@ import "./jobs";
 import "./evaluation";
 import "./conditions";
 import "./model";
+import "./review";

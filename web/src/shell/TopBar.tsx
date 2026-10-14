@@ -115,6 +115,11 @@ function menus(): [string, MenuItem[]][] {
       ],
     ],
     [
+      "検討",
+      [C("review.capture"), C("review.open"), SEP, C("compare.setA"), C("compare.setB"), C("compare.open")],
+    ],
+    ["解析", [C("view.intervalAnalysis"), C("play.setIn"), C("play.setOut"), C("play.clearRange"), SEP, C("play.prevScore"), C("play.nextScore"), C("review.capture")]],
+    [
       "ウィンドウ",
       [
         ...useLayout.getState().workspaces.map((w, i) => ({

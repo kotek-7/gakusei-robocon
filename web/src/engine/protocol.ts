@@ -17,6 +17,19 @@ import type { StoredSearch } from "./store";
 export type JobKind = NonNullable<Search["job"]>;
 export type JobOptions = { budget?: number; node?: number; seconds?: number };
 
+export type ReviewRecord = {
+  id: string;
+  title: string;
+  note: string;
+  status: "open" | "keep" | "dismiss";
+  node: number;
+  path: number[];
+  selection: string | null;
+  time: number;
+  range: [number, number] | null;
+  created: number;
+};
+
 /** Per-search UI state kept with the search (markers, A/B paths, camera bookmarks). */
 export type Workspace = {
   id: string;
@@ -25,6 +38,7 @@ export type Workspace = {
   pins: string[];
   ab: { a: number[] | null; b: number[] | null; label?: [string, string] };
   notes: Record<string, string>;
+  reviews?: ReviewRecord[];
   updated: number;
 };
 
@@ -106,5 +120,6 @@ export const emptyWorkspace = (id: string): Workspace => ({
   pins: [],
   ab: { a: null, b: null },
   notes: {},
+  reviews: [],
   updated: 0,
 });

@@ -224,6 +224,8 @@ export function createScene(host: HTMLElement) {
   let animation = 0;
   const loop = () => {
     animation = requestAnimationFrame(loop);
+    // Workspaces stay mounted; hidden viewports need no GPU or label work.
+    if (document.hidden || !host.getClientRects().length || host.closest("[hidden]")) return;
     if (follow) {
       const o = objectFor(follow);
       if (o) {

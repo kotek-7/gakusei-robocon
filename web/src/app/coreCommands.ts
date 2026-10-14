@@ -36,6 +36,7 @@ export async function goToRoot(run = session().run) {
   const search = searchId();
   if (!search) return;
   const g = await fetchQuery("graph.page", { search, run, offset: 0 });
+  if (searchId() !== search) return;
   ui.patchSession({ run, offset: 0 });
   ui.selectNode(g.root, [], 0);
 }
@@ -44,6 +45,7 @@ export async function goToNode(node: number, path: number[] | null = null) {
   const search = searchId();
   if (!search) return;
   const d = await fetchQuery("node.get", { search, node });
+  if (searchId() !== search) return;
   ui.patchSession({ run: d.run, offset: d.offset });
   ui.selectNode(node, path, d.state.t);
 }
@@ -692,6 +694,17 @@ register(
     },
   },
   {
+    id: "area.activate",
+    title: "領域を表示",
+    category: "ウィンドウ",
+    hidden: true,
+    run: ({ args }) => {
+      const area = args as { id: string; editor: string };
+      useLayout.setState({ maximized: null });
+      useUI.setState({ activeArea: area.id, activeEditor: area.editor });
+    },
+  },
+  {
     id: "area.maximize",
     title: "領域を最大化・元に戻す",
     category: "ウィンドウ",
@@ -811,6 +824,12 @@ register(
     title: "計算と進捗を表示",
     category: "表示",
     run: () => layout.reveal("jobs"),
+  },
+  {
+    id: "view.intervalAnalysis",
+    title: "区間解析を開く",
+    category: "解析",
+    run: () => layout.reveal("interval-analysis"),
   },
   {
     id: "layout.export",

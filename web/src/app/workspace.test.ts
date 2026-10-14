@@ -21,10 +21,13 @@ test("workspace edits retain rapid comparison and marker updates in their origin
   ui.openSearch("edits");
   const first = updateWorkspace((w) => ({ ...w, ab: { a: [1, 2], b: null, label: ["A1", "B"] } }));
   const second = updateWorkspace((w) => ({ ...w, markers: [{ id: "m", t: 12, name: "反転" }] }));
+  const review = { id: "r", title: "反転を確認", note: "終了前の得点", status: "open" as const, node: 4, path: [1, 2], time: 12, range: [10, 14] as [number, number], selection: "robot:1", created: 1 };
+  const third = updateWorkspace((w) => ({ ...w, reviews: [review] }));
   ui.openSearch("other");
-  await Promise.all([first, second]);
+  await Promise.all([first, second, third]);
   assert.deepEqual(saved.get("edits")?.ab.a, [1, 2]);
   assert.equal(saved.get("edits")?.markers[0].name, "反転");
+  assert.deepEqual(saved.get("edits")?.reviews?.[0], review);
   assert.equal(saved.has("other"), false);
 });
 

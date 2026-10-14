@@ -466,6 +466,26 @@ button.primary:hover:not(:disabled) {
   display: flex;
   padding: 3px;
 }
+.compact-area-tabs { display: none; }
+@media (max-width: 700px) {
+  .dock .dock-split, .dock .dock-cell { display: contents; }
+  .dock .splitter, .dock .area:not([data-compact-active="true"]) { display: none; }
+  .dock .area[data-compact-active="true"], .dock.has-max .area.maximized {
+    position: absolute;
+    inset: 40px 3px 3px;
+  }
+  .compact-area-tabs {
+    display: flex;
+    position: absolute;
+    inset: 3px 3px auto;
+    height: 34px;
+    overflow-x: auto;
+    gap: 4px;
+    align-items: stretch;
+  }
+  .compact-area-tabs button { flex: none; border: 0; border-radius: 0; background: var(--chrome); }
+  .compact-area-tabs button[aria-current="true"] { background: var(--selected); color: var(--selected-ink); }
+}
 .dock > .dock-split,
 .dock > .area {
   flex: 1;

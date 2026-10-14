@@ -4,6 +4,7 @@
  * maximized. Layouts persist per browser.
  */
 import { create } from "zustand";
+import { useUI } from "./store";
 
 export type AreaLeaf = {
   kind: "area";
@@ -83,6 +84,16 @@ export function defaultWorkspaces(): Workspace[] {
       id: "conditions",
       name: "条件",
       root: S("row", [70, 30], [A("conditions"), A("model")]),
+    },
+    {
+      id: "review",
+      name: "検討記録",
+      root: S("row", [38, 62], [A("review"), S("col", [70, 30], [A("viewport"), A("timeline")])]),
+    },
+    {
+      id: "interval",
+      name: "区間解析",
+      root: S("row", [42, 58], [S("col", [55, 45], [A("interval-analysis"), A("score")]), S("col", [60, 40], [A("viewport"), A("timeline")])]),
     },
   ];
 }
@@ -262,9 +273,22 @@ export const layout = {
     const target = leaves(cur.root).find((l) => l.editor === editor);
     const other = target ? cur : s.workspaces.find((w) => leaves(w.root).some((l) => l.editor === editor));
     const area = target ?? (other && leaves(other.root).find((l) => l.editor === editor));
-    if (!other || !area) return;
+    if (!other || !area) {
+      const template = defaultWorkspaces().find(w => leaves(w.root).some(l => l.editor === editor));
+      const id = nid("w");
+      const leaf = A(editor, state);
+      const workspace = template ? { ...template, id } : { id, name: editor, root: leaf };
+      useLayout.setState(current => ({
+        workspaces: [...current.workspaces, workspace],
+        active: id, mounted: [...current.mounted, id], maximized: null,
+      }));
+      if (state && template) layout.setAreaState(leaves(workspace.root).find(l => l.editor === editor)!.id, state);
+      useUI.setState({ activeArea: leaves(workspace.root).find(l => l.editor === editor)!.id, activeEditor: editor });
+      return;
+    }
     if (other.id !== s.active) layout.activate(other.id);
     if (s.maximized && s.maximized !== area.id) useLayout.setState({ maximized: null });
     if (state) layout.setAreaState(area.id, state);
+    useUI.setState({ activeArea: area.id, activeEditor: editor });
   },
 };

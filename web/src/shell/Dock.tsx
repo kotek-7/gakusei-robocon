@@ -3,6 +3,7 @@ import {
   layout,
   useLayout,
   findArea,
+  leaves,
   type AreaLeaf,
   type AreaNode,
   type AreaSplit,
@@ -11,6 +12,7 @@ import { ui, useUI, type MenuItem } from "../app/store";
 import { getPref } from "../app/prefs";
 import { allEditors, getEditor } from "../editors/registry";
 import { Icon } from "./icons";
+import { run } from "../app/commands";
 
 function Splitter({ split, index }: { split: AreaSplit; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -88,7 +90,7 @@ export function areaMenu(area: AreaLeaf): MenuItem[] {
   ];
 }
 
-function Area({ area }: { area: AreaLeaf }) {
+function Area({ area, compactActive }: { area: AreaLeaf; compactActive: string }) {
   const def = getEditor(area.editor);
   const active = useUI((s) => s.activeArea === area.id);
   const maximized = useLayout((s) => s.maximized === area.id);
@@ -100,6 +102,7 @@ function Area({ area }: { area: AreaLeaf }) {
     <section
       className={`area${active ? " active" : ""}${maximized ? " maximized" : ""}`}
       data-editor={area.editor}
+      data-compact-active={area.id === compactActive}
       aria-label={def?.title ?? area.editor}
       onPointerEnter={() => getPref<boolean>("ui.hoverFocus") && focus()}
       onPointerDownCapture={focus}
@@ -144,14 +147,14 @@ function Area({ area }: { area: AreaLeaf }) {
   );
 }
 
-function Node({ node }: { node: AreaNode }): ReactNode {
-  if (node.kind === "area") return <Area key={node.id} area={node} />;
+function Node({ node, compactActive }: { node: AreaNode; compactActive: string }): ReactNode {
+  if (node.kind === "area") return <Area key={node.id} area={node} compactActive={compactActive} />;
   const parts: ReactNode[] = [];
   node.children.forEach((c, i) => {
     if (i) parts.push(<Splitter key={`s${c.id}`} split={node} index={i - 1} />);
     parts.push(
       <div key={c.id} className="dock-cell" style={{ flexBasis: 0, flexGrow: node.sizes[i] }}>
-        <Node node={c} />
+        <Node node={c} compactActive={compactActive} />
       </div>,
     );
   });
@@ -161,12 +164,21 @@ function Node({ node }: { node: AreaNode }): ReactNode {
 export function Dock({ workspace }: { workspace: string }) {
   const w = useLayout((s) => s.workspaces.find((x) => x.id === workspace));
   const maximized = useLayout((s) => (s.active === workspace ? s.maximized : null));
+  const activeArea = useUI(s => s.activeArea);
   if (!w) return null;
   // The maximized area is lifted over the others so no editor remounts.
   const max = maximized ? findArea(w.root, maximized) : null;
+  const areas = leaves(w.root);
+  const compactActive = max?.id ?? areas.find(a => a.id === activeArea)?.id ?? areas[0].id;
   return (
     <div className={`dock${max ? " has-max" : ""}`}>
-      <Node node={w.root} />
+      <nav className="compact-area-tabs" aria-label="表示する領域">
+        {areas.map((area, i) => <button key={area.id} aria-current={compactActive === area.id ? "true" : undefined}
+          onClick={() => run("area.activate", { id: area.id, editor: area.editor })}>
+          {getEditor(area.editor)?.title ?? area.editor}{areas.filter(a => a.editor === area.editor).length > 1 ? ` ${i + 1}` : ""}
+        </button>)}
+      </nav>
+      <Node node={w.root} compactActive={compactActive} />
     </div>
   );
 }
