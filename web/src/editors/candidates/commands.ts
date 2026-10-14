@@ -1,4 +1,4 @@
-import { goToNode } from "../../app/coreCommands";
+import { currentAnalysis, goToNode } from "../../app/coreCommands";
 import { register } from "../../app/commands";
 import { ui, useUI } from "../../app/store";
 
@@ -18,7 +18,8 @@ for (const side of ["a", "b"] as const) {
       ui.patchSession({ compare: { ...compare, [side]: [...path], label: labels } });
       if (side === "a") {
         await goToNode(node, [...path]);
-        ui.seek(0);
+        const analysis = await currentAnalysis();
+        if (analysis) ui.seek(analysis.start);
         ui.patchPlayback({ range: null });
       }
       ui.toast(`比較${side.toUpperCase()}：${label}`);
