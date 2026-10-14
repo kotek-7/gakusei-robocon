@@ -35,6 +35,7 @@ export type Overlay =
   | { kind: "prefs"; tab?: string }
   | { kind: "shortcuts" }
   | { kind: "about" }
+  | { kind: "documentation"; topic?: string }
   | { kind: "notices" }
   | { kind: "prompt"; title: string; value: string; resolve: (v: string | null) => void }
   | { kind: "confirm"; title: string; body?: string; danger?: boolean; resolve: (v: boolean) => void };

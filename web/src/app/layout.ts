@@ -85,7 +85,6 @@ export function defaultWorkspaces(): Workspace[] {
       name: "条件",
       root: A("conditions"),
     },
-    { id: "documentation", name: "ドキュメント", root: A("model") },
     {
       id: "review",
       name: "検討記録",
@@ -109,9 +108,8 @@ export function separateDocumentation(workspaces: Workspace[]): Workspace[] {
     const total = kept.reduce((sum, x) => sum + x.size, 0);
     return { ...node, children: kept.map(x => x.child!), sizes: kept.map(x => x.size * 100 / total) };
   };
-  const result = workspaces.map(w => w.id === "conditions" ? { ...w, root: prune(w.root) ?? A("conditions") } : w);
-  if (!result.some(w => w.id === "documentation")) result.push({ id: "documentation", name: "ドキュメント", root: A("model") });
-  return result;
+  const result = workspaces.filter(w => w.id !== "documentation").map(w => ({ ...w, root: prune(w.root) ?? A("conditions") }));
+  return result.length ? result : defaultWorkspaces();
 }
 
 type LayoutState = {
@@ -125,8 +123,11 @@ const STORAGE = "robocon.layout.v2";
 const initial = (): LayoutState => {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE) || "null");
-    if (saved?.workspaces?.length)
-      return { ...saved, workspaces: separateDocumentation(saved.workspaces), maximized: null, mounted: [saved.active] };
+    if (saved?.workspaces?.length) {
+      const workspaces = separateDocumentation(saved.workspaces);
+      const active = workspaces.some(w => w.id === saved.active) ? saved.active : workspaces[0].id;
+      return { ...saved, active, workspaces, maximized: null, mounted: [active] };
+    }
   } catch {
     // fall through to defaults
   }

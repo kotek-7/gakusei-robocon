@@ -16,25 +16,17 @@ test("revealing a new editor adds its full workspace without discarding saved la
   assert.equal(useLayout.getState().workspaces.length, state.workspaces.length);
 });
 
-test("revealing a reference section opens its workspace and releases a hidden maximized area", () => {
-  const workspaces = defaultWorkspaces();
-  const conditions = workspaces.find((w) => w.id === "documentation")!;
-  const model = leaves(conditions.root).find((a) => a.editor === "model")!;
-  useLayout.setState({ workspaces, active: "analysis", mounted: ["analysis"], maximized: leaves(workspaces[0].root)[0].id });
-  layout.reveal("model", { section: "history" });
-  assert.equal(useLayout.getState().active, "documentation");
-  assert.equal(useLayout.getState().maximized, null);
-  const current = useLayout.getState().workspaces.find((w) => w.id === "documentation")!;
-  assert.equal(leaves(current.root).find((a) => a.id === model.id)?.state?.section, "history");
-  useLayout.setState({ maximized: leaves(workspaces[0].root)[0].id });
-  layout.reveal("model", { section: "rules" });
-  assert.equal(useLayout.getState().maximized, null);
-});
-
 test("saved conditions keep input state while documentation moves out", () => {
   const condition = { kind: "area" as const, id: "kept", editor: "conditions", state: { view: "diff" } };
   const result = separateDocumentation([{ id: "conditions", name: "条件", root: { kind: "split", id: "split", dir: "row", sizes: [70, 30], children: [condition, { kind: "area", id: "doc", editor: "model" }] } }]);
   assert.deepEqual(result[0].root, condition);
-  assert.equal(result[1].id, "documentation");
+  assert.equal(result.length, 1);
   assert.deepEqual(separateDocumentation(result), result);
+});
+
+test("saved documentation workspace is removed without changing other workspaces", () => {
+  const workspaces = defaultWorkspaces();
+  const result = separateDocumentation([...workspaces, { id: "documentation", name: "ドキュメント", root: { kind: "area", id: "doc", editor: "model" } }]);
+  assert.deepEqual(result, workspaces);
+  assert.ok(separateDocumentation([{ id: "documentation", name: "ドキュメント", root: { kind: "area", id: "doc", editor: "model" } }]).length);
 });

@@ -1,6 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { run } from "../../app/commands";
 import { helpArticles, resolveHelpTopic } from "../../app/help";
 import "./help.css";
 
@@ -44,7 +43,6 @@ export function Help({ topic, text }: { topic: string; text?: string }) {
       onKeyDown={e => { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); hide(); restoringFocus.current = true; button.current?.focus(); restoringFocus.current = false; } }}>
       <div className="help-title"><strong>{article.title}</strong><button type="button" className="tool" aria-label="ヘルプを閉じる" onClick={hide}>閉じる</button></div>
       <p>{text ?? article.summary}</p>
-      <button type="button" className="link" onClick={() => { button.current?.closest("dialog")?.close(); hide(); run("docs.open", topic); }}>ドキュメントで詳しく読む</button>
     </div>, document.body)}
   </>;
 }

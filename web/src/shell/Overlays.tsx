@@ -1,3 +1,4 @@
+import { Documentation } from "./Documentation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   allCommands,
@@ -589,6 +590,8 @@ export function OverlayHost() {
       return <Prompt {...o} />;
     case "confirm":
       return <Confirm {...o} />;
+    case "documentation":
+      return <Documentation topic={o.topic} />;
     case "about":
       return <About />;
     case "notices":

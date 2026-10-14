@@ -1,3 +1,5 @@
+.documentation-dialog { width: min(1100px, calc(100vw - 24px)); height: min(800px, calc(100dvh - 24px)); max-height: calc(100dvh - 24px); box-sizing: border-box; padding: 0; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); border-radius: 6px; }
+.documentation-dialog::backdrop { background: rgb(0 0 0 / 30%); }
 .documentation { display: grid; grid-template-columns: minmax(160px, 220px) minmax(0, 1fr); height: 100%; min-height: 0; }
 .documentation-index { padding: 12px; overflow: auto; border-right: 1px solid var(--line); }
 .documentation-index input { width: 100%; min-width: 0; margin-bottom: 10px; }
