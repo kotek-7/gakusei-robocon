@@ -103,7 +103,7 @@ function IntervalEditor({ area }: EditorProps) {
             return <tr key={robot}><th>{robotNames[robot]}</th><td>{summary.count}</td><td>{summary.active.toFixed(1)}秒</td><td>{summary.waiting.toFixed(1)}秒</td><td><button className="tool" disabled={!summary.longestWait} onClick={() => run(`interval.longestWait${robot}`)}>最長待機へ</button></td></tr>;
           })}
         </tbody></table>
-        <h3>動作別の内訳 <Help topic="timeline" text="複数機体の合計秒は重複時間を含みます。選択経路に記録された動作を集計し、経路外の時間は含みません。" /></h3>
+        <h3>動作別の内訳 <Help topic="timeline" title="動作別の内訳" text="動作別の内訳は、選んだ区間で各機体が移動・取得・設置などに使った時間です。複数機体の合計には、同時に動いた時間もそれぞれ含みます。" /></h3>
         <div className="interval-controls">
           <label>機体 <select aria-label="内訳の機体" value={robot ?? "all"} onChange={(e) => setRobot(e.target.value === "all" ? null : Number(e.target.value))}>
             <option value="all">全機体</option>{robotNames.map((name, i) => <option key={i} value={i}>{name}</option>)}

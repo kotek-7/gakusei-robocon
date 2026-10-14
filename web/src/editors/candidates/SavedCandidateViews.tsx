@@ -34,7 +34,7 @@ export function SavedCandidateViews({ views, value, onApply, onSave, onDelete, d
     <div id={popoverId} popover="auto" className="candidate-views-popover">
     <header><strong>表示条件</strong><button popoverTarget={popoverId} popoverTargetAction="hide" aria-label="表示条件を閉じる">閉じる</button></header>
     <fieldset className="candidate-saved-views" disabled={disabled || busy}>
-    <legend>保存した表示条件 <Help topic="results" text="現在の絞り込みと並び順を保存します。" /></legend>
+    <legend>保存した表示条件 <Help topic="results" title="保存した表示条件" text="保存した表示条件は、候補一覧の絞り込みと並び順のセットです。保存しておくと、同じ表示に戻せます。" /></legend>
     <label>表示条件<select value={active?.id ?? ""} onChange={event => {
       const view = views.find(view => view.id === event.target.value);
       setSelected(view?.id ?? ""); setName(view?.name ?? "");
@@ -65,5 +65,5 @@ export function SavedCandidateViews({ views, value, onApply, onSave, onDelete, d
 }
 
 export function CandidateQueryHelp() {
-  return <Help topic="results" text={'空白でAND、-語で除外。手順:・ID:・理由:で検索対象を指定。例：L2 反転 -理由:資材'} />;
+  return <Help topic="results" title="候補検索" text={'候補検索は、語句で候補一覧を絞り込む機能です。空白で区切るとすべての語を含む候補を探し、-語で除外できます。手順:・ID:・理由:で検索対象を指定できます。'} />;
 }

@@ -50,7 +50,7 @@ export function Comparison({
       : [];
   return (
     <section className="comparison">
-      <h3>赤の同じ構成で、相手構成を比較 <Help topic="results" text="相手の頻度で平均していません。探索途中の行を含む場合、表示範囲も暫定です。" /></h3>
+      <h3>赤の同じ構成で、相手構成を比較 <Help topic="results" title="相手構成の比較" text="相手構成の比較は、赤の機体構成を固定し、青の能力や動作時間による結果の違いを見る表です。" /></h3>
       <p>
         {peers.length} 構成を集計済み。赤が勝つ展開の割合の範囲{" "}
         {fractions.length
@@ -86,7 +86,7 @@ export function Comparison({
       </table>
       {matches.length > 0 && (
         <>
-          <h3>比較対象と同じ相手スペックで比較 <Help topic="results" text="初期条件・相手の能力・数値スペックが一致する結果です。赤の条件差は各探索の条件表で確認できます。" /></h3>
+          <h3>比較対象と同じ相手スペックで比較 <Help topic="results" title="同じ相手スペックでの比較" text="同じ相手スペックでの比較は、初期条件と青の機体構成が一致する探索同士の比較です。赤の構成を変えたときの結果を確認できます。" /></h3>
           <p>
             選択中の C{result.run}{" "}
             と初期条件・相手スペックが一致

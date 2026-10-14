@@ -243,7 +243,7 @@ function ScoreEditor({ area }: EditorProps) {
           </tr>
         </tbody>
       </table>}
-      <span className="muted small">集計条件 <Help topic="model" text="持ち上げた物体は、その時点で塔から外れた扱いになります。" /></span>
+      <span className="muted small">集計条件 <Help topic="model" title="得点の集計条件" text="得点の集計条件は、塔や物体の状態を得点に反映する基準です。物体を持ち上げると、その時点で塔から外れたものとして計算します。" /></span>
     </div>
   );
 }

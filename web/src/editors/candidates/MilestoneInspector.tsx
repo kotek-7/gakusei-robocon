@@ -29,7 +29,7 @@ function Milestones({ evidence, baseline }: { evidence: CandidateEvidence; basel
     });
   }
   return <section className="candidate-completions" aria-label="建設と反転の完了記録">
-    <header><strong>建設・反転等の完了記録 <Help topic="results" text="同じ組は同時完了。移動・取得・受け渡し・待機は含みません。組番号は秒数ではありません。" /></strong><span>{visible.length} / {rows.length}動作</span></header>
+    <header><strong>建設・反転等の完了記録 <Help topic="results" title="建設・反転等の完了記録" text="完了記録は、建設・反転・持ち直しなどが完了した順序です。同時に完了した動作を同じ組にまとめています。" /></strong><span>{visible.length} / {rows.length}動作</span></header>
     {!same && <div className="candidate-completion-difference">{!diff ? <span>赤の完了順・同時組は相手待機と同じ</span> : <><span>赤の完了順に相手待機との差あり</span>{diff.currentGroup !== null ? <button onClick={() => reveal(diff.currentGroup!)}>最初の相違：組{diff.currentGroup}</button> : <span>この展開で赤の記録が先に終了（相手待機は組{diff.baselineGroup}以降も継続）</span>}</>}</div>}
     <div className="candidate-completion-filters">
       <label>機体<select aria-label="完了記録の機体" value={robot} onChange={event => { setRobot(event.target.value); setContextGroup(null); }}><option value="">すべて</option>{robots.map(id => <option key={id} value={id}>{diagnosticRobotNames[id]}</option>)}</select></label>

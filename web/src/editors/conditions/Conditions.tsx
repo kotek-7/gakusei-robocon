@@ -1,5 +1,6 @@
 import { flushSync } from "react-dom";
 import { Help } from "../common/Help";
+import { ruleHelp } from "../../app/help";
 import { profileNames } from "../common/labels";
 import { useId, useReducer, useState } from "react";
 import { conditionHistory, selectProfile } from "./history";
@@ -110,7 +111,7 @@ export function Conditions({
       }}
     >
       <div className="section-title">
-        <h2>探索条件 <Help topic="conditions" text="選択した能力・数値の組合せから生成します。値は仮定で、編集できます。" /></h2>
+        <h2>探索条件 <Help topic="conditions" title="探索条件" text="探索条件は、計算に使う機体の能力や動作時間などの設定です。項目ごとに候補を選び、比較する機体構成を作れます。" /></h2>
         <div className="condition-history" aria-label="条件の編集履歴">
           <button
             type="button"
@@ -422,7 +423,7 @@ export function Conditions({
       </table>
       </section>
       <section className="condition-rule-grid" hidden={view !== "rules"} aria-label="初期配置とルール解釈">
-        <h3>初期配置とルール解釈 <Help topic="rules" text="未確定の解釈を設定します。公式裁定を意味しません。" /></h3>
+        <h3>初期配置とルール解釈 <Help topic="rules" title="初期配置とルール解釈" text="初期配置とルール解釈は、試合開始時の配置と計算上の判定方法の設定です。検討したい前提に合わせて選べます。" /></h3>
         <label>
           スタートゾーンの割当
           <select
@@ -464,7 +465,7 @@ export function Conditions({
         {Object.entries(model.rules).map(([k, r]) => (
           <label key={k}>
             {r.label}
-            <Help topic="rules" text={r.source} />
+            <Help topic="rules" title={r.label} text={ruleHelp[k]} />
             <select
               value={String(c.rules[k])}
               onChange={(e) =>

@@ -4,7 +4,6 @@ import {
   structuralEventName,
   profileNames,
   evaluationMeaning,
-  guaranteeMeaning,
 } from "../common/labels";
 import { useState } from "react";
 import { saveJSON } from "../../app/coreCommands";
@@ -67,7 +66,7 @@ export function Evaluation({
   const pct = (x: number) => `${(x * 100).toFixed(1)}%`;
   return (
     <section className="evaluation">
-      <div className="evaluation-modes"><label>集計 <select value={mode} onChange={event => setMode(event.target.value)}><option value="results">構成別の結果</option><option value="comparison">同条件で構成・探索を比較</option></select></label><Help topic="results" text={evaluationMeaning} /></div>
+      <div className="evaluation-modes"><label>集計 <select value={mode} onChange={event => setMode(event.target.value)}><option value="results">構成別の結果</option><option value="comparison">同条件で構成・探索を比較</option></select></label><Help topic="results" title="評価の集計" text="評価の集計は、探索で見つかった試合展開の得点や勝敗をまとめた結果です。展開グループを同じ重みで扱い、各グループ内の展開も同じ重みで集計します。" /></div>
       <div hidden={mode !== "comparison"}>
       {baseline && (
         <div className="notice">
@@ -285,7 +284,7 @@ export function Evaluation({
       )}
       {result.guarantee && (
         <div className="guarantee">
-          <h3>相手の最善応答を含む評価 <Help topic="results" text={`${guaranteeMeaning} 残る同点が審判判断になるため、勝利確率は下限・上限で表示します。`} /></h3>
+          <h3>相手の最善応答を含む評価 <Help topic="results" title="相手の最善応答を含む評価" text="相手の最善応答を含む評価は、相手が最も有利な行動を選ぶ場合のモデル内の勝利確率です。審判判断で勝敗が変わる同点を含むため、下限・上限で表示します。" /></h3>
           <p>
             赤の勝利確率（保証範囲）：{pct(result.guarantee.winLower)}–
             {pct(result.guarantee.winUpper)}　／　得点差の保守的下限：

@@ -38,7 +38,7 @@ function Diagnostics({ evidence, onOpenAt }: {
   const name = (id: number) => diagnosticRobotNames[id] ?? `機体${id}`;
   if (!rows.length) return <p className="candidate-diagnostic-empty">この展開には実行不可の記録がありません。</p>;
   return <section className="candidate-diagnostics" aria-label="実行不可の検査">
-    <header><strong>実行不可 {rows.length}件 <Help topic="results" text="各手順で最初に実行できなかった時刻です。待機後の成立は動作順で確認できます。" /></strong><span>初回 {rows[0].t}秒 · {name(rows[0].robot)}</span></header>
+    <header><strong>実行不可 {rows.length}件 <Help topic="results" title="実行不可" text="実行不可は、予定した動作を開始できなかった記録です。各手順で最初に起きた時刻と理由を確認できます。" /></strong><span>初回 {rows[0].t}秒 · {name(rows[0].robot)}</span></header>
     <div className="candidate-diagnostic-filters">
       <label>機体 <select aria-label="実行不可の機体" value={robot} onChange={event => setRobot(event.target.value)}><option value="">すべて</option>{robotNames.map(id => <option key={id} value={id}>{name(id)}</option>)}</select></label>
       <label>理由 <select aria-label="実行不可の理由" value={reason} onChange={event => setReason(event.target.value)}><option value="">すべて</option>{reasons.map(value => <option key={value} value={value}>{value}</option>)}</select></label>
