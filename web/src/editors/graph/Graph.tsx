@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { graphNodes, type GraphScope } from "./view";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
+import "./graph.css";
+import { Icon } from "../../shell/icons";
+import { graphFocusTarget, graphNodes, type GraphScope } from "./view";
 import type { Graph as Data, Edge } from "../../engine/types";
 export function Graph({
   data,
@@ -23,6 +25,8 @@ export function Graph({
   onReveal: () => void;
 }) {
   const nodes = useMemo(() => graphNodes(data, selected, path, scope), [data, selected, path, scope]);
+  const uid = useId();
+  const [focused, setFocused] = useState<number | null>(null);
   const frontier = nodes.filter((n) => !n.expanded);
   const [zoom, setZoom] = useState(1);
   const [fit, setFit] = useState(false);
@@ -88,49 +92,15 @@ export function Graph({
   return (
     <section className="graph-panel" aria-label="状態遷移グラフ">
       <div className="graph-tools">
-        <span>
-          局面 {data.total ? data.offset + 1 : 0}–
-          {data.offset + data.nodes.length} / {data.total}
-        </span>
-        <div>
-          <button
-            onClick={() => onPage(Math.max(0, data.offset - 100))}
-            disabled={!data.offset}
-          >
-            前の100局面
-          </button>
-          <button
-            onClick={() => onPage(data.offset + 100)}
-            disabled={data.offset + data.nodes.length >= data.total}
-          >
-            次の100局面
-          </button>
-        </div>
-        <label>表示 <select value={scope} onChange={(e) => onScope(e.target.value as GraphScope)}>
-          <option value="page">ページ全体</option><option value="neighbors">選択局面と前後</option><option value="path">選択経路</option><option value="frontier">未展開と選択局面</option><option value="scored">得点ありと選択局面</option>
+        <label>局面の表示 <select value={scope} onChange={e => onScope(e.target.value as GraphScope)}>
+          <option value="page">読み込んだ局面</option><option value="neighbors">選択局面と前後</option><option value="path">選択経路</option><option value="frontier">未展開と選択局面</option><option value="scored">得点ありと選択局面</option>
         </select></label>
-        <span>表示 {nodes.length}局面 · 未展開 {frontier.length}</span>
-        <button disabled={!frontier.length} onClick={nextFrontier}>次の未展開局面</button>
-        <button onClick={revealSelection} disabled={selected === null}>
-          選択局面を表示
-        </button>
-        <button aria-pressed={fit} onClick={() => setFit(!fit)}>幅に合わせる</button>
-        <label>
-          倍率
-          <select
-            value={zoom}
-            onChange={(e) => { setFit(false); setZoom(Number(e.target.value)); }}
-          >
-            {[...new Set([0.25, 0.5, 0.75, 1, 1.25, 1.5, zoom])].sort((a, b) => a - b).map((z) => (
-              <option key={z} value={z}>
-                {Math.round(z * 100)}%
-              </option>
-            ))}
-          </select>
-        </label>
+        <span className="graph-count">{nodes.length}局面 · 未展開 {frontier.length}</span>
+        <button className="tool" disabled={!frontier.length} onClick={nextFrontier} title="未展開の局面を順に選ぶ"><Icon name="nextEvent" size={14} />未展開へ</button>
       </div>
       {scope !== "page" && <p className="muted">読み込み済みの{data.nodes.length}局面から絞り込み中。非表示の局面・ページ外の分岐も探索対象に残ります。</p>}
-      {!nodes.length && <p className="muted">このページには対象の局面がありません。「ページ全体」に戻すか、選択局面を表示してください。</p>}
+      {!nodes.length && <p className="muted">このページには対象の局面がありません。「読み込んだ局面」に戻すか、選択局面を表示してください。</p>}
+      <div className="graph-canvas">
       <div
         className="graph-scroll"
         ref={viewport}
@@ -144,7 +114,7 @@ export function Graph({
         >
           <defs>
             <marker
-              id="arrow"
+              id={`${uid}-arrow`}
               viewBox="0 0 10 10"
               refX="9"
               refY="5"
@@ -179,11 +149,11 @@ export function Graph({
                 key={e.id}
                 className={path.includes(e.id) ? "selected-edge" : "edge"}
               >
-                <path d={d} markerEnd="url(#arrow)" />
+                <path d={d} markerEnd={`url(#${uid}-arrow)`} />
                 <path
                   d={d}
                   className="edge-target"
-                  tabIndex={0}
+                  tabIndex={e.src === selected ? 0 : -1}
                   role="button"
                   aria-label={`遷移 ${e.id}: 局面${e.src}から${e.dst}`}
                   onClick={() => chooseEdge(e)}
@@ -203,15 +173,22 @@ export function Graph({
                 key={n.id}
                 transform={`translate(${p.x},${p.y})`}
                 className={`graph-node ${n.expanded ? "expanded" : "frontier"} ${selected === n.id ? "selected" : ""}`}
-                tabIndex={0}
+                data-node={n.id}
+                tabIndex={n.id === (nodes.some(x => x.id === focused) ? focused : nodes.some(x => x.id === selected) ? selected : nodes[0]?.id) ? 0 : -1}
+                onFocus={() => setFocused(n.id)}
                 role="button"
+                aria-pressed={selected === n.id}
                 aria-label={`局面 ${n.id}、${n.state.t}秒、赤${n.scores[0]} 青${n.scores[1]}、${n.expanded ? "展開済み" : "未展開あり"}`}
                 onClick={() => select(n.id)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault(); select(n.id);
+                  } else if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) {
                     e.preventDefault();
-                    select(n.id);
-                  }
+                    const next = graphFocusTarget(nodes, data.edges, n.id, e.key);
+                    if (next !== undefined) viewport.current?.querySelector<SVGGElement>(`[data-node="${next}"]`)?.focus();
+                  } else return;
+                  e.stopPropagation();
                 }}
               >
                 <rect width="128" height="56" rx="4" />
@@ -242,6 +219,20 @@ export function Graph({
             );
           })}
         </svg>
+      </div>
+      <div className="graph-canvas-controls" aria-label="グラフの視点">
+        <button className="tool icon-only" title="選択局面を中央に表示" aria-label="選択局面を中央に表示" disabled={selected === null} onClick={revealSelection}><Icon name="focus" /></button>
+        <button className="tool icon-only" title="縮小" aria-label="縮小" disabled={zoom <= .25} onClick={() => { setFit(false); setZoom(Math.max(.25, zoom - .25)); }}><Icon name="minus" /></button>
+        <select aria-label="グラフの倍率" value={fit ? "fit" : zoom} onChange={e => { if (e.target.value === "fit") setFit(true); else { setFit(false); setZoom(Number(e.target.value)); } }}>
+          <option value="fit">幅に合わせる</option>
+          {[...new Set([.25, .5, .75, 1, 1.25, 1.5, zoom])].sort((a,b) => a-b).map(z => <option key={z} value={z}>{Math.round(z*100)}%</option>)}
+        </select>
+        <button className="tool icon-only" title="拡大" aria-label="拡大" disabled={zoom >= 2} onClick={() => { setFit(false); setZoom(Math.min(2, zoom + .25)); }}><Icon name="plus" /></button>
+      </div></div>
+      <div className="graph-pagebar" aria-label="局面のページ送り">
+        <button className="tool icon-only" aria-label="前の100局面" title="前の100局面 (PageUp)" disabled={!data.offset} onClick={() => onPage(Math.max(0, data.offset - 100))}><Icon name="back" /></button>
+        <span className="tabular">{data.total ? data.offset+1 : 0}–{data.offset+data.nodes.length} / {data.total}局面</span>
+        <button className="tool icon-only" aria-label="次の100局面" title="次の100局面 (PageDown)" disabled={data.offset+data.nodes.length >= data.total} onClick={() => onPage(data.offset+100)}><Icon name="forward" /></button>
       </div>
       <div className="graph-legend">
         <span>破線：未展開あり</span>

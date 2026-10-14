@@ -1,0 +1,7 @@
+.outliner-source { display: flex; align-items: center; gap: 6px; padding: 4px; border-bottom: 1px solid var(--line); }
+.outliner-source select { flex: 1; width: 0; }
+.outliner-source > span { flex: none; font-size: 11px; }
+.outliner .tree-hint { max-width: 43%; overflow: hidden; text-overflow: ellipsis; }
+.outliner .tree-row > .icon { color: var(--muted); }
+.outliner .tree-row[aria-selected="true"] > .icon { color: inherit; }
+.outliner .tree-row:focus-visible { outline-offset: -2px; }

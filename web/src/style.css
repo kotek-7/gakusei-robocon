@@ -266,17 +266,18 @@ button.primary,
   background: transparent;
   white-space: nowrap;
 }
-.conditions button,
-.inspector button,
-.evaluation button,
-.candidates button,
-.discovery-progress button,
-.graph-tools button,
-.row .tool,
-.dialog .tool {
-  border-color: var(--line-strong);
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: var(--row);
+  padding: 2px 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
   background: var(--surface);
+  white-space: nowrap;
 }
+.action-button:hover:not(:disabled) { background: var(--hover); }
 .tool:hover:not(:disabled),
 .conditions button:hover:not(:disabled),
 .inspector button:hover:not(:disabled),

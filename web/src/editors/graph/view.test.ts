@@ -20,3 +20,13 @@ test("frontier and score views keep the current selection without hiding unknown
   assert.deepEqual(graphNodes(graph, 1, [], "frontier").map(n => n.id), [1, 2]);
   assert.deepEqual(graphNodes(graph, 1, [], "scored").map(n => n.id), [1, 3]);
 });
+
+test("graph keyboard navigation follows visible connections and sibling time columns", async () => {
+  const { graphFocusTarget } = await import("./view");
+  const nodes = [{ id: 1, state: { t: 0 } }, { id: 2, state: { t: 5 } }, { id: 3, state: { t: 5 } }] as Graph["nodes"];
+  assert.equal(graphFocusTarget(nodes, data.edges, 1, "ArrowRight"), 2);
+  assert.equal(graphFocusTarget(nodes, data.edges, 2, "ArrowLeft"), 1);
+  assert.equal(graphFocusTarget(nodes, data.edges, 2, "ArrowDown"), 3);
+  assert.equal(graphFocusTarget(nodes, data.edges, 3, "ArrowDown"), undefined);
+  assert.equal(graphFocusTarget(nodes, data.edges, 3, "ArrowRight"), undefined);
+});

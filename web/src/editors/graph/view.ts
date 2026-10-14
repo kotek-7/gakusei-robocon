@@ -13,3 +13,17 @@ export function graphNodes(data: Graph, selected: number | null, path: number[],
   }
   return data.nodes.filter((node) => ids.has(node.id));
 }
+
+/** Horizontal keys follow graph connections; vertical keys stay in the time column. */
+export function graphFocusTarget(nodes: Graph["nodes"], edges: Graph["edges"], current: number, key: string): number | undefined {
+  if (key === "Home") return nodes[0]?.id;
+  if (key === "End") return nodes.at(-1)?.id;
+  const visible = new Set(nodes.map(n => n.id));
+  if (key === "ArrowRight") return edges.find(e => e.src === current && visible.has(e.dst))?.dst;
+  if (key === "ArrowLeft") return edges.find(e => e.dst === current && visible.has(e.src))?.src;
+  const node = nodes.find(n => n.id === current);
+  if (!node || !["ArrowUp", "ArrowDown"].includes(key)) return undefined;
+  const column = nodes.filter(n => n.state.t === node.state.t);
+  const index = column.findIndex(n => n.id === current);
+  return column[index + (key === "ArrowDown" ? 1 : -1)]?.id;
+}

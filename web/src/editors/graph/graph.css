@@ -1,0 +1,8 @@
+.graph-canvas { display: flex; flex-direction: column; flex: 1; min-height: 0; position: relative; }
+.graph-canvas .graph-scroll { padding-bottom: 40px; }
+.graph-canvas-controls { position: absolute; right: 10px; bottom: 10px; display: flex; align-items: center; gap: 2px; background: var(--surface); border: 1px solid var(--line); padding: 3px; }
+.graph-canvas-controls select { width: 105px; border-color: transparent; }
+.graph-pagebar { display: flex; justify-content: center; align-items: center; gap: 10px; border-top: 1px solid var(--line); padding: 3px; }
+.graph-count { color: var(--muted); margin-right: auto; }
+.graph-node:focus-visible { outline: none; }
+.graph-node:focus-visible > rect:first-child { stroke: var(--focus); stroke-width: 3px; }
