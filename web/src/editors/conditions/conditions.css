@@ -4,7 +4,9 @@
   gap: 4px;
   margin-left: auto;
 }
-.conditions .condition-footer { z-index: 2; }
+.conditions .condition-footer {
+  z-index: 2;
+}
 .condition-shared-note {
   display: block;
   color: var(--muted);
@@ -64,4 +66,14 @@
   .condition-footer {
     flex-wrap: wrap;
   }
+}
+.condition-axes {
+  margin-block: 10px;
+  overflow-x: auto;
+}
+.condition-axis-values {
+  min-width: 140px;
+}
+.condition-axis-values button {
+  margin: 2px;
 }

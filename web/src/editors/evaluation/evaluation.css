@@ -1,0 +1,25 @@
+.evaluation-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin-block: 12px;
+}
+.evaluation-tools input[type="search"] {
+  min-width: 120px;
+  flex: 1 1 170px;
+}
+.evaluation-tools label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.evaluation-tools select {
+  max-width: 240px;
+}
+.evaluation-tools span {
+  font-variant-numeric: tabular-nums;
+}
+.evaluation .distribution {
+  min-width: 160px;
+}

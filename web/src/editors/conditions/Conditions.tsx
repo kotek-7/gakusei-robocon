@@ -1,6 +1,8 @@
 import { profileNames } from "../common/labels";
 import { useReducer, useState } from "react";
 import { conditionHistory, selectProfile } from "./history";
+import { countConfigs } from "../../engine/model";
+import { SearchAxes } from "./SearchAxes";
 import "./conditions.css";
 import type { Model, Config } from "../../engine/types";
 import { call } from "../../app/client";
@@ -31,6 +33,7 @@ export function Conditions({
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [changedOnly, setChangedOnly] = useState(false);
+  const [differentOnly, setDifferentOnly] = useState(false);
   const sameValues = (a: (number | boolean)[], b: (number | boolean)[]) =>
     a.length === b.length && a.every((value) => b.includes(value));
   const capChanged = (key: string) =>
@@ -43,11 +46,17 @@ export function Conditions({
     `${key} ${label}`
       .toLocaleLowerCase()
       .includes(query.trim().toLocaleLowerCase());
-  const caps = Object.entries(model.caps).filter(([key, label]) =>
-    matches(key, label, capChanged(key)),
+  const caps = Object.entries(model.caps).filter(
+    ([key, label]) =>
+      matches(key, label, capChanged(key)) &&
+      (!differentOnly ||
+        !sameValues(c.teams[0].caps[key], c.teams[1].caps[key])),
   );
-  const profiles = Object.entries(model.profiles).filter(([key, label]) =>
-    matches(key, label, profileChanged(key)),
+  const profiles = Object.entries(model.profiles).filter(
+    ([key, label]) =>
+      matches(key, label, profileChanged(key)) &&
+      (!differentOnly ||
+        !sameValues(c.teams[0].speeds[key], c.teams[1].speeds[key])),
   );
   const changedCount =
     Object.keys(model.caps).filter(capChanged).length +
@@ -69,13 +78,7 @@ export function Conditions({
           next;
     });
   }
-  const combinations = c.teams.reduce(
-    (count, t) =>
-      Object.values(t.caps)
-        .concat(Object.values(t.speeds))
-        .reduce((n, a) => n * BigInt(a.length), count),
-    BigInt(c.starts.length * c.layouts.length),
-  );
+  const combinations = countConfigs(c);
   return (
     <form
       className="conditions"
@@ -182,6 +185,7 @@ export function Conditions({
           {c.horizon}秒での局面評価です。180秒の最終勝敗ではありません。
         </p>
       )}
+      <SearchAxes config={c} model={model} change={change} />
       <div className="team-tabs" aria-label="編集するチーム">
         {["赤チーム", "青チーム"].map((name, i) => (
           <button
@@ -220,12 +224,21 @@ export function Conditions({
           />
           変更した項目のみ ({changedCount})
         </label>
-        {(query || changedOnly) && (
+        <label>
+          <input
+            type="checkbox"
+            checked={differentOnly}
+            onChange={(e) => setDifferentOnly(e.target.checked)}
+          />
+          赤青で候補が異なる項目
+        </label>
+        {(query || changedOnly || differentOnly) && (
           <button
             type="button"
             onClick={() => {
               setQuery("");
               setChangedOnly(false);
+              setDifferentOnly(false);
             }}
           >
             絞り込みを解除
@@ -249,6 +262,25 @@ export function Conditions({
               <th scope="row">
                 <span className="condition-row-label">
                   {label}
+                  {!sameValues(
+                    c.teams[team].caps[k],
+                    c.teams[1 - team].caps[k],
+                  ) && (
+                    <button
+                      type="button"
+                      className="condition-revert"
+                      title="この項目の候補を反対側からコピー"
+                      onClick={() =>
+                        change((x) => {
+                          x.teams[team].caps[k] = [
+                            ...x.teams[1 - team].caps[k],
+                          ];
+                        })
+                      }
+                    >
+                      {team ? "赤" : "青"}に揃える
+                    </button>
+                  )}
                   {capChanged(k) && (
                     <button
                       type="button"
@@ -321,17 +353,35 @@ export function Conditions({
             <th scope="row">
               <button
                 type="button"
-                onClick={() => change((x) => selectProfile(x, team, "all"))}
+                onClick={() =>
+                  change((x) =>
+                    selectProfile(
+                      x,
+                      team,
+                      "all",
+                      profiles.map(([key]) => key),
+                    ),
+                  )
+                }
               >
-                全項目を3段階に
+                表示項目を3段階に
               </button>
             </th>
             {profileNames.map((name, i) => (
               <td key={name}>
                 <button
                   type="button"
-                  title={`${team ? "青" : "赤"}チームの全項目を${name}だけにする`}
-                  onClick={() => change((x) => selectProfile(x, team, i))}
+                  title={`${team ? "青" : "赤"}チームの表示項目を${name}だけにする`}
+                  onClick={() =>
+                    change((x) =>
+                      selectProfile(
+                        x,
+                        team,
+                        i,
+                        profiles.map(([key]) => key),
+                      ),
+                    )
+                  }
                 >
                   {name}のみ
                 </button>
@@ -343,6 +393,25 @@ export function Conditions({
               <th scope="row">
                 <span className="condition-row-label">
                   {label}
+                  {!sameValues(
+                    c.teams[team].speeds[k],
+                    c.teams[1 - team].speeds[k],
+                  ) && (
+                    <button
+                      type="button"
+                      className="condition-revert"
+                      title="この項目の候補を反対側からコピー"
+                      onClick={() =>
+                        change((x) => {
+                          x.teams[team].speeds[k] = [
+                            ...x.teams[1 - team].speeds[k],
+                          ];
+                        })
+                      }
+                    >
+                      {team ? "赤" : "青"}に揃える
+                    </button>
+                  )}
                   {profileChanged(k) && (
                     <button
                       type="button"

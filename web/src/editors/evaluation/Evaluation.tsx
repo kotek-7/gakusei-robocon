@@ -5,6 +5,16 @@ import {
   guaranteeMeaning,
 } from "../common/labels";
 import { useState } from "react";
+import { saveJSON } from "../../app/coreCommands";
+import {
+  marginRange,
+  selectRuns,
+  selectStrategies,
+  type RunFilter,
+  type RunSort,
+  type StrategySort,
+} from "./selectors";
+import "./evaluation.css";
 import { Comparison } from "./Comparison";
 import { Classification } from "./Classification";
 import type { Search, Model } from "../../engine/types";
@@ -21,6 +31,12 @@ export function Evaluation({
 }) {
   const [run, setRun] = useState(0);
   const [filter, setFilter] = useState<string[] | null>(null);
+  const [runQuery, setRunQuery] = useState("");
+  const [runFilter, setRunFilter] = useState<RunFilter>("all");
+  const [runSort, setRunSort] = useState<RunSort>("id");
+  const [strategyQuery, setStrategyQuery] = useState("");
+  const [strategySort, setStrategySort] = useState<StrategySort>("id");
+  const [unresolvedOnly, setUnresolvedOnly] = useState(false);
   const e = search.evaluation;
   const result = e?.runs.find((r) => r.run === run) || e?.runs[0];
   const comparable =
@@ -39,6 +55,14 @@ export function Evaluation({
         </p>
       </div>
     );
+  const visibleRuns = selectRuns(e.runs, runQuery, runFilter, runSort);
+  const strategies = selectStrategies(
+    result.strategies,
+    strategyQuery,
+    filter,
+    strategySort,
+    unresolvedOnly,
+  );
   const pct = (x: number) => `${(x * 100).toFixed(1)}%`;
   return (
     <section className="evaluation">
@@ -105,6 +129,75 @@ export function Evaluation({
           )}
         </div>
       )}
+      <div className="evaluation-tools" aria-label="構成の絞り込み">
+        <input
+          type="search"
+          aria-label="構成IDを検索"
+          placeholder="構成IDを検索"
+          value={runQuery}
+          onChange={(event) => setRunQuery(event.target.value)}
+        />
+        <label>
+          対象{" "}
+          <select
+            value={runFilter}
+            onChange={(event) => setRunFilter(event.target.value as RunFilter)}
+          >
+            <option value="all">すべて</option>
+            <option value="pending">集計未完了</option>
+            <option value="limited">履歴集計の上限</option>
+            <option value="guaranteed">保証範囲あり</option>
+          </select>
+        </label>
+        <label>
+          並び順{" "}
+          <select
+            value={runSort}
+            onChange={(event) => setRunSort(event.target.value as RunSort)}
+          >
+            <option value="id">構成ID</option>
+            <option value="groups">展開グループが多い順</option>
+            <option value="guarantee">勝利確率の保証下限が高い順</option>
+          </select>
+        </label>
+        <span role="status">
+          {visibleRuns.length} / {e.runs.length} 構成
+        </span>
+        <button
+          disabled={!visibleRuns.length}
+          onClick={() =>
+            saveJSON(
+              {
+                search: search.name,
+                config: search.config,
+                classification: e.classification,
+                meaning: e.meaning,
+                cut: e.cut,
+                filters: { query: runQuery, filter: runFilter, sort: runSort },
+                runs: visibleRuns,
+              },
+              "evaluation-runs.json",
+            )
+          }
+        >
+          表示構成を書き出す
+        </button>
+        {(runQuery || runFilter !== "all") && (
+          <button
+            onClick={() => {
+              setRunQuery("");
+              setRunFilter("all");
+            }}
+          >
+            絞り込みを解除
+          </button>
+        )}
+      </div>
+      {!visibleRuns.length && (
+        <p role="status">
+          該当する構成はありません。絞り込みを解除すると全構成を表示できます。
+        </p>
+      )}
       <table>
         <caption>構成別の結果 — 相手構成の出現頻度は仮定しません</caption>
         <thead>
@@ -117,7 +210,7 @@ export function Evaluation({
           </tr>
         </thead>
         <tbody>
-          {e.runs.map((r) => (
+          {visibleRuns.map((r) => (
             <tr key={r.run}>
               <td>
                 <button
@@ -153,7 +246,10 @@ export function Evaluation({
         result={result}
         baseline={baseline}
         comparable={comparable}
-        onSelect={(run) => { setRun(run); setFilter(null); }}
+        onSelect={(run) => {
+          setRun(run);
+          setFilter(null);
+        }}
       />
       <h3>C{result.run} の構成</h3>
       <div className="variant-columns">
@@ -208,6 +304,84 @@ export function Evaluation({
         試合全体の設置・反転・持ち直しの完了順序で分類します。移動・リトライと物体IDの違いは分類に含めません。詳細な移動や時刻は試合展開に残ります。得点や勝敗で分類していません。
       </p>
       <Classification strategies={result.strategies} onSelect={setFilter} />
+      <div className="evaluation-tools" aria-label="作戦の絞り込み">
+        <input
+          type="search"
+          aria-label="作戦ID・動作を検索"
+          placeholder="作戦ID・動作を検索"
+          value={strategyQuery}
+          onChange={(event) => setStrategyQuery(event.target.value)}
+        />
+        <label>
+          並び順{" "}
+          <select
+            value={strategySort}
+            onChange={(event) =>
+              setStrategySort(event.target.value as StrategySort)
+            }
+          >
+            <option value="id">作戦ID</option>
+            <option value="groups">展開グループが多い順</option>
+            <option value="paths">試合展開数が多い順</option>
+            <option value="minimum">発見済みの最小点差が高い順</option>
+            <option value="unresolved">未決割合が高い順</option>
+          </select>
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={unresolvedOnly}
+            onChange={(event) => setUnresolvedOnly(event.target.checked)}
+          />
+          未決の展開あり
+        </label>
+        <span role="status">
+          {strategies.length} / {result.strategies.length} 作戦
+        </span>
+        <button
+          disabled={!strategies.length}
+          onClick={() =>
+            saveJSON(
+              {
+                search: search.name,
+                config: search.config,
+                classification: e.classification,
+                run: result.run,
+                windowEnd: result.windowEnd,
+                statisticsComplete: result.statisticsComplete,
+                historyLimited: result.historyLimited,
+                meaning: evaluationMeaning,
+                filters: {
+                  query: strategyQuery,
+                  classificationIds: filter,
+                  sort: strategySort,
+                  unresolvedOnly,
+                },
+                strategies,
+              },
+              `evaluation-C${result.run}-strategies.json`,
+            )
+          }
+        >
+          表示作戦を書き出す
+        </button>
+        {(strategyQuery || filter || unresolvedOnly) && (
+          <button
+            onClick={() => {
+              setStrategyQuery("");
+              setFilter(null);
+              setUnresolvedOnly(false);
+            }}
+          >
+            作戦の絞り込みを解除
+          </button>
+        )}
+      </div>
+      {strategySort === "minimum" && (
+        <p>
+          点差は発見済みの展開内の範囲です。相手の最善応答に対する保証値ではありません。
+        </p>
+      )}
       {filter && (
         <p>
           選択中の分類：{filter.length} 作戦{" "}
@@ -216,6 +390,10 @@ export function Evaluation({
       )}
       {result.strategies.length === 0 ? (
         <p className="empty">終了局面に到達する経路がまだありません。</p>
+      ) : !strategies.length ? (
+        <p role="status">
+          該当する作戦はありません。検索語や分類を変更してください。
+        </p>
       ) : (
         <table>
           <thead>
@@ -229,40 +407,47 @@ export function Evaluation({
             </tr>
           </thead>
           <tbody>
-            {result.strategies
-              .filter((s) => !filter || filter.includes(s.id))
-              .map((s) => (
-                <tr key={s.id}>
-                  <td>
-                    <button title={s.id} onClick={() => onNode(result.run, s.node)}>
-                      {s.id.slice(0, 14)}
-                    </button>
-                    <details>
-                      <summary>構造</summary>
-                      <ol>
-                        {s.prefix.map((group, index) => (
-                          <li key={index}>
-                            同時刻の動作 {index + 1}組目
-                            <ul>
-                              {group.map((event) => (
-                                <li key={event}>
-                                  {structuralEventName(event)}
-                                </li>
-                              ))}
-                            </ul>
-                          </li>
-                        ))}
-                      </ol>
-                    </details>
-                  </td>
-                  <td>{s.groups}</td>
-                  <td>{s.paths}</td>
-                  <td>
-                    {pct(s.groupWinFraction)}
-                    <small>未決 {pct(s.unresolvedFraction)}</small>
-                  </td>
-                  <td>{pct(s.pathWinFraction)}</td>
-                  <td>
+            {strategies.map((s) => (
+              <tr key={s.id}>
+                <td>
+                  <button
+                    title={s.id}
+                    aria-label={`${s.id}の代表局面を開く`}
+                    onClick={() => onNode(result.run, s.node)}
+                  >
+                    {s.id.slice(0, 14)}
+                  </button>
+                  <details>
+                    <summary>
+                      構造 · {s.prefix.length}組 / {s.prefix.flat().length}動作
+                    </summary>
+                    <ol>
+                      {s.prefix.map((group, index) => (
+                        <li key={index}>
+                          同時刻の動作 {index + 1}組目
+                          <ul>
+                            {group.map((event) => (
+                              <li key={event}>{structuralEventName(event)}</li>
+                            ))}
+                          </ul>
+                        </li>
+                      ))}
+                    </ol>
+                  </details>
+                </td>
+                <td>{s.groups}</td>
+                <td>{s.paths}</td>
+                <td>
+                  {pct(s.groupWinFraction)}
+                  <small>未決 {pct(s.unresolvedFraction)}</small>
+                </td>
+                <td>{pct(s.pathWinFraction)}</td>
+                <td>
+                  <small>
+                    {marginRange(s.distribution)?.join(" ～ ") ?? "未集計"}
+                  </small>
+                  <details>
+                    <summary>点差ごとの割合</summary>
                     <div className="distribution">
                       {s.distribution.map(([margin, weight]) => (
                         <div key={margin}>
@@ -280,9 +465,10 @@ export function Evaluation({
                         </div>
                       ))}
                     </div>
-                  </td>
-                </tr>
-              ))}
+                  </details>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       )}

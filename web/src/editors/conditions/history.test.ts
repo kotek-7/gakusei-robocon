@@ -74,3 +74,30 @@ test("history retains at most 50 edits and does not mutate retained snapshots", 
   assert.equal(state.present.name, "run 9");
   assert.equal(conditionHistory(state, { type: "undo" }), state);
 });
+
+test("scoped profile batch edits only displayed keys and undo together", () => {
+  const initial = defaults();
+  const keys = Object.keys(initial.teams[0].speeds).slice(0, 1);
+  const edited = conditionHistory(
+    { past: [], present: initial, future: [] },
+    {
+      type: "change",
+      edit: (c) => selectProfile(c, 0, "all", keys),
+    },
+  );
+  for (const key of Object.keys(initial.teams[0].speeds)) {
+    assert.deepEqual(
+      edited.present.teams[0].speeds[key],
+      keys.includes(key) ? [0, 1, 2] : initial.teams[0].speeds[key],
+    );
+  }
+  assert.deepEqual(edited.present.teams[1], initial.teams[1]);
+  assert.deepEqual(conditionHistory(edited, { type: "undo" }).present, initial);
+  assert.equal(
+    conditionHistory(edited, {
+      type: "change",
+      edit: (c) => selectProfile(c, 0, 0, []),
+    }),
+    edited,
+  );
+});

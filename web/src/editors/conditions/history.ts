@@ -46,8 +46,9 @@ export function selectProfile(
   config: Config,
   team: number,
   profile: number | "all",
+  keys = Object.keys(config.teams[team].speeds),
 ) {
-  for (const key of Object.keys(config.teams[team].speeds)) {
+  for (const key of keys) {
     config.teams[team].speeds[key] = profile === "all" ? [0, 1, 2] : [profile];
   }
 }
