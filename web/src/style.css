@@ -664,9 +664,8 @@ button.status-item:hover {
   left: 0;
 }
 .menu-popup.submenu {
-  position: absolute;
-  left: calc(100% - 4px);
-  top: -5px;
+  position: fixed;
+  z-index: 60;
 }
 .menu-title {
   padding: 2px 8px 4px;

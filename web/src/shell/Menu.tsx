@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   formatKeys,
   getCommand,
@@ -47,15 +48,19 @@ export function MenuList({
   items,
   onClose,
   autoFocus = true,
+  onBack,
 }: {
   items: MenuItem[];
   onClose: () => void;
   autoFocus?: boolean;
+  onBack?: () => void;
 }) {
   useCommands((s) => s.version);
   const [open, setOpen] = useState<number | null>(null);
   const [focus, setFocus] = useState(-1);
   const ref = useRef<HTMLDivElement>(null);
+  const anchors = useRef(new Map<number, HTMLDivElement>());
+  const [focusChild, setFocusChild] = useState(false);
   const rows = items.map(rowOf);
   useEffect(() => {
     if (autoFocus) ref.current?.focus();
@@ -77,10 +82,14 @@ export function MenuList({
       onKeyDown={(e) => {
         if (e.key === "ArrowDown") move(1);
         else if (e.key === "ArrowUp") move(-1);
-        else if (e.key === "ArrowRight" && rows[focus]?.submenu) setOpen(focus);
+        else if (e.key === "ArrowRight" && rows[focus]?.submenu) {
+          setFocusChild(true);
+          setOpen(focus);
+        }
+        else if (e.key === "ArrowLeft" && onBack) onBack();
         else if (e.key === "Enter" && rows[focus]) {
           const r = rows[focus]!;
-          if (r.submenu) setOpen(focus);
+          if (r.submenu) { setFocusChild(true); setOpen(focus); }
           else if (!r.disabled) {
             onClose();
             r.act?.();
@@ -98,7 +107,9 @@ export function MenuList({
           <div
             key={i}
             className="menu-row-wrap"
+            ref={(element) => { if (element) anchors.current.set(i, element); else anchors.current.delete(i); }}
             onPointerEnter={() => {
+              setFocusChild(false);
               setFocus(i);
               setOpen(r.submenu ? i : null);
             }}
@@ -107,6 +118,7 @@ export function MenuList({
               role={r.checked === null ? "menuitem" : "menuitemcheckbox"}
               aria-checked={r.checked ?? undefined}
               aria-haspopup={r.submenu ? "menu" : undefined}
+              aria-expanded={r.submenu ? open === i : undefined}
               className={`menu-row${focus === i ? " focus" : ""}`}
               disabled={r.disabled}
               tabIndex={-1}
@@ -122,15 +134,43 @@ export function MenuList({
               <span className="menu-sub">{r.submenu ? <Icon name="chevronRight" size={12} /> : null}</span>
             </button>
             {open === i && r.submenu && (
-              <div className="menu-popup submenu">
-                <MenuList items={r.submenu} onClose={onClose} autoFocus={false} />
-              </div>
+              <Submenu anchor={anchors.current.get(i)!}>
+                <MenuList items={r.submenu} onClose={onClose} autoFocus={focusChild}
+                  onBack={() => { setOpen(null); ref.current?.focus(); }} />
+              </Submenu>
             )}
           </div>
         );
       })}
     </div>
   );
+}
+
+/** Escape the parent's scrolling box while keeping nested menu events together. */
+function Submenu({ anchor, children }: { anchor: HTMLElement; children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState({ left: 0, top: 0 });
+  useLayoutEffect(() => {
+    const update = () => {
+      if (!ref.current || !anchor) return;
+      const row = anchor.getBoundingClientRect();
+      const popup = ref.current.getBoundingClientRect();
+      const right = row.right;
+      const left = right + popup.width <= innerWidth - 4 ? right : row.left - popup.width;
+      setPos({
+        left: Math.max(4, Math.min(left, innerWidth - popup.width - 4)),
+        top: Math.max(4, Math.min(row.top - 4, innerHeight - popup.height - 4)),
+      });
+    };
+    update();
+    window.addEventListener("resize", update);
+    window.addEventListener("scroll", update, true);
+    return () => {
+      window.removeEventListener("resize", update);
+      window.removeEventListener("scroll", update, true);
+    };
+  }, [anchor]);
+  return createPortal(<div ref={ref} className="menu-popup submenu" style={pos}>{children}</div>, document.body);
 }
 
 /** Floating context menu at the pointer, clamped to the viewport. */
@@ -142,14 +182,14 @@ export function ContextMenuHost() {
     if (!menu || !ref.current) return;
     const r = ref.current.getBoundingClientRect();
     setPos([
-      Math.min(menu.x, innerWidth - r.width - 4),
-      Math.min(menu.y, innerHeight - r.height - 4),
+      Math.max(4, Math.min(menu.x, innerWidth - r.width - 4)),
+      Math.max(4, Math.min(menu.y, innerHeight - r.height - 4)),
     ]);
   }, [menu]);
   useEffect(() => {
     if (!menu) return;
     const close = (e: PointerEvent) => {
-      if (!ref.current?.contains(e.target as Node)) ui.closeMenu();
+      if (!(e.target instanceof Element && e.target.closest(".menu-popup"))) ui.closeMenu();
     };
     const t = setTimeout(() => window.addEventListener("pointerdown", close), 0);
     window.addEventListener("blur", ui.closeMenu);
