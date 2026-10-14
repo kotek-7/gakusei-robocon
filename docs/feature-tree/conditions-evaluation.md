@@ -66,3 +66,7 @@ READMEとモデル仕様を読み、能力と数値の独立した組合せを�
 - 参照OSS：[VS Code settingsTreeModels.ts](https://github.com/microsoft/vscode/blob/f9eda2440cbde3d0ee64e1a7c7e238991b2301f5/src/vs/workbench/contrib/preferences/browser/settingsTreeModels.ts) の `SettingsTreeSettingElement` が現在値・既定値・適用範囲を分離する構造。モデルの仮定値を公式値と見なさず、編集開始時との差分として表示した。コード転用なし。
 - 検証：集合順序・数値段階順序、比較前提の区別、絞込復元と取り消し、初期局面の一体復元の4テスト成功。実ブラウザで終了時刻180→120→行復元180→取り消し120、JSON保存、探索作成を確認。1440px・760pxの画像を目視確認。taste lint 0 FAIL / 0 WARN。登録コマンドから復元・書出しを実行。
 - 継続対象：複数の保存探索から基準条件を選ぶ操作、特定項目への差分行からのジャンプ。既存探索結果を自動再計算する案は採らない。コミットIDは親タスクの統合記録で追跡。
+
+### 評価の実画面追検証
+
+1秒・2秒の異なる条件で実際に候補探索と評価を行い、2秒探索の比較対象に1秒探索を指定した。差分2項目（探索名・終了時刻）を確認し、「比較の前提が異なる項目だけ」で終了時刻1項目に絞れること、スペック差だけの比較不可の警告が残ることを確認。差分JSONを保存して `before.horizon=1`、`after.horizon=2`、差分IDが `horizon` のみであることを読戻し検証した。フィルター解除で探索名が再表示され、ページ例外は0件。`/tmp/evaluation-condition-differences.png` を目視確認。IndexedDB付き再現状態は `/tmp/robocon-density-small-state.json`（開発origin 4189）。
