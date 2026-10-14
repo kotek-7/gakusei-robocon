@@ -2,7 +2,7 @@
 import { call } from "./client";
 import { register, togglePinned, clearRecent } from "./commands";
 import { fetchQuery, onJobFinished, upsertSearch, useSearches } from "./data";
-import { layout, useLayout } from "./layout";
+import { leaves, layout, useLayout } from "./layout";
 import { getPref, setPref } from "./prefs";
 import { shareURL } from "./router";
 import { act, ui, useUI } from "./store";
@@ -129,6 +129,15 @@ onJobFinished((e) => {
 });
 
 register(
+  { id: "docs.open", title: "アプリ内ドキュメントを開く", category: "ヘルプ",
+    run: ({ args }) => {
+      const previous = useLayout.getState().active;
+      layout.reveal("model", { section: typeof args === "string" ? args : "model" });
+      const state = useLayout.getState();
+      const area = state.workspaces.find(w => w.id === state.active);
+      const doc = area && leaves(area.root).find(a => a.editor === "model");
+      if (doc && previous !== state.active) layout.setAreaState(doc.id, { returnWorkspace: previous });
+    } },
   { id: "command.pin", title: "操作の固定を切り替える", category: "表示", hidden: true,
     run: ({ args }) => { if (typeof args === "string") togglePinned(args); } },
   { id: "command.clearRecent", title: "コマンドの使用履歴を消去", category: "編集", run: clearRecent },

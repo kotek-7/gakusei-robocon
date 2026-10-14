@@ -83,8 +83,9 @@ export function defaultWorkspaces(): Workspace[] {
     {
       id: "conditions",
       name: "条件",
-      root: S("row", [70, 30], [A("conditions"), A("model")]),
+      root: A("conditions"),
     },
+    { id: "documentation", name: "ドキュメント", root: A("model") },
     {
       id: "review",
       name: "検討記録",
@@ -96,6 +97,21 @@ export function defaultWorkspaces(): Workspace[] {
       root: S("row", [42, 58], [S("col", [55, 45], [A("interval-analysis"), A("score")]), S("col", [60, 40], [A("viewport"), A("timeline")])]),
     },
   ];
+}
+
+/** Move reference prose out of saved condition layouts, retaining editor state. */
+export function separateDocumentation(workspaces: Workspace[]): Workspace[] {
+  const prune = (node: AreaNode): AreaNode | null => {
+    if (node.kind === "area") return node.editor === "model" ? null : node;
+    const kept = node.children.map((child, i) => ({ child: prune(child), size: node.sizes[i] })).filter(x => x.child);
+    if (!kept.length) return null;
+    if (kept.length === 1) return kept[0].child!;
+    const total = kept.reduce((sum, x) => sum + x.size, 0);
+    return { ...node, children: kept.map(x => x.child!), sizes: kept.map(x => x.size * 100 / total) };
+  };
+  const result = workspaces.map(w => w.id === "conditions" ? { ...w, root: prune(w.root) ?? A("conditions") } : w);
+  if (!result.some(w => w.id === "documentation")) result.push({ id: "documentation", name: "ドキュメント", root: A("model") });
+  return result;
 }
 
 type LayoutState = {
@@ -110,7 +126,7 @@ const initial = (): LayoutState => {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE) || "null");
     if (saved?.workspaces?.length)
-      return { ...saved, maximized: null, mounted: [saved.active] };
+      return { ...saved, workspaces: separateDocumentation(saved.workspaces), maximized: null, mounted: [saved.active] };
   } catch {
     // fall through to defaults
   }

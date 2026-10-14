@@ -1,21 +1,24 @@
-.model-lookup {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  position: sticky;
-  top: -12px;
-  background: var(--surface);
-  padding: 8px 0;
-  z-index: 1;
-}
-.model-lookup input { flex: 1 1 140px; min-width: 0; }
-.model-lookup select { max-width: 100%; }
+.documentation { display: grid; grid-template-columns: minmax(160px, 220px) minmax(0, 1fr); height: 100%; min-height: 0; }
+.documentation-index { padding: 12px; overflow: auto; border-right: 1px solid var(--line); }
+.documentation-index input { width: 100%; min-width: 0; margin-bottom: 10px; }
+.documentation-chapters { display: grid; gap: 4px; }
+.documentation-chapters .tool { text-align: left; white-space: normal; padding: 8px; }
+.documentation-chapters [aria-current="page"] { background: var(--selected); color: var(--ink); font-weight: 600; }
+.documentation-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.model-document { container-type: inline-size; line-height: 1.65; }
+.model-document p, .model-document ul, .model-document dl { max-width: 75ch; }
 .model-document table { width: 100%; }
 .model-document th, .model-document td { overflow-wrap: anywhere; }
+@media (max-width: 650px) {
+  .documentation { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
+  .documentation-index { padding: 8px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .documentation-chapters { display: flex; overflow-x: auto; }
+  .documentation-chapters .tool { flex: 0 0 auto; }
+  .documentation-heading { align-items: flex-start; }
+}
 @container (max-width: 340px) {
   .model-document.model-document dl > div { grid-template-columns: 1fr; gap: 2px; margin-bottom: 8px; }
   .model-document table, .model-document tbody { display: block; }
-  .model-document tr { display: grid; grid-template-columns: 1fr; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .model-document tr { display: grid; padding: 6px 0; border-bottom: 1px solid var(--line); }
   .model-document th, .model-document td { display: block; padding: 2px 0; border: 0; }
 }
-.model-document { container-type: inline-size; }

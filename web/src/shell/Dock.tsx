@@ -1,3 +1,4 @@
+import { Help } from "../editors/common/Help";
 import { useRef, type ReactNode } from "react";
 import {
   layout,
@@ -129,6 +130,7 @@ function Area({ area, compactActive }: { area: AreaLeaf; compactActive: string }
           {def?.title ?? area.editor}
           <Icon name="chevron" size={12} />
         </button>
+        {area.editor !== "model" && <Help topic={({ conditions: "conditions", candidates: "search", jobs: "search", evaluation: "results", compare: "results", timeline: "timeline", score: "timeline", "interval-analysis": "timeline", properties: "graph", graph: "graph", review: "storage", outliner: "storage", viewport: "model", events: "timeline" } as Record<string, string>)[area.editor] ?? "model"} />}
         {def?.Header && <def.Header area={area} />}
         <span className="area-spacer" />
         <button

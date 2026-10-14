@@ -152,7 +152,7 @@ function menus(): [string, MenuItem[]][] {
         C("layout.import"),
       ],
     ],
-    ["ヘルプ", [C("app.palette"), C("app.shortcuts"), SEP, C("app.about")]],
+    ["ヘルプ", [C("docs.open"), SEP, C("app.palette"), C("app.shortcuts"), SEP, C("app.about")]],
   ];
 }
 
