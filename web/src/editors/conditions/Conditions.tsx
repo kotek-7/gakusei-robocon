@@ -1,3 +1,5 @@
+import { flushSync } from "react-dom";
+import { Help } from "../common/Help";
 import { profileNames } from "../common/labels";
 import { useReducer, useState } from "react";
 import { conditionHistory, selectProfile } from "./history";
@@ -31,6 +33,7 @@ export function Conditions({
   );
   const c = history.present;
   const [team, setTeam] = useState(0);
+  const [view, setView] = useState("edit");
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [changedOnly, setChangedOnly] = useState(false);
@@ -83,6 +86,7 @@ export function Conditions({
   return (
     <form
       className="conditions"
+      onInvalidCapture={() => flushSync(() => setView("edit"))}
       onKeyDown={(e) => {
         const target = e.target as HTMLElement;
         if (
@@ -104,7 +108,7 @@ export function Conditions({
       }}
     >
       <div className="section-title">
-        <h2>探索条件</h2>
+        <h2>探索条件 <Help topic="conditions" text="選択した能力・数値の組合せから生成します。値は仮定で、編集できます。" /></h2>
         <div className="condition-history" aria-label="条件の編集履歴">
           <button
             type="button"
@@ -127,10 +131,12 @@ export function Conditions({
           条件を書き出す
         </button>
       </div>
-      <Differences initial={initial} current={c} model={model} change={change} />
-      <p>
-        選択した能力・数値の組合せから生成します。値は仮定で、編集できます。
-      </p>
+      <nav className="condition-views" aria-label="条件の表示">
+        {[["edit", "基本編集"], ["differences", "編集差分"], ["axes", "組合せ"], ["rules", "初期配置・ルール"]].map(([id, label]) => <button key={id} type="button" aria-pressed={view === id} onClick={() => setView(id)}>{label}</button>)}
+      </nav>
+      <section hidden={view !== "differences"} aria-label="編集差分"><Differences initial={initial} current={c} model={model} change={change} /></section>
+      <section hidden={view !== "axes"} aria-label="構成の組合せ"><SearchAxes config={c} model={model} change={change} /></section>
+      <section hidden={view !== "edit"} aria-label="基本編集">
       <div className="form-row">
         <label>
           探索名
@@ -187,7 +193,6 @@ export function Conditions({
           {c.horizon}秒での局面評価です。180秒の最終勝敗ではありません。
         </p>
       )}
-      <SearchAxes config={c} model={model} change={change} />
       <div className="team-tabs" aria-label="編集するチーム">
         {["赤チーム", "青チーム"].map((name, i) => (
           <button
@@ -474,9 +479,9 @@ export function Conditions({
           ))}
         </tbody>
       </table>
-      <details>
-        <summary>初期配置とルール解釈</summary>
-        <p>未確定の解釈を設定します。公式裁定を意味しません。</p>
+      </section>
+      <section hidden={view !== "rules"} aria-label="初期配置とルール解釈">
+        <h3>初期配置とルール解釈 <Help topic="rules" text="未確定の解釈を設定します。公式裁定を意味しません。" /></h3>
         <label>
           スタートゾーンの割当
           <select
@@ -518,7 +523,7 @@ export function Conditions({
         {Object.entries(model.rules).map(([k, r]) => (
           <label key={k}>
             {r.label}
-            <small>{r.source}</small>
+            <Help topic="rules" text={r.source} />
             <select
               value={String(c.rules[k])}
               onChange={(e) =>
@@ -551,7 +556,7 @@ export function Conditions({
             </select>
           </label>
         ))}
-      </details>
+      </section>
       <div className="form-row">
         <label>
           初期局面JSONを読み込む

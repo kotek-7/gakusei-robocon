@@ -1,3 +1,4 @@
+import { Help } from "../common/Help";
 import type { Config, Evaluation as Report, Search, Variant } from "../../engine/types";
 type Result = Report["runs"][number];
 function opponent(config: Config, v: Variant) {
@@ -48,13 +49,13 @@ export function Comparison({
       : [];
   return (
     <section className="comparison">
-      <h3>赤の同じ構成で、相手構成を比較</h3>
+      <h3>赤の同じ構成で、相手構成を比較 <Help topic="results" text="相手の頻度で平均していません。探索途中の行を含む場合、表示範囲も暫定です。" /></h3>
       <p>
         {peers.length} 構成を集計済み。赤が勝つ展開の割合の範囲{" "}
         {fractions.length
           ? `${pct(Math.min(...fractions))}–${pct(Math.max(...fractions))}`
           : "未確定"}
-        。相手の頻度で平均していません。探索途中の行を含む場合、この範囲も暫定です。
+        {peers.some((r) => !r.statisticsComplete) && " · 途中の集計を含む"}
       </p>
       <table>
         <thead>
@@ -84,10 +85,10 @@ export function Comparison({
       </table>
       {matches.length > 0 && (
         <>
-          <h3>比較対象と同じ相手スペックで比較</h3>
+          <h3>比較対象と同じ相手スペックで比較 <Help topic="results" text="初期条件・相手の能力・数値スペックが一致する結果です。赤の条件差は各探索の条件表で確認できます。" /></h3>
           <p>
             選択中の C{result.run}{" "}
-            と、初期条件・相手の能力・数値スペックが一致する結果です。赤の条件差は各探索の条件表で確認できます。
+            と初期条件・相手スペックが一致
           </p>
           <table>
             <thead>

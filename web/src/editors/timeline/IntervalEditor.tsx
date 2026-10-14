@@ -1,3 +1,4 @@
+import { Help } from "../common/Help";
 import { register, run } from "../../app/commands";
 import { currentAnalysis } from "../../app/coreCommands";
 import type { MatchAnalysis } from "../../engine/analysis";
@@ -102,7 +103,7 @@ function IntervalEditor({ area }: EditorProps) {
             return <tr key={robot}><th>{robotNames[robot]}</th><td>{summary.count}</td><td>{summary.active.toFixed(1)}秒</td><td>{summary.waiting.toFixed(1)}秒</td><td><button className="tool" disabled={!summary.longestWait} onClick={() => run(`interval.longestWait${robot}`)}>最長待機へ</button></td></tr>;
           })}
         </tbody></table>
-        <h3>動作別の内訳</h3>
+        <h3>動作別の内訳 <Help topic="timeline" text="複数機体の合計秒は重複時間を含みます。選択経路に記録された動作を集計し、経路外の時間は含みません。" /></h3>
         <div className="interval-controls">
           <label>機体 <select aria-label="内訳の機体" value={robot ?? "all"} onChange={(e) => setRobot(e.target.value === "all" ? null : Number(e.target.value))}>
             <option value="all">全機体</option>{robotNames.map((name, i) => <option key={i} value={i}>{name}</option>)}
@@ -112,13 +113,13 @@ function IntervalEditor({ area }: EditorProps) {
         <table className="interval-table"><thead><tr><th>動作</th><th>件数</th><th>合計秒</th></tr></thead><tbody>
           {breakdown.map((item) => <tr key={item.kind}><th><button className="link" aria-pressed={kind === item.kind} onClick={() => setKind(kind === item.kind ? "" : item.kind)}>{actionName({ kind: item.kind })}</button></th><td>{item.count}</td><td>{item.seconds.toFixed(1)}</td></tr>)}
         </tbody></table>
-        <details open={!!kind}><summary>{kind ? actionName({ kind }) : "動作"}の区間 {details.length}件</summary>
+        <section><h3>{kind ? actionName({ kind }) : "動作"}の区間 {details.length}件</h3>
           <table className="interval-detail-table"><thead><tr><th>機体 / 動作</th><th>開始〜終了</th><th>秒</th><th>解析</th></tr></thead><tbody>
             {details.map((row, i) => <tr key={i}><td>{robotNames[row.interval.robot]} / {actionName(row.interval.action)}</td><td><button className="link tabular" onClick={() => run("interval.inspectAction", { ...row, robot: row.interval.robot })}>{row.start.toFixed(1)}〜{row.end.toFixed(1)}</button></td><td className="tabular">{row.seconds.toFixed(1)}</td><td><button className="tool" onClick={() => run("interval.inspectAction", { ...row, robot: row.interval.robot, range: true })}>区間に設定</button></td></tr>)}
           </tbody></table>
           {!details.length && <p className="muted">該当する動作はありません</p>}
-        </details>
-        <p className="muted small">複数機体の合計秒は重複時間を含みます。選択経路に記録された動作を集計。経路外の時間は含みません。</p>
+        </section>
+
       </div>
   );
 }

@@ -1,3 +1,4 @@
+import { Help } from "../common/Help";
 import type { Config, Model } from "../../engine/types";
 import { countConfigs, dimensions } from "../../engine/model";
 import { profileNames } from "../common/labels";
@@ -14,13 +15,10 @@ export function SearchAxes({
   const axes = dimensions(config).filter(([, , , values]) => values.length > 1);
   const count = countConfigs(config);
   return (
-    <details className="condition-axes">
-      <summary>
+    <section className="condition-axes">
+      <h3>
         構成の組合せ {count.toLocaleString()} · 複数候補の項目 {axes.length}
-      </summary>
-      <p>
-        各項目の候補数を掛け合わせた構成数です。試合展開や計算時間の見積りではありません。
-      </p>
+      <Help topic="conditions" text="各項目の候補数を掛け合わせた構成数です。試合展開や計算時間の見積りではありません。" /></h3>
       {!axes.length ? (
         <p>すべての項目が1つの値に固定されています。</p>
       ) : (
@@ -92,6 +90,6 @@ export function SearchAxes({
           </tbody>
         </table>
       )}
-    </details>
+    </section>
   );
 }

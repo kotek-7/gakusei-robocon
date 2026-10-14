@@ -238,12 +238,6 @@ tbody th {
 dl {
   margin: 0;
 }
-details > summary {
-  cursor: pointer;
-  padding: 4px 0;
-  color: var(--ink);
-  font-weight: 600;
-}
 pre {
   font-size: 12px;
   background: var(--surface-2);
@@ -1713,9 +1707,6 @@ tr[aria-selected="true"] th {
   background: var(--surface);
   border-top: 1px solid var(--line);
 }
-.conditions details {
-  margin: 8px 0;
-}
 .graph-editor {
   padding: 0;
   display: flex;
@@ -1887,14 +1878,13 @@ tr[aria-selected="true"] th {
 .search-metrics dd {
   font-weight: 600;
 }
-.discovery-details > summary,
 .progress-heading {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 12px;
   align-items: center;
 }
-.discovery-details > summary > span:first-child {
+.progress-heading > span:first-child {
   color: var(--accent);
 }
 .progress-detail-label {

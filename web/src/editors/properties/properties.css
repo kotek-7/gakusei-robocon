@@ -1,0 +1,2 @@
+.inspector-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: 10px 0; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.inspector-tabs button[aria-pressed="true"] { color: var(--accent); border-color: currentColor; font-weight: 600; }

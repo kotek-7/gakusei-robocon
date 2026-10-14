@@ -1,3 +1,4 @@
+import { Help } from "../common/Help";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./score.css";
 import { layout } from "../../app/layout";
@@ -222,8 +223,8 @@ function ScoreEditor({ area }: EditorProps) {
           </tr>
         </tbody>
       </table>
-      {range && <details className="score-range" open>
-        <summary>区間の得点増減 {range[0].toFixed(1)}〜{range[1].toFixed(1)}秒</summary>
+      {range && <section className="score-range">
+        <h3>区間の得点増減 {range[0].toFixed(1)}〜{range[1].toFixed(1)}秒 <Help topic="results" text="終了時点の点数から開始時点の点数を引いた値です。" /></h3>
         {!rangeDelta ? <p className="muted small">区間が経路外を含みます。タイムラインで経路内の区間を指定してください。</p> : <>
           <div className="area-tools">
             <button className="tool" onClick={() => ui.patchPlayback({ time: range[0], playing: false })}>開始へ</button>
@@ -237,10 +238,10 @@ function ScoreEditor({ area }: EditorProps) {
               })}
             </tr>)}
           </tbody></table>
-          <p className="muted small">終了時点の点数から開始時点の点数を引いた値です。</p>
+
         </>}
-      </details>}
-      <details className="muted small"><summary>集計条件</summary>持ち上げた物体は、その時点で塔から外れた扱いになります。</details>
+      </section>}
+      <span className="muted small">集計条件 <Help topic="model" text="持ち上げた物体は、その時点で塔から外れた扱いになります。" /></span>
     </div>
   );
 }

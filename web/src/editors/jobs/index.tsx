@@ -1,6 +1,5 @@
 import { Coverage } from "./Coverage";
 import { isEnabled, run } from "../../app/commands";
-import { layout } from "../../app/layout";
 import { usePref, setPref } from "../../app/prefs";
 import { useSearch } from "../../app/session";
 import { Empty } from "../common/Empty";
@@ -18,7 +17,7 @@ function JobsEditor() {
           {search.error}
         </p>
       )}
-      <DiscoveryProgress key={search.id} search={search} onDefinitions={() => layout.reveal("model", { section: "history" })} />
+      <DiscoveryProgress key={search.id} search={search} onDefinitions={() => run("docs.open", "search")} />
       <Coverage search={search} />
       <EvaluationProgress search={search} />
       <section className="exact-panel" aria-label="詳細な全探索">

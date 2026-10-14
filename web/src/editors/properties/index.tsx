@@ -15,7 +15,6 @@ function PropertiesEditor() {
   return (
     <div className="editor-scroll">
       <Inspector
-        key={detail.id}
         detail={detail}
         busy={!!busy}
         onStep={(a) => stepActions(a)}

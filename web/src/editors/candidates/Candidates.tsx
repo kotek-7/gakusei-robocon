@@ -1,3 +1,5 @@
+import { DetailView } from "../common/DetailView";
+import { Help } from "../common/Help";
 import { useEffect, useState } from "react";
 import { run as command } from "../../app/commands";
 import "./commands";
@@ -96,7 +98,7 @@ export function Candidates({
   );
   return (
     <section className="evaluation candidates">
-      <h2>発見した作戦候補</h2>
+      <h2>発見した作戦候補 <Help topic="search" text="「候補を探す」で開始します。短い計算時間で候補が出なかった場合は、時間を増やして続けられます。" /></h2>
       {!report || !rows.length ? (
         <div className="empty">
           <h3>
@@ -104,9 +106,7 @@ export function Candidates({
               ? "最初の候補を計算しています"
               : "候補はまだありません"}
           </h3>
-          <p>
-            「候補を探す」で開始します。短い計算時間で候補が出なかった場合は、時間を増やして続けられます。
-          </p>
+          <p>「候補を探す」で計算を開始できます。</p>
         </div>
       ) : (
         <>
@@ -155,8 +155,8 @@ export function Candidates({
             </span>
           </div>
           {selectedRun && <p>{configuration(selectedRun.variant)}</p>}
-          {opponent && <p className="candidate-caveat">相手手順 {opponent} に固定。同じ構成内で比較してください。全裁定分岐を検査済みの結果だけを表示しています。</p>}
-          <p className="candidate-caveat">点差は確認済みの相手手順での結果です。全対応への保証ではありません。</p>
+          {opponent && <p className="candidate-caveat">相手手順 {opponent} に固定 · 同一構成内で比較 <Help topic="results" text="指定した相手手順について、全裁定分岐を検査済みの結果だけを表示しています。" /></p>}
+          <p className="candidate-caveat">確認済み手順の結果 · 全対応への保証なし <Help topic="results" text="点差は確認済みの相手手順での結果です。同じ構成・共通の相手手順で比較してください。" /></p>
           <div
             className="candidate-table"
             tabIndex={0}
@@ -208,8 +208,7 @@ export function Candidates({
                             <button disabled={!worst.path.length} onClick={() => onOpen(r, worst)}>最小点差の経路</button>
                             {compareButtons(worst, `C${r} · ${c.id.slice(0, 8)} · 相手 ${c.responses.find((x) => x === worst)?.opponent ?? "共通手順"}`)}
                           </>}
-                          <details>
-                            <summary>得点と経路</summary>
+                          <DetailView label="得点と経路" title={`C${r} · ${c.id.slice(0, 14)} の得点と経路`}>
                             <p>相手待機：{score(c.baseline)}</p>
                             <button onClick={() => onOpen(r, c.baseline)}>
                               相手待機の経路を開く
@@ -234,14 +233,14 @@ export function Candidates({
                                     </>
                                   )}
                                 </p>
-                                {!!response.blocked?.length && <details><summary>実行不可の時刻と理由</summary><ul>{response.blocked.map((b, j) => <li key={j}>{b.t}秒 · {['赤TR', '赤BR', '青TR', '青BR'][b.robot] ?? b.robot} · 手順{b.instruction + 1}：{b.reason}</li>)}</ul></details>}
+                                {!!response.blocked?.length && <DetailView label="実行不可の時刻と理由" title={`相手手順 ${response.opponent?.slice(0, 14) ?? i + 1} の実行不可`}><ul>{response.blocked.map((b, j) => <li key={j}>{b.t}秒 · {['赤TR', '赤BR', '青TR', '青BR'][b.robot] ?? b.robot} · 手順{b.instruction + 1}：{b.reason}</li>)}</ul></DetailView>}
                                 <button onClick={() => onOpen(r, response)}>
                                   対応{i + 1}の経路を開く
                                 </button>
                                 {compareButtons(response, `C${r} · ${c.id.slice(0, 8)} · 相手 ${response.opponent?.slice(0, 8) ?? i + 1}`)}
                               </div>
                             ))}
-                          </details>
+                          </DetailView>
                         </td>
                       </tr>
                     );
@@ -249,9 +248,8 @@ export function Candidates({
               </tbody>
             </table>
           </div>
-          <details className="candidate-scope">
-            <summary>探索範囲・未計算の分岐</summary>
-            <p>{report.scope}</p>
+          <section className="candidate-scope" aria-label="探索状況">
+            <h3>探索状況 <Help topic="search" text={report.scope} /></h3>
             <p>
               未探索の局面{" "}
               {report.runs
@@ -263,9 +261,9 @@ export function Candidates({
                 .filter((r) => run === "all" || String(r.run) === run)
                 .reduce((n, r) => n + r.remainingChoices, 0)
                 .toLocaleString()}
-              組。 局面の展開で選択肢は増えます。
+              組。
             </p>
-          </details>
+          </section>
         </>
       )}
     </section>

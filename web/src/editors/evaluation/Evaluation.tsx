@@ -1,3 +1,5 @@
+import { DetailView } from "../common/DetailView";
+import { Help } from "../common/Help";
 import {
   structuralEventName,
   profileNames,
@@ -62,8 +64,7 @@ export function Evaluation({
   const pct = (x: number) => `${(x * 100).toFixed(1)}%`;
   return (
     <section className="evaluation">
-      <h2>展開・作戦・構成の評価</h2>
-      <p>{evaluationMeaning}</p>
+      <h2>展開・作戦・構成の評価 <Help topic="results" text={evaluationMeaning} /></h2>
       {baseline && (
         <div className="notice">
           <b>比較対象：{baseline.name}</b>
@@ -96,8 +97,7 @@ export function Evaluation({
           </table>
           <ConditionComparison before={baseline.config} after={search.config} model={model} />
           {baseline.evaluation && (
-            <details>
-              <summary>比較対象の構成別結果</summary>
+            <DetailView label="比較対象の構成別結果" title={`${baseline.name} の構成別結果`}>
               <table>
                 <thead>
                   <tr>
@@ -122,7 +122,7 @@ export function Evaluation({
                   ))}
                 </tbody>
               </table>
-            </details>
+            </DetailView>
           )}
         </div>
       )}
@@ -251,8 +251,7 @@ export function Evaluation({
       <h3>C{result.run} の構成</h3>
       <div className="variant-columns">
         {result.variant.teams.map((t, i) => (
-          <details key={i}>
-            <summary>{i ? "青" : "赤"}チームのスペック</summary>
+          <DetailView key={i} label={`${i ? "青" : "赤"}チームのスペック`} title={`C${result.run} · ${i ? "青" : "赤"}チームのスペック`}>
             <dl>
               {Object.entries(t.caps).map(([k, v]) => (
                 <div key={k}>
@@ -271,7 +270,7 @@ export function Evaluation({
                 </div>
               ))}
             </dl>
-          </details>
+          </DetailView>
         ))}
       </div>
       {result.windowEnd < 180 && (
@@ -282,24 +281,18 @@ export function Evaluation({
       )}
       {result.guarantee && (
         <div className="guarantee">
-          <h3>相手の最善応答を含む評価</h3>
+          <h3>相手の最善応答を含む評価 <Help topic="results" text={`${guaranteeMeaning} 残る同点が審判判断になるため、勝利確率は下限・上限で表示します。`} /></h3>
           <p>
             赤の勝利確率（保証範囲）：{pct(result.guarantee.winLower)}–
             {pct(result.guarantee.winUpper)}　／　得点差の保守的下限：
             {result.guarantee.marginLower.toFixed(2)}
           </p>
-          <p>
-            {guaranteeMeaning}{" "}
-            残る同点が審判判断になるため、勝利確率は下限・上限で表示します。
-          </p>
         </div>
       )}
       <h3>
         作戦分類 <small>{e.classification}</small>
+        <Help topic="results" text="試合全体の設置・反転・持ち直しの完了順序で分類します。移動・リトライと物体IDの違いは分類に含めません。詳細な移動や時刻は試合展開に残ります。得点や勝敗で分類していません。" />
       </h3>
-      <p>
-        試合全体の設置・反転・持ち直しの完了順序で分類します。移動・リトライと物体IDの違いは分類に含めません。詳細な移動や時刻は試合展開に残ります。得点や勝敗で分類していません。
-      </p>
       <Classification strategies={result.strategies} onSelect={setFilter} />
       <div className="evaluation-tools" aria-label="作戦の絞り込み">
         <input
@@ -414,10 +407,7 @@ export function Evaluation({
                   >
                     {s.id.slice(0, 14)}
                   </button>
-                  <details>
-                    <summary>
-                      構造 · {s.prefix.length}組 / {s.prefix.flat().length}動作
-                    </summary>
+                  <DetailView label={`構造 · ${s.prefix.length}組 / ${s.prefix.flat().length}動作`} title={`${s.id.slice(0, 14)} の動作構造`}>
                     <ol>
                       {s.prefix.map((group, index) => (
                         <li key={index}>
@@ -430,7 +420,7 @@ export function Evaluation({
                         </li>
                       ))}
                     </ol>
-                  </details>
+                  </DetailView>
                 </td>
                 <td>{s.groups}</td>
                 <td>{s.paths}</td>
@@ -443,8 +433,7 @@ export function Evaluation({
                   <small>
                     {marginRange(s.distribution)?.join(" ～ ") ?? "未集計"}
                   </small>
-                  <details>
-                    <summary>点差ごとの割合</summary>
+                  <DetailView label="点差ごとの割合" title={`${s.id.slice(0, 14)} の点差分布`}>
                     <div className="distribution">
                       {s.distribution.map(([margin, weight]) => (
                         <div key={margin}>
@@ -462,7 +451,7 @@ export function Evaluation({
                         </div>
                       ))}
                     </div>
-                  </details>
+                  </DetailView>
                 </td>
               </tr>
             ))}

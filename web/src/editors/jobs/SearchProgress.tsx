@@ -1,3 +1,5 @@
+import { DetailView } from "../common/DetailView";
+import { Help } from "../common/Help";
 import { useState } from "react";
 import { isEnabled } from "../../app/commands";
 import { saveJSON, startJob } from "../../app/coreCommands";
@@ -31,20 +33,19 @@ export function DiscoveryProgress({ search, onDefinitions }: { search: Search; o
   const visibleSessions = allHistory ? filteredSessions : filteredSessions.slice(0, 3);
   return (
     <section className="discovery-progress" aria-label="候補探索の進み具合">
-      <details className="discovery-details">
-        <summary>
+      <div className="progress-heading">
           <span role="status">{running ? "探索中" : report?.scopeComplete
             ? "対象範囲を探索済み" : stopLabels[report?.stopReason || ""] || (report ? "途中保存あり" : "未開始")}</span>
           {report && <span>{report.metrics.candidates}候補 · {report.metrics.strategies}種類 · {duration(report.elapsed)}</span>}
-          <span className="progress-detail-label">進捗・履歴</span>
-        </summary>
+          <Help topic="search" />
+      </div>
       {report && <dl className="search-metrics">
         <div><dt>着手構成</dt><dd>{report.runs.length} / {search.totalRuns}</dd></div>
         <div><dt>探索待ち</dt><dd>{report.metrics.frontier.toLocaleString()}件</dd></div>
         <div><dt>相手対応</dt><dd>{report.metrics.responses.toLocaleString()}展開</dd></div>
         <div><dt>比較待ち</dt><dd>{pending.toLocaleString()}件</dd></div>
       </dl>}
-      {!!report?.sessions.length && <div className="discovery-history">
+      {!!report?.sessions.length && <DetailView label={`計算履歴 ${sessions.length}回`} title="候補探索の計算履歴" className="discovery-history">
         <div className="history-heading">
           <h3>計算履歴</h3>
           <label>終了理由 <select value={reason} onChange={(e) => setReason(e.target.value)}><option value="all">すべて</option>{[...new Set(sessions.map((s) => s.reason))].map((value) => <option key={value} value={value}>{stopLabels[value] || value}</option>)}</select></label>
@@ -59,19 +60,18 @@ export function DiscoveryProgress({ search, onDefinitions }: { search: Search; o
             <tbody>{visibleSessions.map(({ session: s, index }) => <tr key={index}>
               <td>{index === 0 ? "直近 · " : `${index + 1}回前 · `}{duration(s.seconds)}</td>
               <td>+{s.newCandidates}</td><td>+{s.newStrategies}</td><td>+{s.responses}</td>
-              <td>{s.scoreChanges.length ? <details className="score-changes"><summary>{s.scoreChanges.length}構成</summary><ul>{s.scoreChanges.map((v) => <li key={v.run}>C{v.run}: {v.before} → {v.after}点</li>)}</ul></details> : "なし"}</td>
+              <td>{s.scoreChanges.length ? <DetailView className="score-changes" label={`${s.scoreChanges.length}構成`} title="得点の更新"><ul>{s.scoreChanges.map((v) => <li key={v.run}>C{v.run}: {v.before} → {v.after}点</li>)}</ul></DetailView> : "なし"}</td>
               <td>{({ exhausted: "範囲内完了", time_limit: "時間上限", cancelled: "停止", resource_limit: "保存量上限", error: "エラー" } as Record<string, string>)[s.reason] || s.reason}</td>
               <td><button disabled={!isEnabled("job.discover") || s.budget < 1} onClick={() => startJob("discovery", {seconds: s.budget})} title="保存済みの探索を、この回と同じ制限時間で続けます">{duration(s.budget)}で続ける</button></td>
             </tr>)}</tbody>
           </table>
           {!visibleSessions.length && <p className="muted">条件に一致する計算履歴はありません</p>}
         </div>
-      </div>}
+      </DetailView>}
       <div className="history-footer">
         <span>全作戦の網羅・最適性は未保証</span>
         <button onClick={onDefinitions}>集計の定義</button>
       </div>
-      </details>
     </section>
   );
 }

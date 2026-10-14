@@ -1,4 +1,7 @@
 import "./commands";
+import "./properties.css";
+import { Help } from "../common/Help";
+import { DetailView } from "../common/DetailView";
 import { stateDelta, objectStateLabel } from "./delta";
 import { objectNames } from "../common/labels";
 import { useEffect, useState } from "react";
@@ -23,7 +26,8 @@ export function Inspector({
   onEdge: (e: Edge) => void;
   onExpand: () => void;
 }) {
-  const [showChanges, setShowChanges] = useState(false);
+  const [tab, setTab] = useState("state");
+  const showChanges = tab === "changes";
   const [predecessor, setPredecessor] = useState<number | null>(null);
   const search = useUI(s => s.session.search);
   const incomingNodes = [...new Set(detail.edges.filter(edge => edge.dst === detail.id).map(edge => edge.src))];
@@ -66,6 +70,10 @@ export function Inspector({
           青 <b>{detail.scores[1]}</b>
         </span>
       </div>
+      <nav className="inspector-tabs" aria-label="局面の表示内容">
+        {[["state", "局面"], ["changes", "変化"], ["actions", "行動・遷移"], ["objects", "物体"]].map(([id, label]) => <button key={id} className="tool" aria-pressed={tab === id} onClick={() => setTab(id)}>{label}</button>)}
+      </nav>
+      {tab === "state" && <div>
       <table>
         <thead>
           <tr>
@@ -95,8 +103,9 @@ export function Inspector({
         ムスティカ取得条件：赤 {detail.state.mandate[0] ? "成立" : "未成立"} ／
         青 {detail.state.mandate[1] ? "成立" : "未成立"}
       </p>
-      <details onToggle={e => setShowChanges(e.currentTarget.open)}>
-        <summary>直前の局面からの変化</summary>
+      </div>}
+      {tab === "changes" && <section>
+        <h3>直前の局面からの変化 <Help topic="graph" text="比較元の局面と選択局面の時刻・得点・物体・機体の変化を表示します。入る遷移が複数ある場合は比較元を選べます。" /></h3>
         {!incomingNodes.length ? <p className="muted">開始局面です</p> : <>
           <label>比較元<select value={previousNode} onChange={e => setPredecessor(Number(e.target.value))}>{incomingNodes.map(id => <option value={id} key={id}>N{id}</option>)}</select></label>
           {previousQuery.loading && !changes && <p className="muted">比較元を読み込み中</p>}
@@ -112,14 +121,12 @@ export function Inspector({
             <button onClick={() => run("properties.exportDelta", changes)}>変化をJSON保存</button>
           </>}
         </>}
-      </details>
-      <details open>
-        <summary>選べる行動から次の局面へ</summary>
+      </section>}
+      {tab === "actions" && <section>
+        <h3>次の局面を計算 <Help topic="graph" text="双方の行動を指定して1分岐を計算します。選択していない分岐も探索対象に残ります。" /></h3>
         {detail.actions.every((a) => a.length > 0) ? (
           <>
-            <p>
-              双方の行動を指定して1分岐を計算します。選択していない分岐も探索対象に残ります。
-            </p>
+
             {detail.actions.map((actions, r) => (
               <label key={r}>
                 {robotNames[r]}
@@ -152,7 +159,6 @@ export function Inspector({
         ) : (
           <p>探索終了時刻に到達しています。</p>
         )}
-      </details>
       <div className="section-title">
         <h3>出る遷移 {outgoing.length}</h3>
         <button disabled={busy || detail.expanded} onClick={onExpand}>
@@ -175,8 +181,7 @@ export function Inspector({
         ))}
       </div>
       {!!outgoing.length && !filteredOutgoing.length && <p className="muted">該当する遷移はありません</p>}
-      <details>
-        <summary>入る遷移 {incoming.length}</summary>
+      <DetailView label={`入る遷移 ${incoming.length}件`} title="入る遷移">
         <div className="edge-list">
           {incoming.map((e) => (
             <button key={e.id} onClick={() => onEdge(e)}>
@@ -184,12 +189,13 @@ export function Inspector({
             </button>
           ))}
         </div>
-      </details>
+      </DetailView>
+      </section>}
       <button onClick={() => saveJSON(detail.state, `state-${detail.id}.json`)}>
         局面JSONを保存
       </button>
-      <details>
-        <summary>物体の所在・保持・搬送履歴</summary>
+      {tab === "objects" && <section>
+        <h3>物体の所在・加点状況 <Help topic="model" text="各物体の現在の所在と、赤・青それぞれの搬送による加点済み状態を表示します。" /></h3>
         <div className="row">
           <input type="search" aria-label="物体を検索" placeholder="物体ID・所在" value={objectQuery} onChange={(e) => setObjectQuery(e.target.value)} />
           <select aria-label="物体の種別" value={objectKind} onChange={(e) => setObjectKind(e.target.value)}>
@@ -219,7 +225,7 @@ export function Inspector({
             ))}
           </tbody>
         </table>
-      </details>
+      </section>}
     </section>
   );
 }

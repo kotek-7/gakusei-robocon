@@ -82,3 +82,17 @@
 .condition-differences table { width: 100%; }
 .condition-differences td, .condition-differences th { overflow-wrap: anywhere; }
 .condition-differences pre { max-height: 240px; max-width: 360px; overflow: auto; font-size: 11px; }
+
+.condition-views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-block: 8px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 12px;
+}
+.condition-views [aria-pressed="true"] {
+  border-color: var(--accent);
+  font-weight: 700;
+}
+.conditions section[hidden] { display: none; }

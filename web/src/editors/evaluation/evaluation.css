@@ -23,4 +23,13 @@
 .evaluation .distribution {
   min-width: 160px;
 }
-.evaluation details pre { max-height: 240px; max-width: 480px; overflow: auto; font-size: 11px; }
+.evaluation pre { max-height: 240px; max-width: 480px; overflow: auto; font-size: 11px; }
+
+.classification-navigation, .classification-leaves {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.classification-leaves { list-style: none; padding: 0; }
+.classification-navigation [aria-current="location"] { font-weight: 700; }
