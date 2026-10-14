@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import "./score.css";
 import { layout } from "../../app/layout";
 import { useAnalysis, useSearch } from "../../app/session";
 import { ui, useUI } from "../../app/store";
@@ -38,7 +39,7 @@ function Header({ area }: EditorProps) {
         title="得点推移をCSVでコピー"
         onClick={() => {
           const el = document.querySelector<HTMLElement>(`[data-score-csv="${area.id}"]`);
-          if (el?.dataset.csv) navigator.clipboard.writeText(el.dataset.csv).then(() => ui.toast("CSVをコピーしました"));
+          if (el?.dataset.csv) navigator.clipboard.writeText(el.dataset.csv).then(() => ui.toast("CSVをコピーしました")).catch(ui.error);
         }}
       >
         CSV
@@ -162,13 +163,22 @@ function ScoreEditor({ area }: EditorProps) {
   const search = useSearch();
   const time = useUI((s) => s.playback.time);
   const mode = (area.state?.mode as string) ?? "both";
+  const changes = useMemo(() => (analysis?.samples ?? []).filter((sample, i, all) =>
+    i > 0 && PARTS.some(([part]) => sample.parts.some((team, t) => team[part] !== all[i - 1].parts[t][part]))), [analysis]);
   if (!search) return <Empty title="探索がありません" />;
   if (!analysis) return <Empty title="局面を選択すると得点の推移を表示します" />;
   const now = sampleAt(analysis, time),
     last = analysis.samples.at(-1)!;
+  const previous = changes.findLast((sample) => sample.t < time - 1e-6);
+  const next = changes.find((sample) => sample.t > time + 1e-6);
   const csv = ["秒,赤,青,点差", ...analysis.samples.map((s) => `${s.t},${s.parts[0].total},${s.parts[1].total},${s.parts[0].total - s.parts[1].total}`)].join("\n");
   return (
     <div className="editor-scroll score-editor" data-score-csv={area.id} data-csv={csv}>
+      <div className="area-tools" style={{ flexWrap: "wrap" }}>
+        <button className="tool" disabled={!previous} onClick={() => previous && ui.patchPlayback({ time: previous.t, playing: false })}>前の得点変化</button>
+        <button className="tool" disabled={!next} onClick={() => next && ui.patchPlayback({ time: next.t, playing: false })}>次の得点変化</button>
+        <span className="muted tabular">{changes.length}回</span>
+      </div>
       <Chart a={analysis} mode={mode} horizon={search.config.horizon} />
       <table className="score-table">
         <thead>

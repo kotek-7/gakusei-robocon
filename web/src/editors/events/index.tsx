@@ -41,6 +41,7 @@ function Header({ area }: EditorProps) {
         <option value="all">開始・完了・不可</option>
         <option value="finish">完了と不可</option>
         <option value="start">開始のみ</option>
+        <option value="blocked">不可のみ</option>
       </select>
     </div>
   );
@@ -66,9 +67,16 @@ function EventsEditor({ area }: EditorProps) {
   if (!search) return <Empty title="探索がありません" />;
   if (!replay) return <Empty title="局面を選択すると経路の動作履歴を表示します" />;
   const current = rows.findLastIndex((e) => e.t <= time);
+  const previous = rows.findLast((e) => e.t < time - 1e-6);
+  const next = rows.find((e) => e.t > time + 1e-6);
   return (
     <div className="editor-scroll events-editor">
       <input className="filter" placeholder="絞り込み（例: 設置、赤BR）" value={q} onChange={(e) => setQ(e.target.value)} aria-label="動作履歴を絞り込み" />
+      <div className="event-navigation">
+        <button className="tool" disabled={!previous} onClick={() => previous && run("events.seek", previous)}>前の動作</button>
+        <button className="tool" disabled={!next} onClick={() => next && run("events.seek", next)}>次の動作</button>
+        <span className="muted tabular">{rows.length}件</span>
+      </div>
       <table className="events-table">
         <thead>
           <tr>

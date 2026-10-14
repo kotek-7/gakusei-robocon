@@ -57,6 +57,9 @@ function SpotsEditor({ area }: EditorProps) {
   if (!search) return <Empty title="探索がありません" />;
   if (!a) return <Empty title="局面を選択すると建設スポットの状態を表示します" />;
   const sel = selection?.startsWith("spot:") ? Number(selection.slice(5)) : null;
+  const selectedTrack = a.spots.find((track) => track.spot === sel);
+  const previous = selectedTrack?.history.slice(1).findLast((entry) => entry.t < time - 1e-6);
+  const next = selectedTrack?.history.slice(1).find((entry) => entry.t > time + 1e-6);
   const stock = stockAt(a, time);
   const spots = model.spots as number[][];
   const flips = a.markers.filter((m) => m.kind === "flip" && m.t <= time);
@@ -117,11 +120,15 @@ function SpotsEditor({ area }: EditorProps) {
           </tbody>
         </table>
       )}
-      {sel !== null && (
+      {selectedTrack && (
         <section className="spot-history">
           <h3>S{sel} の履歴</h3>
+          <div className="area-tools">
+            <button className="tool" disabled={!previous} onClick={() => previous && ui.patchPlayback({ time: previous.t, playing: false })}>前の変化</button>
+            <button className="tool" disabled={!next} onClick={() => next && ui.patchPlayback({ time: next.t, playing: false })}>次の変化</button>
+          </div>
           <ol>
-            {a.spots[sel].history.map((h, i) => (
+            {selectedTrack.history.map((h, i) => (
               <li key={i}>
                 <button className="link tabular" onClick={() => ui.patchPlayback({ time: h.t, playing: false })}>
                   {h.t}秒

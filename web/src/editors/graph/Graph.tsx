@@ -18,6 +18,7 @@ export function Graph({
   onReveal: () => void;
 }) {
   const [zoom, setZoom] = useState(1);
+  const [fit, setFit] = useState(false);
   const viewport = useRef<HTMLDivElement>(null);
   const layout = useMemo(() => {
     const times = [...new Set(data.nodes.map((n) => n.state.t))].sort(
@@ -62,6 +63,15 @@ export function Graph({
   useEffect(() => {
     if (selected !== null && layout.positions.has(selected)) revealSelection();
   }, [selected, data.offset, data.root, zoom]);
+  useEffect(() => {
+    if (!fit || !viewport.current) return;
+    const element = viewport.current;
+    const resize = () => setZoom(Math.min(1, Math.max(1, element.clientWidth - 1) / layout.width));
+    resize();
+    const observer = new ResizeObserver(resize);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [fit, layout.width]);
   const omitted = data.edges.filter((e) => !layout.positions.has(e.dst)).length;
   return (
     <section className="graph-panel" aria-label="状態遷移グラフ">
@@ -87,15 +97,16 @@ export function Graph({
         <button onClick={revealSelection} disabled={selected === null}>
           選択局面を表示
         </button>
+        <button aria-pressed={fit} onClick={() => setFit(!fit)}>幅に合わせる</button>
         <label>
           倍率
           <select
             value={zoom}
-            onChange={(e) => setZoom(Number(e.target.value))}
+            onChange={(e) => { setFit(false); setZoom(Number(e.target.value)); }}
           >
-            {[0.75, 1, 1.25, 1.5].map((z) => (
+            {[...new Set([0.25, 0.5, 0.75, 1, 1.25, 1.5, zoom])].sort((a, b) => a - b).map((z) => (
               <option key={z} value={z}>
-                {z * 100}%
+                {Math.round(z * 100)}%
               </option>
             ))}
           </select>

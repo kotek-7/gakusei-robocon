@@ -37,9 +37,14 @@ export function Inspector({
   onExpand: () => void;
 }) {
   const time = useUI((s) => s.playback.time);
+  const [edgeQuery, setEdgeQuery] = useState("");
   const [indices, setIndices] = useState([0, 0, 0, 0]);
   const outgoing = detail.edges.filter((e) => e.src === detail.id),
     incoming = detail.edges.filter((e) => e.dst === detail.id);
+  const filteredOutgoing = outgoing.filter((edge) => {
+    const text = `E${edge.id} N${edge.dst} ` + [...(edge.red || []), ...(edge.blue || [])].map(actionName).join(" ");
+    return edgeQuery.trim().toLocaleLowerCase().split(/\s+/).every((term) => text.toLocaleLowerCase().includes(term));
+  });
   return (
     <section className="inspector">
       <div className="section-title">
@@ -138,8 +143,9 @@ export function Inspector({
           {detail.expanded ? "展開済み" : "この局面を展開"}
         </button>
       </div>
+      {(outgoing.length > 3 || edgeQuery) && <input className="filter" aria-label="出る遷移を絞り込み" placeholder="行動・局面IDで絞り込み" value={edgeQuery} onChange={(event) => setEdgeQuery(event.target.value)} />}
       <div className="edge-list">
-        {outgoing.map((e) => (
+        {filteredOutgoing.map((e) => (
           <button key={e.id} onClick={() => onEdge(e)}>
             <span>
               E{e.id} → N{e.dst}
@@ -152,6 +158,7 @@ export function Inspector({
           </button>
         ))}
       </div>
+      {!!outgoing.length && !filteredOutgoing.length && <p className="muted">該当する遷移はありません</p>}
       <details>
         <summary>入る遷移 {incoming.length}</summary>
         <div className="edge-list">

@@ -18,3 +18,12 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+.events-editor .event-navigation {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-block: 6px;
+}
+.events-editor .event-navigation span { margin-left: auto; }

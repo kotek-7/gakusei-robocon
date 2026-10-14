@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { visibleRows } from "./tree";
 import { run } from "../../app/commands";
 import { useSearches } from "../../app/data";
 import { useSearch } from "../../app/session";
@@ -40,18 +41,18 @@ function Outliner() {
   const node = useUI((s) => s.session.node);
   const [open, setOpen] = useState<Record<string, boolean>>({ searches: false, cands: true, markers: true });
   const [q, setQ] = useState("");
+  const [focused, setFocused] = useState<string | null>(null);
   const [pinnedOnly, setPinnedOnly] = useState(false);
   if (!search) return <Empty title="探索がありません" />;
   const pins = new Set(ws?.pins ?? []);
-  const toggle = (k: string) => () => setOpen((o) => ({ ...o, [k]: !o[k] }));
+  const toggle = (k: string) => () => setOpen((o) => ({ ...o, [k]: !(o[k] ?? k.startsWith("run:")) }));
   const pinMenu = (id: string): MenuItem => ({
     label: pins.has(id) ? "ピン留めを外す" : "ピン留め",
     run: () => updateWorkspace((w) => ({ ...w, pins: w.pins.includes(id) ? w.pins.filter((p) => p !== id) : [...w.pins, id] })),
   });
   const rows: Row[] = [];
   rows.push({ id: "searches", depth: 0, label: `保存済みの探索 ${list.length}`, open: open.searches, toggle: toggle("searches") });
-  if (open.searches)
-    for (const s of list)
+  for (const s of list)
       rows.push({
         id: `s:${s.id}`,
         depth: 1,
@@ -63,13 +64,11 @@ function Outliner() {
       });
   const runs = search.discovery?.runs ?? [];
   rows.push({ id: "cands", depth: 0, label: `作戦候補 ${search.discovery?.metrics.candidates ?? 0}`, open: open.cands, toggle: toggle("cands") });
-  if (open.cands)
-    for (const r of runs) {
+  for (const r of runs) {
       const rk = `run:${r.run}`;
       rows.push({ id: rk, depth: 1, label: `構成 C${r.run}`, hint: `${r.candidates.length}候補`, open: open[rk] ?? true, toggle: toggle(rk) });
-      if (!(open[rk] ?? true)) continue;
       r.candidates.forEach((c, ci) => {
-        const ck = `cand:${c.id}`;
+        const ck = `cand:${r.run}:${c.id}`;
         const label = `C${r.run}-${ci + 1} ${c.baseline.strategy.slice(0, 10)}`;
         rows.push({
           id: ck,
@@ -83,8 +82,7 @@ function Outliner() {
           act: () => run("nav.node", { node: c.baseline.node, path: c.baseline.path }),
           menu: () => [...evidenceMenu(label, c.baseline), pinMenu(ck)],
         });
-        if (open[ck])
-          c.responses.forEach((resp, i) =>
+        c.responses.forEach((resp, i) =>
             rows.push({
               id: `${ck}:r${i}`,
               depth: 3,
@@ -99,8 +97,7 @@ function Outliner() {
       });
     }
   rows.push({ id: "markers", depth: 0, label: `マーカー ${ws?.markers.length ?? 0}`, open: open.markers, toggle: toggle("markers") });
-  if (open.markers)
-    for (const m of ws?.markers ?? [])
+  for (const m of ws?.markers ?? [])
       rows.push({
         id: `marker:${m.id}`,
         depth: 1,
@@ -112,10 +109,10 @@ function Outliner() {
         ],
       });
   rows.push({ id: "views", depth: 0, label: `保存した視点 ${ws?.bookmarks.length ?? 0}`, open: open.views, toggle: toggle("views") });
-  if (open.views) for (const b of ws?.bookmarks ?? []) rows.push({ id: `bm:${b.id}`, depth: 1, label: b.name });
-  const filtered = rows.filter(
-    (r) => (!q || r.depth === 0 || r.label.includes(q) || r.hint?.includes(q)) && (!pinnedOnly || r.depth < 2 || r.pinned || r.depth > 2),
-  );
+  for (const b of ws?.bookmarks ?? []) rows.push({ id: `bm:${b.id}`, depth: 1, label: b.name });
+  const filtered = visibleRows(rows, q, pinnedOnly);
+  const filtering = !!q.trim() || pinnedOnly;
+  const focusId = filtered.find((row) => row.id === focused)?.id ?? filtered.find((row) => row.active)?.id ?? filtered[0]?.id;
   return (
     <div className="outliner">
       <div className="outliner-tools">
@@ -129,10 +126,37 @@ function Outliner() {
           <li
             key={r.id}
             role="treeitem"
-            aria-expanded={r.toggle ? !!r.open : undefined}
+            aria-expanded={r.toggle ? filtering || !!r.open : undefined}
+            aria-level={r.depth + 1}
+            tabIndex={r.id === focusId ? 0 : -1}
+            onFocus={() => setFocused(r.id)}
             aria-selected={!!r.active}
             className={`tree-row depth${r.depth}${r.active ? " active" : ""} ${r.tone ?? ""}`}
             style={{ paddingLeft: 6 + r.depth * 14 }}
+            onKeyDown={(event) => {
+              const items = Array.from(event.currentTarget.parentElement!.querySelectorAll<HTMLElement>('[role="treeitem"]'));
+              const index = items.indexOf(event.currentTarget);
+              let target: HTMLElement | undefined;
+              if (event.key === "ArrowDown") target = items[Math.min(items.length - 1, index + 1)];
+              else if (event.key === "ArrowUp") target = items[Math.max(0, index - 1)];
+              else if (event.key === "Home") target = items[0];
+              else if (event.key === "End") target = items.at(-1);
+              else if (event.key === "ArrowRight") {
+                if (r.toggle && !r.open && !filtering) r.toggle();
+                else if (filtered[index + 1]?.depth > r.depth) target = items[index + 1];
+              } else if (event.key === "ArrowLeft") {
+                if (r.toggle && r.open && !filtering) r.toggle();
+                else {
+                  const parent = filtered.slice(0, index).findLastIndex((row) => row.depth < r.depth);
+                  target = items[parent];
+                }
+              } else if (event.key === "Enter" || event.key === " ") {
+                if (r.act) r.act(); else r.toggle?.();
+              } else return;
+              event.preventDefault();
+              event.stopPropagation();
+              target?.focus();
+            }}
             onClick={() => (r.act ? r.act() : r.toggle?.())}
             onContextMenu={(e) => r.menu && ui.contextMenu(e, r.menu(), r.label)}
           >
@@ -143,7 +167,7 @@ function Outliner() {
                 r.toggle?.();
               }}
             >
-              {r.toggle ? <Icon name={r.open ? "chevron" : "chevronRight"} size={12} /> : null}
+              {r.toggle ? <Icon name={filtering || r.open ? "chevron" : "chevronRight"} size={12} /> : null}
             </span>
             {r.pinned && <Icon name="pin" size={12} />}
             <span className="tree-label">{r.label}</span>
@@ -151,6 +175,7 @@ function Outliner() {
           </li>
         ))}
       </ul>
+      {!filtered.length && <p className="muted">該当する項目はありません</p>}
     </div>
   );
 }

@@ -1,0 +1,7 @@
+.score-editor .score-table {
+  table-layout: fixed;
+  overflow-wrap: anywhere;
+}
+.score-editor .score-table th:first-child { width: 28%; }
+.score-editor .score-table th:nth-child(2),
+.score-editor .score-table th:nth-child(3) { width: 12%; }
