@@ -12,6 +12,7 @@ function CandidatesEditor() {
   return (
     <div className="editor-scroll">
       <Candidates
+        key={search.id}
         search={search}
         model={model}
         onOpen={(_run, evidence) => {

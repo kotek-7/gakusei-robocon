@@ -20,11 +20,13 @@ export function Comparison({
   result,
   baseline,
   comparable,
+  onSelect,
 }: {
   search: Search;
   result: Result;
   baseline: Search | null;
   comparable: boolean | null;
+  onSelect: (run: number) => void;
 }) {
   const peers = search.evaluation!.runs.filter(
     (r) =>
@@ -67,7 +69,7 @@ export function Comparison({
         <tbody>
           {peers.map((r) => (
             <tr key={r.run}>
-              <td>C{r.run}</td>
+              <td><button aria-pressed={r.run === result.run} onClick={() => onSelect(r.run)}>C{r.run}</button></td>
               <td>{r.statisticsComplete ? "完了" : "途中"}</td>
               <td>{pct(r.groupWinFraction)}</td>
               <td>{pct(r.unresolvedFraction)}</td>

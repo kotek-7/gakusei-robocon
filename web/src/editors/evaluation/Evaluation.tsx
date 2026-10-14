@@ -153,6 +153,7 @@ export function Evaluation({
         result={result}
         baseline={baseline}
         comparable={comparable}
+        onSelect={(run) => { setRun(run); setFilter(null); }}
       />
       <h3>C{result.run} の構成</h3>
       <div className="variant-columns">

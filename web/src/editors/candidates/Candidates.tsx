@@ -22,6 +22,8 @@ export function Candidates({
   onOpen: (run: number, evidence: CandidateEvidence) => void;
 }) {
   const [run, setRun] = useState("all");
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState("discovery");
   const report = search.discovery;
   const selectedRun = report?.runs.find((r) => String(r.run) === run);
   function configuration(v: Variant) {
@@ -50,6 +52,31 @@ export function Candidates({
         candidate: c,
       })),
     ) || [];
+  const visibleRows = rows
+    .filter(({ run: r, candidate: c }) =>
+      (run === "all" || String(r) === run) &&
+      `C${r} ${c.id} ${c.baseline.strategy} ${c.plan.map(goalLabel).join(" ")}`
+        .toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()),
+    )
+    .map((row) => {
+      const comparable = row.candidate.responses.filter(
+        (x) => x.shared && x.opponent && row.common.includes(x.opponent),
+      );
+      const worst = comparable.reduce<CandidateEvidence | null>(
+        (lowest, x) => !lowest || margin(x) < margin(lowest) ? x : lowest, null,
+      );
+      return { ...row, worst };
+    })
+    .sort((a, b) => {
+      if (sort === "baseline") return margin(b.candidate.baseline) - margin(a.candidate.baseline);
+      if (sort === "pending") return b.candidate.pending - a.candidate.pending;
+      if (sort === "worst") {
+        if (!a.worst) return b.worst ? 1 : 0;
+        if (!b.worst) return -1;
+        return margin(b.worst) - margin(a.worst);
+      }
+      return 0;
+    });
   const compareButtons = (evidence: CandidateEvidence, label: string) => (
     <span className="row">
       {(["A", "B"] as const).map((side) => (
@@ -88,9 +115,23 @@ export function Candidates({
                 ))}
               </select>
             </label>
+            <label>
+              候補を検索{" "}
+              <input type="search" value={query} placeholder="手順・作戦ID" onChange={(e) => setQuery(e.target.value)} />
+            </label>
+            <label>
+              並び順{" "}
+              <select value={sort} onChange={(e) => setSort(e.target.value)}>
+                <option value="discovery">発見順</option>
+                <option value="worst">共通手順での最小点差が大きい順</option>
+                <option value="baseline">相手待機での点差が大きい順</option>
+                <option value="pending">未比較が多い順</option>
+              </select>
+            </label>
+            {(query || run !== "all" || sort !== "discovery") && <button onClick={() => { setQuery(""); setRun("all"); setSort("discovery"); }}>表示を戻す</button>}
             <button onClick={() => command("compare.open")}>A/B比較を開く</button>
             <span>
-              {rows.filter((r) => run === "all" || String(r.run) === run).length}候補
+              {visibleRows.length} / {rows.length}候補
             </span>
           </div>
           {selectedRun && <p>{configuration(selectedRun.variant)}</p>}
@@ -116,16 +157,8 @@ export function Candidates({
                 </tr>
               </thead>
               <tbody>
-                {rows
-                  .filter((r) => run === "all" || String(r.run) === run)
-                  .map(({ run: r, common, candidate: c }) => {
-                    const comparable = c.responses.filter(
-                      (x) =>
-                        x.shared && x.opponent && common.includes(x.opponent),
-                    );
-                    const worst = comparable.length
-                      ? Math.min(...comparable.map(margin))
-                      : null;
+                {!visibleRows.length && <tr><td colSpan={6}>一致する候補がありません。検索語や構成を変更してください。</td></tr>}
+                {visibleRows.map(({ run: r, common, candidate: c, worst }) => {
                     return (
                       <tr key={`${r}/${c.id}`}>
                         <td>
@@ -147,9 +180,10 @@ export function Candidates({
                         <td>
                           {worst === null
                             ? "共通比較待ち"
-                            : `${worst > 0 ? "+" : ""}${worst}点`}
+                            : `${margin(worst) > 0 ? "+" : ""}${margin(worst)}点`}
                         </td>
                         <td>
+                          {worst && <button disabled={!worst.path.length} onClick={() => onOpen(r, worst)}>最小点差の経路</button>}
                           <details>
                             <summary>得点と経路</summary>
                             <p>相手待機：{score(c.baseline)}</p>
