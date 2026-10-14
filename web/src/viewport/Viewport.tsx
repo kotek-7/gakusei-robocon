@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { actionName, locationName } from "../explorer/labels";
-import type { Frame } from "../explorer/types";
+import { actionName, locationName } from "../engine/labels";
+import type { Frame } from "../engine/types";
 import type { createScene } from "./scene.js";
 export function Viewport({
   frame,
@@ -70,7 +70,7 @@ export function Viewport({
       <div
         className="viewport"
         ref={host}
-        aria-label="選択した探索局面の3D表示"
+        aria-label="試合の3D表示"
       >
         {error && (
           <p role="alert" className="render-error">

@@ -3,7 +3,7 @@
     "version": "browser-1",
     "defaults": {
       "version": "browser-1",
-      "name": "新しい探索",
+      "name": "作戦ノート",
       "scenario": "start",
       "horizon": 180,
       "rules": {

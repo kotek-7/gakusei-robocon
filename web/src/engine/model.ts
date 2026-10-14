@@ -5,7 +5,7 @@ import type {
   Obj,
   State,
   Variant,
-} from "../explorer/types";
+} from "../engine/types";
 import data from "./model-data.json";
 import { assert, clone, combinations, equal, key } from "./util";
 export const MODEL = data.model as Model;
@@ -92,7 +92,7 @@ export function validateConfig(input: unknown): Config {
   );
   assert(
     typeof c.name === "string" && c.name.length >= 1 && c.name.length <= 100,
-    "探索名は1〜100文字です",
+    "条件名は1〜100文字です",
   );
   const sameKeys = (x: unknown, y: object) =>
     x &&

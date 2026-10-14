@@ -1,5 +1,5 @@
-/** Strategic hypotheses. The action search remains free to challenge these seeds. */
-import type { Action, Goal, State, StrategyPolicy } from "../explorer/types";
+/** Editable construction plans and state-dependent decisions. */
+import type { Action, Goal, State, StrategyPolicy } from "../engine/types";
 import { action, duration, legal, payload, SPOTS, tower } from "./model";
 import { equal } from "./util";
 import { Planner } from "./planner";
@@ -13,23 +13,17 @@ export function policySeeds(): StrategyPolicy[] {
   ): StrategyPolicy => ({
     id,
     name,
-    family: id,
     targets,
     height: 3,
     mustika: false,
     opportunistic: false,
     lateFlip: false,
     skyFirst: 0,
-    requirements: ["アース搬送・設置", "スカイ搬送・設置"],
-    conditions: ["目標の完成・資材不足で次の目標へ", "建設終了後は搬送で加点"],
     ...extra,
   });
   const base = [
     make("safe", "自陣L1を2本確保", [0, 1]),
-    make("earth", "L2のアース2段を先行", [6, 7, 8, 9], {
-      height: 2,
-      requirements: ["アース搬送・設置", "L2への昇降"],
-    }),
+    make("earth", "L2のアース2段を先行", [6, 7, 8, 9], { height: 2 }),
     make("hybrid", "自陣＋共有からムスティカ", [0, 4], { mustika: true }),
     make("upper", "L2の2本を完成", [6, 7]),
     make("mustika", "L2の2本からムスティカ", [6, 7], { mustika: true }),
@@ -40,36 +34,14 @@ export function policySeeds(): StrategyPolicy[] {
     make("thief", "相手塔を反転して取得権を狙う", [], {
       mustika: true,
       opportunistic: true,
-      requirements: ["反転", "ムスティカ搬送・設置"],
-      conditions: ["相手の完成塔が現れたら反転", "相手塔がなければ搬送で加点"],
     }),
     make("late", "自陣確保から終盤の反転", [0, 1], { lateFlip: true }),
     make("sky", "スカイ3個を先に確保して建設", [0, 4], {
       skyFirst: 3,
       mustika: true,
     }),
-    make("transport", "搬送点を積み上げる", [], {
-      requirements: ["TRの取得・床置き"],
-      conditions: ["未搬送資材を優先", "アースがなくなったらスカイへ"],
-    }),
+    make("transport", "搬送点を積み上げる", []),
   ];
-  for (const p of base) {
-    if (p.mustika) {
-      p.conditions.push("取得権が成立し、到達時間が残るとムスティカへ");
-      p.requirements.push("ムスティカ搬送・設置", "L2への昇降");
-    }
-    if (p.opportunistic) {
-      p.conditions.push("空荷のBRで相手の完成塔を利用");
-      p.requirements.push("反転");
-    }
-    if (p.lateFlip) {
-      p.conditions.push("残り30秒では到達可能な相手塔の反転を優先");
-      p.requirements.push("反転");
-    }
-    if (p.targets.some((i) => i >= 6)) p.requirements.push("L2への昇降");
-    p.requirements = [...new Set(p.requirements)];
-  }
-  // Parameter variations retain the family, rather than inflating family counts.
   return [
     ...base,
     ...base
@@ -190,7 +162,7 @@ export function policyAction(
   const opts = legal(s, r, p.c, p.v);
   if (s.robots[r].job) return action("continue");
   const a = p.command(s, r, goal, opts);
-  // Commands are hints in the primitive search, but policies must emit legal actions.
+  // Emit a legal action for the current state.
   if (a.kind === "wait")
     return (
       opts.find((x) => x.kind === "delay") ||
@@ -201,50 +173,4 @@ export function policyAction(
     opts.find((x) => x.kind === "delay") ||
     opts.find((x) => x.kind === "wait")!
   );
-}
-
-/** Lift a discovered trajectory into a reusable hypothesis, not a frozen replay. */
-export function policyFromPlan(
-  plan: Goal[],
-  source: string,
-  team = 0,
-): StrategyPolicy | null {
-  const targets = [
-    ...new Set(
-      plan
-        .filter((g) => g.kind === "build")
-        .map((g) => relativeSpot(g.spot!, team)),
-    ),
-  ];
-  const flip = plan.some((g) => g.kind === "flip"),
-    mustika = plan.some((g) => g.kind === "mustika");
-  if (!targets.length && !flip) return null;
-  const signature = `${targets.join("-")}-${Number(flip)}-${Number(mustika)}`;
-  return {
-    height: 3,
-    lateFlip: false,
-    skyFirst: 0,
-    id: `learned-${signature}`,
-    family: "learned",
-    name: `探索から得た目標順 ${targets.join("→") || "反転主体"}`,
-    targets,
-    opportunistic: flip,
-    mustika,
-    derivedFrom: source,
-    requirements: [
-      ...(targets.length
-        ? ["アース搬送・設置", "スカイ搬送・設置"]
-        : ["TRの取得・床置き"]),
-      ...(flip ? ["反転"] : []),
-      ...(mustika ? ["ムスティカ搬送・設置"] : []),
-      ...(mustika || targets.some((i) => i >= 6) ? ["L2への昇降"] : []),
-    ],
-    conditions: [
-      "探索で得た目標順を現在の盤面で再判断",
-      "目標の完成・資材不足で次の目標へ",
-      ...(flip ? ["空荷のBRで相手の完成塔を利用"] : []),
-      ...(mustika ? ["取得権が成立し、到達時間が残るとムスティカへ"] : []),
-      "建設終了後は搬送で加点",
-    ],
-  };
 }

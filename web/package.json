@@ -1,5 +1,5 @@
 {
-  "name": "robocon-state-explorer",
+  "name": "robocon-strategy-notebook",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -12,8 +12,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@noble/hashes": "^2.4.0",
-    "highs": "^1.15.3",
     "idb": "^8.0.4",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

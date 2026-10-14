@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { gunzipSync } from "node:zlib";
-import type { Action } from "../explorer/types";
+import type { Action } from "../engine/types";
 import type { Outcome } from "./transition";
 const reference = JSON.parse(
   gunzipSync(
@@ -19,7 +19,7 @@ const reference = JSON.parse(
   scores: number[][];
   frames: unknown[];
 }[];
-import type { Config, State, Variant } from "../explorer/types";
+import type { Config, State, Variant } from "../engine/types";
 import {
   configAt,
   countConfigs,

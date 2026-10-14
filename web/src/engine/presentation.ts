@@ -1,7 +1,5 @@
-import type { Frame, Replay, State } from "../explorer/types";
+import type { Frame, State } from "../engine/types";
 import { EDGES, nodeAt, payload, ROBOT_NAMES, scores, SPOTS } from "./model";
-import { assert } from "./util";
-import type { StoredEdge } from "./store";
 const interpolate = (a: number[], b: number[], f: number) =>
   a.map((x, i) => x + (b[i] - x) * f);
 const distance = (a: number[], b: number[]) =>
@@ -92,26 +90,4 @@ export function frame(s: State, time = s.t): Frame {
     return { ...o, p };
   });
   return { t: time, scores: scores(s), robots, objects, mandate: s.mandate };
-}
-export function replay(
-  edges: StoredEdge[],
-  states: Map<number, State>,
-): Replay {
-  assert(edges.length <= 2000, "経路が長すぎます");
-  const frames = new Map<number, Frame>(),
-    events: Replay["events"] = [];
-  edges.forEach((e, i) => {
-    assert(!i || e.src === edges[i - 1].dst, "連続しない経路です");
-    const dest = states.get(e.dst);
-    assert(dest, "局面が存在しません");
-    for (let t = e.started.t; t < dest.t; t++)
-      frames.set(t, frame(e.started, t));
-    frames.set(dest.t, frame(dest));
-    events.push(...e.events);
-  });
-  return {
-    frames: [...frames.values()].sort((a, b) => a.t - b.t),
-    events,
-    edges: edges.map((e) => e.id),
-  };
 }
