@@ -24,10 +24,12 @@ function usePlaybackClock() {
   span.current = [start, end];
   useEffect(() => {
     if (!playing) return;
-    let last = performance.now(),
-      frame = 0;
+    let last: number | null = null;
+    let frame = 0;
     const tick = (now: number) => {
-      const dt = (now - last) / 1000;
+      // Use animation-frame timestamps consistently: the first frame can be
+      // timestamped before the effect ran, which would otherwise rewind time.
+      const dt = last === null ? 0 : Math.max(0, (now - last) / 1000);
       last = now;
       const p = useUI.getState().playback;
       const [lo, hi] = p.range ?? span.current;
