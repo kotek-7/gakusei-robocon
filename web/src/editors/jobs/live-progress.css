@@ -1,0 +1,28 @@
+.live-job { padding-block: 10px; border-block: 1px solid var(--line); }
+.live-job-header { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.live-job-header > strong { font-size: 13px; }
+.live-job-state { color: var(--muted); }
+.live-job[data-active="true"] .live-job-state { color: var(--accent-strong); }
+.live-job [data-error="true"], .live-evaluation [data-error="true"] { color: var(--danger); }
+.live-job-elapsed { margin-left: auto; font-variant-numeric: tabular-nums; }
+.live-job-header > button { margin-left: auto; }
+.live-job-elapsed + button { margin-left: 0; }
+.live-job-header button, .live-job-footer button { display: inline-flex; align-items: center; gap: 4px; }
+.live-job-measure, .live-evaluation-stage { margin-block: 8px; }
+.live-job-scale { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; font-size: 12px; }
+.live-job-scale > :last-child { font-variant-numeric: tabular-nums; }
+.live-job progress, .live-evaluation progress { display: block; appearance: none; width: 100%; height: 5px; margin-top: 5px; border: 0; background: var(--line); accent-color: var(--accent); }
+.live-job progress::-webkit-progress-bar, .live-evaluation progress::-webkit-progress-bar { background: var(--line); }
+.live-job progress::-webkit-progress-value, .live-evaluation progress::-webkit-progress-value { background: var(--accent); }
+.live-job progress::-moz-progress-bar, .live-evaluation progress::-moz-progress-bar { background: var(--accent); }
+.live-job progress:indeterminate, .live-evaluation progress:indeterminate { appearance: auto; }
+.live-job-header > progress { flex-basis: 100%; }
+.live-job:not([data-active="true"]) progress::-webkit-progress-value { background: var(--muted); }
+.live-job:not([data-active="true"]) progress::-moz-progress-bar { background: var(--muted); }
+.live-job-footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 12px; margin-top: 8px; }
+.live-job-save { display: inline-flex; align-items: center; gap: 5px; color: var(--muted); font-size: 11px; }
+.live-job-save time { font-variant-numeric: tabular-nums; }
+.live-evaluation-scope { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 12px; font-size: 12px; font-variant-numeric: tabular-nums; }
+.live-job > .live-evaluation { margin-top: 9px; }
+.live-evaluation-stage { padding-left: 12px; border-left: 1px solid var(--line-strong); }
+.live-evaluation-run { margin-right: 8px; font-weight: 500; }

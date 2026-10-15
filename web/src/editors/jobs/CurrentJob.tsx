@@ -3,7 +3,9 @@ import { useUI } from "../../app/store";
 import { layout } from "../../app/layout";
 import type { Search } from "../../engine/types";
 import { Icon } from "../../shell/icons";
-import { duration, EvaluationProgress, stopLabels } from "./SearchProgress";
+import { duration, stopLabels } from "./SearchProgress";
+import { EvaluationProgress } from "./EvaluationProgress";
+import "./live-progress.css";
 
 const names = { discovery: "候補探索", exact: "全探索", evaluation: "評価" };
 
@@ -13,41 +15,43 @@ export function CurrentJob({ search }: { search: Search }) {
   const stopping = useUI(s => !!s.busy[`pause:${search.id}`]);
   const active = search.status === "running" || search.status === "evaluating" || (progress != null && progress.phase !== "finished");
   const kind = progress?.kind ?? search.job;
-  if (starting && !active) return <section className="current-job" aria-label="今回の計算"><p role="status">計算を開始しています</p></section>;
+  if (starting && !active) return <section className="live-job" aria-label="今回の計算" aria-busy="true"><div className="live-job-header"><strong>計算を開始しています</strong><progress aria-label="計算の開始準備" /></div></section>;
   if (!kind || (!active && !progress)) return null;
   const phase = progress?.phase;
   const title = active
-    ? stopping ? "停止処理中" : phase === "starting" ? "開始準備中" : phase === "saving" ? "結果を保存中" : "計算中"
-    : stopLabels[progress?.stopReason || ""] || "今回の計算を終了";
+    ? stopping ? "停止処理中" : phase === "starting" ? "開始準備" : phase === "saving" ? "保存中" : "実行中"
+    : stopLabels[progress?.stopReason || ""] || "終了";
   const discovery = kind === "discovery";
   const limit = discovery ? progress?.secondsLimit : progress?.unitsLimit;
   const done = discovery ? progress?.elapsed : progress?.unitsDone;
-  const showBar = kind !== "evaluation" && active;
   const savedTime = progress?.savedAt ? new Date(progress.savedAt).toLocaleTimeString("ja-JP", { hour12: false }) : null;
-  const savedLabel = progress?.saveState === "error" ? "保存できませんでした"
-    : phase === "saving" ? "結果を保存中"
-    : active ? savedTime ? `前回保存 ${savedTime}` : "初回の保存待ち"
-    : progress?.saveState === "saved" ? `保存済み${savedTime ? ` ${savedTime}` : ""}` : "未保存";
+  const savedLabel = progress?.saveState === "error" ? "保存失敗"
+    : progress?.saveState === "saving" ? "保存中"
+    : active ? savedTime ? "前回保存" : "保存待ち"
+    : progress?.saveState === "saved" ? "保存済み" : "未保存";
   const result = discovery ? "candidates" : kind === "evaluation" ? "evaluation" : "graph";
   const hasResult = discovery ? !!search.discovery?.metrics.candidates : kind === "evaluation" ? !!search.evaluation : search.nodes > 0;
-  return <section className="current-job" aria-label="今回の計算">
-    <div className="current-job-heading">
-      <strong>{names[kind]}</strong><span role="status">{title}</span>
+  return <section className="live-job" aria-label="今回の計算" aria-busy={active} data-active={active}>
+    <header className="live-job-header">
+      <strong>{names[kind]}</strong>
+      <span className="live-job-state" role="status" data-error={progress?.stopReason === "error"}>{title}</span>
+      {!discovery && <span className="live-job-elapsed" title="今回の計算時間">{duration(progress?.elapsed ?? 0)}</span>}
       {active && <button className="tool" disabled={!isEnabled("job.pause") || phase === "saving" || stopping} onClick={() => run("job.pause")}><Icon name="stop" />{stopping ? "停止処理中" : "停止"}</button>}
-    </div>
-    <div className="current-job-facts">
-      <span>今回 {duration(progress?.elapsed ?? 0)}</span>
-      {discovery && limit != null && <span>制限 {duration(limit)}</span>}
-      {kind === "exact" && progress && <span>{progress.unitsDone.toLocaleString()} / {progress.unitsLimit?.toLocaleString() ?? "未設定"}行動組</span>}
-      <span>{savedLabel}</span>
-    </div>
-    {showBar && <>
-      <progress aria-label={discovery ? "今回の制限時間の経過" : "今回の行動組数の進捗"} max={limit && limit > 0 ? limit : undefined} value={limit && limit > 0 ? Math.min(done ?? 0, limit) : undefined} />
-      {discovery && <p className="progress-note">時間の経過を表示。探索全体の完了率ではありません。</p>}
-    </>}
-    {kind === "evaluation" && <EvaluationProgress search={search} />}
-    <div className="current-job-result">
-      <button className="job-result-link" disabled={!hasResult} onClick={() => layout.reveal(result)}>{discovery ? "候補を見る" : kind === "evaluation" ? "評価結果を見る" : "局面を見る"}</button>
-    </div>
+    </header>
+    {kind !== "evaluation" && (active || (limit != null && limit > 0)) && <div className="live-job-measure">
+      <div className="live-job-scale">
+        <span title={discovery ? "今回の制限時間の経過。探索範囲の網羅率ではありません。" : "今回の行動組数の上限。探索範囲の網羅率ではありません。"}>{discovery ? "時間枠" : "今回の行動組"}</span>
+        <span>{discovery ? `${duration(done ?? 0)} / ${limit != null ? duration(limit) : "制限なし"}` : `${(done ?? 0).toLocaleString()} / ${limit?.toLocaleString() ?? "上限なし"}`}</span>
+      </div>
+      <progress aria-label={discovery ? "今回の制限時間の経過（探索の網羅率ではありません）" : "今回の行動組数の上限に対する進捗（探索の網羅率ではありません）"} max={limit && limit > 0 ? limit : undefined} value={limit && limit > 0 ? Math.min(done ?? 0, limit) : undefined} />
+    </div>}
+    {kind === "evaluation" && <EvaluationProgress search={search} embedded />}
+    <footer className="live-job-footer">
+      <span className="live-job-save" data-error={progress?.saveState === "error"}>
+        {progress?.saveState === "saved" && <Icon name="check" size={14} />}
+        {savedLabel}{savedTime && progress?.saveState !== "saving" && <time>{progress?.saveState === "error" && "前回保存 "}{savedTime}</time>}
+      </span>
+      <button className="job-result-link" disabled={!hasResult} onClick={() => layout.reveal(result)}>{discovery ? "候補を見る" : kind === "evaluation" ? active || search.evaluationProgress?.state !== "complete" ? "保存済みの評価を見る" : "評価結果を見る" : "局面を見る"}<Icon name="forward" size={14} /></button>
+    </footer>
   </section>;
 }

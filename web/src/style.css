@@ -1858,65 +1858,14 @@ tr[aria-selected="true"] th {
 .model-document {
   max-width: 82ch;
 }
-.model-document dl > div,
-.search-metrics > div {
+.model-document dl > div {
   display: grid;
   grid-template-columns: 9em 1fr;
   gap: 8px;
   padding: 3px 0;
 }
-.model-document dd,
-.search-metrics dd {
+.model-document dd {
   margin: 0;
-}
-.search-metrics {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 4px 16px;
-  margin: 8px 0;
-}
-.search-metrics > div {
-  grid-template-columns: 1fr auto;
-}
-.search-metrics dt {
-  color: var(--muted);
-}
-.search-metrics dd {
-  font-weight: 600;
-}
-.progress-heading {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  align-items: center;
-}
-.progress-heading > span:first-child {
-  color: var(--accent);
-}
-.progress-detail-label {
-  margin-left: auto;
-  color: var(--muted);
-  font-weight: 400;
-}
-.progress-note {
-  color: var(--muted);
-}
-.evaluation-progress progress {
-  width: 100%;
-  accent-color: var(--accent);
-}
-.exact-panel {
-  margin-top: 12px;
-  padding-top: 8px;
-  border-top: 1px solid var(--line);
-}
-.history-heading,
-.history-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 .candidate-controls {
   display: flex;

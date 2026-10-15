@@ -8,7 +8,8 @@ import { useSearch } from "../../app/session";
 import { Empty } from "../common/Empty";
 import { defineEditor } from "../registry";
 import { CurrentJob } from "./CurrentJob";
-import { DiscoveryProgress, EvaluationProgress } from "./SearchProgress";
+import { DiscoveryProgress } from "./SearchProgress";
+import { EvaluationProgress } from "./EvaluationProgress";
 
 function JobsEditor() {
   const search = useSearch();
@@ -20,66 +21,42 @@ function JobsEditor() {
   const seconds = usePref<string>("job.discoverySeconds");
   const budget = usePref<number>("job.exactBudget");
   if (!search) return <Empty title="探索がありません" />;
+  const busy = search.status === "running" || search.status === "evaluating";
   return (
     <div className="editor-scroll jobs">
-      {search.error && (
-        <p className="error-banner" role="alert">
-          {search.error}
-        </p>
-      )}
+      <div className="job-controls" role="group" aria-label="計算の設定と実行">
+        <select aria-label="計算の種類" value={mode} onChange={event => setMode(event.target.value)}>
+          <option value="discovery">候補探索</option><option value="exact">全探索・評価</option>
+        </select>
+        {mode === "discovery" ? <>
+          <label>制限時間<select disabled={busy} value={seconds} onChange={event => setPref("job.discoverySeconds", event.target.value)}>{[["10", "10秒"], ["60", "1分"], ["300", "5分"], ["1800", "30分"], ["3600", "1時間"], ["21600", "6時間"], ["86400", "24時間"]].map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+          <button className="action-button primary" disabled={!isEnabled("job.discover")} onClick={() => run("job.discover")}><Icon name="play" />{search.discovery ? "探索を再開" : "探索を開始"}</button>
+        </> : <>
+          <label>行動組数<input disabled={busy} type="number" value={budget} min={1} max={1000000} onChange={event => setPref("job.exactBudget", Math.max(1, Math.min(1000000, Number(event.target.value) || 1)))} /></label>
+          <button className="action-button primary" disabled={!isEnabled("job.exact")} onClick={() => run("job.exact")}><Icon name="play" />全探索を続ける</button>
+          <button className="job-evaluate-action" disabled={!isEnabled("job.evaluate")} onClick={() => run("job.evaluate")}>評価を計算</button>
+        </>}
+      </div>
+      {search.error && <p className="error-banner" role="alert">{search.error}</p>}
       <CurrentJob search={search} />
-      {search.discovery?.activeTarget && <div className="job-execution-bar" role="status">
-        <span>候補指定の追加探索 · 構成 C{search.discovery.activeTarget.run} · {search.discovery.activeTarget.mode === "counter" ? "相手探索" : "既知の相手で検査"}</span>
-        <button onClick={() => run("strategy.exploration.open", {search:search.id,...search.discovery!.activeTarget,evidence:"baseline"})}>対象候補の進捗へ</button>
+      {search.discovery?.activeTarget && <div className="job-target">
+        <span>追加探索 · C{search.discovery.activeTarget.run} · {search.discovery.activeTarget.mode === "counter" ? "相手探索" : "既知の相手で検査"}</span>
+        <button className="job-result-link" onClick={() => run("strategy.exploration.open", {search:search.id,...search.discovery!.activeTarget,evidence:"baseline"})}>対象候補へ</button>
       </div>}
-      <div className="job-channel-toolbar">
-        <label>設定・保存結果<select aria-label="表示する計算" value={mode} onChange={event => setMode(event.target.value)}><option value="discovery">候補探索</option><option value="exact">全探索・評価</option></select></label>
-      </div>
       <div hidden={mode !== "discovery"}>
-      <div className="job-execution-bar">
-        <label>制限時間<select disabled={search.status === "running" || search.status === "evaluating"} value={seconds} onChange={event => setPref("job.discoverySeconds", event.target.value)}>{[["10", "10秒"], ["60", "1分"], ["300", "5分"], ["1800", "30分"], ["3600", "1時間"], ["21600", "6時間"], ["86400", "24時間"]].map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-        <button className="action-button primary" disabled={!isEnabled("job.discover")} onClick={() => run("job.discover")}><Icon name="play" />{search.discovery ? "探索を再開" : "探索を開始"}</button>
-      </div>
-      <DiscoveryProgress key={search.id} search={search} onDefinitions={() => run("docs.open", "search")} />
-      <Coverage search={search} />
+        <DiscoveryProgress key={search.id} search={search} onDefinitions={() => run("docs.open", "search")} />
+        <Coverage search={search} />
       </div>
       <div hidden={mode !== "exact"}>
-      {search.jobProgress?.kind !== "evaluation" && search.status !== "evaluating" && search.evaluationProgress && <section aria-label="前回の評価"><h3>前回の評価</h3><EvaluationProgress search={search} /></section>}
-      <section className="exact-panel" aria-label="詳細な全探索">
-        <h3>全探索の保存結果</h3>
-        <p className="muted">
-          {search.job === "exact" && search.status === "running"
-            ? "探索中"
-            : search.complete
-              ? "対象範囲を探索済み"
-              : "未探索の分岐あり"}
-        </p>
-        <div className="job-execution-bar">
-          <label>
-            1回の行動組数
-            <input
-              disabled={search.status === "running" || search.status === "evaluating"}
-              type="number"
-              value={budget}
-              min={1}
-              max={1000000}
-              onChange={(e) => setPref("job.exactBudget", Math.max(1, Math.min(1000000, Number(e.target.value) || 1)))}
-            />
-          </label>
-          <button className="action-button primary" disabled={!isEnabled("job.exact")} onClick={() => run("job.exact")}>
-            全探索を続ける
-          </button>
-          <button className="action-button" disabled={!isEnabled("job.evaluate")} onClick={() => run("job.evaluate")}>
-            評価を計算
-          </button>
-        </div>
-        <dl className="search-metrics">
-          <div><dt>局面</dt><dd>{search.nodes.toLocaleString()}</dd></div>
-          <div><dt>遷移</dt><dd>{search.edges.toLocaleString()}</dd></div>
-          <div><dt>展開済み局面</dt><dd>{search.expanded.toLocaleString()}</dd></div>
-          <div><dt>探索済み構成</dt><dd>{search.completeRuns} / {search.totalRuns}</dd></div>
-        </dl>
-      </section>
+        <section className="job-exact-results" aria-label="探索範囲の集計">
+          <header className="job-result-heading"><strong>探索範囲の集計</strong><span>{search.complete ? "対象範囲を探索済み" : search.expanded > 0 ? "未探索の分岐あり" : "未展開"}</span></header>
+          <div className="progress-table" role="region" aria-label="探索範囲の集計" tabIndex={0}>
+            <table><thead><tr><th>局面</th><th>遷移</th><th>展開済み局面</th><th>探索済み構成</th></tr></thead>
+              <tbody><tr><td>{search.nodes.toLocaleString()}</td><td>{search.edges.toLocaleString()}</td><td>{search.expanded.toLocaleString()}</td><td>{search.completeRuns.toLocaleString()} / {BigInt(search.totalRuns).toLocaleString()}</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+        {search.jobProgress?.kind !== "evaluation" && search.status !== "evaluating" && search.evaluationProgress && <EvaluationProgress search={search} />}
       </div>
     </div>
   );

@@ -1,0 +1,37 @@
+.discovery-ledger-heading { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.discovery-ledger-heading > span { color: var(--muted); font-variant-numeric: tabular-nums; }
+.discovery-ledger-heading > button { margin-left: auto; }
+.discovery-ledger { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding-block: 10px; margin: 0; border-bottom: 1px solid var(--line); }
+.discovery-ledger dt { color: var(--muted); }
+.discovery-ledger dd { margin: 3px 0 0; font-size: 18px; font-variant-numeric: tabular-nums; }
+.discovery-ledger small { display: block; color: var(--muted); font-size: 11px; margin-top: 3px; }
+.discovery-history-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-block: 10px 6px; }
+.discovery-history-toolbar strong span { color: var(--muted); font-weight: normal; margin-left: 4px; }
+.discovery-history-toolbar select { max-width: 155px; }
+.discovery-history-toolbar > button { margin-left: auto; }
+.discovery-update-filter { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.discovery-history-scroll, .discovery-score-scroll { overflow: auto; max-height: 260px; }
+.discovery-history-table { width: 100%; border-collapse: collapse; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.jobs .discovery-history-table :is(th,td) { padding: 5px 8px; text-align: right; }
+.jobs .discovery-history-table :is(th,td):nth-child(-n+2) { text-align: left; }
+.discovery-history-table thead { color: var(--muted); }
+.discovery-history-table thead th { position: sticky; top: 0; background: var(--surface); }
+.discovery-history-table tbody tr[data-selected="true"] { background: var(--selected); color: var(--selected-ink); }
+.discovery-history-table th button { border: 0; padding: 3px 5px; min-width: 46px; background: transparent; color: inherit; text-align: left; }
+.discovery-history-table tfoot { color: var(--muted); border-top: 1px solid var(--line); }
+.discovery-end-state::before { content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); margin-right: 6px; }
+.discovery-end-state[data-reason="error"]::before { background: var(--danger); }
+.discovery-end-state[data-reason="exhausted"]::before, .discovery-end-state[data-reason="completed"]::before { background: var(--accent); }
+.discovery-session-result { border-top: 1px solid var(--line); padding-top: 8px; }
+.discovery-session-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.discovery-session-actions > span { color: var(--muted); }
+.discovery-session-actions > button { margin-left: auto; }
+.discovery-score-table { width: 100%; margin-top: 6px; font-variant-numeric: tabular-nums; border-collapse: collapse; }
+.discovery-score-table caption { text-align: left; color: var(--muted); padding-block: 5px; }
+.jobs .discovery-score-table :is(th, td) { text-align: right; padding: 4px 8px; }
+.jobs .discovery-score-table :is(th, td):first-child { text-align: left; }
+.discovery-history-range { display: block; margin: 5px 0; }
+.discovery-history-empty { color: var(--muted); padding: 8px 0; margin: 0; }
+.discovery-scope-note { color: var(--muted); font-size: 11px; padding-top: 6px; }
+
+.jobs .discovery-score-select { border: 0; background: transparent; color: inherit; padding: 3px; text-decoration: underline; text-underline-offset: 3px; }
