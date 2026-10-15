@@ -182,31 +182,52 @@ export class Runtime {
         session.responses = session.after.responses - session.before!.responses;
       }
     };
+    let pendingSave: Promise<void> | null = null;
+    let saveFailure: { error: unknown } | null = null;
+    let revision = 0;
+    const changed = () => {
+      revision++;
+      if (!pendingSave) progress.saveState = "unsaved";
+    };
+    const saveCheckpoint = () => {
+      updateSession();
+      const savedRevision = revision;
+      progress.saveState = "saving";
+      lastSave = performance.now();
+      publish();
+      // Only one transaction may use Store.saved / Store.dirty at a time.
+      // Its snapshot is captured by Persistence before computation resumes.
+      pendingSave = this.persistence.save(st).then(() => {
+        progress.savedAt = Date.now();
+        progress.saveState = revision === savedRevision ? "saved" : "unsaved";
+      }, error => {
+        saveFailure = { error };
+        progress.saveState = "error";
+      }).finally(() => { pendingSave = null; });
+    };
+    const checkSaveFailure = () => {
+      if (saveFailure) throw saveFailure.error;
+    };
     const checkpoint = async (force = false) => {
+      checkSaveFailure();
       if (job.cancel) throw new Cancelled();
       const now = performance.now();
       if (force || now - lastYield >= 20) {
         await pauseTurn();
         lastYield = performance.now();
+        checkSaveFailure();
         if (job.cancel) throw new Cancelled();
       }
       if (now - lastActivity >= 100) publishActivity();
-      if (force || now - lastSave >= 1000) {
-        updateSession();
-        progress.saveState = "saving";
-        publish();
-        await this.persistence.save(st);
-        progress.saveState = "saved";
-        progress.savedAt = Date.now();
-        publish();
-        lastSave = performance.now();
+      if (!pendingSave && (force || now - lastSave >= 1000)) {
+        saveCheckpoint();
       } else if (now - lastEmit >= 250) publish();
     };
     try {
       await pauseTurn();
       if (kind === "evaluation") {
         await analyze(st, () => {
-          progress.saveState = "unsaved";
+          changed();
           return checkpoint();
         });
         reason = "completed";
@@ -229,7 +250,7 @@ export class Runtime {
           }
           if (engine) {
             engine.d.elapsed = base + (performance.now() - start) / 1000;
-            progress.saveState = "unsaved";
+            changed();
             if (!engine.tick(target)) {
               reason = "exhausted";
               break;
@@ -262,7 +283,7 @@ export class Runtime {
             const made = st.batch(Math.min(100, budget - used), node, run);
             used += made;
             progress.unitsDone = used;
-            progress.saveState = "unsaved";
+            changed();
             if (!made && node !== undefined && st.node(node).expanded) {
               reason = "exhausted";
               break;
@@ -285,11 +306,27 @@ export class Runtime {
           st.data.evaluationProgress.state = "error";
       }
     } finally {
+      // Drain the checkpoint before mutating final session state or saving again.
+      // A failure arriving while cancellation/time limit wins still fails the job.
+      if (pendingSave) {
+        progress.phase = "saving";
+        publishActivity();
+        publish();
+        await pendingSave;
+      }
+      if (saveFailure) {
+        const error = (saveFailure as { error: unknown }).error;
+        reason = "error";
+        st.data.status = "error";
+        st.data.error = error instanceof Error ? error.message : String(error);
+        if (kind === "evaluation" && st.data.evaluationProgress)
+          st.data.evaluationProgress.state = "error";
+      }
       if (engine) {
         engine.d.elapsed = base + (performance.now() - start) / 1000;
         engine.refresh();
         const after = metrics(engine.d);
-        reason = !target && scopeComplete(st) ? "exhausted" : reason;
+        reason = reason !== "error" && !target && scopeComplete(st) ? "exhausted" : reason;
         engine.d.stopReason = reason;
         if (!target) engine.d.sessions.push({
           seconds: (performance.now() - start) / 1000,
@@ -328,7 +365,7 @@ export class Runtime {
       try {
         await this.persistence.save(st);
         progress.savedAt = Date.now();
-        progress.saveState = "saved";
+        progress.saveState = saveFailure ? "error" : "saved";
       } catch (e) {
         reason = "error";
         progress.saveState = "error";
