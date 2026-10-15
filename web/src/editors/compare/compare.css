@@ -5,3 +5,13 @@
 .compare-navigation .tool:hover:not(:disabled), .compare-source .tool:hover { background: var(--hover); }
 .compare-source { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
 .compare-source span { overflow-wrap: anywhere; }
+
+.compare-source-label { display: block; margin-block-start: 3px; font-weight: normal; }
+.compare-source-label small { display: block; color: var(--muted); font-size: inherit; }
+
+.compare-table { width: 100%; table-layout: fixed; }
+.compare-table th, .compare-table td { overflow-wrap: anywhere; white-space: normal; }
+.compare-table th:first-child { width: 26%; }
+.compare-table th:last-child { width: 15%; }
+.compare-source > span { min-width: 0; }
+.compare-source > .tool { flex: none; }

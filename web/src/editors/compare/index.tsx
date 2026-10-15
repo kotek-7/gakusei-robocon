@@ -2,7 +2,7 @@ import { Icon } from "../../shell/icons";
 import "./compare.css";
 import { useMemo, useState } from "react";
 import { register, run } from "../../app/commands";
-import { useAnalysis, useSearch } from "../../app/session";
+import { useAnalysis, usePath, useSearch } from "../../app/session";
 import { ui, useUI } from "../../app/store";
 import type { MatchAnalysis } from "../../engine/analysis";
 import { Empty } from "../common/Empty";
@@ -30,6 +30,7 @@ function CompareEditor() {
   const [group, setGroup] = useState("all");
   const [query, setQuery] = useState("");
   const compare = useUI((s) => s.session.compare);
+  const currentPath = usePath();
   const time = useUI((s) => s.playback.time);
   const range = useUI((s) => s.playback.range);
   const search = useSearch();
@@ -41,7 +42,7 @@ function CompareEditor() {
     return (
       <Empty title="比較する経路が未設定です">
         <p>候補の「得点と経路」で比較A・Bに設定します。</p>
-        <button className="tool" onClick={() => run("compare.setA")}>現在の経路をAに設定</button>
+        <button className="tool" disabled={!currentPath?.length} onClick={() => run("compare.setA")}>現在の経路をAに固定</button>
       </Empty>
     );
   const sa = A && stats(A),
@@ -91,7 +92,6 @@ function CompareEditor() {
   ].flat(2).filter(Boolean);
   return (
     <div className="editor-scroll compare-editor">
-      <p className="candidate-caveat">選んだ2経路の比較。構成・相手手順は各列の見出しで確認してください。</p>
       <div className="row compare-filterbar">
         <label>比較項目 <select value={group} onChange={(e) => setGroup(e.target.value)}><option value="all">すべて</option><option value="score">得点・取得条件</option><option value="actions">行動回数</option><option value="robots">機体の稼働時間</option></select></label>
         <input type="search" aria-label="比較項目を検索" placeholder="比較項目を検索" value={query} onChange={(e) => setQuery(e.target.value)} />
@@ -108,7 +108,16 @@ function CompareEditor() {
         <thead>
           <tr>
             <th />
-            {[0, 1].map(side => <th key={side}><div className="compare-source"><span>{side ? "B" : "A"} {compare.label[side] || "未設定"}</span><button className="tool icon-only" title={`現在の経路を${side ? "B" : "A"}に設定`} aria-label={`現在の経路を${side ? "B" : "A"}に設定`} onClick={() => run(side ? "compare.setB" : "compare.setA")}><Icon name="pin" /></button></div></th>)}
+            {[0, 1].map(side => {
+              const name = side ? "B" : "A";
+              const path = side ? compare.b : compare.a;
+              const source = side ? compare.sourceB : compare.sourceA;
+              const opponent = source?.evidence === "baseline" ? "相手待機" : source?.opponent ? `相手 ${source.opponent.slice(0, 10)}` : "";
+              return <th key={side}><div className="compare-source">
+                <span><strong>{name} {path ? "固定" : "未設定"}</strong>{path && <span className="compare-source-label">{source && <small title={`構成 C${source.run} · ${source.candidate}`}>構成 C{source.run} · {source.candidate.slice(0, 14)}</small>}{source?.label || compare.label[side] || "経路"}{opponent && <small title={source?.opponent ? `相手 ${source.opponent}` : opponent}>{opponent}</small>}</span>}</span>
+                <button className="tool icon-only" disabled={!currentPath?.length} title={`現在の経路を${name}に固定`} aria-label={`現在の経路を${name}に固定`} onClick={() => run(side ? "compare.setB" : "compare.setA")}><Icon name="pin" /></button>
+              </div></th>;
+            })}
             <th><div className="compare-source"><span>B−A</span><button className="tool icon-only" title="AとBを入れ替え" aria-label="AとBを入れ替え" onClick={() => run("compare.swap")}><Icon name="swap" /></button></div></th>
           </tr>
         </thead>

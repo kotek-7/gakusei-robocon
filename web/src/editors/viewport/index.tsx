@@ -265,7 +265,7 @@ register(
 function useSidePath(side: string | undefined) {
   const current = usePath();
   const compare = useUI((s) => s.session.compare);
-  if (side === "a") return compare.a ?? current;
+  if (side === "a") return compare.a;
   if (side === "b") return compare.b;
   return current;
 }
@@ -419,6 +419,8 @@ function Header({ area }: EditorProps) {
   const selection = useUI((s) => s.session.selection);
   const side = area.state?.side as string | undefined;
   const compare = useUI((s) => s.session.compare);
+  const source = side === "a" ? compare.sourceA : side === "b" ? compare.sourceB : null;
+  const sourceLabel = source ? [`構成 C${source.run}`, source.candidate, source.label, source.evidence === "baseline" ? "相手待機" : source.opponent && `相手 ${source.opponent}`].filter(Boolean).join(" ／ ") : side === "a" ? compare.label[0] : side === "b" ? compare.label[1] : "現在の経路に追従";
   const open = (e: React.MouseEvent, items: MenuItem[]) => {
     useUI.setState({ activeArea: area.id, activeEditor: "viewport" });
     const r = e.currentTarget.getBoundingClientRect();
@@ -489,12 +491,12 @@ function Header({ area }: EditorProps) {
       <button className="tool icon-only" aria-label="画像で保存" title="画像で保存 (F12)" onClick={() => (useUI.setState({ activeArea: area.id }), run("viewport.screenshot"))}>
         <Icon name="download" />
       </button>
-      <label className="header-field" title="この領域に表示する経路">
+      <label className="header-field" title={sourceLabel || "この領域に表示する経路"}>
         経路
-        <select value={side ?? ""} onChange={(e) => layout.setAreaState(area.id, { side: e.target.value || undefined })}>
-          <option value="">選択中</option>
-          <option value="a">比較A{compare.a ? "" : "（未設定）"}</option>
-          <option value="b">比較B{compare.b ? "" : "（未設定）"}</option>
+        <select aria-label="この領域の表示経路" aria-description={sourceLabel} value={side ?? ""} onChange={(e) => layout.setAreaState(area.id, { side: e.target.value || undefined })}>
+          <option value="">現在の経路</option>
+          <option value="a">A{compare.a ? " 固定" : " 未設定"}</option>
+          <option value="b">B{compare.b ? " 固定" : " 未設定"}</option>
         </select>
       </label>
     </div>
@@ -507,7 +509,7 @@ function ViewportEditor({ area }: EditorProps) {
   const [error, setError] = useState("");
   const side = area.state?.side as string | undefined;
   const path = useSidePath(side);
-  const frame = useFrame(path);
+  const frame = useFrame(side ? path : undefined);
   const compareB = useUI((s) => s.session.compare.b);
   const ghostFrame = useFrame(side ? null : compareB);
   const replay = useReplay(path).data;
@@ -597,6 +599,7 @@ function ViewportEditor({ area }: EditorProps) {
       <div
         ref={host}
         className={`viewport-host${measuring ? " measuring" : ""}`}
+        style={side && !frame && !error ? { visibility: "hidden" } : undefined}
         aria-label="3D競技場"
         onPointerDown={(e) => (down.current = [e.clientX, e.clientY])}
         onPointerMove={(e) => {
@@ -637,7 +640,7 @@ function ViewportEditor({ area }: EditorProps) {
         )}
       </div>
       {!search && <div className="viewport-note">探索を作成すると、局面の3Dを表示します</div>}
-      {side === "b" && !path && <div className="viewport-note">比較Bの経路が未設定です。探索メニューの「現在の経路をBに設定」で選びます</div>}
+      {search && side && !frame && !error && <div className="viewport-note">{path ? `比較${side.toUpperCase()}を読み込み中` : `比較${side.toUpperCase()}は未設定です。経路を「現在の経路」に戻すか、候補から比較先に設定してください。`}</div>}
       {hud && frame && (
         <div className="viewport-hud">
           {side && <span className="hud-side">{side.toUpperCase()}</span>}

@@ -68,8 +68,8 @@ export function useFrame(path?: number[] | null): Frame | null {
         last = replay.frames.at(-1)!.t;
       return frameAt(replay, Math.min(last, Math.max(first, time)));
     }
-    return detail?.frame ?? null;
-  }, [replay, time, detail]);
+    return path === undefined ? detail?.frame ?? null : null;
+  }, [replay, time, detail, path]);
 }
 /** Time span of the current path. */
 export function useSpan(): [number, number] {
