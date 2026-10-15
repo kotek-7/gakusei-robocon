@@ -2059,7 +2059,7 @@ tr[aria-selected="true"] th {
   flex-shrink: 0;
 }
 @media (max-width: 1000px) {
-  .statusbar .status-right > .status-item:not(:last-child) {
+  .statusbar .status-right > .status-item:not(.status-playhead):not(:last-child) {
     display: none;
   }
 }
@@ -2067,7 +2067,11 @@ tr[aria-selected="true"] th {
   .status-job-detail {
     display: none;
   }
-  .statusbar .status-right {
+  .statusbar .status-right > .status-item:not(.status-playhead) {
     display: none;
   }
+  .status-playhead { padding: 0 2px; }
 }
+
+.status-right .status-playhead { flex-shrink: 0; }
+.status-right { flex-shrink: 0; }

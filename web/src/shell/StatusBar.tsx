@@ -3,18 +3,10 @@ import { useDetail, useSearch, useSpan } from "../app/session";
 import { useUI } from "../app/store";
 import { usePref } from "../app/prefs";
 import { Icon } from "./icons";
-import { robotNames } from "../editors/common/labels";
+import { selectionLabel } from "./selectionLabel";
 
 import { jobSummary } from "./progress/summary";
 
-const refLabel = (r: string) => {
-  const [k, id] = r.split(":");
-  if (k === "robot") return robotNames[Number(id)];
-  if (k === "spot") return `建設スポット S${id}`;
-  if (k === "obj") return `物体 ${id}`;
-  if (k === "edge") return `遷移 E${id}`;
-  return r;
-};
 const fmt = (t: number) => {
   const m = Math.floor(t / 60),
     s = t - m * 60;
@@ -59,14 +51,13 @@ export function StatusBar() {
                 {stopping ? "停止中" : "停止"}
               </button>
             )}
-            {summary.active && <button className="status-item status-job-link" onClick={() => run("view.revealJobs")} title="計算と進捗を表示">計算詳細</button>}
           </>
         ) : (
           <span className="status-item">探索がありません</span>
         )}
       </div>
       <div className="status-right">
-        {selection && !selection.startsWith("node:") && <span className="status-item">選択 {refLabel(selection)}</span>}
+        {selection && !selection.startsWith("node:") && <span className="status-item">選択 {selectionLabel(selection)}</span>}
         {detail && (
           <span className="status-item">
             局面 N{detail.id} · {detail.state.t}秒 ·{" "}
@@ -74,12 +65,12 @@ export function StatusBar() {
             <span className="blue-text">{detail.scores[1]}</span>
           </span>
         )}
-        <span className="status-item tabular" title="再生位置 / 経路の末尾">
+        <span className="status-item status-playhead tabular" title="全ワークスペース共通の再生位置 / 経路の末尾">
           {playing && <Icon name={dir > 0 ? "play" : "reverse"} size={10} />} {fmt(time)} / {fmt(end)}
           {speed !== 1 ? ` · ${speed}倍` : ""}
           {range ? ` · 範囲 ${range[0].toFixed(1)}–${range[1].toFixed(1)}` : ""}
         </span>
-        <button className="status-item" onClick={() => run("app.shortcuts")} title="ショートカット一覧 (F1)">
+        <button className="status-item status-shortcuts" onClick={() => run("app.shortcuts")} title="ショートカット一覧 (F1)">
           キー
         </button>
         <button className="status-item" onClick={() => run("view.notifications")} title="通知の一覧">

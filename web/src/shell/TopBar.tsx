@@ -7,6 +7,7 @@ import { ui, useUI, type MenuItem } from "../app/store";
 import { allEditors } from "../editors/registry";
 import { Icon } from "./icons";
 import { MenuList } from "./Menu";
+import { ReplayContext } from "./ReplayContext";
 import { run, isEnabled } from "../app/commands";
 import { getPref, setPref, usePref } from "../app/prefs";
 
@@ -343,6 +344,7 @@ export function TopBar() {
           </option>
         ))}
       </select>
+      <ReplayContext />
       </div>
       <button className="tool icon-only" title="コマンドを検索 (Ctrl+Shift+P)" onClick={() => run("app.palette")}>
         <Icon name="search" />
