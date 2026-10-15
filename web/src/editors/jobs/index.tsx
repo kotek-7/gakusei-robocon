@@ -7,6 +7,7 @@ import { usePref, setPref } from "../../app/prefs";
 import { useSearch } from "../../app/session";
 import { Empty } from "../common/Empty";
 import { defineEditor } from "../registry";
+import { CurrentJob } from "./CurrentJob";
 import { DiscoveryProgress, EvaluationProgress } from "./SearchProgress";
 
 function JobsEditor() {
@@ -26,23 +27,22 @@ function JobsEditor() {
           {search.error}
         </p>
       )}
+      <CurrentJob search={search} />
       <div className="job-channel-toolbar">
-        <label>計算<select aria-label="表示する計算" value={mode} onChange={event => setMode(event.target.value)}><option value="discovery">候補探索</option><option value="exact">全探索・評価</option></select></label>
-        <span className="job-live-state" role="status" data-running={search.status === "running" || search.status === "evaluating"}>{search.status === "running" ? "実行中" : search.status === "evaluating" ? "評価中" : "停止中"}</span>
-        <button className="tool" disabled={!isEnabled("job.pause")} onClick={() => run("job.pause")}><Icon name="stop" />停止</button>
+        <label>設定・保存結果<select aria-label="表示する計算" value={mode} onChange={event => setMode(event.target.value)}><option value="discovery">候補探索</option><option value="exact">全探索・評価</option></select></label>
       </div>
       <div hidden={mode !== "discovery"}>
       <div className="job-execution-bar">
-        <label>今回の制限時間<select value={seconds} onChange={event => setPref("job.discoverySeconds", event.target.value)}>{[["10", "10秒"], ["60", "1分"], ["300", "5分"], ["1800", "30分"], ["3600", "1時間"], ["21600", "6時間"], ["86400", "24時間"]].map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+        <label>制限時間<select disabled={search.status === "running" || search.status === "evaluating"} value={seconds} onChange={event => setPref("job.discoverySeconds", event.target.value)}>{[["10", "10秒"], ["60", "1分"], ["300", "5分"], ["1800", "30分"], ["3600", "1時間"], ["21600", "6時間"], ["86400", "24時間"]].map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
         <button className="action-button primary" disabled={!isEnabled("job.discover")} onClick={() => run("job.discover")}><Icon name="play" />{search.discovery ? "探索を再開" : "探索を開始"}</button>
       </div>
       <DiscoveryProgress key={search.id} search={search} onDefinitions={() => run("docs.open", "search")} />
       <Coverage search={search} />
       </div>
       <div hidden={mode !== "exact"}>
-      <EvaluationProgress search={search} />
+      {search.jobProgress?.kind !== "evaluation" && search.status !== "evaluating" && search.evaluationProgress && <section aria-label="前回の評価"><h3>前回の評価</h3><EvaluationProgress search={search} /></section>}
       <section className="exact-panel" aria-label="詳細な全探索">
-        <h3>詳細な全探索</h3>
+        <h3>全探索の保存結果</h3>
         <p className="muted">
           {search.job === "exact" && search.status === "running"
             ? "探索中"
@@ -54,6 +54,7 @@ function JobsEditor() {
           <label>
             1回の行動数
             <input
+              disabled={search.status === "running" || search.status === "evaluating"}
               type="number"
               value={budget}
               min={1}
