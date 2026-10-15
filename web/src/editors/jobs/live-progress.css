@@ -7,6 +7,9 @@
 .live-job-elapsed { margin-left: auto; font-variant-numeric: tabular-nums; }
 .live-job-header > button { margin-left: auto; }
 .live-job-elapsed + button { margin-left: 0; }
+.live-job-header > .live-job-result { margin-left: 0; }
+.live-job-header > .live-job-result:last-child { flex-shrink: 0; }
+.live-job-header > .live-job-state + .live-job-result { margin-left: auto; }
 .live-job-header button, .live-job-footer button { display: inline-flex; align-items: center; gap: 4px; }
 .live-job-measure, .live-evaluation-stage { margin-block: 8px; }
 .live-job-scale { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; font-size: 12px; }

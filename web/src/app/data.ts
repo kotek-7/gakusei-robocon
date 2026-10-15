@@ -1,3 +1,4 @@
+import { receiveJobActivity, removeJobActivity } from "./jobActivity";
 /**
  * Read cache over the Worker queries. Entries are keyed by method and params,
  * shared between editors, and refreshed when the Worker reports that the
@@ -194,9 +195,11 @@ export function startSync() {
   if (started) return;
   started = true;
   onEngineEvent((e) => {
-    if (e.type === "search.changed") upsertSearch(e.search);
+    if (e.type === "job.activity") receiveJobActivity(e.search, e.activity);
+    else if (e.type === "search.changed") upsertSearch(e.search);
     else if (e.type === "job.finished") for (const l of finishListeners) l(e);
     else if (e.type === "search.removed") {
+      removeJobActivity(e.id);
       useSearches.setState((st) => ({
         list: st.list.filter((x) => x.id !== e.id),
       }));

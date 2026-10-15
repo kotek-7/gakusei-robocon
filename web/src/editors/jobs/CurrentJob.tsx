@@ -1,3 +1,5 @@
+import { IconButton } from "../common/IconButton";
+import { LiveSearchTrace } from "./LiveSearchTrace";
 import { isEnabled, run } from "../../app/commands";
 import { useUI } from "../../app/store";
 import { layout } from "../../app/layout";
@@ -37,6 +39,7 @@ export function CurrentJob({ search }: { search: Search }) {
       <span className="live-job-state" role="status" data-error={progress?.stopReason === "error"}>{title}</span>
       {!discovery && <span className="live-job-elapsed" title="今回の計算時間">{duration(progress?.elapsed ?? 0)}</span>}
       {active && <button className="tool" disabled={!isEnabled("job.pause") || phase === "saving" || stopping} onClick={() => run("job.pause")}><Icon name="stop" />{stopping ? "停止処理中" : "停止"}</button>}
+      <IconButton icon={discovery ? "list" : kind === "evaluation" ? "chart" : "branch"} label={discovery ? "候補を見る" : kind === "evaluation" ? active || search.evaluationProgress?.state !== "complete" ? "保存済みの評価を見る" : "評価結果を見る" : "局面を見る"} className="live-job-result" disabled={!hasResult} onClick={() => layout.reveal(result)}>{discovery ? "候補" : kind === "evaluation" ? "評価" : "局面"}</IconButton>
     </header>
     {kind !== "evaluation" && (active || (limit != null && limit > 0)) && <div className="live-job-measure">
       <div className="live-job-scale">
@@ -46,12 +49,12 @@ export function CurrentJob({ search }: { search: Search }) {
       <progress aria-label={discovery ? "今回の制限時間の経過（探索の網羅率ではありません）" : "今回の行動組数の上限に対する進捗（探索の網羅率ではありません）"} max={limit && limit > 0 ? limit : undefined} value={limit && limit > 0 ? Math.min(done ?? 0, limit) : undefined} />
     </div>}
     {kind === "evaluation" && <EvaluationProgress search={search} embedded />}
+    <LiveSearchTrace searchId={search.id} horizon={search.config.horizon} startTime={search.config.root?.t ?? (search.config.scenario === "endgame" ? 174 : 0)} />
     <footer className="live-job-footer">
       <span className="live-job-save" data-error={progress?.saveState === "error"}>
         {progress?.saveState === "saved" && <Icon name="check" size={14} />}
         {savedLabel}{savedTime && progress?.saveState !== "saving" && <time>{progress?.saveState === "error" && "前回保存 "}{savedTime}</time>}
       </span>
-      <button className="job-result-link" disabled={!hasResult} onClick={() => layout.reveal(result)}>{discovery ? "候補を見る" : kind === "evaluation" ? active || search.evaluationProgress?.state !== "complete" ? "保存済みの評価を見る" : "評価結果を見る" : "局面を見る"}<Icon name="forward" size={14} /></button>
     </footer>
   </section>;
 }

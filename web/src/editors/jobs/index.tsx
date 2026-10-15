@@ -42,7 +42,7 @@ function JobsEditor() {
       <CurrentJob search={search} />
       {search.discovery?.activeTarget && <div className="job-target">
         <span>追加探索 · C{search.discovery.activeTarget.run} · {search.discovery.activeTarget.mode === "counter" ? "相手探索" : "既知の相手で検査"}</span>
-        <IconButton icon="inspect" label="対象候補の進捗へ" className="job-result-link" onClick={() => run("strategy.exploration.open", {search:search.id,...search.discovery!.activeTarget,evidence:"baseline"})} />
+        <IconButton icon="inspect" label="対象候補の進捗へ" onClick={() => run("strategy.exploration.open", {search:search.id,...search.discovery!.activeTarget,evidence:"baseline"})} />
       </div>}
       <div hidden={mode !== "discovery"}>
         <DiscoveryProgress key={search.id} search={search} onDefinitions={() => run("docs.open", "search")} />
