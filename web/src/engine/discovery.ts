@@ -1,5 +1,8 @@
 import type {
   Candidate,
+  CandidateAnalysis,
+  CandidateAnalysisTarget,
+  CandidateAnalysisSnapshot,
   CandidateEvidence,
   Discovery,
   DiscoverySession,
@@ -35,7 +38,7 @@ import {
 } from "./classification";
 import { successors } from "./transition";
 import type { Store } from "./store";
-import { combination, equal, key } from "./util";
+import { assert, clone, combination, equal, key } from "./util";
 export const SCOPE =
   "候補探索：両チームの取得個数・混載・床／直接受け渡し・建設途中の切替・先行搬送を探索します。移動は作業地点までの最短経路、待機は次の動作完了または終了直前の反転開始までに限定します。未探索の分岐を保存して続行できます。候補は到達経路の代表例で、最適性・勝率・点差の保証ではありません。";
 type Context = {
@@ -81,6 +84,9 @@ type DRun = {
   commonOpponents: string[];
 };
 export type DiscoveryState = {
+  activeTarget?: CandidateAnalysisTarget | null;
+  activeSession?: DiscoverySession | null;
+  candidateSessions?: DiscoverySession[];
   elapsed: number;
   schedule: number;
   runs: Record<string, DRun>;
@@ -135,6 +141,7 @@ export function publicDiscovery(st: Store): Discovery | null {
   const d = st.data.discovery;
   if (!d) return null;
   return {
+    activeTarget: st.data.job === "discovery" ? d.activeTarget ?? null : null,
     elapsed: d.elapsed,
     scope: SCOPE,
     complete: false,
@@ -554,7 +561,55 @@ export class DiscoveryEngine {
         });
     }
   }
-  tick(): boolean {
+  validateTarget(target: CandidateAnalysisTarget) {
+    assert(target && ["counter", "compare"].includes(target.mode), "追加探索の種類が不正です");
+    assert(Number.isSafeInteger(target.run) && target.run >= 0, "構成番号が不正です");
+    const data = this.d.runs[target.run];
+    assert(data, "この構成の候補探索が見つかりません");
+    const candidate = data.candidates.find((a) => a.id === target.candidate);
+    assert(candidate, "作戦候補が見つかりません");
+    assert(Array.isArray(candidate.script) && candidate.script.length === 2 && candidate.script.every(Array.isArray), "この作戦の固定指示は保存されていません");
+    return { data, candidate };
+  }
+  analysis(run: number, candidate: string): CandidateAnalysis {
+    const { data, candidate: selected } = this.validateTarget({ run, candidate, mode: "counter" });
+    const progress = (mode: CandidateAnalysisTarget["mode"]) => {
+      const jobs = this.d.jobs.filter((j) => j.run === run && j.candidate === candidate && j.mode === mode);
+      const ids = new Set(jobs.map((j) => j.id));
+      const pending = this.d.nodes.filter((n) => ids.has(n.job) && !n.done);
+      return { ticks: jobs.reduce((sum, j) => sum + j.ticks, 0), jobs: jobs.length,
+        pendingJobs: jobs.filter((j) => !j.done).length, frontier: pending.length,
+        remainingChoices: pending.reduce((sum, n) => sum + (n.options ? n.total - n.cursor : 0), 0),
+        complete: jobs.every((j) => j.done) };
+    };
+    const counter = progress("counter"), compare = progress("compare");
+    return { run, candidate, counter, compare, counterTicks: counter.ticks, compareTicks: compare.ticks,
+      responses: selected.responses.length, opponents: Object.keys(data.opponents).length,
+      checkedOpponents: this.d.jobs.filter((j) => j.run === run && j.candidate === candidate && j.mode === "compare" && j.done).length,
+      worstMargin: selected.responses.length ? selected.responses.reduce((min, r) => Math.min(min, r.scores[0] - r.scores[1]), Infinity) : null,
+      sessions: clone((this.d.candidateSessions ?? []).filter((s) => s.target?.run === run && s.target.candidate === candidate)) };
+  }
+  snapshot(target: CandidateAnalysisTarget): CandidateAnalysisSnapshot {
+    const { responses, opponents, checkedOpponents, worstMargin, counterTicks, compareTicks } = this.analysis(target.run, target.candidate);
+    return { responses, opponents, checkedOpponents, worstMargin, counterTicks, compareTicks };
+  }
+  tick(target?: CandidateAnalysisTarget): boolean {
+    if (target) {
+      const { data, candidate } = this.validateTarget(target);
+      if (target.mode === "counter") this.newJob(target.run, "counter", candidate.id, "", { 0: candidate.script });
+      else for (const [opponent, script] of Object.entries(data.opponents))
+        this.newJob(target.run, "compare", candidate.id, opponent, { 0: candidate.script, 1: script });
+      const job = this.d.jobs.filter((j) => j.run === target.run && j.candidate === target.candidate && j.mode === target.mode && !j.done)
+        .sort((a, b) => a.ticks - b.ticks || a.id - b.id)[0];
+      if (!job) return false;
+      if (!this.planners.has(target.run)) this.planners.set(target.run, new Planner(this.st.c, this.st.run(target.run).variant));
+      const result = this.expand(this.planners.get(target.run)!, job);
+      if (result) this.record(data, job, result);
+      data.tested++;
+      this.refresh();
+      return true;
+    }
+
     if (scopeComplete(this.st)) return false;
     const count = countConfigs(this.st.c),
       run = Number(BigInt(this.d.schedule++) % count);

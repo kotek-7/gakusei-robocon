@@ -132,7 +132,13 @@ onJobFinished((e) => {
   const s = useSearches.getState().list.find((x) => x.id === e.search);
   const name = { discovery: "候補探索", exact: "全探索", evaluation: "評価" }[e.kind];
   const reason = REASONS[e.reason] ?? e.reason;
-  if (e.kind === "discovery" && s?.discovery?.metrics.candidates)
+  if (e.target) {
+    ui.toast(`候補の追加探索: ${reason}`, e.reason === "error" ? "error" : "info", {
+      label: "この候補の探索履歴", command: "strategy.exploration.open",
+      args: {search:e.search,run:e.target.run,candidate:e.target.candidate,evidence:"baseline",view:"history"},
+    });
+  }
+  else if (e.kind === "discovery" && s?.discovery?.metrics.candidates)
     ui.toast(`${name}: ${reason}。候補 ${s.discovery.metrics.candidates}`, e.reason === "error" ? "error" : "info", {
       label: "最高点の候補を開く",
       command: "candidate.openBest",

@@ -52,3 +52,19 @@ export async function inspectStrategyTime(selection: StrategySelection, time?: n
   if (target !== undefined) ui.select(target);
   else if (robot !== undefined) ui.select(`robot:${robot}`);
 }
+
+register({
+  id: "strategy.exploration.open", title: "候補の追加探索を開く", category: "候補", hidden: true,
+  enabled: ({args}) => isStrategySelection(args),
+  run: async ({args}) => {
+    if (!isStrategySelection(args)) return;
+    const search = useSearches.getState().list.find(s => s.id === args.search);
+    if (!search || !resolveStrategy(search,args)) { ui.toast("作戦候補が見つかりません"); return; }
+    const currentLayout = useLayout.getState();
+    const source = currentLayout.workspaces.find(w => w.id === currentLayout.active);
+    const sourceWorkspace = source && leaves(source.root).some(a => a.editor === "candidates" || a.tabs?.includes("candidates")) ? source.id : undefined;
+    if (useUI.getState().session.search !== args.search) ui.openSearch(args.search);
+    layout.reveal("strategy-detail", {strategySelection:args, sourceWorkspace, detailView:(args as StrategySelection & {view?:string}).view === "history" ? "history" : "exploration"});
+    await inspectStrategyTime(args);
+  },
+});

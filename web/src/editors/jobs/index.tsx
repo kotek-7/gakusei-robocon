@@ -28,6 +28,10 @@ function JobsEditor() {
         </p>
       )}
       <CurrentJob search={search} />
+      {search.discovery?.activeTarget && <div className="job-execution-bar" role="status">
+        <span>候補指定の追加探索 · 構成 C{search.discovery.activeTarget.run} · {search.discovery.activeTarget.mode === "counter" ? "相手探索" : "既知の相手で検査"}</span>
+        <button onClick={() => run("strategy.exploration.open", {search:search.id,...search.discovery!.activeTarget,evidence:"baseline"})}>対象候補の進捗へ</button>
+      </div>}
       <div className="job-channel-toolbar">
         <label>設定・保存結果<select aria-label="表示する計算" value={mode} onChange={event => setMode(event.target.value)}><option value="discovery">候補探索</option><option value="exact">全探索・評価</option></select></label>
       </div>

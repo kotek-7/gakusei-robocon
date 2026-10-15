@@ -67,6 +67,7 @@ npm run preview
 - 候補・比較：手順やIDで検索、点差や未比較数で並び替え、共通手順での最小点差経路を直接表示。A/B比較は差のある項目だけを表示でき、点差の差が変わる時刻へ移動できる。
 - 作戦候補：比較用のチェックと検査する行の選択を分け、一覧と横比較を同時表示。同一構成・共通相手手順ごとに最小点差と裁定幅を照合し、選んだ裁定を3D・A/Bへ送れる。差のある相手や赤／青の実行不可で絞り込める。
 - 作戦詳細：候補の「作戦を詳しく見る」から、TR・BRの固定指示、資材条件、実行記録、得点の増減を確認。時刻や不成立の手順から同じ展開の3Dへ移動できる。
+- [候補の追加探索・解析](docs/candidate-additional-analysis.md)：候補を指定して相手探索・既知手順の検査を続行。実行履歴から追加展開を辿り、相手別の点差幅や不成立指示を解析できる。
 - 候補の表示条件と比較対象を探索と一緒に保存。検索は空白AND、引用句、除外、`手順:`・`理由:`・`ID:`に対応。一覧外の比較候補から元の対象へ戻れる。
 - 候補の根拠：相手の展開を絞り、赤・青それぞれの得点増減、完了記録の同時性、相手待機から最初に異なる赤の完了組を確認。実行不可の記録から該当時刻・機体を3Dで開ける。
 - 試合解析：動作履歴の表示対象、得点変化、選択スポットの変化を前後へたどる。アウトライナーは折り畳んだ階層も検索し、矢印キーで移動できる。
@@ -113,3 +114,13 @@ npm test
 npm run typecheck
 npm run build
 ```
+
+## 本番環境とCD
+
+公開先は https://robocon2027-lab.kotek7.com です。Cloudflare Workers Static Assetsで配信します。
+
+`.github/workflows/deploy.yml` は、`main` へのpushでテスト・型検査・ビルドを実行し、成功した成果物を本番へデプロイします。Pull Requestでは検証だけを行います。デプロイ後はHTTPSの応答を確認します。同じブランチの実行は直列化しています。
+
+GitHubのリポジトリ変数 `CLOUDFLARE_ACCOUNT_ID` と、production環境のSecret `CLOUDFLARE_API_TOKEN` を使います。トークンには対象アカウントのWorkers Scripts編集、kotek7.comのZone読み取り・Workers Routes編集権限が必要です。認証情報はコードに保存しません。
+
+再デプロイはGitHub Actionsの「Validate and deploy」をmainに対して実行します。以前の版へ戻すときは対象変更をrevertしてmainにpushします。Wranglerの設定は `web/wrangler.jsonc` です。

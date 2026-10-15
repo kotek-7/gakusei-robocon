@@ -1,0 +1,13 @@
+.strategy-opponents { min-width: 0; }
+.strategy-opponents header, .opponent-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.strategy-opponents h3 { margin: 8px 0; }
+.opponent-controls { margin-block: 8px; }
+.opponent-controls label { display: flex; align-items: center; gap: 4px; min-width: 0; }
+.opponent-controls input { min-width: 0; width: 120px; }
+.opponent-table { overflow: auto; }
+.opponent-table table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+.opponent-table th, .opponent-table td { padding: 7px 6px; border-bottom: 1px solid var(--line); text-align: left; }
+.opponent-table th { white-space: nowrap; color: var(--muted); font-weight: normal; }
+.opponent-table small { display: block; color: var(--muted); }
+.opponent-table td button { white-space: nowrap; margin: 2px; }
+.opponent-id { overflow-wrap: anywhere; font-size: inherit; }

@@ -126,7 +126,10 @@ export class Persistence {
         st.data.job = null;
         if (st.data.evaluationProgress?.state === "running")
           st.data.evaluationProgress.state = "interrupted";
-        if (st.data.discovery) st.data.discovery.stopReason = "interrupted";
+        if (st.data.discovery) {
+          st.data.discovery.stopReason = "interrupted";
+          interruptCandidateSession(st.data.discovery);
+        }
         await this.save(st);
       }
   }
@@ -223,6 +226,7 @@ export function importSearch(input: unknown): Store {
       ),
     );
   }
+  if (d.discovery) interruptCandidateSession(d.discovery);
   d.id = crypto.randomUUID();
   d.created = Date.now() / 1000;
   d.status = "paused";
@@ -231,4 +235,13 @@ export function importSearch(input: unknown): Store {
   if (d.evaluationProgress?.state === "running")
     d.evaluationProgress.state = "interrupted";
   return new Store(d);
+}
+
+function interruptCandidateSession(discovery: NonNullable<StoredSearch["discovery"]>) {
+  if (discovery.activeSession) {
+    discovery.activeSession.reason = "interrupted";
+    (discovery.candidateSessions ??= []).push(discovery.activeSession);
+  }
+  if (discovery.activeSession !== undefined) discovery.activeSession = null;
+  if (discovery.activeTarget !== undefined) discovery.activeTarget = null;
 }

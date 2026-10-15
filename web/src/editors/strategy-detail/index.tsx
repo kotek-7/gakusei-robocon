@@ -12,12 +12,14 @@ import { EvidenceDiagnostics } from "../candidates/EvidenceDiagnostics";
 import { StrategyPlan, StrategyConfiguration } from "./StrategyPlan";
 import { StrategyScore } from "./StrategyScore";
 import { StrategyExecution } from "./StrategyExecution";
-import { resolveStrategy, type StrategySelection } from "./selection";
+import { evidenceKey, resolveStrategy, type StrategySelection } from "./selection";
 import { inspectStrategyTime } from "./commands";
+import { StrategyExploration, StrategyExplorationHistory, type ExplorationSettings } from "./StrategyExploration";
+import { StrategyOpponents, StrategyFailures } from "./StrategyOpponents";
 import "./detail.css";
 
 const views = [
-  ["summary", "機体別の概要"], ["instructions", "固定手順"], ["completed", "完了結果"],
+  ["exploration", "追加探索"], ["history", "探索履歴"], ["opponents", "相手展開"], ["failures", "手順の弱点"], ["summary", "機体別の概要"], ["instructions", "固定手順"], ["completed", "完了結果"],
   ["execution", "動作・時間"], ["score", "得点"], ["diagnostics", "実行不可"], ["configuration", "機体構成"],
 ] as const;
 type DetailView = typeof views[number][0];
@@ -88,6 +90,10 @@ function StrategyDetail({ area }: EditorProps) {
     </section>}
     {view === "score" && <section>{analysis.data && <StrategyScore analysis={analysis.data} onSeek={seek} />}{!analysis.data && <p>{analysis.error ? `実行記録を読み込めません：${analysis.error}` : analysis.loading ? "実行記録を読み込み中…" : "この展開には動作の記録がありません。"}</p>}</section>}
     {view === "diagnostics" && <section>{evidence && <EvidenceDiagnostics evidence={evidence} onOpenAt={issue => seek(issue.t,issue.robot)} />}{!evidence && <p>展開が見つかりません。</p>}</section>}
+    {view === "exploration" && <StrategyExploration key={`${search.id}/${selection.run}/${candidate.id}`} search={search} selection={selection} settings={(area.state?.explorationSettings as Record<string, ExplorationSettings> | undefined)?.[`${search.id}/${selection.run}/${candidate.id}`]} onSettings={settings => layout.setAreaState(area.id, {explorationSettings: {...(area.state?.explorationSettings as Record<string, ExplorationSettings> ?? {}), [`${search.id}/${selection.run}/${candidate.id}`]:settings}})} onEvidence={e => { update({...selection,evidence:evidenceKey(configRun.run,candidate,e)}); showView("score"); }} />}
+    {view === "history" && <StrategyExplorationHistory key={`${search.id}/${selection.run}/${candidate.id}`} search={search} selection={selection} onResumeSettings={settings => { layout.setAreaState(area.id, {explorationSettings: {...(area.state?.explorationSettings as Record<string, ExplorationSettings> ?? {}), [`${search.id}/${selection.run}/${candidate.id}`]:settings}}); showView("exploration"); }} onEvidence={e => { update({...selection,evidence:evidenceKey(configRun.run,candidate,e)}); showView("score"); }} />}
+    {view === "opponents" && <StrategyOpponents key={`${search.id}/${selection.run}/${candidate.id}`} candidate={candidate} common={configRun.commonOpponents} onEvidence={(e, next = "score") => { update({...selection,evidence:evidenceKey(configRun.run,candidate,e)}); showView(next); }} onExplore={() => showView("exploration")} />}
+    {view === "failures" && <StrategyFailures key={`${search.id}/${selection.run}/${candidate.id}`} candidate={candidate} onEvidence={e => { update({...selection,evidence:evidenceKey(configRun.run,candidate,e)}); showView("diagnostics"); }} onExplore={() => showView("exploration")} />}
     {view === "configuration" && <section><StrategyConfiguration variant={configRun.variant} model={model} /></section>}
     </div>
     <footer className="strategy-provenance">構成 C{configRun.run} · 候補 {candidate.id} · 展開 N{evidence?.node ?? "未選択"}</footer>

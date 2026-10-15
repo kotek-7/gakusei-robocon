@@ -238,7 +238,19 @@ export type EvaluationProgress = {
   totalRuns: number;
   elapsed: number;
 };
+export type CandidateAnalysisTarget = { run: number; candidate: string; mode: "counter" | "compare" };
+export type CandidateJobProgress = { ticks: number; frontier: number; remainingChoices: number; jobs: number; pendingJobs: number; complete: boolean };
+export type CandidateAnalysisSnapshot = { responses: number; opponents: number; checkedOpponents: number; worstMargin: number | null; counterTicks: number; compareTicks: number };
+export type CandidateAnalysis = CandidateAnalysisSnapshot & {
+  run: number; candidate: string;
+  counter: CandidateJobProgress; compare: CandidateJobProgress;
+  sessions: DiscoverySession[];
+};
 export type DiscoverySession = {
+  target?: CandidateAnalysisTarget;
+  started?: number;
+  before?: CandidateAnalysisSnapshot;
+  after?: CandidateAnalysisSnapshot;
   seconds: number;
   budget: number;
   reason: string;
@@ -248,6 +260,7 @@ export type DiscoverySession = {
   scoreChanges: { run: number; before: number; after: number }[];
 };
 export type Discovery = {
+  activeTarget?: CandidateAnalysisTarget | null;
   elapsed: number;
   scope: string;
   complete: false;
