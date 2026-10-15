@@ -271,7 +271,7 @@ export class Runtime {
       }
       this.jobs.delete(st.data.id);
       this.emit({ type: "search.changed", search: st.summary() });
-      this.emit({ type: "job.finished", search: st.data.id, kind, reason });
+      this.emit({ type: "job.finished", search: st.data.id, kind, reason, ...(target ? {target} : {}) });
     }
   }
   async pause(id: string, target?: CandidateAnalysisTarget) {

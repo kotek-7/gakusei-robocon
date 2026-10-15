@@ -110,7 +110,7 @@ export type Result<M extends Method> = Methods[M]["result"];
 export type EngineEvent =
   | { type: "search.changed"; search: Search }
   | { type: "search.removed"; id: string }
-  | { type: "job.finished"; search: string; kind: JobKind; reason: string };
+  | { type: "job.finished"; search: string; kind: JobKind; reason: string; target?: CandidateAnalysisTarget };
 
 export type RequestMessage = { id: number; method: Method; params: unknown };
 export type WorkerMessage =

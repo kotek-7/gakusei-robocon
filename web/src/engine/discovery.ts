@@ -586,7 +586,7 @@ export class DiscoveryEngine {
     return { run, candidate, counter, compare, counterTicks: counter.ticks, compareTicks: compare.ticks,
       responses: selected.responses.length, opponents: Object.keys(data.opponents).length,
       checkedOpponents: this.d.jobs.filter((j) => j.run === run && j.candidate === candidate && j.mode === "compare" && j.done).length,
-      worstMargin: selected.responses.length ? Math.min(...selected.responses.map((r) => r.scores[0] - r.scores[1])) : null,
+      worstMargin: selected.responses.length ? selected.responses.reduce((min, r) => Math.min(min, r.scores[0] - r.scores[1]), Infinity) : null,
       sessions: clone((this.d.candidateSessions ?? []).filter((s) => s.target?.run === run && s.target.candidate === candidate)) };
   }
   snapshot(target: CandidateAnalysisTarget): CandidateAnalysisSnapshot {
