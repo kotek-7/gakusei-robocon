@@ -42,7 +42,7 @@ export function CurrentJob({ search }: { search: Search }) {
       <span>{savedLabel}</span>
     </div>
     {showBar && <>
-      <progress aria-label={discovery ? "今回の制限時間の経過" : "今回の行動数の進捗"} max={limit && limit > 0 ? limit : undefined} value={limit && limit > 0 ? Math.min(done ?? 0, limit) : undefined} />
+      <progress aria-label={discovery ? "今回の制限時間の経過" : "今回の行動組数の進捗"} max={limit && limit > 0 ? limit : undefined} value={limit && limit > 0 ? Math.min(done ?? 0, limit) : undefined} />
       {discovery && <p className="progress-note">時間の経過を表示。探索全体の完了率ではありません。</p>}
     </>}
     {kind === "evaluation" && <EvaluationProgress search={search} />}

@@ -52,7 +52,7 @@ function JobsEditor() {
         </p>
         <div className="job-execution-bar">
           <label>
-            1回の行動数
+            1回の行動組数
             <input
               disabled={search.status === "running" || search.status === "evaluating"}
               type="number"
