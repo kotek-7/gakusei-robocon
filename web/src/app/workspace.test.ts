@@ -68,3 +68,21 @@ test("candidate shortlist and decisions serialize independently and stay in the 
   });
   assert.equal(saved.has("candidate-other"), false);
 });
+
+
+test("comparison provenance is persisted and restored together with each side", async () => {
+  ui.openSearch("source-restore");
+  const stop = installComparisonSync();
+  await settle();
+  const source = {search: "source-restore", run: 1, candidate: "c", evidence: "baseline", label: "相手待機", node: 7, path: [1, 2]};
+  ui.setComparison("a", source.path, "候補c", source);
+  await settle();
+  assert.deepEqual(saved.get("source-restore")?.ab.sourceA, source);
+  ui.openSearch("source-other"); ui.openSearch("source-restore");
+  await settle();
+  assert.deepEqual(useUI.getState().session.compare.sourceA, source);
+  ui.setComparison("a", [9], "局面9");
+  await settle();
+  assert.equal(saved.get("source-restore")?.ab.sourceA, null);
+  stop();
+});

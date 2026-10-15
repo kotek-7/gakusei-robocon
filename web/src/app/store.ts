@@ -5,6 +5,7 @@
  */
 import { create } from "zustand";
 import type { EntityRef } from "./refs";
+import { isReplayContext, matchesReplay, samePath, type ReplayContext } from "./replayContext";
 
 export type Session = {
   search: string | null;
@@ -14,11 +15,12 @@ export type Session = {
   node: number | null;
   /** Edge ids from the run root to `node`. null until known. */
   path: number[] | null;
+  replay: ReplayContext | null;
   /** The entity shown in the properties editor and highlighted everywhere. */
   selection: EntityRef | null;
   hover: EntityRef | null;
   /** Compared paths. A is usually the current path. */
-  compare: { a: number[] | null; b: number[] | null; label: [string, string] };
+  compare: { a: number[] | null; b: number[] | null; label: [string, string]; sourceA?: ReplayContext | null; sourceB?: ReplayContext | null };
 };
 export type Playback = {
   time: number;
@@ -56,7 +58,7 @@ type UIState = {
   activeArea: string | null;
   activeEditor: string | null;
   /** Navigation history for back/forward (node + selection). */
-  history: { node: number | null; path: number[] | null; selection: EntityRef | null; time: number }[];
+  history: { run: number; offset: number; node: number | null; path: number[] | null; replay: ReplayContext | null; selection: EntityRef | null; time: number }[];
   historyIndex: number;
   busy: Record<string, boolean>;
   /** Every notification of this session, newest last (the notification center). */
@@ -73,6 +75,7 @@ const emptySession = (search: string | null = null): Session => ({
   offset: 0,
   node: null,
   path: null,
+  replay: null,
   selection: null,
   hover: null,
   compare: { a: null, b: null, label: ["A", "B"] },
@@ -100,7 +103,20 @@ const get = useUI.getState;
 export const ui = {
   get,
   patchSession(p: Partial<Session>) {
-    set((s) => ({ session: { ...s.session, ...p } }));
+    set((s) => {
+      const session = { ...s.session, ...p };
+      const changed = session.search !== s.session.search || session.run !== s.session.run || session.node !== s.session.node || !samePath(session.path, s.session.path);
+      session.replay = matchesReplay(session.replay, session) && (!changed || "replay" in p) ? session.replay : null;
+      if (p.compare) {
+        const compare = { ...p.compare };
+        for (const [side, key] of [["a", "sourceA"], ["b", "sourceB"]] as const) {
+          const source = compare[key];
+          if (source && (!isReplayContext(source) || source.search !== session.search || !samePath(source.path, compare[side]))) compare[key] = null;
+        }
+        session.compare = compare;
+      }
+      return { session };
+    });
   },
   patchPlayback(p: Partial<Playback>) {
     set((s) => ({ playback: { ...s.playback, ...p } }));
@@ -115,17 +131,23 @@ export const ui = {
     });
   },
   /** Select a node, optionally with the exact path that reached it. */
-  selectNode(node: number, path: number[] | null = null, time?: number) {
+  selectNode(node: number, path: number[] | null = null, time?: number, replay: ReplayContext | null = null, location?: { run: number; offset: number }) {
     const s = get();
     pushHistory();
     set({
-      session: { ...s.session, node, path, selection: `node:${node}` },
+      session: { ...s.session, ...location, node, path, replay: matchesReplay(replay, { ...s.session, ...location, node, path }) ? replay : null, selection: `node:${node}` },
       playback: {
         ...s.playback,
         playing: false,
         time: time ?? s.playback.time,
       },
     });
+  },
+  setComparison(side: "a" | "b", path: number[] | null, label: string, source: ReplayContext | null = null) {
+    const compare = get().session.compare;
+    const labels: [string, string] = [...compare.label];
+    labels[side === "a" ? 0 : 1] = label;
+    ui.patchSession({ compare: { ...compare, [side]: path ? [...path] : null, label: labels, [side === "a" ? "sourceA" : "sourceB"]: source } });
   },
   select(selection: EntityRef | null) {
     set((s) => ({ session: { ...s.session, selection } }));
@@ -191,6 +213,9 @@ export const ui = {
 function snapshot() {
   const s = get();
   return {
+    run: s.session.run,
+    offset: s.session.offset,
+    replay: s.session.replay,
     node: s.session.node,
     path: s.session.path,
     selection: s.session.selection,
@@ -201,7 +226,7 @@ function pushHistory(atEnd = false) {
   const s = get();
   const cur = snapshot();
   const last = s.history[s.historyIndex];
-  if (last && last.node === cur.node && last.selection === cur.selection) return;
+  if (last && last.run === cur.run && last.node === cur.node && samePath(last.path, cur.path) && last.replay === cur.replay && last.selection === cur.selection) return;
   const history = [...s.history.slice(0, s.historyIndex + 1), cur].slice(-100);
   set({ history, historyIndex: atEnd ? history.length - 1 : history.length - 1 });
 }
@@ -211,7 +236,7 @@ function restore(i: number) {
   if (!h) return;
   set({
     historyIndex: i,
-    session: { ...s.session, node: h.node, path: h.path, selection: h.selection },
+    session: { ...s.session, run: h.run, offset: h.offset, node: h.node, path: h.path, replay: h.replay, selection: h.selection },
     playback: { ...s.playback, time: h.time, playing: false },
   });
 }

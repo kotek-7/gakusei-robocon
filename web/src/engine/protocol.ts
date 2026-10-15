@@ -39,7 +39,7 @@ export type Workspace = {
   markers: { id: string; t: number; name: string; color?: string }[];
   bookmarks: { id: string; name: string; camera: number[] }[];
   pins: string[];
-  ab: { a: number[] | null; b: number[] | null; label?: [string, string] };
+  ab: { a: number[] | null; b: number[] | null; label?: [string, string]; sourceA?: ReplayContext | null; sourceB?: ReplayContext | null };
   notes: Record<string, string>;
   reviews?: ReviewRecord[];
   candidateReview?: {
@@ -145,3 +145,16 @@ export const emptyWorkspace = (id: string): Workspace => ({
   reviews: [],
   updated: 0,
 });
+
+/** Saved source of a replay or fixed comparison path. */
+export type ReplayContext = {
+  search: string;
+  run: number;
+  candidate: string;
+  /** Stable evidence key, not a changing ranking such as "worst". */
+  evidence: string;
+  label: string;
+  opponent?: string;
+  node: number;
+  path: number[];
+};

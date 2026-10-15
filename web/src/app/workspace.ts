@@ -42,6 +42,8 @@ export function installComparisonSync() {
         ui.patchSession({ compare: {
           a: current.a !== original.a ? current.a : w.ab.a,
           b: current.b !== original.b ? current.b : w.ab.b,
+          ...(current.a !== original.a ? (current.sourceA !== undefined ? { sourceA: current.sourceA } : {}) : (w.ab.sourceA !== undefined ? { sourceA: w.ab.sourceA } : {})),
+          ...(current.b !== original.b ? (current.sourceB !== undefined ? { sourceB: current.sourceB } : {}) : (w.ab.sourceB !== undefined ? { sourceB: w.ab.sourceB } : {})),
           label: [
             current.label[0] !== original.label[0] ? current.label[0] : w.ab.label?.[0] ?? "A",
             current.label[1] !== original.label[1] ? current.label[1] : w.ab.label?.[1] ?? "B",
@@ -56,13 +58,15 @@ export function installComparisonSync() {
       restore(s.session.search);
     } else if (!restoring && s.session.compare !== previous.session.compare && s.session.search) {
       const ab = structuredClone(s.session.compare);
-      const changedA = s.session.compare.a !== previous.session.compare.a;
-      const changedB = s.session.compare.b !== previous.session.compare.b;
+      const changedA = s.session.compare.a !== previous.session.compare.a || s.session.compare.sourceA !== previous.session.compare.sourceA;
+      const changedB = s.session.compare.b !== previous.session.compare.b || s.session.compare.sourceB !== previous.session.compare.sourceB;
       const changedLabelA = ab.label[0] !== previous.session.compare.label[0];
       const changedLabelB = ab.label[1] !== previous.session.compare.label[1];
       updateWorkspace((w) => ({ ...w, ab: {
         a: changedA ? ab.a : w.ab.a,
         b: changedB ? ab.b : w.ab.b,
+        ...(changedA ? { sourceA: ab.sourceA ?? null } : (w.ab.sourceA !== undefined ? { sourceA: w.ab.sourceA } : {})),
+        ...(changedB ? { sourceB: ab.sourceB ?? null } : (w.ab.sourceB !== undefined ? { sourceB: w.ab.sourceB } : {})),
         label: [
           changedLabelA ? ab.label[0] : w.ab.label?.[0] ?? "A",
           changedLabelB ? ab.label[1] : w.ab.label?.[1] ?? "B",
