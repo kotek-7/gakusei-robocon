@@ -5,6 +5,8 @@
 import type {
   Action,
   CandidateInstructions,
+  CandidateAnalysis,
+  CandidateAnalysisTarget,
   Config,
   Detail,
   Graph,
@@ -16,7 +18,7 @@ import type { MatchAnalysis } from "./analysis";
 import type { StoredSearch } from "./store";
 
 export type JobKind = NonNullable<Search["job"]>;
-export type JobOptions = { budget?: number; node?: number; seconds?: number };
+export type JobOptions = { budget?: number; node?: number; seconds?: number; target?: CandidateAnalysisTarget };
 
 export type ReviewRecord = {
   id: string;
@@ -69,6 +71,7 @@ export interface Queries {
   "search.list": Def<void, Search[]>;
   "search.get": Def<{ search: string }, Search>;
   "search.export": Def<{ search: string }, Backup>;
+  "candidate.analysis": Def<{ search: string; run: number; candidate: string }, CandidateAnalysis>;
   "candidate.instructions": Def<
     { search: string; run: number; candidate: string; opponent?: string },
     CandidateInstructions
@@ -96,7 +99,7 @@ export interface Commands {
     { edges: number[] }
   >;
   "job.start": Def<{ search: string; kind: JobKind } & JobOptions, Search>;
-  "job.pause": Def<{ search: string }, Search>;
+  "job.pause": Def<{ search: string; target?: CandidateAnalysisTarget }, Search>;
   "workspace.put": Def<{ search: string; workspace: Workspace }, Workspace>;
 }
 export type Methods = Queries & Commands;
@@ -122,6 +125,7 @@ export const QUERY_METHODS = new Set<Method>([
   "search.get",
   "search.export",
   "candidate.instructions",
+  "candidate.analysis",
   "graph.page",
   "graph.locate",
   "node.get",

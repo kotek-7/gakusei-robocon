@@ -5,9 +5,10 @@ import { Persistence, exportSearch, importSearch } from "./persistence";
 import { DiscoveryEngine, metrics, scopeComplete } from "./discovery";
 import { analyze } from "./evaluation";
 import { assert, clone, pauseTurn } from "./util";
-import type { Search } from "./types";
+import type { CandidateAnalysisTarget, DiscoverySession, Search } from "./types";
 import type {
   Backup,
+  JobOptions,
   EngineEvent,
   Method,
   Params,
@@ -67,7 +68,7 @@ export class Runtime {
   async start(
     st: Store,
     kind: NonNullable<Search["job"]>,
-    options: { budget?: number; node?: number; seconds?: number } = {},
+    options: JobOptions = {},
   ) {
     assert(!this.jobs.has(st.data.id), "この探索は実行中です");
     const budget = options.budget ?? 1000,
@@ -81,20 +82,32 @@ export class Runtime {
       "候補探索の時間は1〜86400秒の整数です",
     );
     if (options.node !== undefined) st.node(options.node);
+    if (options.target !== undefined)
+      assert(options.target && typeof options.target === "object", "追加探索の対象が不正です");
+    const target = options.target === undefined ? undefined : clone(options.target);
+    if (target) {
+      assert(kind === "discovery" && options.node === undefined, "追加探索は作戦候補を指定してください");
+      new DiscoveryEngine(st).validateTarget(target);
+    }
+    if (st.data.discovery) st.data.discovery.activeTarget = target ?? null;
     st.data.status = kind === "evaluation" ? "evaluating" : "running";
     st.data.job = kind;
     st.data.error = null;
+    let finish!: () => void;
+    const job = { cancel: false, done: new Promise<void>((resolve) => { finish = resolve; }) };
+    this.jobs.set(st.data.id, job);
     try {
       await this.persistence.save(st);
     } catch (error) {
+      this.jobs.delete(st.data.id);
+      finish();
+      if (st.data.discovery) st.data.discovery.activeTarget = null;
       st.data.status = "error";
       st.data.job = null;
       st.data.error = error instanceof Error ? error.message : String(error);
       throw error;
     }
-    const job = { cancel: false, done: Promise.resolve() };
-    this.jobs.set(st.data.id, job);
-    job.done = this.work(st, kind, job, budget, seconds, options.node);
+    void this.work(st, kind, job, budget, seconds, options.node, target).finally(finish);
     this.emit({ type: "search.changed", search: st.summary() });
     return st.summary();
   }
@@ -105,6 +118,7 @@ export class Runtime {
     budget: number,
     seconds: number,
     node?: number,
+    target?: CandidateAnalysisTarget,
   ) {
     const start = performance.now();
     let lastSave = start,
@@ -113,6 +127,19 @@ export class Runtime {
     const engine = kind === "discovery" ? new DiscoveryEngine(st) : null,
       base = engine?.d.elapsed ?? 0,
       before = engine ? metrics(engine.d) : null;
+    const session: DiscoverySession | null = engine && target ? {
+      target, started: Date.now(), seconds: 0, budget: seconds, reason: "running",
+      newCandidates: 0, newStrategies: 0, responses: 0, scoreChanges: [],
+      before: engine.snapshot(target), after: engine.snapshot(target),
+    } : null;
+    if (engine) engine.d.activeSession = session;
+    const updateSession = () => {
+      if (engine && session && target) {
+        session.seconds = (performance.now() - start) / 1000;
+        session.after = engine.snapshot(target);
+        session.responses = session.after.responses - session.before!.responses;
+      }
+    };
     const checkpoint = async (force = false) => {
       if (job.cancel) throw new Cancelled();
       const now = performance.now();
@@ -122,6 +149,7 @@ export class Runtime {
         if (job.cancel) throw new Cancelled();
       }
       if (force || now - lastSave >= 1000) {
+        updateSession();
         await this.persistence.save(st);
         this.emit({ type: "search.changed", search: st.summary() });
         lastSave = performance.now();
@@ -151,7 +179,7 @@ export class Runtime {
           }
           if (engine) {
             engine.d.elapsed = base + (performance.now() - start) / 1000;
-            if (!engine.tick()) {
+            if (!engine.tick(target)) {
               reason = "exhausted";
               break;
             }
@@ -202,9 +230,9 @@ export class Runtime {
         engine.d.elapsed = base + (performance.now() - start) / 1000;
         engine.refresh();
         const after = metrics(engine.d);
-        reason = scopeComplete(st) ? "exhausted" : reason;
+        reason = !target && scopeComplete(st) ? "exhausted" : reason;
         engine.d.stopReason = reason;
-        engine.d.sessions.push({
+        if (!target) engine.d.sessions.push({
           seconds: (performance.now() - start) / 1000,
           budget: seconds,
           reason,
@@ -221,6 +249,13 @@ export class Runtime {
           ),
         });
         engine.d.sessions = engine.d.sessions.slice(-12);
+        updateSession();
+        if (session) {
+          session.reason = reason;
+          (engine.d.candidateSessions ??= []).push(session);
+        }
+        engine.d.activeSession = null;
+        engine.d.activeTarget = null;
       }
       if (reason === "resource_limit")
         st.data.error =
@@ -230,6 +265,7 @@ export class Runtime {
         await this.persistence.save(st);
       } catch (e) {
         reason = "error";
+        if (session) session.reason = "error";
         st.data.status = "error";
         st.data.error = e instanceof Error ? e.message : String(e);
       }
@@ -238,7 +274,14 @@ export class Runtime {
       this.emit({ type: "job.finished", search: st.data.id, kind, reason });
     }
   }
-  async pause(id: string) {
+  async pause(id: string, target?: CandidateAnalysisTarget) {
+    if (target) {
+      const st = await this.get(id);
+      new DiscoveryEngine(st).validateTarget(target);
+      const active = st.data.discovery?.activeTarget;
+      assert(st.data.job === "discovery" && active?.run === target.run && active.candidate === target.candidate && active.mode === target.mode,
+        "実行中の追加探索の対象が変わりました");
+    }
     const job = this.jobs.get(id);
     if (job) {
       job.cancel = true;
@@ -273,6 +316,11 @@ export class Runtime {
     "config.validate": ({ config }) => validateConfig(config),
     "search.list": () => this.list(),
     "search.get": async ({ search }) => (await this.get(search)).summary(),
+    "candidate.analysis": async ({ search, run, candidate }) => {
+      const st = await this.get(search);
+      assert(st.data.discovery, "候補探索が見つかりません");
+      return new DiscoveryEngine(st).analysis(run, candidate);
+    },
     "candidate.instructions": async ({ search, run, candidate, opponent }) => {
       assert(Number.isSafeInteger(run) && run >= 0, "構成番号が不正です");
       const st = await this.get(search);
@@ -376,7 +424,7 @@ export class Runtime {
       );
       return this.start(await this.get(search), kind, options);
     },
-    "job.pause": ({ search }) => this.pause(search),
+    "job.pause": ({ search, target }) => this.pause(search, target),
     "workspace.put": ({ search, workspace }) =>
       this.persistence.putWorkspace({ ...workspace, id: search }),
   };
