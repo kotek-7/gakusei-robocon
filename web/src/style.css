@@ -2036,3 +2036,38 @@ tr[aria-selected="true"] th {
 .dock-title .dock-tabs { flex: 1; border-bottom: 0; }
 .dock-title > button { flex: none; }
 .workspace-bar .workspace-tabs { order: 0; }
+
+/* Global calculation feedback: keep stop and details reachable in narrow windows. */
+.status-progress {
+  flex: 1 1 auto;
+}
+.status-progress .status-job {
+  min-width: 0;
+  flex-shrink: 1;
+  gap: 10px;
+}
+.status-job > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.status-job-detail {
+  color: var(--muted);
+  font-weight: 400;
+}
+.status-stop,
+.status-job-link {
+  flex-shrink: 0;
+}
+@media (max-width: 1000px) {
+  .statusbar .status-right > .status-item:not(:last-child) {
+    display: none;
+  }
+}
+@media (max-width: 560px) {
+  .status-job-detail {
+    display: none;
+  }
+  .statusbar .status-right {
+    display: none;
+  }
+}

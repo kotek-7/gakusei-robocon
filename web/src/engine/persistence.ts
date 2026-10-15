@@ -57,7 +57,7 @@ export class Persistence {
         e = tx.objectStore("edges");
       await Promise.all([
         tx.objectStore("searches").put(meta),
-        tx.objectStore("summaries").put(st.summary()),
+        tx.objectStore("summaries").put(st.summary(false)),
         ...nodeRows.map((row) => n.put({ ...row, search: id })),
         ...edgeRows.map((row) => e.put({ ...row, search: id })),
       ]);

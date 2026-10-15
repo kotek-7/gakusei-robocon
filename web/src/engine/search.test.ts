@@ -339,3 +339,82 @@ test("snapshot contains all continued candidate jobs and can resume after JSON e
   assert.deepEqual(restored.data.edges, st.data.edges);
   assert.deepEqual(restored.data.discovery, st.data.discovery);
 });
+
+test("live execution reports the action-pair budget and does not persist its transient state", async () => {
+  const db = new Persistence(crypto.randomUUID());
+  const rt = new Runtime(db);
+  const summary = await rt.call("search.create", { config: defaults() });
+  const events: ReturnType<Store["summary"]>[] = [];
+  rt.subscribe((event) => {
+    if (event.type === "search.changed") events.push(structuredClone(event.search));
+  });
+  await rt.call("job.start", { search: summary.id, kind: "exact", budget: 1 });
+  await rt.wait(summary.id);
+  assert.equal(events[0].jobProgress?.phase, "starting");
+  assert.equal(events[0].jobProgress?.savedAt, null);
+  assert.ok(events.some((event) => event.jobProgress?.phase === "saving"));
+  const final = events.at(-1)!.jobProgress!;
+  assert.equal(final.unitsDone, 1);
+  assert.equal(final.unitsLimit, 1);
+  assert.equal(final.stopReason, "budget_limit");
+  assert.equal(final.saveState, "saved");
+  assert.ok(final.savedAt);
+  assert.equal(final.phase, "finished");
+  assert.equal((await db.load(summary.id)).summary().jobProgress, undefined);
+  assert.equal((await db.list())[0].jobProgress, undefined);
+  await db.close();
+});
+
+test("final save is visible while pending and failed saving never reports saved", async () => {
+  let release: (() => void) | undefined;
+  class DelayedFinalSave extends Persistence {
+    override async save(st: Store) {
+      if (st.jobProgress?.phase === "saving") {
+        await new Promise<void>((resolve) => { release = resolve; });
+        throw new Error("final save failed");
+      }
+      return super.save(st);
+    }
+  }
+  const db = new DelayedFinalSave(crypto.randomUUID());
+  const rt = new Runtime(db);
+  const summary = await rt.call("search.create", { config: shortConfig() });
+  await rt.call("job.start", { search: summary.id, kind: "evaluation" });
+  while (!release) await new Promise((resolve) => setTimeout(resolve, 1));
+  const pending = await rt.call("search.get", { search: summary.id });
+  assert.equal(pending.jobProgress?.phase, "saving");
+  assert.equal(pending.jobProgress?.saveState, "saving");
+  release();
+  await rt.wait(summary.id);
+  const failed = await rt.call("search.get", { search: summary.id });
+  assert.equal(failed.jobProgress?.saveState, "error");
+  assert.equal(failed.jobProgress?.stopReason, "error");
+  assert.equal(failed.evaluationProgress?.state, "error");
+  await db.close();
+});
+
+test("initial saving reserves the job and a pause waits for its saved stop", async () => {
+  let release: (() => void) | undefined;
+  class DelayedStart extends Persistence {
+    override async save(st: Store) {
+      if (st.jobProgress?.phase === "starting")
+        await new Promise<void>((resolve) => { release = resolve; });
+      return super.save(st);
+    }
+  }
+  const db = new DelayedStart(crypto.randomUUID());
+  const rt = new Runtime(db);
+  const summary = await rt.call("search.create", { config: defaults() });
+  const starting = rt.call("job.start", { search: summary.id, kind: "exact", budget: 1 });
+  while (!release) await new Promise((resolve) => setTimeout(resolve, 1));
+  await assert.rejects(rt.call("job.start", { search: summary.id, kind: "exact" }), /実行中/);
+  const stopping = rt.pause(summary.id);
+  release();
+  await starting;
+  const stopped = await stopping;
+  assert.equal(stopped.jobProgress?.stopReason, "cancelled");
+  assert.equal(stopped.jobProgress?.unitsDone, 0);
+  assert.equal(stopped.jobProgress?.saveState, "saved");
+  assert.equal((await db.load(summary.id)).data.status, "paused");
+  await db.close();
+});
