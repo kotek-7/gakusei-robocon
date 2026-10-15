@@ -1,3 +1,4 @@
+import { candidateReplaySource } from "./replaySource";
 import { evidenceKey } from "../strategy-detail/selection";
 import "../strategy-detail/commands";
 import "./candidates.css";
@@ -19,7 +20,7 @@ import { responseIdentity, worstCommonResponse } from "./evidence";
 import { navigateRow } from "./rowSelection";
 import { MilestoneInspector } from "./MilestoneInspector";
 import { profileNames } from "../common/labels";
-import type { CandidateEvidence, Search, Model, Variant } from "../../engine/types";
+import type { Candidate, CandidateEvidence, Search, Model, Variant } from "../../engine/types";
 
 const margin = (x: CandidateEvidence) => x.scores[0] - x.scores[1];
 const score = (x: CandidateEvidence) => `${x.scores[0]} 対 ${x.scores[1]}`;
@@ -47,7 +48,7 @@ export function Candidates({
   runRequest?: number;
   search: Search;
   model: Model;
-  onOpen: (run: number, evidence: CandidateEvidence) => void;
+  onOpen: (run: number, evidence: CandidateEvidence, candidate: Candidate) => void;
 }) {
   const root = useRef<HTMLElement>(null);
   const [shortlistOnly, setShortlistOnly] = useState(initialView?.shortlistOnly ?? false);
@@ -270,8 +271,8 @@ export function Candidates({
                       <tr key={`${r}/${c.id}`} data-candidate-key={candidateKey(r,c.id)} data-selectable-row aria-selected={active?.candidate.id === c.id && active.run === r} tabIndex={active?.candidate.id === c.id && active.run === r ? 0 : -1}
                         onFocus={event => { if (event.target !== event.currentTarget) return; if (active?.candidate.id !== c.id || active.run !== r) { setSelected(`${r}/${c.id}`); setResponseKey("worst"); } }}
                         onClick={event => event.currentTarget.focus()}
-                        onKeyDown={event => navigateRow(event, () => { const evidence = worst ?? c.baseline; if (evidence.path.length) onOpen(r, evidence); })}
-                        onDoubleClick={() => { const evidence = worst ?? c.baseline; if (evidence.path.length) onOpen(r, evidence); }}>
+                        onKeyDown={event => navigateRow(event, () => { const evidence = worst ?? c.baseline; if (evidence.path.length) onOpen(r, evidence, c); })}
+                        onDoubleClick={() => { const evidence = worst ?? c.baseline; if (evidence.path.length) onOpen(r, evidence, c); }}>
                         <td><input type="checkbox" aria-label={`C${r} ${c.id} を横比較`} checked={review.shortlist.includes(candidateKey(r,c.id))} disabled={!reviewReady} onClick={e => e.stopPropagation()} onDoubleClick={e => e.stopPropagation()} onChange={() => saveReview(value => toggleShortlist(value, candidateKey(r,c.id)))} /></td>
                         <td><span>{candidatePlanLabel(c.plan)}</span><small className="candidate-identity" title={`作戦 ${c.baseline.strategy} / 展開 ${c.id}`}>{c.baseline.strategy.slice(0, 14)} · 展開 {c.id.slice(0, 14)}</small>{terms.length > 0 && <CandidateQueryMatch fields={matchCandidateQuery(buildCandidateIndex({run:r, common, candidate:c}),terms).fields} />}</td>
                         <td className="candidate-config-id">C{r}</td>
@@ -291,7 +292,7 @@ export function Candidates({
               </tbody>
             </table>
           </div>
-          {!!review.shortlist.length && <div className="candidate-comparison-region" tabIndex={-1}><ComparisonMatrix rows={rows.filter(row => review.shortlist.includes(candidateKey(row.run,row.candidate.id)))} onOpen={onOpen} onInspect={(run, id, evidence) => {
+          {!!review.shortlist.length && <div className="candidate-comparison-region" tabIndex={-1}><ComparisonMatrix search={search.id} rows={rows.filter(row => review.shortlist.includes(candidateKey(row.run,row.candidate.id)))} onOpen={onOpen} onInspect={(run, id, evidence) => {
             revealCandidate(candidateKey(run,id));
             setStatus("all"); setOpponent("");
             const row = rows.find(row => row.run === run && row.candidate.id === id);
@@ -304,15 +305,15 @@ export function Candidates({
             <div className="candidate-strategy-heading"><strong>{candidatePlanLabel(active.candidate.plan)}</strong><span>相手待機時の完了順</span></div>
             <button className="primary" onClick={() => command("strategy.inspect", {search: search.id, run: active.run, candidate: active.candidate.id, evidence: evidenceKey(active.run, active.candidate, chosen.evidence)})}>作戦を詳しく見る</button>
             <button onClick={() => command("strategy.exploration.open", {search: search.id, run: active.run, candidate: active.candidate.id, evidence: evidenceKey(active.run, active.candidate, chosen.evidence)})}>この候補を追加探索</button>
-            <ResponseBrowser key={`${active.run}/${active.candidate.id}`} options={evidenceOptions} selectedKey={chosen.key} commonOpponents={active.common} onSelect={setResponseKey} onOpen={option => onOpen(active.run, option.evidence)} />
+            <ResponseBrowser key={`${active.run}/${active.candidate.id}`} options={evidenceOptions} selectedKey={chosen.key} commonOpponents={active.common} onSelect={setResponseKey} onOpen={option => onOpen(active.run, option.evidence, active.candidate)} />
             <div className="candidate-target-tools" role="group" aria-label="選択展開の操作">
-              <button className="primary" disabled={!chosen.evidence.path.length} onClick={() => onOpen(active.run, chosen.evidence)}>3Dに表示</button>
-              {(["A", "B"] as const).map(side => <button className="candidate-slot-action" key={side} disabled={!chosen.evidence.path.length} onClick={() => command(`candidate.compare${side}`, { path: chosen.evidence.path, node: chosen.evidence.node, label: candidateComparisonLabel(`C${active.run} · ${active.candidate.id.slice(0, 8)} · ${chosen.label}`, chosen.evidence) })}>比較 {side} に割当</button>)}
+              <button className="primary" disabled={!chosen.evidence.path.length} onClick={() => onOpen(active.run, chosen.evidence, active.candidate)}>3Dに表示</button>
+              {(["A", "B"] as const).map(side => <button className="candidate-slot-action" key={side} disabled={!chosen.evidence.path.length} onClick={() => command(`candidate.compare${side}`, { source: candidateReplaySource(search.id, active.run, active.candidate, chosen.evidence), path: chosen.evidence.path, node: chosen.evidence.node, label: candidateComparisonLabel(`C${active.run} · ${active.candidate.id.slice(0, 8)} · ${chosen.label}`, chosen.evidence) })}>比較 {side} に割当</button>)}
             </div>
             <button className="candidate-text-action" onClick={() => command("compare.open")}>A/B比較へ</button>
             <EvidenceScoreDelta evidence={chosen.evidence} baseline={active.candidate.baseline} />
             <MilestoneInspector evidence={chosen.evidence} baseline={active.candidate.baseline} />
-            <EvidenceDiagnostics key={responseIdentity(active.run,active.candidate.id,chosen.evidence)} evidence={chosen.evidence} onOpenAt={issue => command("candidate.inspectIssue", { evidence: chosen.evidence, issue })} />
+            <EvidenceDiagnostics key={responseIdentity(active.run,active.candidate.id,chosen.evidence)} evidence={chosen.evidence} onOpenAt={issue => command("candidate.inspectIssue", { evidence: chosen.evidence, issue, source: candidateReplaySource(search.id, active.run, active.candidate, chosen.evidence) })} />
           </aside>}
           </div>
           <footer className="candidate-status">未探索 {report.runs.filter(r => run === "all" || String(r.run) === run).reduce((n, r) => n + r.frontier, 0).toLocaleString()}局面 · 未計算 {report.runs.filter(r => run === "all" || String(r.run) === run).reduce((n, r) => n + r.remainingChoices, 0).toLocaleString()}組 <Help topic="search" title="未探索・未計算" text="未探索は、見つかった局面のうち、まだ先の行動を調べていない件数です。未計算は、まだ結果を求めていない行動の組合せ数です。" /></footer>

@@ -1,8 +1,26 @@
+import { candidateReplaySource } from "../candidates/replaySource";
 import { register } from "../../app/commands";
 import { layout, leaves, useLayout } from "../../app/layout";
 import { fetchQuery, useSearches } from "../../app/data";
 import { ui, useUI } from "../../app/store";
 import { isStrategySelection, sameStrategySelection, resolveStrategy, type StrategySelection } from "./selection";
+
+function currentReplaySelection(args: unknown): args is StrategySelection {
+  if (!isStrategySelection(args)) return false;
+  const session = useUI.getState().session;
+  const search = useSearches.getState().list.find(s => s.id === args.search);
+  const evidence = search && resolveStrategy(search, args)?.chosen?.evidence;
+  return session.search === args.search && !!evidence && evidence.node === session.node && evidence.path.join() === session.path?.join();
+}
+
+register({
+  id: "strategy.reveal", title: "表示中の候補の詳細へ", category: "候補", hidden: true,
+  enabled: ({args}) => currentReplaySelection(args),
+  run: ({args}) => {
+    if (!currentReplaySelection(args)) return;
+    layout.reveal("strategy-detail", {strategySelection: args, sourceWorkspace: useLayout.getState().active});
+  },
+});
 
 register({
   id: "strategy.inspect", title: "作戦を詳しく見る", category: "候補", hidden: true,
@@ -45,8 +63,7 @@ export async function inspectStrategyTime(selection: StrategySelection, time?: n
   const latestSearch = useSearches.getState().list.find(s => s.id === selection.search);
   const latest = latestSearch && resolveStrategy(latestSearch, selection)?.chosen?.evidence;
   if (!latest || latest.node !== evidence.node || latest.path.join() !== evidence.path.join()) return;
-  ui.patchSession({run: node.run, offset: node.offset});
-  ui.selectNode(evidence.node, evidence.path, node.state.t);
+  ui.selectNode(evidence.node, evidence.path, node.state.t, candidateReplaySource(selection.search, selection.run, resolved.candidate, evidence), {run: node.run, offset: node.offset});
   ui.patchPlayback({playing: false, range: null});
   if (time !== undefined && Number.isFinite(time)) ui.seek(Math.max(0, Math.min(node.state.t, time)));
   if (target !== undefined) ui.select(target);

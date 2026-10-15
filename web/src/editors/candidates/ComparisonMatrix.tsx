@@ -1,6 +1,7 @@
+import { candidateReplaySource } from "./replaySource";
 import { useState } from "react";
 import { Help } from "../common/Help";
-import type { CandidateEvidence } from "../../engine/types";
+import type { Candidate, CandidateEvidence } from "../../engine/types";
 import { run as command } from "../../app/commands";
 import { comparisonEvidence, comparisonGroups, comparisonKey, comparisonBranches, arbitrationSummary, visibleOpponents, type CandidateComparisonRow } from "./comparison";
 import "./comparison.css";
@@ -9,9 +10,10 @@ import { candidatePlanLabel } from "./collection";
 import { responseIdentity } from "./evidence";
 
 
-export function ComparisonMatrix({ rows, onOpen, onInspect, onRemove, onClear }: {
+export function ComparisonMatrix({ search, rows, onOpen, onInspect, onRemove, onClear }: {
+  search: string;
   rows: CandidateComparisonRow[];
-  onOpen: (run: number, evidence: CandidateEvidence) => void;
+  onOpen: (run: number, evidence: CandidateEvidence, candidate: Candidate) => void;
   onInspect: (run: number, id: string, evidence: CandidateEvidence) => void;
   onRemove: (key: string) => void;
   onClear: () => void;
@@ -72,8 +74,8 @@ export function ComparisonMatrix({ rows, onOpen, onInspect, onRemove, onClear }:
         <span title={selectedLabel}>{selectedLabel}</span>
         {branches.length > 1 && <label>裁定の展開 <select aria-label="比較表の裁定展開" value={branchIdentity(selectedEvidence)} onChange={event => setBranchKey(event.target.value)}>{branches.map((evidence, index) => <option key={branchIdentity(evidence)} value={branchIdentity(evidence)}>{index === 0 ? "最小点差" : `展開${index + 1}`} · {points(evidence)} · {evidence.scores[0]} 対 {evidence.scores[1]}{evidence.blocked?.length ? ` · 実行不可${evidence.blocked.length}件` : ""}</option>)}</select></label>}
         <button onClick={() => onInspect(selectedRow.run, selectedRow.candidate.id, selectedEvidence)}>この展開を検査{selectedEvidence.blocked?.length ? ` · 実行不可 ${selectedEvidence.blocked.length}件` : ""}</button>
-        <button disabled={!selectedEvidence.path.length} onClick={() => onOpen(selectedRow.run, selectedEvidence)}>3Dに表示</button>
-        {(["A", "B"] as const).map(side => <button key={side} disabled={!selectedEvidence.path.length} onClick={() => command(`candidate.compare${side}`, { path: selectedEvidence.path, node: selectedEvidence.node, label: candidateComparisonLabel(selectedLabel, selectedEvidence, branches.indexOf(selectedEvidence)) })}>比較 {side} に割当</button>)}
+        <button disabled={!selectedEvidence.path.length} onClick={() => onOpen(selectedRow.run, selectedEvidence, selectedRow.candidate)}>3Dに表示</button>
+        {(["A", "B"] as const).map(side => <button key={side} disabled={!selectedEvidence.path.length} onClick={() => command(`candidate.compare${side}`, { source: candidateReplaySource(search, selectedRow.run, selectedRow.candidate, selectedEvidence), path: selectedEvidence.path, node: selectedEvidence.node, label: candidateComparisonLabel(selectedLabel, selectedEvidence, branches.indexOf(selectedEvidence)) })}>比較 {side} に割当</button>)}
         <button onClick={() => command("compare.open")}>A/B比較へ</button>
       </> : <span>点差を選択</span>}
     </div>

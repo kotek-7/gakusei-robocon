@@ -1,3 +1,4 @@
+import { candidateReplaySource } from "./replaySource";
 import { updateWorkspace, useWorkspaceData } from "../../app/workspace";
 import { emptyCandidateReview } from "./review";
 import { layout } from "../../app/layout";
@@ -26,8 +27,8 @@ function CandidatesEditor({ area }: EditorProps) {
         onViewChange={candidateView => layout.setAreaState(area.id, { candidateSearchId: search.id, candidateView })}
         requestedRun={area.state?.searchId === search.id ? area.state?.run as string | undefined : undefined}
         runRequest={area.state?.runRequest as number | undefined}
-        onOpen={(_run, evidence) => {
-          run("nav.node", { node: evidence.node, path: evidence.path });
+        onOpen={(candidateRun, evidence, candidate) => {
+          run("nav.node", { node: evidence.node, path: evidence.path, source: candidateReplaySource(search.id, candidateRun, candidate, evidence) });
         }}
       />
     </div>

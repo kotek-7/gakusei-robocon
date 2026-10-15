@@ -1,3 +1,5 @@
+import type { ReplayContext } from "./replayContext";
+import { candidateReplaySource } from "../editors/candidates/replaySource";
 /** Commands that are not tied to one editor: files, searches, jobs, playback, layout, navigation. */
 import { call } from "./client";
 import { register, togglePinned, clearRecent } from "./commands";
@@ -33,22 +35,29 @@ export async function currentAnalysis() {
   if (!s.search || !path?.length) return null;
   return fetchQuery("analysis.match", { search: s.search, edges: path });
 }
+let navigationVersion = 0;
+function sameNavigation(initial: ReturnType<typeof session>) {
+  const now = session();
+  return now.search === initial.search && now.run === initial.run && now.node === initial.node && now.path === initial.path && now.replay === initial.replay;
+}
 export async function goToRoot(run = session().run) {
-  const search = searchId();
-  if (!search) return;
+  const initial = session(), version = ++navigationVersion;
+  const search = initial.search;
+  if (!search) return false;
   const g = await fetchQuery("graph.page", { search, run, offset: 0 });
-  if (searchId() !== search) return;
-  ui.patchSession({ run, offset: 0 });
-  ui.selectNode(g.root, [], 0);
+  if (!sameNavigation(initial) || version !== navigationVersion) return false;
+  ui.selectNode(g.root, [], 0, null, {run, offset: 0});
+  return true;
 }
 /** Select a node and move the playhead to its time. */
-export async function goToNode(node: number, path: number[] | null = null) {
-  const search = searchId();
-  if (!search) return;
+export async function goToNode(node: number, path: number[] | null = null, source?: ReplayContext | null) {
+  const initial = session(), version = ++navigationVersion;
+  const search = initial.search;
+  if (!search || source && source.search !== search) return false;
   const d = await fetchQuery("node.get", { search, node });
-  if (searchId() !== search) return;
-  ui.patchSession({ run: d.run, offset: d.offset });
-  ui.selectNode(node, path, d.state.t);
+  if (!sameNavigation(initial) || version !== navigationVersion) return false;
+  ui.selectNode(node, path, d.state.t, source, {run: d.run, offset: d.offset});
+  return true;
 }
 export function saveJSON(value: unknown, name: string) {
   const url = URL.createObjectURL(
@@ -159,12 +168,12 @@ register(
     enabled: () => !!current()?.discovery?.metrics.candidates,
     run: async () => {
       const runs = current()?.discovery?.runs ?? [];
-      const all = runs.flatMap((r) => r.candidates);
+      const all = runs.flatMap((r) => r.candidates.map(candidate => ({run: r.run, candidate})));
       if (!all.length) return;
       const best = all.reduce((a, b) =>
-        b.baseline.scores[0] - b.baseline.scores[1] > a.baseline.scores[0] - a.baseline.scores[1] ? b : a,
+        b.candidate.baseline.scores[0] - b.candidate.baseline.scores[1] > a.candidate.baseline.scores[0] - a.candidate.baseline.scores[1] ? b : a,
       );
-      await goToNode(best.baseline.node, best.baseline.path);
+      if (!await goToNode(best.candidate.baseline.node, best.candidate.baseline.path, candidateReplaySource(searchId()!, best.run, best.candidate, best.candidate.baseline))) return;
       layout.reveal("viewport");
     },
   },
@@ -373,8 +382,8 @@ register(
     category: "移動",
     hidden: true,
     run: ({ args }) => {
-      const a = args as { node: number; path?: number[] | null };
-      return goToNode(a.node, a.path ?? null);
+      const a = args as { node: number; path?: number[] | null; source?: ReplayContext };
+      return goToNode(a.node, a.path ?? null, a.source);
     },
   },
   // Playback
@@ -616,8 +625,10 @@ register(
     category: "比較",
     enabled: () => session().node !== null,
     run: async () => {
+      const initial = session();
       const path = await currentPath();
-      ui.patchSession({ compare: { ...session().compare, a: path, label: [`局面 ${session().node}`, session().compare.label[1]] } });
+      if (session() !== initial) return;
+      ui.setComparison("a", path, session().replay?.label ?? `局面 ${session().node}`, session().replay);
     },
   },
   {
@@ -626,8 +637,10 @@ register(
     category: "比較",
     enabled: () => session().node !== null,
     run: async () => {
+      const initial = session();
       const path = await currentPath();
-      ui.patchSession({ compare: { ...session().compare, b: path, label: [session().compare.label[0], `局面 ${session().node}`] } });
+      if (session() !== initial) return;
+      ui.setComparison("b", path, session().replay?.label ?? `局面 ${session().node}`, session().replay);
     },
   },
   {
@@ -637,7 +650,7 @@ register(
     enabled: () => !!(session().compare.a || session().compare.b),
     run: () => {
       const c = session().compare;
-      ui.patchSession({ compare: { a: c.b, b: c.a, label: [c.label[1], c.label[0]] } });
+      ui.patchSession({ compare: { a: c.b, b: c.a, sourceA: c.sourceB, sourceB: c.sourceA, label: [c.label[1], c.label[0]] } });
     },
   },
   {
