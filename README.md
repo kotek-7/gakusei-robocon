@@ -113,3 +113,13 @@ npm test
 npm run typecheck
 npm run build
 ```
+
+## 本番環境とCD
+
+公開先は https://robocon2027-lab.kotek7.com です。Cloudflare Workers Static Assetsで配信します。
+
+`.github/workflows/deploy.yml` は、`main` へのpushでテスト・型検査・ビルドを実行し、成功した成果物を本番へデプロイします。Pull Requestでは検証だけを行います。デプロイ後はHTTPSの応答を確認します。同じブランチの実行は直列化しています。
+
+GitHubのリポジトリ変数 `CLOUDFLARE_ACCOUNT_ID` と、production環境のSecret `CLOUDFLARE_API_TOKEN` を使います。トークンには対象アカウントのWorkers Scripts編集、kotek7.comのZone読み取り・Workers Routes編集権限が必要です。認証情報はコードに保存しません。
+
+再デプロイはGitHub Actionsの「Validate and deploy」をmainに対して実行します。以前の版へ戻すときは対象変更をrevertしてmainにpushします。Wranglerの設定は `web/wrangler.jsonc` です。
