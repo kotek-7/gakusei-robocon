@@ -3,6 +3,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import type { Frame } from "../engine/types";
 import { createActors, createField, createMaterials } from "./world";
 import model from "../engine/model-data.json";
+import { createRenderDemand } from "./renderDemand";
 
 export type ViewName = "iso" | "top" | "front" | "back" | "red" | "blue";
 export type Overlays = {
@@ -42,6 +43,8 @@ const VIEWS: Record<ViewName, [number, number, number]> = {
 const TEAM_COLORS = [0xd53939, 0x3466e8];
 
 export function createScene(host: HTMLElement) {
+  const demand = createRenderDemand();
+  const invalidate = () => demand.invalidate();
   const scene = new T.Scene();
   const bg = new T.Color("#10171e");
   scene.background = bg;
@@ -66,6 +69,8 @@ export function createScene(host: HTMLElement) {
   controls.minDistance = 2;
   controls.maxDistance = 40;
   controls.screenSpacePanning = true;
+  // OrbitControls emits change during pointer input and every damping step.
+  controls.addEventListener("change", invalidate);
   scene.add(new T.HemisphereLight(0xb8deff, 0x333941, 1.8));
   const light = new T.DirectionalLight(0xfff0d5, 2);
   light.position.set(-5, 15, 8);
@@ -134,6 +139,7 @@ export function createScene(host: HTMLElement) {
   const labelEls = new Map<string, HTMLDivElement>();
 
   function applyOverlays() {
+    invalidate();
     grid.visible = overlays.grid;
     routes.visible = overlays.routes;
     spotRings.visible = overlays.spots;
@@ -153,6 +159,7 @@ export function createScene(host: HTMLElement) {
 
   const size = () => [host.clientWidth || 1, host.clientHeight || 1];
   function resize() {
+    invalidate();
     const [w, h] = size();
     renderer.setSize(w, h);
     persp.aspect = w / h;
@@ -221,20 +228,18 @@ export function createScene(host: HTMLElement) {
       }
   }
 
-  let animation = 0;
-  const loop = () => {
-    animation = requestAnimationFrame(loop);
-    // Workspaces stay mounted; hidden viewports need no GPU or label work.
-    if (document.hidden || !host.getClientRects().length || host.closest("[hidden]")) return;
-    if (follow) {
-      const o = objectFor(follow);
-      if (o) {
-        const d = o.position.clone().sub(controls.target);
-        controls.target.add(d);
-        camera.position.add(d);
-      }
-    }
-    controls.update();
+  function updateFollow() {
+    if (!follow) return;
+    const o = objectFor(follow);
+    if (!o) return;
+    const d = o.position.clone().sub(controls.target);
+    if (d.lengthSq() < 1e-12) return;
+    controls.target.add(d);
+    camera.position.add(d);
+    invalidate();
+  }
+
+  function render() {
     for (const [helper, ref] of [
       [selection, selected],
       [hover, hovered !== selected ? hovered : null],
@@ -245,11 +250,25 @@ export function createScene(host: HTMLElement) {
     }
     renderer.render(scene, camera);
     updateLabels();
+  }
+
+  let animation = 0;
+  const loop = () => {
+    animation = requestAnimationFrame(loop);
+    // Keep only the cheap visibility/control pump alive: mounted workspaces can
+    // become visible without a scene API call, and damping must settle normally.
+    const visible = !document.hidden && !!host.getClientRects().length && !host.closest("[hidden]");
+    if (!visible) { demand.consume(false); return; }
+    updateFollow();
+    controls.update();
+    // No GPU draw, bounds traversal, label projection or DOM writes when idle.
+    if (demand.consume(true)) render();
   };
   resize();
   loop();
 
   function setCamera(c: T.PerspectiveCamera | T.OrthographicCamera) {
+    invalidate();
     c.position.copy(camera.position);
     c.quaternion.copy(camera.quaternion);
     camera = c;
@@ -270,13 +289,16 @@ export function createScene(host: HTMLElement) {
 
   return {
     update(frame: Frame) {
+      invalidate();
       actors.update(frame);
     },
     ghost(frame: Frame | null) {
+      invalidate();
       ghost.root.visible = !!frame && overlays.ghost;
       if (frame) ghost.update(frame);
     },
     trails(list: Trail[], time: number) {
+      invalidate();
       for (const c of [...trails.children]) {
         trails.remove(c);
         (c as T.Line).geometry.dispose();
@@ -297,6 +319,7 @@ export function createScene(host: HTMLElement) {
       }
     },
     labels(list: Label[]) {
+      invalidate();
       labels = list;
     },
     overlays(next: Overlays) {
@@ -304,13 +327,18 @@ export function createScene(host: HTMLElement) {
       applyOverlays();
     },
     select(ref: string | null) {
+      if (selected === ref) return;
+      invalidate();
       selected = ref;
     },
     hover(ref: string | null) {
+      if (hovered === ref) return;
+      invalidate();
       hovered = ref;
     },
     pick,
     view(v: ViewName) {
+      invalidate();
       follow = null;
       camera.position.set(...VIEWS[v]);
       if (camera === ortho) {
@@ -326,6 +354,7 @@ export function createScene(host: HTMLElement) {
     isOrtho: () => camera === ortho,
     /** Frame an entity or the whole field. */
     focus(ref: string | null) {
+      invalidate();
       const o = objectFor(ref);
       const box = o ? new T.Box3().setFromObject(o) : new T.Box3(new T.Vector3(-5.5, 0, -5.5), new T.Vector3(5.5, 1.5, 5.5));
       const center = box.getCenter(new T.Vector3());
@@ -340,10 +369,12 @@ export function createScene(host: HTMLElement) {
       controls.update();
     },
     follow(ref: string | null) {
+      invalidate();
       follow = ref;
       if (ref) this.focus(ref);
     },
     zoom(factor: number) {
+      invalidate();
       if (camera === ortho) {
         ortho.zoom *= factor;
         ortho.updateProjectionMatrix();
@@ -354,6 +385,7 @@ export function createScene(host: HTMLElement) {
       controls.update();
     },
     orbit(azimuth: number, polar: number) {
+      invalidate();
       const offset = camera.position.clone().sub(controls.target);
       const s = new T.Spherical().setFromVector3(offset);
       s.theta += azimuth;
@@ -363,6 +395,7 @@ export function createScene(host: HTMLElement) {
     },
     /** Measurement line between two points; null clears. */
     measure(a: number[] | null, b: number[] | null) {
+      invalidate();
       for (const c of [...measure.children]) measure.remove(c);
       if (!a || !b) return;
       const g = new T.BufferGeometry().setFromPoints([new T.Vector3(...a), new T.Vector3(...b)]);
@@ -384,6 +417,7 @@ export function createScene(host: HTMLElement) {
       };
     },
     setCameraState(c: CameraState) {
+      invalidate();
       follow = null;
       if ((camera === ortho) !== c.ortho) setCamera(c.ortho ? ortho : persp);
       camera.position.fromArray(c.position);
@@ -404,7 +438,10 @@ export function createScene(host: HTMLElement) {
       return () => controls.removeEventListener("end", fn);
     },
     screenshot(): string {
-      renderer.render(scene, camera);
+      // Flush pending actor/selection/camera mutations even before the next rAF.
+      updateFollow();
+      controls.update();
+      render();
       return renderer.domElement.toDataURL("image/png");
     },
     /** Azimuth for the navigation gizmo (radians, 0 = looking from +z). */
@@ -413,12 +450,14 @@ export function createScene(host: HTMLElement) {
       return { azimuth: Math.atan2(d.x, d.z), polar: Math.acos(Math.min(1, d.y / d.length())) };
     },
     background(color: string) {
+      invalidate();
       bg.set(color);
       (scene.fog as T.Fog).color.set(color);
     },
     dispose() {
       cancelAnimationFrame(animation);
       ro.disconnect();
+      controls.removeEventListener("change", invalidate);
       controls.dispose();
       const mats = new Set<T.Material>();
       scene.traverse((o) => {

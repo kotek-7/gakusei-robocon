@@ -62,14 +62,18 @@ export function useFrame(path?: number[] | null): Frame | null {
   const replay = useReplay(path).data;
   const time = useUI((s) => s.playback.time);
   const detail = useDetail().data;
+  const search = useUI((s) => s.session.search);
+  // A node's physical state is immutable. Edge/cursor updates must not redraw the
+  // same 3D scene while the worker expands other parts of the search.
+  const nodeFrame = useMemo(() => detail?.frame ?? null, [search, detail?.id]);
   return useMemo(() => {
     if (replay?.frames.length) {
       const first = replay.frames[0].t,
         last = replay.frames.at(-1)!.t;
       return frameAt(replay, Math.min(last, Math.max(first, time)));
     }
-    return path === undefined ? detail?.frame ?? null : null;
-  }, [replay, time, detail, path]);
+    return path === undefined ? nodeFrame : null;
+  }, [replay, time, nodeFrame, path]);
 }
 /** Time span of the current path. */
 export function useSpan(): [number, number] {
