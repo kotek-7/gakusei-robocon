@@ -113,6 +113,18 @@ export type Evaluation = {
     };
   }[];
 };
+/** Live execution state; omitted from persisted snapshots. Units are processed action pairs. */
+export type JobProgress = {
+  kind: "discovery" | "exact" | "evaluation";
+  phase: "starting" | "computing" | "saving" | "finished";
+  elapsed: number;
+  secondsLimit: number | null;
+  unitsDone: number;
+  unitsLimit: number | null;
+  savedAt: number | null;
+  saveState: "saving" | "saved" | "unsaved" | "error";
+  stopReason: string | null;
+};
 export type Search = {
   id: string;
   name: string;
@@ -130,6 +142,7 @@ export type Search = {
   evaluation: Evaluation | null;
   job: "discovery" | "exact" | "evaluation" | null;
   evaluationProgress: EvaluationProgress | null;
+  jobProgress?: JobProgress;
   discovery: Discovery | null;
 };
 export type Model = {

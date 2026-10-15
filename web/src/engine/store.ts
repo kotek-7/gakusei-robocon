@@ -61,6 +61,7 @@ export type StoredSearch = {
 /** Worker-local graph. Persistence checkpoints the complete continuation atomically. */
 export class Store {
   data: StoredSearch;
+  jobProgress?: Search["jobProgress"];
   /** Rows already in IndexedDB; nodes changed since then are in `dirty`. */
   saved = { nodes: 0, edges: 0 };
   dirty = new Set<number>();
@@ -227,7 +228,7 @@ export class Store {
     }
     return processed;
   }
-  summary(): Search {
+  summary(includeLive = true): Search {
     const pending = new Set(
         this.data.nodes.filter((n) => !n.expanded).map((n) => n.run),
       ),
@@ -249,6 +250,7 @@ export class Store {
       evaluation: this.data.evaluation,
       evaluationProgress: this.data.evaluationProgress,
       job: this.data.job,
+      ...(includeLive && this.jobProgress ? { jobProgress: { ...this.jobProgress } } : {}),
       discovery: publicDiscovery(this),
     };
   }

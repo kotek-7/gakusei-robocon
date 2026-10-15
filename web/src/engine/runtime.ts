@@ -81,20 +81,42 @@ export class Runtime {
       "候補探索の時間は1〜86400秒の整数です",
     );
     if (options.node !== undefined) st.node(options.node);
+    let finishStarting!: () => void;
+    const job = {
+      cancel: false,
+      done: new Promise<void>((resolve) => { finishStarting = resolve; }),
+    };
+    this.jobs.set(st.data.id, job);
     st.data.status = kind === "evaluation" ? "evaluating" : "running";
     st.data.job = kind;
     st.data.error = null;
+    st.jobProgress = {
+      kind, phase: "starting", elapsed: 0,
+      secondsLimit: kind === "discovery" ? seconds : null,
+      unitsDone: 0, unitsLimit: kind === "exact" ? budget : null,
+      savedAt: null, saveState: "saving", stopReason: null,
+    };
+    if (kind === "evaluation") st.data.evaluationProgress = null;
+    this.emit({ type: "search.changed", search: st.summary() });
     try {
       await this.persistence.save(st);
+      st.jobProgress.savedAt = Date.now();
+      st.jobProgress.saveState = "saved";
     } catch (error) {
       st.data.status = "error";
       st.data.job = null;
       st.data.error = error instanceof Error ? error.message : String(error);
+      st.jobProgress.phase = "finished";
+      st.jobProgress.saveState = "error";
+      st.jobProgress.stopReason = "error";
+      this.jobs.delete(st.data.id);
+      finishStarting();
+      this.emit({ type: "search.changed", search: st.summary() });
       throw error;
     }
-    const job = { cancel: false, done: Promise.resolve() };
-    this.jobs.set(st.data.id, job);
     job.done = this.work(st, kind, job, budget, seconds, options.node);
+    // pause()/wait() may already be awaiting the initial-save promise.
+    void job.done.then(finishStarting, finishStarting);
     this.emit({ type: "search.changed", search: st.summary() });
     return st.summary();
   }
@@ -107,9 +129,17 @@ export class Runtime {
     node?: number,
   ) {
     const start = performance.now();
+    const progress = st.jobProgress!;
+    progress.phase = "computing";
+    let lastEmit = start;
+    const publish = () => {
+      progress.elapsed = (performance.now() - start) / 1000;
+      this.emit({ type: "search.changed", search: st.summary() });
+      lastEmit = performance.now();
+    };
     let lastSave = start,
       lastYield = start,
-      reason = "time_limit";
+      reason = kind === "exact" ? "budget_limit" : "time_limit";
     const engine = kind === "discovery" ? new DiscoveryEngine(st) : null,
       base = engine?.d.elapsed ?? 0,
       before = engine ? metrics(engine.d) : null;
@@ -122,15 +152,22 @@ export class Runtime {
         if (job.cancel) throw new Cancelled();
       }
       if (force || now - lastSave >= 1000) {
+        progress.saveState = "saving";
+        publish();
         await this.persistence.save(st);
-        this.emit({ type: "search.changed", search: st.summary() });
+        progress.saveState = "saved";
+        progress.savedAt = Date.now();
+        publish();
         lastSave = performance.now();
-      }
+      } else if (now - lastEmit >= 250) publish();
     };
     try {
       await pauseTurn();
       if (kind === "evaluation") {
-        await analyze(st, () => checkpoint());
+        await analyze(st, () => {
+          progress.saveState = "unsaved";
+          return checkpoint();
+        });
         reason = "completed";
       }
       else {
@@ -151,6 +188,7 @@ export class Runtime {
           }
           if (engine) {
             engine.d.elapsed = base + (performance.now() - start) / 1000;
+            progress.saveState = "unsaved";
             if (!engine.tick()) {
               reason = "exhausted";
               break;
@@ -171,7 +209,10 @@ export class Runtime {
                 ),
               ].sort((a, b) => a - b);
               if (!pending.length) {
-                if (BigInt(next) >= countConfigs(st.c)) break;
+                if (BigInt(next) >= countConfigs(st.c)) {
+                  reason = "exhausted";
+                  break;
+                }
                 st.ensureRun(next);
                 pending = [next];
               }
@@ -179,7 +220,12 @@ export class Runtime {
             }
             const made = st.batch(Math.min(100, budget - used), node, run);
             used += made;
-            if (!made && node !== undefined) break;
+            progress.unitsDone = used;
+            progress.saveState = "unsaved";
+            if (!made && node !== undefined && st.node(node).expanded) {
+              reason = "exhausted";
+              break;
+            }
           }
         }
       }
@@ -225,14 +271,26 @@ export class Runtime {
       if (reason === "resource_limit")
         st.data.error =
           "この端末で扱う探索量の上限に達したため中断しました。条件を絞って新しい探索を作成してください。現在の結果は保存できます。";
+      progress.phase = "saving";
+      progress.saveState = "saving";
+      progress.stopReason = reason;
+      publish();
       st.data.job = null;
       try {
         await this.persistence.save(st);
+        progress.savedAt = Date.now();
+        progress.saveState = "saved";
       } catch (e) {
         reason = "error";
+        progress.saveState = "error";
         st.data.status = "error";
         st.data.error = e instanceof Error ? e.message : String(e);
+        if (kind === "evaluation" && st.data.evaluationProgress)
+          st.data.evaluationProgress.state = "error";
       }
+      progress.phase = "finished";
+      progress.stopReason = reason;
+      progress.elapsed = (performance.now() - start) / 1000;
       this.jobs.delete(st.data.id);
       this.emit({ type: "search.changed", search: st.summary() });
       this.emit({ type: "job.finished", search: st.data.id, kind, reason });
