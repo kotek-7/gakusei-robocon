@@ -1,3 +1,4 @@
+import { IconButton } from "../common/IconButton";
 import { useEffect, useId, useState } from "react";
 import { Help } from "../common/Help";
 import { sameCandidateFilters, type CandidateFilterView, type SavedCandidateView } from "./collection";
@@ -30,9 +31,9 @@ export function SavedCandidateViews({ views, value, onApply, onSave, onDelete, d
     try { await action(); } catch(error) { setError(String(error)); } finally { setBusy(false); }
   }
   return <>
-    <button popoverTarget={popoverId}>表示条件の保存・呼出</button>
+    <IconButton icon="save" label="表示条件の保存・呼出" popoverTarget={popoverId}>表示条件</IconButton>
     <div id={popoverId} popover="auto" className="candidate-views-popover">
-    <header><strong>表示条件</strong><button popoverTarget={popoverId} popoverTargetAction="hide" aria-label="表示条件を閉じる">閉じる</button></header>
+    <header><strong>表示条件</strong><IconButton icon="close" label="表示条件を閉じる" popoverTarget={popoverId} popoverTargetAction="hide" /></header>
     <fieldset className="candidate-saved-views" disabled={disabled || busy}>
     <legend>保存した表示条件 <Help topic="results" title="保存した表示条件" text="保存した表示条件は、候補一覧の絞り込みと並び順のセットです。保存しておくと、同じ表示に戻せます。" /></legend>
     <label>表示条件<select value={active?.id ?? ""} onChange={event => {
@@ -40,7 +41,7 @@ export function SavedCandidateViews({ views, value, onApply, onSave, onDelete, d
       setSelected(view?.id ?? ""); setName(view?.name ?? "");
       if (view) onApply({...view.filters});
     }}><option value="">未選択</option>{views.map(view => <option key={view.id} value={view.id}>{view.name}</option>)}</select></label>
-    {changed && <><span role="status">変更あり</span><button onClick={() => { onApply({...active.filters}); setName(active.name); }}>元に戻す</button></>}
+    {changed && <><span role="status">変更あり</span><IconButton icon="undo" label="保存した表示条件に戻す" onClick={() => { onApply({...active.filters}); setName(active.name); }} /></>}
     <label>条件名<input value={name} maxLength={80} onChange={event => setName(event.target.value)} placeholder="表示条件の名前" /></label>
     <button disabled={!name.trim()} onClick={() => perform(async () => {
       const view = {id: crypto.randomUUID(), name:name.trim(), filters:{...value}};
@@ -52,9 +53,9 @@ export function SavedCandidateViews({ views, value, onApply, onSave, onDelete, d
     {active && changed && renamed && <button disabled={!name.trim()} onClick={() => perform(async () => {
       await onSave({...active, name:name.trim()});
     })}>名前だけ変更</button>}
-    {active && <button onClick={() => perform(async () => {
+    {active && <IconButton icon="trash" label="選択した表示条件を削除" onClick={() => perform(async () => {
       if (active) { await onDelete(active.id); setDeleted(active); setSelected(""); setName(""); }
-    })}>削除</button>}
+    })} />}
     {deleted && <span role="status">「{deleted.name}」を削除 <button onClick={() => perform(async () => {
       await onSave(deleted); setDeleted(null);
     })}>削除を取り消す</button></span>}

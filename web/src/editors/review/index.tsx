@@ -1,3 +1,4 @@
+import { IconButton } from "../common/IconButton";
 import { Icon } from "../../shell/icons";
 import "./commands";
 import { useEffect, useId, useState } from "react";
@@ -24,7 +25,7 @@ function RecordEditor({ record }: { record: ReviewRecord }) {
       <div className="review-compare-group" role="group" aria-label="記録を比較対象に設定"><span>比較に使用</span><button className="tool" disabled={!record.path.length} onClick={() => run("review.compareA", record)}>A</button><button className="tool" disabled={!record.path.length} onClick={() => run("review.compareB", record)}>B</button></div>
     </div>
     <label>検討メモ<textarea rows={6} value={note} placeholder="確認したこと、残る疑問、判断の理由" onChange={e => setNote(e.target.value)} onBlur={() => save({ note })} /></label>
-    <footer className="review-record-actions"><button className="tool" onClick={() => run("review.duplicate", record)}><Icon name="copy" />記録を複製</button><button className="tool review-delete" onClick={() => run("review.delete", record)}><Icon name="trash" />削除</button></footer>
+    <footer className="review-record-actions"><IconButton icon="copy" label="選択した記録を複製" onClick={() => run("review.duplicate", record)} /><IconButton icon="trash" label="選択した記録を削除" className="review-delete" onClick={() => run("review.delete", record)} /></footer>
   </div>;
 }
 
@@ -47,10 +48,10 @@ function Review({ area }: import("../registry").EditorProps) {
     <div className="review-tools">
       <input type="search" aria-label="検討記録を検索" placeholder="見出し・メモ・局面を検索" value={query} onChange={e => setQuery(e.target.value)} />
       <select aria-label="検討記録の判断で絞り込み" value={status} onChange={e => setStatus(e.target.value)}><option value="all">すべての判断</option>{Object.entries(statusNames).map(([value, text]) => <option key={value} value={value}>{text}</option>)}</select>
-      {(query || status !== "all") && <button onClick={() => { setQuery(""); setStatus("all"); }}>絞り込みを解除</button>}
+      {(query || status !== "all") && <IconButton icon="reset" label="検討記録の絞り込みを解除" onClick={() => { setQuery(""); setStatus("all"); }} />}
       <select aria-label="検討記録の並び順" value={sort} onChange={e => run("review.view", { area: area.id, patch: { sort: e.target.value } })}><option value="created">新しい順</option><option value="time">試合時刻順</option><option value="status">未確認を先に</option></select>
       <label className="review-filter-check"><input type="checkbox" checked={currentOnly} onChange={event => run("review.view", { area: area.id, patch: { currentOnly: event.target.checked } })} />選択局面のみ</label>
-      <details className="review-export"><summary>書き出し</summary><div><button className="tool" disabled={!filtered.length} onClick={() => run("review.copy", filtered)}><Icon name="copy" />表示中をコピー</button><button className="tool" disabled={!filtered.length} onClick={() => run("review.export", filtered)}><Icon name="download" />JSON保存</button></div></details>
+      <div className="review-export" role="group" aria-label="表示中の記録を書き出し"><IconButton icon="copy" label="表示中の記録をコピー" disabled={!filtered.length} onClick={() => run("review.copy", filtered)} /><IconButton icon="download" label="表示中の記録をJSON保存" disabled={!filtered.length} onClick={() => run("review.export", filtered)} /></div>
     </div>
     {!records.length ? <Empty title="残したい局面で記録を追加してください">経路・再生時刻・再生範囲を保存します。</Empty> : <>
       {!filtered.length && <p className="muted">該当する記録はありません</p>}

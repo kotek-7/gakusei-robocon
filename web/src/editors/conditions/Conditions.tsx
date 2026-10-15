@@ -1,3 +1,4 @@
+import { IconButton } from "../common/IconButton";
 import { flushSync } from "react-dom";
 import { Help } from "../common/Help";
 import { ruleHelp } from "../../app/help";
@@ -113,26 +114,18 @@ export function Conditions({
       <div className="section-title">
         <h2>探索条件 <Help topic="conditions" title="探索条件" text="探索条件は、計算に使う機体の能力や動作時間などの設定です。項目ごとに候補を選び、比較する機体構成を作れます。" /></h2>
         <div className="condition-history" aria-label="条件の編集履歴">
-          <button
-            type="button"
+          <IconButton icon="undo" label="条件の編集を取り消す"
             disabled={!history.past.length}
             onClick={() => dispatch({ type: "undo" })}
             title="条件の編集を取り消す（Ctrl / ⌘ Z、入力欄の外）"
-          >
-            取り消す
-          </button>
-          <button
-            type="button"
+          />
+          <IconButton icon="redo" label="条件の編集をやり直す"
             disabled={!history.future.length}
             onClick={() => dispatch({ type: "redo" })}
             title="条件の編集をやり直す（Ctrl / ⌘ Shift Z、入力欄の外）"
-          >
-            やり直す
-          </button>
+          />
         </div>
-        <button type="button" onClick={() => saveJSON(c, "conditions.json")}>
-          条件を書き出す
-        </button>
+        <IconButton icon="download" label="条件を書き出す" onClick={() => saveJSON(c, "conditions.json")} />
       </div>
       <nav className="condition-views" aria-label="条件の表示">
         {[["edit", "機体・試合"], ["differences", "編集差分"], ["axes", "組合せ"], ["rules", "初期配置・ルール"]].map(([id, label]) => <button key={id} type="button" aria-pressed={view === id} onClick={() => setView(id)}>{label}</button>)}
@@ -202,8 +195,7 @@ export function Conditions({
           <label key={i} data-team={i}><input type="radio" name={`${controlId}-team`} checked={team === i} onChange={() => setTeam(i)} />{name}</label>
         ))}
         </fieldset>
-        <button
-          type="button"
+        <IconButton icon="copy" label="選択チームの条件を反対側にコピー"
           onClick={() =>
             change((x) => {
               x.teams[1 - team] = structuredClone(x.teams[team]);
@@ -211,7 +203,7 @@ export function Conditions({
           }
         >
           反対側にコピー
-        </button>
+        </IconButton>
       </div>
       <div className="condition-filter">
         <input

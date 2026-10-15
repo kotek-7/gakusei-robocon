@@ -1,3 +1,4 @@
+import { IconButton } from "../common/IconButton";
 import { Icon } from "../../shell/icons";
 import { Help } from "../common/Help";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -193,7 +194,7 @@ function ScoreEditor({ area }: EditorProps) {
       <div className="score-scope" role="group" aria-label="得点の集計範囲">
         <fieldset className="score-options" aria-label="集計対象"><label><input type="radio" name={`score-scope-${area.id}`} checked={!rangeMode} onChange={() => layout.setAreaState(area.id, { scoreScope: "point" })} />再生位置</label>
         <label><input type="radio" name={`score-scope-${area.id}`} disabled={!range} checked={rangeMode} onChange={() => layout.setAreaState(area.id, { scoreScope: "range" })} />区間増減</label></fieldset>
-        {rangeMode && range && <><button className="tool" onClick={() => ui.patchPlayback({ time: range[0], playing: false })}>開始へ</button><button className="tool" onClick={() => ui.patchPlayback({ time: range[1], playing: false })}>終了へ</button></>}
+        {rangeMode && range && <><IconButton icon="first" label="解析区間の開始へ移動" onClick={() => ui.patchPlayback({ time: range[0], playing: false })} /><IconButton icon="last" label="解析区間の終了へ移動" onClick={() => ui.patchPlayback({ time: range[1], playing: false })} /></>}
       </div>
       {rangeMode ? <>
         <div className="tabular muted">{range![0].toFixed(1)}〜{range![1].toFixed(1)}秒</div>

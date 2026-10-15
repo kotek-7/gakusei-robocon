@@ -1,3 +1,4 @@
+import { IconButton } from "../common/IconButton";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import "./graph.css";
 import { Icon } from "../../shell/icons";
@@ -92,11 +93,11 @@ export function Graph({
   return (
     <section className="graph-panel" aria-label="状態遷移グラフ">
       <div className="graph-tools">
-        <label>局面の表示 <select value={scope} onChange={e => onScope(e.target.value as GraphScope)}>
+        <label title="局面の表示範囲"><Icon name="filter" /> <select aria-label="局面の表示範囲" value={scope} onChange={e => onScope(e.target.value as GraphScope)}>
           <option value="page">読み込んだ局面</option><option value="neighbors">選択局面と前後</option><option value="path">選択経路</option><option value="frontier">未展開と選択局面</option><option value="scored">得点ありと選択局面</option>
         </select></label>
         <span className="graph-count">{nodes.length}局面 · 未展開 {frontier.length}</span>
-        <button className="tool" disabled={!frontier.length} onClick={nextFrontier} title="未展開の局面を順に選ぶ"><Icon name="nextEvent" size={14} />未展開へ</button>
+        <IconButton icon="nextEvent" label="次の未展開の局面へ移動" disabled={!frontier.length} onClick={nextFrontier} />
       </div>
       {scope !== "page" && <p className="muted">読み込み済みの{data.nodes.length}局面から絞り込み中。非表示の局面・ページ外の分岐も探索対象に残ります。</p>}
       {!nodes.length && <p className="muted">このページには対象の局面がありません。「読み込んだ局面」に戻すか、選択局面を表示してください。</p>}

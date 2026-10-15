@@ -1,3 +1,5 @@
+import { Icon } from "../../shell/icons";
+import { IconButton } from "../common/IconButton";
 import "./commands";
 import "./properties.css";
 import { Help } from "../common/Help";
@@ -50,12 +52,12 @@ export function Inspector({
     <section className="inspector">
       <div className="section-title">
         <h2>選択局面 N{detail.id}</h2>
-        <span>{detail.state.t}秒</span><button className="tool" title="局面JSONを保存" onClick={() => saveJSON(detail.state, `state-${detail.id}.json`)}>保存</button>
+        <span>{detail.state.t}秒</span><IconButton icon="download" label="局面をJSON保存" onClick={() => saveJSON(detail.state, `state-${detail.id}.json`)} />
       </div>
       {Math.abs(time - detail.state.t) > 0.001 && (
         <div className="section-title">
           <span className="muted">再生位置 {time.toFixed(1)}秒</span>
-          <button onClick={() => run("properties.seekNode")}>局面の時刻へ移動</button>
+          <IconButton icon="focus" label="選択局面の時刻へ移動" onClick={() => run("properties.seekNode")} />
         </div>
       )}
       <div className="scoreline">
@@ -69,7 +71,7 @@ export function Inspector({
           青 <b>{detail.scores[1]}</b>
         </span>
       </div>
-      <label className="inspector-view">表示<select aria-label="局面の表示内容" value={tab} onChange={e => setTab(e.currentTarget.value)}>
+      <label className="inspector-view" title="局面の表示内容"><Icon name="eye" /><select aria-label="局面の表示内容" value={tab} onChange={e => setTab(e.currentTarget.value)}>
         <option value="state">機体の状態</option><option value="changes">直前からの変化</option><option value="actions">行動と遷移</option><option value="objects">物体の所在</option>
       </select></label>
       {tab === "state" && <div>
@@ -116,8 +118,8 @@ export function Inspector({
               {!changes.objects.length && <tr><td colSpan={3}>物体の変化なし</td></tr>}
             </tbody></table>
             {changes.robots.map(change => <p key={change.robot}>{robotNames[change.robot]}: {locationName(change.before.pos)} → {locationName(change.after.pos)} · {change.after.job ? actionName(change.after.job.action) : "動作終了"}</p>)}
-            <button className="entity-reference" onClick={() => run("nav.node", { node: previousNode })}>比較元の局面へ移動</button>
-            <button onClick={() => run("properties.exportDelta", changes)}>変化をJSON保存</button>
+            <IconButton icon="back" label="比較元の局面へ移動" onClick={() => run("nav.node", { node: previousNode })} />
+            <IconButton icon="download" label="局面の変化をJSON保存" onClick={() => run("properties.exportDelta", changes)} />
           </>}
         </>}
       </section>}
@@ -198,7 +200,7 @@ export function Inspector({
             <option value="all">すべての種別</option>{[...new Set(detail.state.objects.map((o) => o.kind))].map((kind) => <option key={kind} value={kind}>{objectNames[kind] || kind}</option>)}
           </select>
           <span>{objects.length} / {detail.state.objects.length}個</span>
-          {(objectQuery || objectKind !== "all") && <button onClick={() => { setObjectQuery(""); setObjectKind("all"); }}>絞り込みを解除</button>}
+          {(objectQuery || objectKind !== "all") && <IconButton icon="reset" label="物体の絞り込みを解除" onClick={() => { setObjectQuery(""); setObjectKind("all"); }} />}
         </div>
         <table>
           <thead>

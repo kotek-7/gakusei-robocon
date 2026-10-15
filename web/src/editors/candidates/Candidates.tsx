@@ -1,4 +1,6 @@
 import { candidateReplaySource } from "./replaySource";
+import { Icon } from "../../shell/icons";
+import { IconButton } from "../common/IconButton";
 import { evidenceKey } from "../strategy-detail/selection";
 import "../strategy-detail/commands";
 import "./candidates.css";
@@ -180,8 +182,8 @@ export function Candidates({
               </select>
             </label>
             <label>
-              <span>候補を検索</span>
-              <input type="search" value={query} placeholder="手順・L1/L2・ID" onChange={(e) => setQuery(e.target.value)} />
+              <span title="候補を検索"><Icon name="search" /></span>
+              <input type="search" aria-label="候補を検索" value={query} placeholder="手順・L1/L2・ID" onChange={(e) => setQuery(e.target.value)} />
             </label>
             <label><input type="checkbox" checked={shortlistOnly} onChange={e => setShortlistOnly(e.target.checked)} />比較中のみ ({review.shortlist.length})</label>
             <CandidateQueryHelp />
@@ -189,8 +191,8 @@ export function Candidates({
           </div>
           <div className="candidate-option-fields" role="group" aria-label="候補の表示条件">
             <label>
-              並び順{" "}
-              <select value={sort} onChange={(e) => setSort(e.target.value)}>
+              <span title="並び順"><Icon name="sort" /></span>
+              <select aria-label="候補の並び順" value={sort} onChange={(e) => setSort(e.target.value)}>
                 <option value="discovery">発見順</option>
                 <option value="worst">共通手順での最小点差が大きい順</option>
                 <option value="baseline">相手待機での点差が大きい順</option>
@@ -204,37 +206,37 @@ export function Candidates({
               <option value="">すべての共通手順</option>
               {opponents.map((id) => <option value={id} key={id}>{id}</option>)}
             </select></label>
-            {(query || run !== "all" || sort !== "discovery" || status !== "all" || opponent || shortlistOnly) && <button onClick={() => { setQuery(""); setRun("all"); setSort("discovery"); setStatus("all"); setOpponent(""); setShortlistOnly(false); }}>表示を戻す</button>}
+            {(query || run !== "all" || sort !== "discovery" || status !== "all" || opponent || shortlistOnly) && <IconButton icon="reset" label="候補の表示条件をリセット" onClick={() => { setQuery(""); setRun("all"); setSort("discovery"); setStatus("all"); setOpponent(""); setShortlistOnly(false); }} />}
           </div>
           <div className="candidate-view-tools">
-            <button className="action-button" disabled={!visibleRows.length} onClick={() => command("candidate.exportVisible", {
+            <IconButton icon="download" className="action-button" label="表示候補を書き出す" disabled={!visibleRows.length} onClick={() => command("candidate.exportVisible", {
               version: 1, search: { id: search.id, name: search.name, config: search.config },
               scope: "発見済み候補。全対応への保証なし", filters: { run, query, sort, status, opponent, shortlistOnly }, review,
               candidates: visibleRows.map(({ run, common, candidate, worst }) => ({ run, variant: report?.runs.find((r) => r.run === run)?.variant, commonOpponents: common, candidate, selectedWorst: worst })),
-            })}>表示候補を書き出す</button>
+            })} />
             <SavedCandidateViews views={review.views ?? []} value={filters} disabled={!reviewReady} onApply={applyFilters}
               onSave={view => onReviewChange(current => ({...current, views: [...(current.views ?? []).filter(v => v.id !== view.id), view]}))}
               onDelete={id => onReviewChange(current => ({...current, views: (current.views ?? []).filter(v => v.id !== id)}))} />
 
           </div>
           {(sort !== "discovery" || status !== "all" || opponent) && <div className="candidate-active-filters" aria-label="適用中の表示条件">
-            {sort !== "discovery" && <button onClick={() => setSort("discovery")} title="発見順に戻す">{({ worst: "最小点差順", baseline: "相手待機の点差順", pending: "未比較順" } as Record<string, string>)[sort]} ×</button>}
-            {status !== "all" && <button onClick={() => setStatus("all")} title="検査状況の絞り込みを解除">{({ comparable: "共通比較あり", pending: "未比較あり", blocked: "実行不可あり" } as Record<string, string>)[status]} ×</button>}
-            {opponent && <button onClick={() => setOpponent("")} title={`相手手順 ${opponent} の固定を解除`}>相手 {opponent.slice(0, 12)} ×</button>}
+            {sort !== "discovery" && <button onClick={() => setSort("discovery")} title="発見順に戻す">{({ worst: "最小点差順", baseline: "相手待機の点差順", pending: "未比較順" } as Record<string, string>)[sort]} <Icon name="close" size={12} /></button>}
+            {status !== "all" && <button onClick={() => setStatus("all")} title="検査状況の絞り込みを解除">{({ comparable: "共通比較あり", pending: "未比較あり", blocked: "実行不可あり" } as Record<string, string>)[status]} <Icon name="close" size={12} /></button>}
+            {opponent && <button onClick={() => setOpponent("")} title={`相手手順 ${opponent} の固定を解除`}>相手 {opponent.slice(0, 12)} <Icon name="close" size={12} /></button>}
           </div>}
           <div className="candidate-scope-tools" aria-label="表示候補の一括比較">
             <span>比較中 {review.shortlist.length}件{hiddenComparisons > 0 ? `（一覧外 ${hiddenComparisons}件）` : ""}</span>
-            <button disabled={!reviewReady || !visibleKeys.length || selectedVisibleCount === visibleKeys.length} onClick={() => saveReview(value => ({...value, shortlist: mergeShortlistScope(value.shortlist, visibleKeys, "add")}))}>表示中{visibleKeys.length}件を比較に追加</button>
-            <button disabled={!reviewReady || !selectedVisibleCount} onClick={() => saveReview(value => ({...value, shortlist: mergeShortlistScope(value.shortlist, visibleKeys, "remove")}))}>表示中の比較を解除</button>
+            <IconButton icon="plus" label={`表示中${visibleKeys.length}件を比較に追加`} disabled={!reviewReady || !visibleKeys.length || selectedVisibleCount === visibleKeys.length} onClick={() => saveReview(value => ({...value, shortlist: mergeShortlistScope(value.shortlist, visibleKeys, "add")}))}>比較に追加</IconButton>
+            <IconButton icon="minus" label="表示中の候補を比較から外す" disabled={!reviewReady || !selectedVisibleCount} onClick={() => saveReview(value => ({...value, shortlist: mergeShortlistScope(value.shortlist, visibleKeys, "remove")}))} />
           </div>
           <CandidateRecovery rows={rows} visibleKeys={visibleKeys} shortlist={review.shortlist} onReveal={revealCandidate} />
           {run === "all" && ["worst", "baseline"].includes(sort) && <p className="candidate-caveat">構成ごとに点差順で表示</p>}
           {selectedRun && <p>{configuration(selectedRun.variant)}</p>}
           <nav className="candidate-region-nav" aria-label="作戦候補の領域へ移動">
-            <button onClick={() => focusRegion("list")}>候補一覧</button>
+            <IconButton icon="list" label="候補一覧へ移動" onClick={() => focusRegion("list")}>一覧</IconButton>
             <Help topic="results" title="候補一覧" text="候補一覧は、探索で見つかった作戦を選んで比較する表です。同じ機体構成・相手手順での結果を確認できます。" />
-            <button disabled={!review.shortlist.length} onClick={() => focusRegion("comparison")}>横比較{review.shortlist.length ? ` · ${review.shortlist.length}` : ""}</button>
-            <button disabled={!active || !chosen} onClick={() => focusRegion("inspector")}>選択候補の検査</button>
+            <IconButton icon="grid" label="候補の横比較へ移動" disabled={!review.shortlist.length} onClick={() => focusRegion("comparison")}>比較{review.shortlist.length ? ` · ${review.shortlist.length}` : ""}</IconButton>
+            <IconButton icon="inspect" label="選択候補の検査へ移動" disabled={!active || !chosen} onClick={() => focusRegion("inspector")}>検査</IconButton>
           </nav>
           <div className={`candidate-workbench${review.shortlist.length ? " has-comparison" : ""}${active && chosen ? " has-inspector" : ""}`}>
           <div className="candidate-collection">
@@ -301,16 +303,16 @@ export function Candidates({
           }} onRemove={key => saveReview(value => ({...value, shortlist: value.shortlist.filter(k => k !== key)}))} onClear={() => saveReview(value => ({...value, shortlist: []}))} /></div>}
           </div>
           {active && chosen && <aside className="candidate-inspector" aria-label="選択候補の検査" tabIndex={-1}>
-            <header><strong>C{active.run} · {active.candidate.id.slice(0, 14)}</strong><button className="candidate-text-action" onClick={() => focusRegion("list")}>一覧へ戻る</button></header>
+            <header><strong>C{active.run} · {active.candidate.id.slice(0, 14)}</strong><IconButton icon="back" label="候補一覧へ戻る" onClick={() => focusRegion("list")} /></header>
             <div className="candidate-strategy-heading"><strong>{candidatePlanLabel(active.candidate.plan)}</strong><span>相手待機時の完了順</span></div>
-            <button className="primary" onClick={() => command("strategy.inspect", {search: search.id, run: active.run, candidate: active.candidate.id, evidence: evidenceKey(active.run, active.candidate, chosen.evidence)})}>作戦を詳しく見る</button>
-            <button onClick={() => command("strategy.exploration.open", {search: search.id, run: active.run, candidate: active.candidate.id, evidence: evidenceKey(active.run, active.candidate, chosen.evidence)})}>この候補を追加探索</button>
+            <IconButton icon="inspect" label="作戦を詳しく見る" className="primary" onClick={() => command("strategy.inspect", {search: search.id, run: active.run, candidate: active.candidate.id, evidence: evidenceKey(active.run, active.candidate, chosen.evidence)})}>作戦詳細</IconButton>
+            <IconButton icon="search" label="この候補を追加探索" onClick={() => command("strategy.exploration.open", {search: search.id, run: active.run, candidate: active.candidate.id, evidence: evidenceKey(active.run, active.candidate, chosen.evidence)})}>追加探索</IconButton>
             <ResponseBrowser key={`${active.run}/${active.candidate.id}`} options={evidenceOptions} selectedKey={chosen.key} commonOpponents={active.common} onSelect={setResponseKey} onOpen={option => onOpen(active.run, option.evidence, active.candidate)} />
             <div className="candidate-target-tools" role="group" aria-label="選択展開の操作">
-              <button className="primary" disabled={!chosen.evidence.path.length} onClick={() => onOpen(active.run, chosen.evidence, active.candidate)}>3Dに表示</button>
-              {(["A", "B"] as const).map(side => <button className="candidate-slot-action" key={side} disabled={!chosen.evidence.path.length} onClick={() => command(`candidate.compare${side}`, { source: candidateReplaySource(search.id, active.run, active.candidate, chosen.evidence), path: chosen.evidence.path, node: chosen.evidence.node, label: candidateComparisonLabel(`C${active.run} · ${active.candidate.id.slice(0, 8)} · ${chosen.label}`, chosen.evidence) })}>比較 {side} に割当</button>)}
+              <IconButton icon="ortho" label="選択した展開を3Dに表示" className="primary" disabled={!chosen.evidence.path.length} onClick={() => onOpen(active.run, chosen.evidence, active.candidate)}>3D</IconButton>
+              {(["A", "B"] as const).map(side => <IconButton icon="pin" label={`選択した展開を比較 ${side} に割当`} className="candidate-slot-action" key={side} disabled={!chosen.evidence.path.length} onClick={() => command(`candidate.compare${side}`, { source: candidateReplaySource(search.id, active.run, active.candidate, chosen.evidence), path: chosen.evidence.path, node: chosen.evidence.node, label: candidateComparisonLabel(`C${active.run} · ${active.candidate.id.slice(0, 8)} · ${chosen.label}`, chosen.evidence) })}>{side}</IconButton>)}
             </div>
-            <button className="candidate-text-action" onClick={() => command("compare.open")}>A/B比較へ</button>
+            <IconButton icon="splitH" label="A/B比較を開く" onClick={() => command("compare.open")}>A/B</IconButton>
             <EvidenceScoreDelta evidence={chosen.evidence} baseline={active.candidate.baseline} />
             <MilestoneInspector evidence={chosen.evidence} baseline={active.candidate.baseline} />
             <EvidenceDiagnostics key={responseIdentity(active.run,active.candidate.id,chosen.evidence)} evidence={chosen.evidence} onOpenAt={issue => command("candidate.inspectIssue", { evidence: chosen.evidence, issue, source: candidateReplaySource(search.id, active.run, active.candidate, chosen.evidence) })} />

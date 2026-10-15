@@ -2,6 +2,7 @@ import { run } from "../app/commands";
 import { useDetail, useSearch, useSpan } from "../app/session";
 import { useUI } from "../app/store";
 import { usePref } from "../app/prefs";
+import { IconButton } from "../editors/common/IconButton";
 import { Icon } from "./icons";
 import { selectionLabel } from "./selectionLabel";
 
@@ -70,12 +71,8 @@ export function StatusBar() {
           {speed !== 1 ? ` · ${speed}倍` : ""}
           {range ? ` · 範囲 ${range[0].toFixed(1)}–${range[1].toFixed(1)}` : ""}
         </span>
-        <button className="status-item status-shortcuts" onClick={() => run("app.shortcuts")} title="ショートカット一覧 (F1)">
-          キー
-        </button>
-        <button className="status-item" onClick={() => run("view.notifications")} title="通知の一覧">
-          通知{unread ? ` ${unread}` : ""}
-        </button>
+        <IconButton className="status-item status-shortcuts" icon="keyboard" label="ショートカット一覧 (F1)" onClick={() => run("app.shortcuts")} />
+        <IconButton className="status-item" icon="bell" label={`通知の一覧（未読${unread}件）`} onClick={() => run("view.notifications")}>{unread || null}</IconButton>
       </div>
     </footer>
   );

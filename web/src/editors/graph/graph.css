@@ -6,3 +6,6 @@
 .graph-count { color: var(--muted); margin-right: auto; }
 .graph-node:focus-visible { outline: none; }
 .graph-node:focus-visible > rect:first-child { stroke: var(--focus); stroke-width: 3px; }
+
+.graph-tools > label { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+.graph-tools > label select { min-width: 0; max-width: 100%; }

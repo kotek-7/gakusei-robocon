@@ -26,7 +26,7 @@ function Header({ area }: EditorProps) {
   const phases = (area.state?.phases as string) ?? "finish";
   return (
     <div className="area-tools">
-      <button className="tool" aria-haspopup="menu" onClick={e => {
+      <button className="tool" title="動作履歴の対象を選ぶ" aria-label="動作履歴の対象を選ぶ" aria-haspopup="menu" onClick={e => {
         const rect = e.currentTarget.getBoundingClientRect();
         useUI.setState({ menu: { x: rect.left, y: rect.bottom + 2, items: [
           ...robotNames.map((name, i) => ({ label: name, checked: robots[i], run: () => layout.setAreaState(area.id, { robots: robots.map((v, j) => j === i ? !v : v) }) })),
@@ -36,7 +36,7 @@ function Header({ area }: EditorProps) {
           { separator: true },
           { label: "絞り込みを解除", run: () => layout.setAreaState(area.id, { robots: [true, true, true, true], scope: "all", rangeOnly: false }) },
         ] } });
-      }}>対象 {area.state?.scope === "selected" ? "選択機体" : `${robots.filter(Boolean).length}機体`}{area.state?.rangeOnly ? "・区間内" : ""}</button>
+      }}><Icon name="filter" />{area.state?.scope === "selected" ? "選択機体" : `${robots.filter(Boolean).length}機体`}{area.state?.rangeOnly ? "・区間内" : ""}</button>
       <select value={phases} aria-label="段階" onChange={(e) => layout.setAreaState(area.id, { phases: e.target.value })}>
         <option value="all">開始・完了・不可</option>
         <option value="finish">完了と不可</option>

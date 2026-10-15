@@ -10,7 +10,7 @@ import { useFrame, useSearch } from "../../app/session";
 import { ui, useUI, type MenuItem } from "../../app/store";
 import { updateWorkspace, useWorkspaceData } from "../../app/workspace";
 import type { CandidateEvidence } from "../../engine/types";
-import { Icon } from "../../shell/icons";
+import { Icon, type IconName } from "../../shell/icons";
 import { Empty } from "../common/Empty";
 import { defineEditor } from "../registry";
 
@@ -26,7 +26,7 @@ type Row = {
   active?: boolean;
   pinned?: boolean;
   tone?: string;
-  icon?: string;
+  icon?: IconName;
   metadata?: string;
   activate?: () => void;
 };
@@ -158,10 +158,10 @@ function Outliner({ area }: import("../registry").EditorProps) {
       <span className="muted tabular">{mode === "scene" && frame ? `${frame.t.toFixed(1)}秒` : `${runs.length}構成`}</span></div>
       <div className="outliner-tools">
         <input className="filter" placeholder="絞り込み" value={q} onChange={(e) => setQ(e.target.value)} aria-label="アウトライナーを絞り込み" />
-        <button className="tool icon-only" aria-pressed={pinnedOnly} title="ピン留めのみ" onClick={() => setPinnedOnly(!pinnedOnly)}>
+        <button className="tool icon-only" aria-pressed={pinnedOnly} title="ピン留めのみ" aria-label="ピン留めのみ" onClick={() => setPinnedOnly(!pinnedOnly)}>
           <Icon name="pin" />
         </button>
-        <button className="tool icon-only" title="ツリーの表示操作" aria-haspopup="menu" onClick={e => {
+        <button className="tool icon-only" title="ツリーの表示操作" aria-label="ツリーの表示操作" aria-haspopup="menu" onClick={e => {
           const rect = e.currentTarget.getBoundingClientRect();
           useUI.setState({ menu: { x: rect.left, y: rect.bottom, items: [
             { label: "すべて展開", run: () => setOpen(Object.fromEntries(shownRows.filter(r => r.toggle).map(r => [r.id, true]))) },

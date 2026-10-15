@@ -1,3 +1,4 @@
+import { IconButton } from "../common/IconButton";
 import { navigateRow } from "../candidates/rowSelection";
 import { Help } from "../common/Help";
 import {
@@ -165,8 +166,7 @@ export function Evaluation({
         <span role="status">
           {visibleRuns.length} / {e.runs.length} 構成
         </span>
-        <button
-          className="action-button"
+        <IconButton icon="download" label="表示中の構成をJSON保存"
           disabled={!visibleRuns.length}
           onClick={() =>
             saveJSON(
@@ -182,18 +182,14 @@ export function Evaluation({
               "evaluation-runs.json",
             )
           }
-        >
-          表示構成を書き出す
-        </button>
+        />
         {(runQuery || runFilter !== "all") && (
-          <button
+          <IconButton icon="reset" label="構成の絞り込みを解除"
             onClick={() => {
               setRunQuery("");
               setRunFilter("all");
             }}
-          >
-            絞り込みを解除
-          </button>
+          />
         )}
       </div>
       {!visibleRuns.length && (
@@ -327,8 +323,7 @@ export function Evaluation({
         <span role="status">
           {strategies.length} / {result.strategies.length} 作戦
         </span>
-        <button
-          className="action-button"
+        <IconButton icon="download" label="表示中の作戦をJSON保存"
           disabled={!strategies.length}
           onClick={() =>
             saveJSON(
@@ -352,19 +347,15 @@ export function Evaluation({
               `evaluation-C${result.run}-strategies.json`,
             )
           }
-        >
-          表示作戦を書き出す
-        </button>
+        />
         {(strategyQuery || filter || unresolvedOnly) && (
-          <button
+          <IconButton icon="reset" label="作戦の絞り込みを解除"
             onClick={() => {
               setStrategyQuery("");
               setFilter(null);
               setUnresolvedOnly(false);
             }}
-          >
-            作戦の絞り込みを解除
-          </button>
+          />
         )}
       </div>
       {strategySort === "minimum" && (
@@ -375,7 +366,7 @@ export function Evaluation({
       {filter && (
         <p>
           選択中の分類：{filter.length} 作戦{" "}
-          <button onClick={() => setFilter(null)}>すべて表示</button>
+          <IconButton icon="reset" label="作戦分類の絞り込みを解除" onClick={() => setFilter(null)} />
         </p>
       )}
       {result.strategies.length === 0 ? (
@@ -394,7 +385,7 @@ export function Evaluation({
           </tr>)}</tbody>
         </table></div>
         {activeStrategy && <div className="strategy-inspection" aria-label="選択作戦の動作と点差分布">
-          <header><span title={activeStrategy.id}>{activeStrategy.id.slice(0, 14)}</span><button className="action-button" onClick={() => onNode(result.run, activeStrategy.node)}>代表局面を3Dに表示</button></header>
+          <header><span title={activeStrategy.id}>{activeStrategy.id.slice(0, 14)}</span><IconButton icon="ortho" label="代表局面を3Dに表示" onClick={() => onNode(result.run, activeStrategy.node)}>3D</IconButton></header>
           <div className="strategy-inspection-body">
             <ol className="strategy-sequence" aria-label="同時刻ごとの動作順序">{activeStrategy.prefix.map((group, index) => <li key={index}><span className="strategy-batch">{index + 1}</span><ul>{group.map((event, eventIndex) => <li key={eventIndex}>{structuralEventName(event)}</li>)}</ul></li>)}</ol>
             <figure className="strategy-distribution"><figcaption>発見済み展開の点差分布</figcaption><div className="distribution">{activeStrategy.distribution.map(([margin, weight]) => <div key={margin}><span>{margin > 0 ? "+" : ""}{margin}</span><meter min={0} max={1} value={weight} aria-label={`点差${margin}の割合`} /><span>{pct(weight)}</span></div>)}</div>{!activeStrategy.distribution.length && <p className="muted">未集計</p>}</figure>

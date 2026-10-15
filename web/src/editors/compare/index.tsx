@@ -1,3 +1,4 @@
+import { IconButton } from "../common/IconButton";
 import { Icon } from "../../shell/icons";
 import "./compare.css";
 import { useMemo, useState } from "react";
@@ -42,7 +43,7 @@ function CompareEditor() {
     return (
       <Empty title="比較する経路が未設定です">
         <p>候補の「得点と経路」で比較A・Bに設定します。</p>
-        <button className="tool" disabled={!currentPath?.length} onClick={() => run("compare.setA")}>現在の経路をAに固定</button>
+        <IconButton icon="pin" label="現在の経路をAに設定" disabled={!currentPath?.length} onClick={() => run("compare.setA")}>Aに設定</IconButton>
       </Empty>
     );
   const sa = A && stats(A),
@@ -95,7 +96,7 @@ function CompareEditor() {
       <div className="row compare-filterbar">
         <label>比較項目 <select value={group} onChange={(e) => setGroup(e.target.value)}><option value="all">すべて</option><option value="score">得点・取得条件</option><option value="actions">行動回数</option><option value="robots">機体の稼働時間</option></select></label>
         <input type="search" aria-label="比較項目を検索" placeholder="比較項目を検索" value={query} onChange={(e) => setQuery(e.target.value)} />
-        {(group !== "all" || query || differencesOnly) && <button className="tool" onClick={() => { setGroup("all"); setQuery(""); setDifferencesOnly(false); }}>表示を戻す</button>}
+        {(group !== "all" || query || differencesOnly) && <IconButton icon="reset" label="比較の絞り込みを解除" onClick={() => { setGroup("all"); setQuery(""); setDifferencesOnly(false); }} />}
         <label><input type="checkbox" checked={differencesOnly} disabled={!A || !B} onChange={(e) => setDifferencesOnly(e.target.checked)} /> 差がある項目だけ</label>
       </div><div className="compare-navigation" role="group" aria-label="点差変化をたどる">
         <button className="tool icon-only" title="前の点差変化へ" aria-label="前の点差変化へ" disabled={previous === undefined} onClick={() => seek(previous)}><Icon name="prevEvent" /></button>
@@ -103,7 +104,7 @@ function CompareEditor() {
         <span className="muted">B−Aの変化 {changeTimes.length}か所</span>
       </div>
       {A && B && <p className="muted">共通の再生範囲：{Math.max(A.start, B.start) <= Math.min(A.end, B.end) ? `${Math.max(A.start, B.start)}–${Math.min(A.end, B.end)}秒` : "なし"}。各経路の範囲外の得点は「—」で表示します。</p>}
-      {range && <div className="row"><span className="tabular">解析区間 {range[0]}〜{range[1]}秒</span><button className="tool" onClick={() => run("compare.seekRange", "start")}>開始へ</button><button className="tool" onClick={() => run("compare.seekRange", "end")}>終了へ</button><span className="muted">得点は終了値−開始値。経路外は「—」。</span></div>}
+      {range && <div className="row"><span className="tabular">解析区間 {range[0]}〜{range[1]}秒</span><IconButton icon="first" label="解析区間の開始へ移動" onClick={() => run("compare.seekRange", "start")} /><IconButton icon="last" label="解析区間の終了へ移動" onClick={() => run("compare.seekRange", "end")} /><span className="muted">得点は終了値−開始値。経路外は「—」。</span></div>}
       <table className="compare-table">
         <thead>
           <tr>

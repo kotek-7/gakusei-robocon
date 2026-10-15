@@ -1,3 +1,5 @@
+import { Icon } from "../../shell/icons";
+import { IconButton } from "../common/IconButton";
 import { Help } from "../common/Help";
 import { register, run } from "../../app/commands";
 import { currentAnalysis } from "../../app/coreCommands";
@@ -94,28 +96,28 @@ function IntervalEditor({ area }: EditorProps) {
                 if (next[0] <= next[1]) ui.patchPlayback({ range: next, playing: false });
               }} />
           </label>)}
-          <button className="tool" onClick={() => run("interval.fit")}>区間に拡大</button>
-          <button className="tool" disabled={!range} onClick={() => run("play.clearRange")}>解除</button>
+          <IconButton icon="fit" label="解析区間にタイムラインを拡大" onClick={() => run("interval.fit")} />
+          <IconButton icon="close" label="解析区間を解除" disabled={!range} onClick={() => run("play.clearRange")} />
         </div>
         <table className="interval-table"><thead><tr><th>機体</th><th>動作数</th><th>動作中</th><th>待機</th><th>調べる</th></tr></thead><tbody>
           {visibleRobots.map((robot) => {
             const summary = intervalSummary(analysis.intervals, range ?? [analysis.start, analysis.end], robot);
-            return <tr key={robot}><th>{robotNames[robot]}</th><td>{summary.count}</td><td>{summary.active.toFixed(1)}秒</td><td>{summary.waiting.toFixed(1)}秒</td><td><button className="tool" disabled={!summary.longestWait} onClick={() => run(`interval.longestWait${robot}`)}>最長待機へ</button></td></tr>;
+            return <tr key={robot}><th>{robotNames[robot]}</th><td>{summary.count}</td><td>{summary.active.toFixed(1)}秒</td><td>{summary.waiting.toFixed(1)}秒</td><td><IconButton icon="clock" label={`${robotNames[robot]}の最長待機へ移動`} disabled={!summary.longestWait} onClick={() => run(`interval.longestWait${robot}`)} /></td></tr>;
           })}
         </tbody></table>
         <h3>動作別の内訳 <Help topic="timeline" title="動作別の内訳" text="動作別の内訳は、選んだ区間で各機体が移動・取得・設置などに使った時間です。複数機体の合計には、同時に動いた時間もそれぞれ含みます。" /></h3>
         <div className="interval-controls">
-          <label>機体 <select aria-label="内訳の機体" value={robot ?? "all"} onChange={(e) => setRobot(e.target.value === "all" ? null : Number(e.target.value))}>
+          <label title="内訳の機体"><Icon name="robot" /> <select aria-label="内訳の機体" value={robot ?? "all"} onChange={(e) => setRobot(e.target.value === "all" ? null : Number(e.target.value))}>
             <option value="all">全機体</option>{robotNames.map((name, i) => <option key={i} value={i}>{name}</option>)}
           </select></label>
-          <button className="tool" disabled={!kind} onClick={() => setKind("")}>全動作を表示</button>
+          <IconButton icon="reset" label="動作の絞り込みを解除" disabled={!kind} onClick={() => setKind("")} />
         </div>
         <table className="interval-table"><thead><tr><th>動作</th><th>件数</th><th>合計秒</th></tr></thead><tbody>
           {breakdown.map((item) => <tr key={item.kind}><th><button className="link" aria-pressed={kind === item.kind} onClick={() => setKind(kind === item.kind ? "" : item.kind)}>{actionName({ kind: item.kind })}</button></th><td>{item.count}</td><td>{item.seconds.toFixed(1)}</td></tr>)}
         </tbody></table>
         <section><h3>{kind ? actionName({ kind }) : "動作"}の区間 {details.length}件</h3>
           <table className="interval-detail-table"><thead><tr><th>機体 / 動作</th><th>開始〜終了</th><th>秒</th><th>解析</th></tr></thead><tbody>
-            {details.map((row, i) => <tr key={i}><td>{robotNames[row.interval.robot]} / {actionName(row.interval.action)}</td><td><button className="link tabular" onClick={() => run("interval.inspectAction", { ...row, robot: row.interval.robot })}>{row.start.toFixed(1)}〜{row.end.toFixed(1)}</button></td><td className="tabular">{row.seconds.toFixed(1)}</td><td><button className="tool" onClick={() => run("interval.inspectAction", { ...row, robot: row.interval.robot, range: true })}>区間に設定</button></td></tr>)}
+            {details.map((row, i) => <tr key={i}><td>{robotNames[row.interval.robot]} / {actionName(row.interval.action)}</td><td><button className="link tabular" onClick={() => run("interval.inspectAction", { ...row, robot: row.interval.robot })}>{row.start.toFixed(1)}〜{row.end.toFixed(1)}</button></td><td className="tabular">{row.seconds.toFixed(1)}</td><td><IconButton icon="range" label={`${robotNames[row.interval.robot]}の${row.start.toFixed(1)}〜${row.end.toFixed(1)}秒を解析区間に設定`} onClick={() => run("interval.inspectAction", { ...row, robot: row.interval.robot, range: true })} /></td></tr>)}
           </tbody></table>
           {!details.length && <p className="muted">該当する動作はありません</p>}
         </section>

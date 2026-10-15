@@ -1,3 +1,4 @@
+import { IconButton } from "./IconButton";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { useLayout } from "../../app/layout";
@@ -23,7 +24,7 @@ export function DetailView({ label, title = label, children, className = "" }: {
       onCancel={e => { e.stopPropagation(); }}
       onKeyDown={e => e.stopPropagation()}
       onClick={e => { if (e.target === dialog.current) { const r = dialog.current.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dialog.current.close(); } }}>
-      <header className="data-dialog-header"><h2 id={heading}>{title}</h2><button autoFocus type="button" className="tool" aria-label="詳細画面を閉じる" onClick={() => dialog.current?.close()}>閉じる</button></header>
+      <header className="data-dialog-header"><h2 id={heading}>{title}</h2><IconButton autoFocus icon="close" label="詳細画面を閉じる" onClick={() => dialog.current?.close()} /></header>
       <div className="data-dialog-content">{children}</div>
     </dialog>, document.body)}
   </>;

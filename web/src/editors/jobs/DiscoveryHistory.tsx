@@ -1,3 +1,4 @@
+import { IconButton } from "../common/IconButton";
 import { useState } from "react";
 import { isEnabled } from "../../app/commands";
 import { saveJSON, startJob } from "../../app/coreCommands";
@@ -33,7 +34,7 @@ export function DiscoveryProgress({ search, onDefinitions }: { search: Search; o
       <header className="discovery-history-toolbar"><strong>計算履歴 <span>{filtered.length} / {sessions.length}</span></strong>
         <label><select aria-label="履歴の終了理由" value={reason} onChange={event => setReason(event.target.value)}><option value="all">すべての終了理由</option>{[...new Set(sessions.map(({ session }) => session.reason))].map(value => <option key={value} value={value}>{endLabels[value] || stopLabels[value] || value}</option>)}</select></label>
         <label className="discovery-update-filter"><input type="checkbox" checked={improvementsOnly} onChange={event => setImprovementsOnly(event.target.checked)} />更新あり</label>
-        <button disabled={!filtered.length} onClick={() => saveJSON({ search: search.id, scope: "保存済みの候補探索履歴", sessions: filtered.map(({ session }) => session) }, "discovery-history.json")}>書き出す</button>
+        <IconButton icon="download" label="絞った履歴を保存" disabled={!filtered.length} onClick={() => saveJSON({ search: search.id, scope: "保存済みの候補探索履歴", sessions: filtered.map(({ session }) => session) }, "discovery-history.json")} />
       </header>
       <div className="discovery-history-scroll" tabIndex={0} role="region" aria-label="履歴の一覧">
         <table className="discovery-history-table"><thead><tr><th>回</th><th>終了</th><th>実行時間</th><th>候補増</th><th>種類増</th><th>対抗手検査</th><th>得点更新</th></tr></thead>

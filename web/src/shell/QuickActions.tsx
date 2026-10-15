@@ -1,3 +1,5 @@
+import { IconButton } from "../editors/common/IconButton";
+import { Icon } from "./icons";
 import { getCommand, isEnabled, keysFor, formatKeys, run, useCommands } from "../app/commands";
 import { ui, useUI } from "../app/store";
 import { useSearches } from "../app/data";
@@ -16,7 +18,7 @@ export function QuickActions() {
   const commands = pinned.map(getCommand).filter(c => c && !c.hidden);
   if (!commands.length) return null;
   return <nav className="quick-actions" aria-label="固定した操作">
-    <span className="muted">固定</span>
+    <span className="muted" title="固定した操作"><Icon name="pin" /></span>
     <div className="quick-actions-list">
       {commands.map(c => c && <button key={c.id} className="tool"
         disabled={!isEnabled(c.id) || !!c.scope && c.scope !== activeEditor}
@@ -26,6 +28,6 @@ export function QuickActions() {
         {c.title}
       </button>)}
     </div>
-    <button className="tool" title="固定する操作をコマンドパレットで選ぶ" onClick={() => run("app.palette")}>編集</button>
+    <IconButton icon="edit" label="固定する操作を選ぶ" onClick={() => run("app.palette")} />
   </nav>;
 }
