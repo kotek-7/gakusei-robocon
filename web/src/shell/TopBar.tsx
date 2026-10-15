@@ -264,12 +264,15 @@ function WorkspaceTabs() {
 function SearchControls() {
   const search = useSearch();
   const workspace = useLayout(s => s.workspaces.find(w => w.id === s.active));
-  const editors = workspace ? leaves(workspace.root).flatMap(a => [a.editor, ...(a.tabs ?? [])]) : [];
+  const maximized = useLayout(s => s.maximized);
+  const areas = workspace ? leaves(workspace.root) : [];
+  const jobsVisible = areas.some(a => a.editor === "jobs" && (!maximized || maximized === a.id));
+  const editors = areas.flatMap(a => [a.editor, ...(a.tabs ?? [])]);
   const active = editors.includes("candidates") ? "discover" : editors.includes("evaluation") ? "evaluate" : editors.includes("graph") || editors.includes("jobs") ? "graph" : "";
   const busy = useUI((s) => s.busy);
   usePref("job.discoverySeconds");
   const runningJob = search?.status === "running" || search?.status === "evaluating" || !!search?.jobProgress && search.jobProgress.phase !== "finished";
-  if (!["discover", "evaluate", "graph"].includes(active)) return null;
+  if (jobsVisible || !["discover", "evaluate", "graph"].includes(active)) return null;
   return (
     <div className="search-controls">
       {active === "discover" && <select
