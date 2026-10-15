@@ -20,3 +20,6 @@
 .strategy-detail-tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); background: var(--surface); }
 .strategy-detail-tabs button:hover { color: var(--ink); }
 .strategy-detail [role="tabpanel"] { min-width: 0; }
+
+.strategy-detail-tabs button { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.strategy-detail-tabs button .icon { flex: none; }

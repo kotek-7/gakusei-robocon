@@ -1,3 +1,4 @@
+import { IconButton } from "../common/IconButton";
 import { useState } from "react";
 import { Help } from "../common/Help";
 import { navigateRow } from "./rowSelection";
@@ -27,9 +28,9 @@ export function ResponseBrowser({ options, selectedKey, commonOpponents, onSelec
       <label>相手手順<select aria-label="展開の相手手順" value={opponent} onChange={event => setOpponent(event.target.value)}><option value="">すべて</option>{groups.map(group => <option key={group.opponent} value={group.opponent}>{group.opponent} · {group.count}対応</option>)}</select></label>
       <label>並び順<select aria-label="展開の並び順" value={order} onChange={event => setOrder(event.target.value as ResponseOrder)}><option value="original">元の順序</option><option value="margin">点差が小さい順</option><option value="blocked">実行不可が多い順</option></select></label>
     </div>
-    {(filter !== "all" || opponent) && <div className="response-browser-scope"><span>{visible.length}件表示 · {({all:"すべて", common:"共通比較", exploratory:"共通比較外", blocked:"実行不可あり", negative:"赤の点差が負"})[filter]}{opponent && ` · 相手 ${opponent.slice(0,12)}`}</span><button onClick={reset}>絞込解除</button></div>}
+    {(filter !== "all" || opponent) && <div className="response-browser-scope"><span>{visible.length}件表示 · {({all:"すべて", common:"共通比較", exploratory:"共通比較外", blocked:"実行不可あり", negative:"赤の点差が負"})[filter]}{opponent && ` · 相手 ${opponent.slice(0,12)}`}</span><IconButton icon="reset" label="展開の絞り込みを解除" onClick={reset} /></div>}
     {group && <p className="response-browser-range" title={group.opponent}>この相手の記録：{group.count}対応 · 点差 {signed(group.min)}〜{signed(group.max)}{group.commonCount < group.count ? "（共通比較外を含む）" : ""}</p>}
-    {selected && !selectedVisible && <div className="response-browser-scope"><span>選択中：{selected.label}（絞込の対象外）</span><button onClick={reset}>選択を一覧に戻す</button></div>}
+    {selected && !selectedVisible && <div className="response-browser-scope"><span>選択中：{selected.label}（絞込の対象外）</span><IconButton icon="focus" label="選択中の展開を一覧に表示" onClick={reset} /></div>}
     <div className="candidate-evidence-list"><table role="grid" aria-label="検査した展開。上下キーで選択、Enterで3Dに表示"><thead><tr><th>検査対象</th><th>赤 対 青</th><th>点差</th></tr></thead><tbody>{visible.map((option,index) => <tr key={option.key} data-selectable-row aria-selected={selectedKey === option.key} tabIndex={selectedKey === option.key || (!selectedVisible && index === 0) ? 0 : -1}
       onFocus={() => onSelect(option.key)} onClick={event => event.currentTarget.focus()}
       onKeyDown={event => navigateRow(event, () => {if(option.evidence.path.length) onOpen(option);})} onDoubleClick={() => {if(option.evidence.path.length) onOpen(option);}}>

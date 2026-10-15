@@ -1,3 +1,5 @@
+import { Icon } from "../../shell/icons";
+import { IconButton } from "../common/IconButton";
 import { useId, useRef } from "react";
 import { useQuery } from "../../app/data";
 import { useSearch } from "../../app/session";
@@ -19,8 +21,8 @@ import { StrategyOpponents, StrategyFailures } from "./StrategyOpponents";
 import "./detail.css";
 
 const views = [
-  ["exploration", "追加探索"], ["history", "探索履歴"], ["opponents", "相手展開"], ["failures", "手順の弱点"], ["summary", "機体別の概要"], ["instructions", "固定手順"], ["completed", "完了結果"],
-  ["execution", "動作・時間"], ["score", "得点"], ["diagnostics", "実行不可"], ["configuration", "機体構成"],
+  ["exploration", "追加探索", "search"], ["history", "履歴", "history"], ["opponents", "相手展開", "branch"], ["failures", "弱点", "warning"], ["summary", "概要", "grid"], ["instructions", "固定手順", "list"], ["completed", "完了結果", "check"],
+  ["execution", "動作・時間", "clock"], ["score", "得点", "chart"], ["diagnostics", "実行不可", "stop"], ["configuration", "機体構成", "gear"],
 ] as const;
 type DetailView = typeof views[number][0];
 
@@ -59,7 +61,7 @@ function StrategyDetail({ area }: EditorProps) {
   return <div ref={root} className="editor-scroll strategy-detail">
     <header className="strategy-detail-heading">
       <div><h2>候補 {ordinal} · 構成 C{configRun.run}</h2><p><span className="muted">相手待機時の完了結果：</span>{candidatePlanLabel(candidate.plan)}</p></div>
-      <button onClick={back}>候補一覧へ戻る</button>
+      <IconButton icon="back" label="候補一覧へ戻る" onClick={back} />
     </header>
     <div className="strategy-detail-selectors">
       <label>作戦候補<select aria-label="詳しく見る作戦候補" value={candidate.id} onChange={e => update({...selection,candidate:e.target.value,evidence:"baseline"})}>{configRun.candidates.map((c,i) => <option key={c.id} value={c.id}>候補 {i+1} · {candidatePlanLabel(c.plan)}</option>)}</select></label>
@@ -73,9 +75,9 @@ function StrategyDetail({ area }: EditorProps) {
       event.preventDefault(); showView(views[next][0]);
       document.getElementById(`${tabsId}-${views[next][0]}`)?.focus();
     }}>
-      {views.map(([id, label]) => <button key={id} id={`${tabsId}-${id}`} role="tab" aria-selected={view === id} aria-controls={`${tabsId}-panel`} tabIndex={view === id ? 0 : -1} onClick={() => showView(id)}>{label}</button>)}
+      {views.map(([id, label, icon]) => <button title={label} aria-label={label} key={id} id={`${tabsId}-${id}`} role="tab" aria-selected={view === id} aria-controls={`${tabsId}-panel`} tabIndex={view === id ? 0 : -1} onClick={() => showView(id)}><Icon name={icon} /><span>{label}</span></button>)}
     </div>
-    {evidence && <div className="strategy-evidence-status"><span>選択展開：赤 {evidence.scores[0]} 対 青 {evidence.scores[1]}</span><span>{analysis.data ? `${analysis.data.start}〜${analysis.data.end}秒` : ""}</span><button onClick={() => { void inspectStrategyTime(selection, undefined).catch(ui.error); }}>{pathMatches ? "終局を3D表示" : "この展開を3Dに表示"}</button></div>}
+    {evidence && <div className="strategy-evidence-status"><span>選択展開：赤 {evidence.scores[0]} 対 青 {evidence.scores[1]}</span><span>{analysis.data ? `${analysis.data.start}〜${analysis.data.end}秒` : ""}</span><IconButton icon="ortho" label={pathMatches ? "終局を3D表示" : "この展開を3Dに表示"} onClick={() => { void inspectStrategyTime(selection, undefined).catch(ui.error); }} /></div>}
     <div role="tabpanel" id={`${tabsId}-panel`} aria-labelledby={`${tabsId}-${view}`} tabIndex={0}>
     {(["summary", "instructions", "completed"] as string[]).includes(view) && <section>
       {instructions.error && <p role="alert">固定指示を読み込めません：{instructions.error}</p>}

@@ -1,3 +1,4 @@
+import { IconButton } from "./IconButton";
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { helpArticles, resolveHelpTopic } from "../../app/help";
@@ -43,7 +44,7 @@ export function Help({ topic, title, text }: { topic: string; title?: string; te
       onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget as Node) && e.relatedTarget !== button.current) later(); }}
       onKeyDown={e => { if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); hide(); restoringFocus.current = true; button.current?.focus(); restoringFocus.current = false; } }}>
       <p>{text ?? article.summary}</p>
-      <div className="help-actions"><button type="button" className="tool" aria-label="ヘルプを閉じる" onClick={hide}>閉じる</button></div>
+      <div className="help-actions"><IconButton icon="close" label="ヘルプを閉じる" onClick={hide} /></div>
     </div>, document.body)}
   </>;
 }

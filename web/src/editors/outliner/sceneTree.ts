@@ -1,8 +1,9 @@
+import type { IconName } from "../../shell/icons";
 import type { Frame } from "../../engine/types";
 import { actionName, locationName, objectNames, robotNames } from "../common/labels";
 import type { EntityRef } from "../../app/refs";
 
-export type SceneRow = { id: string; depth: number; label: string; hint?: string; entity?: EntityRef; branch?: boolean; icon: string };
+export type SceneRow = { id: string; depth: number; label: string; hint?: string; entity?: EntityRef; branch?: boolean; icon: IconName };
 /** The hierarchy follows physical containment at the playhead, not object ID order. */
 export function sceneRows(frame: Frame): SceneRow[] {
   const rows: SceneRow[] = [];
@@ -12,7 +13,7 @@ export function sceneRows(frame: Frame): SceneRow[] {
     frame.robots.forEach((robot, index) => {
       if (robot.team !== team) return;
       const held = frame.objects.filter(o => o.loc === `robot${index}`);
-      rows.push({ id: `robot:${index}`, entity: `robot:${index}`, depth: 1, label: robotNames[index], hint: robot.action ? actionName(robot.action) : "待機", branch: !!held.length, icon: "ortho" });
+      rows.push({ id: `robot:${index}`, entity: `robot:${index}`, depth: 1, label: robotNames[index], hint: robot.action ? actionName(robot.action) : "待機", branch: !!held.length, icon: "robot" });
       rows.push(...held.map(o => objectRow(o, 2)));
     });
   }

@@ -21,9 +21,7 @@
 .review-capture { padding-bottom: 10px; border-bottom: 1px solid var(--line); }
 .review-capture button, .review-restore-tools button, .review-record-actions button, .review-export button { display: inline-flex; align-items: center; gap: 6px; }
 .review-filter-check { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
-.review-export { margin-left: auto; }
-.review-export summary { cursor: pointer; color: var(--muted); }
-.review-export > div { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 6px; }
+.review-export { display: inline-flex; gap: 4px; margin-left: auto; }
 .review-list button { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 4px 8px; border-bottom: 1px solid var(--line); background: transparent; }
 .review-list .review-record-time { grid-row: span 2; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; padding-top: 2px; }
 .review-list .review-record-title { white-space: normal; font-weight: 500; overflow-wrap: anywhere; }

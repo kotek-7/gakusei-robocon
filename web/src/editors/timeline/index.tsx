@@ -196,15 +196,16 @@ function Header({ area }: EditorProps) {
   const lanes = (area.state?.lanes as boolean[]) ?? [true, true, true, true];
   return (
     <div className="area-tools">
-      <button className="tool" title="表示・移動するイベントを選ぶ" onClick={(e) => {
+      <button className="tool" title="表示・移動するイベントを選ぶ" aria-label={`イベントの絞り込み: ${MARKER_LABEL[String(area.state?.eventKind)] ?? "すべて"}`} aria-haspopup="menu" onClick={(e) => {
         const r = e.currentTarget.getBoundingClientRect();
         useUI.setState({ menu: { x: r.left, y: r.bottom + 2, items: Object.keys({ all: "すべて", ...MARKER_LABEL }).map((kind) => ({ command: `timeline.event.${kind}` })) } });
       }}>
-        {`イベント: ${MARKER_LABEL[String(area.state?.eventKind)] ?? "すべて"}`}
+        <Icon name="filter" /><span>{MARKER_LABEL[String(area.state?.eventKind)] ?? "すべて"}</span>
         <Icon name="chevron" size={12} />
       </button>
       <button
-        className="tool"
+        className="tool icon-only"
+        title={`表示する機体 (${lanes.filter(Boolean).length}/4)`} aria-label={`表示する機体 (${lanes.filter(Boolean).length}/4)`} aria-pressed={lanes.some(v => !v)} aria-haspopup="menu"
         onClick={(e) => {
           const r = e.currentTarget.getBoundingClientRect();
           const items: MenuItem[] = [
@@ -221,10 +222,9 @@ function Header({ area }: EditorProps) {
           useUI.setState({ menu: { x: r.left, y: r.bottom + 2, items } });
         }}
       >
-        機体
-        <Icon name="chevron" size={12} />
+        <Icon name="robot" />
       </button>
-      <button className="tool icon-only" title="全体に合わせる (Home)" onClick={() => layout.setAreaState(area.id, { view: null })}>
+      <button className="tool icon-only" title="全体に合わせる (Home)" aria-label="タイムライン全体に合わせる" onClick={() => layout.setAreaState(area.id, { view: null })}>
         <Icon name="fit" />
       </button>
     </div>

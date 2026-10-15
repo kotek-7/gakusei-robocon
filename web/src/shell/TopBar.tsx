@@ -1,3 +1,4 @@
+import { IconButton } from "../editors/common/IconButton";
 import { useEffect, useState } from "react";
 import { useCommands } from "../app/commands";
 import { useSearches } from "../app/data";
@@ -253,9 +254,7 @@ function WorkspaceTabs() {
           {w.name}
         </button>
       ))}
-      <button className="tool icon-only" title="新しいワークスペース" onClick={() => run("workspace.new")}>
-        <Icon name="plus" size={14} />
-      </button>
+      <IconButton icon="plus" label="新しいワークスペース" onClick={() => run("workspace.new")} />
     </div>
   );
 }
@@ -344,12 +343,8 @@ export function TopBar() {
         ))}
       </select>
       </div>
-      <button className="tool icon-only" title="コマンドを検索 (Ctrl+Shift+P)" onClick={() => run("app.palette")}>
-        <Icon name="search" />
-      </button>
-      <button className="tool icon-only" title="設定 (Ctrl+,)" onClick={() => run("app.prefs")}>
-        <Icon name="gear" />
-      </button>
+      <IconButton icon="search" label="コマンドを検索 (Ctrl+Shift+P)" onClick={() => run("app.palette")} />
+      <IconButton icon="gear" label="設定 (Ctrl+,)" onClick={() => run("app.prefs")} />
     </header>
     <div className="workspace-bar"><WorkspaceTabs /><SearchControls /></div></>
   );

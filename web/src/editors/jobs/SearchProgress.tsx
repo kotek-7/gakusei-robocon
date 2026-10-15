@@ -1,3 +1,4 @@
+import { IconButton } from "../common/IconButton";
 import { DetailView } from "../common/DetailView";
 import { Help } from "../common/Help";
 import { useState } from "react";
@@ -48,7 +49,7 @@ export function DiscoveryProgress({ search, onDefinitions }: { search: Search; o
       {!!report?.sessions.length && <details className="discovery-history"><summary>計算履歴 <span>{sessions.length}回</span></summary>
         <div className="history-heading">
           <label>終了理由 <select value={reason} onChange={(e) => setReason(e.target.value)}><option value="all">すべて</option>{[...new Set(sessions.map((s) => s.reason))].map((value) => <option key={value} value={value}>{stopLabels[value] || value}</option>)}</select></label>
-          <button disabled={!filteredSessions.length} onClick={() => saveJSON({ search: search.id, scope: "保存済みの候補探索履歴", sessions: filteredSessions.map(({session}) => session) }, "discovery-history.json")}>絞った履歴を保存</button>
+          <IconButton icon="download" label="絞った履歴を保存" disabled={!filteredSessions.length} onClick={() => saveJSON({ search: search.id, scope: "保存済みの候補探索履歴", sessions: filteredSessions.map(({session}) => session) }, "discovery-history.json")} />
           <label><input type="checkbox" checked={improvementsOnly} onChange={event => setImprovementsOnly(event.target.checked)} />候補・得点の更新あり</label>
           {filteredSessions.length > 3 && <label><input type="checkbox" checked={allHistory} onChange={event => setAllHistory(event.target.checked)} />全{filteredSessions.length}回を表示</label>}
         </div>
@@ -69,7 +70,7 @@ export function DiscoveryProgress({ search, onDefinitions }: { search: Search; o
       </details>}
       <div className="history-footer">
         <span>全作戦の網羅・最適性は未保証</span>
-        <button onClick={onDefinitions}>集計の定義</button>
+        <button className="help-trigger" title="集計の定義" aria-label="集計の定義" onClick={onDefinitions}>?</button>
       </div>
     </section>
   );

@@ -1,3 +1,5 @@
+import { Icon } from "../../shell/icons";
+import { IconButton } from "../common/IconButton";
 import { useEffect, useState } from "react";
 import type { CandidateEvidence, Search } from "../../engine/types";
 import { saveJSON } from "../../app/coreCommands";
@@ -49,17 +51,17 @@ export function StrategyExploration({search, selection, onEvidence, settings, on
     <div className="exploration-title"><h3>候補 {ordinal} の追加探索</h3><Help topic="search" title="追加探索" text="相手探索は赤の指示を固定し、青に有利な展開を探します。既知の相手で検査は、見つかっている青の手順をこの候補へ当てます。途中経過を保存し、次回は続きから計算します。" /></div>
     <div className="exploration-controls">
       <label>計算<select value={mode} onChange={e=>setMode(e.target.value as typeof mode)}><option value="counter">相手の展開を探索</option><option value="compare">既知の相手で検査</option></select></label>
-      <label>制限時間<select value={seconds} onChange={e=>setSeconds(Number(e.target.value))}>{[[10,"10秒"],[60,"1分"],[300,"5分"],[1800,"30分"],[3600,"1時間"],[21600,"6時間"],[86400,"24時間"]].map(([v,label])=><option key={v} value={v}>{label}</option>)}</select></label>
-      <button className="primary" disabled={!data || work?.complete || !isEnabled("strategy.explore.start",args)} onClick={()=>run("strategy.explore.start",args)}>{work?.complete ? "対象範囲を探索済み" : work?.ticks ? "続きから実行" : "実行"}</button>
-      {running && same && active && <button disabled={!isEnabled("strategy.explore.pause",{...args,target:active})} onClick={()=>run("strategy.explore.pause",{...args,target:active})}>保存して停止</button>}
+      <label title="追加探索の制限時間"><Icon name="clock" /><select aria-label="追加探索の制限時間" value={seconds} onChange={e=>setSeconds(Number(e.target.value))}>{[[10,"10秒"],[60,"1分"],[300,"5分"],[1800,"30分"],[3600,"1時間"],[21600,"6時間"],[86400,"24時間"]].map(([v,label])=><option key={v} value={v}>{label}</option>)}</select></label>
+      <IconButton icon={work?.complete ? "check" : "play"} label={work?.complete ? "対象範囲を探索済み" : work?.ticks ? "続きから実行" : "実行"} className="primary" disabled={!data || work?.complete || !isEnabled("strategy.explore.start",args)} onClick={()=>run("strategy.explore.start",args)}>{work?.complete ? "探索済み" : work?.ticks ? "続行" : "実行"}</IconButton>
+      {running && same && active && <IconButton icon="pause" label="保存して停止" disabled={!isEnabled("strategy.explore.pause",{...args,target:active})} onClick={()=>run("strategy.explore.pause",{...args,target:active})} />}
     </div>
-    <p className="exploration-status" role="status">{running ? same ? `${active?.mode === "counter" ? "相手の展開を探索中" : "既知の相手で検査中"} · 構成 C${selection.run} / 候補 ${ordinal}` : active ? `構成 C${active.run} / 候補 ${activeOrdinal == null || activeOrdinal < 0 ? active.candidate : activeOrdinal+1} を計算中` : "別の計算を実行中" : work?.complete ? "この計算の対象範囲を探索済み" : "停止中 · 途中経過から再開できます"}{running && !same && <button onClick={()=>layout.reveal("jobs")}>計算と進捗へ</button>}</p>
+    <p className="exploration-status" role="status">{running ? same ? `${active?.mode === "counter" ? "相手の展開を探索中" : "既知の相手で検査中"} · 構成 C${selection.run} / 候補 ${ordinal}` : active ? `構成 C${active.run} / 候補 ${activeOrdinal == null || activeOrdinal < 0 ? active.candidate : activeOrdinal+1} を計算中` : "別の計算を実行中" : work?.complete ? "この計算の対象範囲を探索済み" : "停止中 · 途中経過から再開できます"}{running && !same && <IconButton icon="forward" label="計算と進捗へ" onClick={()=>layout.reveal("jobs")} />}</p>
     {running && same && jobRun && <p className="muted">今回の経過 {duration(Math.max(0,(now-jobRun.startedAt)/1000))} / 制限 {duration(jobRun.seconds)}</p>}
     {search.error && <p role="alert">{search.error}</p>}
     {query.error && <p role="alert">追加探索の状態を取得できません：{query.error}</p>}
     {query.loading && !data && <p>計算状況を読み込み中…</p>}
     {data && <>
-      <dl className="exploration-metrics"><div><dt>検査した展開</dt><dd>{data.responses.toLocaleString()}</dd></div><div><dt>検査済み相手手順</dt><dd>{data.checkedOpponents} / {data.opponents}</dd></div><div><dt>検査内の最小点差</dt><dd>{margin(data.worstMargin)}{worst && <button onClick={()=>onEvidence(worst)}>展開を見る</button>}</dd></div></dl>
+      <dl className="exploration-metrics"><div><dt>検査した展開</dt><dd>{data.responses.toLocaleString()}</dd></div><div><dt>検査済み相手手順</dt><dd>{data.checkedOpponents} / {data.opponents}</dd></div><div><dt>検査内の最小点差</dt><dd>{margin(data.worstMargin)}{worst && <IconButton icon="eye" label="展開を見る" onClick={()=>onEvidence(worst)} />}</dd></div></dl>
       <div className="exploration-work"><span>計算回数 {work?.ticks.toLocaleString()}</span><span>未完了の計算 {work?.pendingJobs} / {work?.jobs}</span><span>未展開の局面 {work?.frontier.toLocaleString()}</span><span>未試行の選択肢 {work?.remainingChoices.toLocaleString()}</span><Help topic="search" title="計算の進捗" text="計算回数は探索処理の実行回数です。探索中に分岐が増えるため、残り件数から終了時刻や進捗率は算出できません。最小点差は検査済みの展開内の値で、全ての相手への保証ではありません。" /></div>
     </>}
   </div>;
@@ -96,8 +98,8 @@ export function StrategyExplorationHistory({search, selection, onEvidence, onRes
     {!session && query.data && <p className="muted">{gainsOnly ? "結果が増えた実行はありません。" : "この候補を指定した実行履歴はありません。"}</p>}
     {session && <>
       <dl className="exploration-metrics"><div><dt>実行時間 / 制限</dt><dd>{duration(session.seconds)} / {duration(session.budget)}</dd></div><div><dt>追加展開</dt><dd>{rows ? rows.length : "照合できません"}</dd></div><div><dt>最小点差の変化</dt><dd>{margin(session.before?.worstMargin)} → {margin(session.after?.worstMargin)}</dd></div><div><dt>追加の検査済み相手手順</dt><dd>{session.before && session.after ? session.after.checkedOpponents-session.before.checkedOpponents : "—"}</dd></div></dl>
-      <div className="exploration-controls"><button disabled={!args || complete || !isEnabled("strategy.explore.start",args)} onClick={()=>{if (!args || !isEnabled("strategy.explore.start",args)) return; run("strategy.explore.start",args);onResumeSettings?.({mode:args.target.mode,seconds:args.seconds});}}>同じ条件で続きから実行</button><button onClick={exportRun}>実行記録をJSON保存</button>{worst && <button onClick={()=>onEvidence(worst.evidence)}>追加展開の最小点差を見る</button>}</div>
-      {!rows ? <p className="muted">保存された件数と現在の展開が一致しないため、追加展開を特定できません。</p> : rows.length === 0 ? <p className="muted">この実行で追加された展開はありません。</p> : <div className="exploration-table-wrap" tabIndex={0} aria-label="この実行で追加された展開"><table><thead><tr><th>展開</th><th>相手手順</th><th>赤 対 青</th><th>点差</th><th>実行不可</th></tr></thead><tbody>{rows.slice(0,limit).map(({evidence:e,ordinal})=><tr key={ordinal}><td><button onClick={()=>onEvidence(e)}>対応{ordinal}を見る</button></td><td title={e.opponent}>{e.opponent?.slice(0,10) ?? "—"}</td><td>{e.scores[0]} 対 {e.scores[1]}</td><td>{margin(e.scores[0]-e.scores[1])}</td><td>{e.blocked?.length ?? 0}</td></tr>)}</tbody></table></div>}
+      <div className="exploration-controls"><IconButton icon="play" label="同じ条件で続きから実行" disabled={!args || complete || !isEnabled("strategy.explore.start",args)} onClick={()=>{if (!args || !isEnabled("strategy.explore.start",args)) return; run("strategy.explore.start",args);onResumeSettings?.({mode:args.target.mode,seconds:args.seconds});}}>同条件で続行</IconButton><IconButton icon="download" label="実行記録をJSON保存" onClick={exportRun} />{worst && <IconButton icon="chart" label="追加展開の最小点差を見る" onClick={()=>onEvidence(worst.evidence)}>最小点差</IconButton>}</div>
+      {!rows ? <p className="muted">保存された件数と現在の展開が一致しないため、追加展開を特定できません。</p> : rows.length === 0 ? <p className="muted">この実行で追加された展開はありません。</p> : <div className="exploration-table-wrap" tabIndex={0} aria-label="この実行で追加された展開"><table><thead><tr><th>展開</th><th>相手手順</th><th>赤 対 青</th><th>点差</th><th>実行不可</th></tr></thead><tbody>{rows.slice(0,limit).map(({evidence:e,ordinal})=><tr key={ordinal}><td><IconButton icon="eye" label={`対応${ordinal}を見る`} onClick={()=>onEvidence(e)}>対応{ordinal}</IconButton></td><td title={e.opponent}>{e.opponent?.slice(0,10) ?? "—"}</td><td>{e.scores[0]} 対 {e.scores[1]}</td><td>{margin(e.scores[0]-e.scores[1])}</td><td>{e.blocked?.length ?? 0}</td></tr>)}</tbody></table></div>}
       {rows && rows.length>limit && <button onClick={()=>setLimit(n=>n+20)}>次の20件を表示（残り {rows.length-limit} 件）</button>}
     </>}
   </div>;

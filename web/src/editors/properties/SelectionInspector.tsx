@@ -1,3 +1,4 @@
+import { IconButton } from "../common/IconButton";
 import { Icon } from "../../shell/icons";
 import { run } from "../../app/commands";
 import { layout } from "../../app/layout";
@@ -26,7 +27,7 @@ export function SelectionInspector() {
         <dt>運搬中</dt><dd>{robot.carry.length}個</dd>
         <dt>座標（m）</dt><dd className="tabular">{robot.p.map(v => v.toFixed(2)).join(" / ")}</dd>
       </dl>
-      <div className="selection-actions"><button className="entity-reference" onClick={() => layout.reveal("events")}>動作履歴</button><button className="entity-reference" onClick={() => layout.reveal("interval-analysis")}>区間解析</button></div>
+      <div className="selection-actions"><IconButton icon="history" label="動作履歴を開く" onClick={() => layout.reveal("events")} /><IconButton icon="range" label="区間解析を開く" onClick={() => layout.reveal("interval-analysis")} /></div>
       {!!robot.carry.length && <table><thead><tr><th>運搬中の物体</th></tr></thead><tbody>{carried.map(o => <tr key={o.id}><td><button className="entity-reference" onClick={() => ui.select(`obj:${o.id}`)}>{objectNames[o.kind] || o.kind} {o.id}</button></td></tr>)}</tbody></table>}
     </>}
     {object && <dl className="property-grid">
@@ -37,6 +38,6 @@ export function SelectionInspector() {
       {object.loc.startsWith("tower") && <><dt>段</dt><dd>{object.layer + 1}</dd></>}
       <dt>搬送加点済み</dt><dd>赤 {object.delivered[0] ? "有" : "無"} / 青 {object.delivered[1] ? "有" : "無"}</dd>
     </dl>}
-    {spot !== null && <><table><thead><tr><th>段</th><th>物体</th><th>上面</th></tr></thead><tbody>{stack.map(o => <tr key={o.id}><td>{o.layer + 1}</td><td><button className="entity-reference" onClick={() => ui.select(`obj:${o.id}`)}>{objectNames[o.kind] || o.kind} {o.id}</button></td><td>{o.kind === "S" ? o.face ? "青" : "赤" : "—"}</td></tr>)}{!stack.length && <tr><td colSpan={3}>空き</td></tr>}</tbody></table><button className="entity-reference" onClick={() => layout.reveal("spots")}>このスポットの履歴</button></>}
+    {spot !== null && <><table><thead><tr><th>段</th><th>物体</th><th>上面</th></tr></thead><tbody>{stack.map(o => <tr key={o.id}><td>{o.layer + 1}</td><td><button className="entity-reference" onClick={() => ui.select(`obj:${o.id}`)}>{objectNames[o.kind] || o.kind} {o.id}</button></td><td>{o.kind === "S" ? o.face ? "青" : "赤" : "—"}</td></tr>)}{!stack.length && <tr><td colSpan={3}>空き</td></tr>}</tbody></table><IconButton icon="history" label="選択スポットの履歴を開く" onClick={() => layout.reveal("spots")} /></>}
   </div>;
 }

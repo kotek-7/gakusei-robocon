@@ -1,3 +1,4 @@
+import { IconButton } from "../common/IconButton";
 import { Icon } from "../../shell/icons";
 import { useEffect, useState } from "react";
 import "./jobs.css";
@@ -28,16 +29,16 @@ function JobsEditor() {
       )}
       {search.discovery?.activeTarget && <div className="job-execution-bar" role="status">
         <span>候補指定の追加探索 · 構成 C{search.discovery.activeTarget.run} · {search.discovery.activeTarget.mode === "counter" ? "相手探索" : "既知の相手で検査"}</span>
-        <button onClick={() => run("strategy.exploration.open", {search:search.id,...search.discovery!.activeTarget,evidence:"baseline"})}>対象候補の進捗へ</button>
+        <IconButton icon="inspect" label="対象候補の進捗へ" onClick={() => run("strategy.exploration.open", {search:search.id,...search.discovery!.activeTarget,evidence:"baseline"})} />
       </div>}
       <div className="job-channel-toolbar">
         <label>計算<select aria-label="表示する計算" value={mode} onChange={event => setMode(event.target.value)}><option value="discovery">候補探索</option><option value="exact">全探索・評価</option></select></label>
         <span className="job-live-state" role="status" data-running={search.status === "running" || search.status === "evaluating"}>{search.status === "running" ? "実行中" : search.status === "evaluating" ? "評価中" : "停止中"}</span>
-        <button className="tool" disabled={!isEnabled("job.pause")} onClick={() => run("job.pause")}><Icon name="stop" />停止</button>
+        <IconButton icon="pause" label="計算を停止" disabled={!isEnabled("job.pause")} onClick={() => run("job.pause")} />
       </div>
       <div hidden={mode !== "discovery"}>
       <div className="job-execution-bar">
-        <label>今回の制限時間<select value={seconds} onChange={event => setPref("job.discoverySeconds", event.target.value)}>{[["10", "10秒"], ["60", "1分"], ["300", "5分"], ["1800", "30分"], ["3600", "1時間"], ["21600", "6時間"], ["86400", "24時間"]].map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
+        <label title="今回の制限時間"><Icon name="clock" /><select aria-label="今回の制限時間" value={seconds} onChange={event => setPref("job.discoverySeconds", event.target.value)}>{[["10", "10秒"], ["60", "1分"], ["300", "5分"], ["1800", "30分"], ["3600", "1時間"], ["21600", "6時間"], ["86400", "24時間"]].map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
         <button className="action-button primary" disabled={!isEnabled("job.discover")} onClick={() => run("job.discover")}><Icon name="play" />{search.discovery ? "探索を再開" : "探索を開始"}</button>
       </div>
       <DiscoveryProgress key={search.id} search={search} onDefinitions={() => run("docs.open", "search")} />
@@ -65,12 +66,8 @@ function JobsEditor() {
               onChange={(e) => setPref("job.exactBudget", Math.max(1, Math.min(1000000, Number(e.target.value) || 1)))}
             />
           </label>
-          <button className="action-button primary" disabled={!isEnabled("job.exact")} onClick={() => run("job.exact")}>
-            全探索を続ける
-          </button>
-          <button className="action-button" disabled={!isEnabled("job.evaluate")} onClick={() => run("job.evaluate")}>
-            評価を計算
-          </button>
+          <IconButton icon="play" label="全探索を続ける" className="action-button primary" disabled={!isEnabled("job.exact")} onClick={() => run("job.exact")}>全探索を続行</IconButton>
+          <IconButton icon="chart" label="評価を計算" className="action-button" disabled={!isEnabled("job.evaluate")} onClick={() => run("job.evaluate")}>評価</IconButton>
         </div>
         <dl className="search-metrics">
           <div><dt>局面</dt><dd>{search.nodes.toLocaleString()}</dd></div>

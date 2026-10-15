@@ -1,3 +1,5 @@
+import { Icon } from "../../shell/icons";
+import { IconButton } from "../common/IconButton";
 import { useId, useMemo, useState } from "react";
 import type { MatchAnalysis } from "../../engine/analysis";
 import { actionName, locationName, robotNames } from "../common/labels";
@@ -30,7 +32,7 @@ function Execution({ analysis, onSeek }: { analysis: MatchAnalysis; onSeek: (tim
     <div className="execution-controls">
       <label>開始 <input aria-label="解析開始秒" type="number" min={analysis.start} max={analysis.end} step="any" value={start} onChange={e => setStart(e.target.value)} /></label>
       <label>終了 <input aria-label="解析終了秒" type="number" min={analysis.start} max={analysis.end} step="any" value={end} onChange={e => setEnd(e.target.value)} /></label>
-      <button type="button" onClick={() => { setStart(String(analysis.start)); setEnd(String(analysis.end)); }}>全区間</button>
+      <IconButton icon="fit" label="全区間" type="button" onClick={() => { setStart(String(analysis.start)); setEnd(String(analysis.end)); }} />
     </div>
     {!valid && <p role="status">終了を開始より後に指定してください。</p>}
     <div className="execution-scroll"><table aria-label="機体別の時間配分"><thead><tr><th>機体</th><th>作業</th><th>移動</th><th>待機</th><th>未記録</th></tr></thead><tbody>{robotNames.map((name, id) => {
@@ -40,9 +42,9 @@ function Execution({ analysis, onSeek }: { analysis: MatchAnalysis; onSeek: (tim
     <div className="execution-controls">
       <label>機体 <select value={robot} onChange={e => setRobot(e.target.value)}><option value="">すべて</option>{robotNames.map((name, id) => <option key={id} value={id}>{name}</option>)}</select></label>
       <label>動作 <select value={category} onChange={e => setCategory(e.target.value)}><option value="">すべて</option><option value="work">作業</option><option value="move">移動</option><option value="wait">待機</option></select></label>
-      <label>検索 <input type="search" placeholder="動作・開始場所" value={query} onChange={e => setQuery(e.target.value)} /></label>
-      <label>並び順 <select value={sort} onChange={e => setSort(e.target.value)}><option value="time">開始順</option><option value="duration">長い順</option></select></label>
-      {(robot || category || query) && <button type="button" onClick={() => { setRobot(""); setCategory(""); setQuery(""); }}>絞込解除</button>}
+      <label title="動作・開始場所を検索"><Icon name="search" /><input aria-label="動作・開始場所を検索" type="search" placeholder="動作・開始場所" value={query} onChange={e => setQuery(e.target.value)} /></label>
+      <label title="動作の並び順"><Icon name="sort" /><select aria-label="動作の並び順" value={sort} onChange={e => setSort(e.target.value)}><option value="time">開始順</option><option value="duration">長い順</option></select></label>
+      {(robot || category || query) && <IconButton icon="reset" label="絞込解除" type="button" onClick={() => { setRobot(""); setCategory(""); setQuery(""); }} />}
       <span>{visible.length}動作</span>
     </div>
     <div className="execution-scroll execution-ledger"><table aria-label="実行した動作"><thead><tr><th>選択</th><th>開始 / 終了</th><th>長さ</th><th>機体・動作</th><th>動作開始場所</th></tr></thead><tbody>
@@ -50,7 +52,7 @@ function Execution({ analysis, onSeek }: { analysis: MatchAnalysis; onSeek: (tim
       {!visible.length && <tr><td colSpan={5}>{valid ? "一致する動作がありません。" : "区間を指定してください。"}</td></tr>}
     </tbody></table></div>
     {active && <div className="execution-selection">
-      <div className="execution-controls"><strong>{robotNames[active.interval.robot]} · {actionName(active.interval.action)}</strong><button type="button" onClick={() => onSeek(active.start, active.interval.robot)}>{seconds(active.start)}を表示</button><button type="button" onClick={() => onSeek(active.end, active.interval.robot)}>{seconds(active.end)}を表示</button></div>
+      <div className="execution-controls"><strong>{robotNames[active.interval.robot]} · {actionName(active.interval.action)}</strong><IconButton icon="first" label={`${seconds(active.start)}の動作開始を3D表示`} onClick={() => onSeek(active.start, active.interval.robot)}>{seconds(active.start)}</IconButton><IconButton icon="last" label={`${seconds(active.end)}の動作終了を3D表示`} onClick={() => onSeek(active.end, active.interval.robot)}>{seconds(active.end)}</IconButton></div>
       <p>記録 {seconds(active.interval.start)}〜{seconds(active.interval.end)} · 予定終了 {seconds(active.interval.planned)}</p>
       <h4>同じ時間帯の他機体 <Help topic="timeline" text="選択動作と時間が重なる記録です。絞込で隠れた機体も表示します。秒数は解析区間内で重なる長さです。" /></h4>
       {overlaps.length ? <div className="execution-scroll"><table aria-label="時間が重なる動作"><thead><tr><th>機体・動作</th><th>重なる時間</th><th>局面</th></tr></thead><tbody>{overlaps.map(row => <tr key={row.key}><td>{robotNames[row.interval.robot]} · {actionName(row.interval.action)}</td><td>{seconds(row.overlap)}</td><td><button type="button" className="link" onClick={() => onSeek(Math.max(active.start, row.start), row.interval.robot)}>{seconds(Math.max(active.start, row.start))}を表示</button></td></tr>)}</tbody></table></div> : <p>他機体の重なる記録はありません。</p>}

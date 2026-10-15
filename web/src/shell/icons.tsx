@@ -1,5 +1,21 @@
 /** Stroke icons drawn on a 16px grid. Each one names an operation, not a mood. */
-const P: Record<string, string> = {
+const P = {
+  save: "M3 2.5h8l2 2v9H3zM5 2.5v4h5v-4M5 13.5v-5h6v5",
+  redo: "M9 3l4 3-4 3M13 6H6a3 3 0 000 6h3",
+  undo: "M6 3L2.5 6.5 6 10M3 6.5h6a4 4 0 0 1 0 8",
+  reset: "M3 6a5.5 5.5 0 1 1-.2 4M3 2.5V6h3.5",
+  history: "M3 6a5.5 5.5 0 1 1-.2 4M3 2.5V6h3.5M8 4.5V8l2.5 1.5",
+  clock: "M8 2a6 6 0 1 1 0 12A6 6 0 0 1 8 2zM8 4.5V8l3 2",
+  list: "M6 4h7M6 8h7M6 12h7M2.5 4h1M2.5 8h1M2.5 12h1",
+  inspect: "M3 2h6l3 3v3M3 2v12h4M9 2v3h3M10 9a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM12 13l2 2",
+  chart: "M2.5 2v11.5H14M5 10V7M8.5 10V4M12 10V6",
+  warning: "M8 2l6.5 11.5h-13zM8 6v3.5M8 11.5v.1",
+  robot: "M3 5h10v8H3zM8 2v3M6 8h.1M10 8h.1M6 11h4M1 7v4M15 7v4",
+  branch: "M3 2v12M3 8h6a3 3 0 0 0 3-3V2M10 3l2-2 2 2M1 12l2 2 2-2",
+  range: "M3 3v10M13 3v10M3 8h10M5 6L3 8l2 2M11 6l2 2-2 2",
+  sort: "M3 3v10M1 11l2 2 2-2M7 4h7M7 8h5M7 12h3",
+  keyboard: "M1.5 4h13v8h-13zM4 6h.1M7 6h.1M10 6h.1M12 6h.1M4 8h.1M7 8h.1M10 8h.1M5 10h6",
+  bell: "M3 11h10l-1.5-2V6a3.5 3.5 0 0 0-7 0v3zM6.5 13a1.5 1.5 0 0 0 3 0",
   play: "M5 3.5v9l7-4.5z",
   pause: "M5 3.5v9M11 3.5v9",
   reverse: "M11 3.5v9L4 8z",
@@ -49,7 +65,7 @@ const P: Record<string, string> = {
   edit: "M10.5 2.5l3 3-8 8h-3v-3z",
   check: "M3.5 8.5l3 3 6-7",
   dot: "M8 6.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z",
-};
+} as const;
 export type IconName = keyof typeof P;
 export function Icon({ name, size = 16 }: { name: IconName; size?: number }) {
   const filled = ["play", "reverse", "stop", "stepBack", "stepFwd", "prevEvent", "nextEvent", "first", "last", "marker"].includes(name);

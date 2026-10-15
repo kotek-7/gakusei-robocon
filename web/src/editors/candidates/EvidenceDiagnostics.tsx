@@ -1,3 +1,4 @@
+import { IconButton } from "../common/IconButton";
 import { Help } from "../common/Help";
 import { useEffect, useRef, useState } from "react";
 import type { CandidateEvidence } from "../../engine/types";
@@ -42,17 +43,17 @@ function Diagnostics({ evidence, onOpenAt }: {
     <div className="candidate-diagnostic-filters">
       <label>機体 <select aria-label="実行不可の機体" value={robot} onChange={event => setRobot(event.target.value)}><option value="">すべて</option>{robotNames.map(id => <option key={id} value={id}>{name(id)}</option>)}</select></label>
       <label>理由 <select aria-label="実行不可の理由" value={reason} onChange={event => setReason(event.target.value)}><option value="">すべて</option>{reasons.map(value => <option key={value} value={value}>{value}</option>)}</select></label>
-      {(robot || reason) && <button onClick={() => { setRobot(""); setReason(""); }}>絞込解除</button>}
+      {(robot || reason) && <IconButton icon="reset" label="実行不可の絞り込みを解除" onClick={() => { setRobot(""); setReason(""); }} />}
     </div>
     <div className="candidate-diagnostic-list" ref={listRef}><table role="grid" aria-label="実行不可の記録。上下キーで選択、Enterで該当時刻を3D表示"><thead><tr><th>時刻</th><th>機体</th><th>手順</th><th>理由</th></tr></thead><tbody>
       {visible.map(row => <tr key={row.key} data-selectable-row aria-selected={active?.key === row.key} tabIndex={active?.key === row.key ? 0 : -1} onFocus={() => setSelected(row.key)} onClick={event => event.currentTarget.focus()} onKeyDown={event => navigateRow(event, () => { if (evidence.path.length) onOpenAt(row); })} onDoubleClick={() => { if (evidence.path.length) onOpenAt(row); }}><td>{row.t}秒</td><td>{name(row.robot)}</td><td>{row.instruction + 1}</td><td>{row.reason}</td></tr>)}
       {!visible.length && <tr><td colSpan={4}>この条件に一致する記録はありません。</td></tr>}
     </tbody></table></div>
     <div className="candidate-diagnostic-actions">
-      <button aria-label="前の実行不可を選択" disabled={index <= 0} onClick={() => setSelected(visible[index - 1].key)}>前へ</button>
+      <IconButton icon="back" label="前の実行不可を選択" disabled={index <= 0} onClick={() => setSelected(visible[index - 1].key)} />
       <span aria-live="polite">{index + 1} / {visible.length}</span>
-      <button aria-label="次の実行不可を選択" disabled={index < 0 || index >= visible.length - 1} onClick={() => setSelected(visible[index + 1].key)}>次へ</button>
-      <button disabled={!active || !evidence.path.length} onClick={() => { if (active) onOpenAt(active); }}>{active ? `${active.t}秒を3D表示` : "該当時刻を3D表示"}</button>
+      <IconButton icon="forward" label="次の実行不可を選択" disabled={index < 0 || index >= visible.length - 1} onClick={() => setSelected(visible[index + 1].key)} />
+      <IconButton icon="ortho" label={active ? `${active.t}秒を3D表示` : "該当時刻を3D表示"} disabled={!active || !evidence.path.length} onClick={() => { if (active) onOpenAt(active); }}>{active ? `${active.t}秒` : "3D"}</IconButton>
     </div>
   </section>;
 }
