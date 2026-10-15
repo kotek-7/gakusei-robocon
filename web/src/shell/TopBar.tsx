@@ -267,7 +267,7 @@ function SearchControls() {
   const active = editors.includes("candidates") ? "discover" : editors.includes("evaluation") ? "evaluate" : editors.includes("graph") || editors.includes("jobs") ? "graph" : "";
   const busy = useUI((s) => s.busy);
   usePref("job.discoverySeconds");
-  const runningJob = search?.status === "running" || search?.status === "evaluating";
+  const runningJob = search?.status === "running" || search?.status === "evaluating" || !!search?.jobProgress && search.jobProgress.phase !== "finished";
   if (!["discover", "evaluate", "graph"].includes(active)) return null;
   return (
     <div className="search-controls">
@@ -292,9 +292,9 @@ function SearchControls() {
         ))}
       </select>}
       {runningJob ? (
-        <button className="tool danger" onClick={() => run("job.pause")} disabled={busy.pause} title="計算を停止 (Ctrl+.)">
+        <button className="tool danger" onClick={() => run("job.pause")} disabled={!isEnabled("job.pause")} title="計算を停止 (Ctrl+.)">
           <Icon name="stop" size={14} />
-          停止
+          {busy[`pause:${search?.id}`] ? "停止処理中" : "停止"}
         </button>
       ) : active === "evaluate" ? (
         <button className="tool primary" disabled={!isEnabled("job.evaluate")} onClick={() => run("job.evaluate")}>評価を計算</button>
@@ -304,7 +304,7 @@ function SearchControls() {
         <button
           className="tool primary"
           onClick={() => run("job.discover")}
-          disabled={!isEnabled("job.discover") || busy["job.discovery"]}
+          disabled={!isEnabled("job.discover")}
           title="候補探索を開始・再開 (F5)"
         >
           <Icon name="play" size={14} />

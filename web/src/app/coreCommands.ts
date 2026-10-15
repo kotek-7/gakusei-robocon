@@ -16,8 +16,9 @@ const current = () => {
 };
 const running = () => {
   const s = current();
-  return s?.status === "running" || s?.status === "evaluating";
+  return s?.status === "running" || s?.status === "evaluating" || !!s?.jobProgress && s.jobProgress.phase !== "finished";
 };
+const starting = () => !!useUI.getState().busy[`job.start:${searchId()}`];
 const hasSearch = () => !!current();
 
 export async function currentPath(): Promise<number[] | null> {
@@ -72,20 +73,30 @@ const fileName = (name: string) => name.replace(/[\\/:*?"<>|\s]+/g, "_").slice(0
 
 export function startJob(kind: "discovery" | "exact" | "evaluation", extra: { seconds?: number; budget?: number; node?: number } = {}) {
   const search = searchId();
-  if (!search) return;
-  return act(`job.${kind}`, async () => {
+  if (!search || running() || starting()) return;
+  return act(`job.start:${search}`, async () => {
     const seconds = extra.seconds ?? Number(getPref("job.discoverySeconds"));
-    const s = await call("job.start", {
-      search,
-      kind,
-      seconds,
-      budget: extra.budget ?? Number(getPref("job.exactBudget")),
-      node: extra.node,
-    });
     useUI.setState((st) => ({
-      jobRun: { ...st.jobRun, [search]: { kind, startedAt: Date.now(), seconds, elapsedBase: s.discovery?.elapsed ?? 0 } },
+      jobRun: { ...st.jobRun, [search]: { kind, startedAt: Date.now(), seconds, elapsedBase: current()?.discovery?.elapsed ?? 0 } },
     }));
-    upsertSearch(s);
+    layout.reveal("jobs");
+    try {
+      const s = await call("job.start", {
+        search,
+        kind,
+        seconds,
+        budget: extra.budget ?? Number(getPref("job.exactBudget")),
+        node: extra.node,
+      });
+      upsertSearch(s);
+    } catch (error) {
+      useUI.setState(st => {
+        const jobRun = { ...st.jobRun };
+        delete jobRun[search];
+        return { jobRun };
+      });
+      throw error;
+    }
   });
 }
 
@@ -105,6 +116,7 @@ async function jumpEvent(dir: 1 | -1, kinds?: string[]) {
 
 const REASONS: Record<string, string> = {
   completed: "計算完了",
+  budget_limit: "指定した行動組数で停止",
   time_limit: "指定時間で停止",
   exhausted: "対象範囲を探索済み",
   cancelled: "停止しました",
@@ -214,7 +226,7 @@ register(
     id: "search.duplicate",
     title: "探索を複製",
     category: "ファイル",
-    enabled: () => hasSearch() && !running(),
+    enabled: () => hasSearch() && !running() && !starting(),
     run: () =>
       act("duplicate", async () => {
         const s = await call("search.duplicate", { search: searchId()! });
@@ -227,7 +239,7 @@ register(
     id: "search.delete",
     title: "探索を削除…",
     category: "ファイル",
-    enabled: () => hasSearch() && !running(),
+    enabled: () => hasSearch() && !running() && !starting(),
     run: async () => {
       const s = current()!;
       if (
@@ -270,7 +282,7 @@ register(
     title: "候補探索を開始・再開",
     category: "探索",
     keys: ["F5"],
-    enabled: () => hasSearch() && !running(),
+    enabled: () => hasSearch() && !running() && !starting(),
     run: () => startJob("discovery"),
   },
   {
@@ -278,14 +290,14 @@ register(
     title: "詳細な全探索を続ける",
     category: "探索",
     keys: ["Shift+F5"],
-    enabled: () => hasSearch() && !running() && !current()!.complete,
+    enabled: () => hasSearch() && !running() && !starting() && !current()!.complete,
     run: () => startJob("exact"),
   },
   {
     id: "job.exactHere",
     title: "選択局面を展開",
     category: "探索",
-    enabled: () => hasSearch() && !running() && session().node !== null,
+    enabled: () => hasSearch() && !running() && !starting() && session().node !== null,
     run: () => startJob("exact", { node: session().node! }),
   },
   {
@@ -293,7 +305,7 @@ register(
     title: "評価を計算",
     category: "探索",
     keys: ["F6"],
-    enabled: () => hasSearch() && !running(),
+    enabled: () => hasSearch() && !running() && !starting(),
     run: () => startJob("evaluation"),
   },
   {
@@ -301,15 +313,17 @@ register(
     title: "計算を停止",
     category: "探索",
     keys: ["Ctrl+."],
-    enabled: running,
-    run: () =>
-      act("pause", async () => upsertSearch(await call("job.pause", { search: searchId()! }))),
+    enabled: () => running() && current()?.jobProgress?.phase !== "saving" && !starting() && !useUI.getState().busy[`pause:${searchId()}`],
+    run: () => {
+      const search = searchId()!;
+      return act(`pause:${search}`, async () => upsertSearch(await call("job.pause", { search })));
+    },
   },
   {
     id: "run.next",
     title: "次の構成を生成",
     category: "探索",
-    enabled: () => hasSearch() && !running() && BigInt(current()!.runs) < BigInt(current()!.totalRuns),
+    enabled: () => hasSearch() && !running() && !starting() && BigInt(current()!.runs) < BigInt(current()!.totalRuns),
     run: () =>
       act("run", async () => {
         const s = current()!;
