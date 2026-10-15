@@ -164,7 +164,7 @@ export const useSearches = create<SearchState>(() => ({
 
 const lastShape = new Map<string, string>();
 const shape = (s: Search) =>
-  `${s.nodes}/${s.edges}/${s.status}/${s.runs}/${s.config.name}/${s.discovery?.metrics.candidates ?? 0}/${s.evaluation ? 1 : 0}/${s.evaluationProgress?.done ?? 0}`;
+  `${s.nodes}/${s.edges}/${s.status}/${s.runs}/${s.config.name}/${s.discovery?.metrics.candidates ?? 0}/${s.evaluation ? 1 : 0}/${s.evaluationProgress?.done ?? 0}/${s.discovery?.elapsed ?? 0}/${s.discovery?.metrics.responses ?? 0}/${s.discovery?.metrics.frontier ?? 0}/${JSON.stringify(s.discovery?.activeTarget ?? null)}/${s.discovery?.sessions.length ?? 0}`;
 
 export function upsertSearch(s: Search) {
   useSearches.setState((st) => {

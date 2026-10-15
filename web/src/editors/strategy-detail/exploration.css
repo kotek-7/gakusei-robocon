@@ -1,0 +1,20 @@
+.strategy-exploration { min-width: 0; font-size: 14px; }
+.exploration-title, .exploration-controls, .exploration-work, .exploration-status, .exploration-history-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
+.exploration-title h3, .exploration-history-heading h3 { margin: 12px 0; }
+.exploration-controls label { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.exploration-controls select { max-width: 100%; }
+.exploration-status { min-height: 24px; color: var(--muted); }
+.exploration-metrics { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,180px),1fr)); gap: 8px 16px; margin: 16px 0; padding-block: 12px; border-block: 1px solid var(--line); }
+.exploration-metrics dt { color: var(--muted); }
+.exploration-metrics dd { margin: 4px 0 0; display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-variant-numeric: tabular-nums; }
+.exploration-work { font-variant-numeric: tabular-nums; }
+.exploration-history-heading { justify-content: space-between; margin-top: 16px; }
+.exploration-history-heading label { display: flex; align-items: center; gap: 6px; }
+.exploration-table-wrap { max-width: 100%; overflow: auto; }
+.exploration-table-wrap table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.exploration-table-wrap th, .exploration-table-wrap td { padding: 8px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+.exploration-table-wrap th { background: var(--table-head, var(--surface)); font-weight: 600; }
+.exploration-controls { min-width: 0; margin-bottom: 12px; }
+.exploration-controls label { min-width: 0; }
+.exploration-controls select { min-width: 0; }
+.exploration-table-wrap:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
