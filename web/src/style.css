@@ -688,11 +688,6 @@ button.status-item:hover {
   border-radius: 5px;
   box-shadow: var(--menu-shadow);
 }
-.menu-popup.dropdown {
-  position: absolute;
-  top: 28px;
-  left: 0;
-}
 .menu-popup.submenu {
   position: fixed;
   z-index: 60;

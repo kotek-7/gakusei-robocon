@@ -146,6 +146,42 @@ export function MenuList({
   );
 }
 
+/** Keep menubar dropdowns outside the horizontally scrolling navigation. */
+export function DropdownMenu({ anchor, items, onClose }: {
+  anchor: HTMLElement;
+  items: MenuItem[];
+  onClose: () => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState({ left: 0, top: 0, maxHeight: 0 });
+  useLayoutEffect(() => {
+    const update = () => {
+      if (!ref.current) return;
+      const button = anchor.getBoundingClientRect();
+      const popup = ref.current.getBoundingClientRect();
+      const top = Math.max(4, Math.min(button.bottom + 2, innerHeight - 4));
+      setPos({
+        left: Math.max(4, Math.min(button.left, innerWidth - popup.width - 4)),
+        top,
+        maxHeight: innerHeight - top - 4,
+      });
+    };
+    update();
+    window.addEventListener("resize", update);
+    window.addEventListener("scroll", update, true);
+    return () => {
+      window.removeEventListener("resize", update);
+      window.removeEventListener("scroll", update, true);
+    };
+  }, [anchor]);
+  return createPortal(<>
+    <div className="menu-scrim" onPointerDown={onClose} />
+    <div ref={ref} className="menu-popup dropdown" style={pos}>
+      <MenuList items={items} onClose={onClose} />
+    </div>
+  </>, document.body);
+}
+
 /** Escape the parent's scrolling box while keeping nested menu events together. */
 function Submenu({ anchor, children }: { anchor: HTMLElement; children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);

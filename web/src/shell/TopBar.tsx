@@ -1,5 +1,5 @@
 import { IconButton } from "../editors/common/IconButton";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCommands } from "../app/commands";
 import { useSearches } from "../app/data";
 import { layout, leaves, useLayout } from "../app/layout";
@@ -7,7 +7,7 @@ import { useSearch } from "../app/session";
 import { ui, useUI, type MenuItem } from "../app/store";
 import { allEditors } from "../editors/registry";
 import { Icon } from "./icons";
-import { MenuList } from "./Menu";
+import { DropdownMenu } from "./Menu";
 import { ReplayContext } from "./ReplayContext";
 import { run, isEnabled } from "../app/commands";
 import { getPref, setPref, usePref } from "../app/prefs";
@@ -160,6 +160,7 @@ function menus(): [string, MenuItem[]][] {
 
 function MenuBar() {
   const [open, setOpen] = useState<number | null>(null);
+  const anchors = useRef(new Map<number, HTMLButtonElement>());
   useCommands((s) => s.version);
   const list = open === null ? null : menus();
   // F10 opens the menu bar, as in desktop applications; arrows move between menus.
@@ -182,6 +183,7 @@ function MenuBar() {
       {menus().map(([name], i) => (
         <div key={name} className="menubar-item">
           <button
+            ref={(element) => { if (element) anchors.current.set(i, element); else anchors.current.delete(i); }}
             className={`menubar-button${open === i ? " open" : ""}`}
             aria-haspopup="menu"
             aria-expanded={open === i}
@@ -191,12 +193,7 @@ function MenuBar() {
             {name}
           </button>
           {open === i && list && (
-            <>
-              <div className="menu-scrim" onPointerDown={() => setOpen(null)} />
-              <div className="menu-popup dropdown">
-                <MenuList items={list[i][1]} onClose={() => setOpen(null)} />
-              </div>
-            </>
+            <DropdownMenu anchor={anchors.current.get(i)!} items={list[i][1]} onClose={() => setOpen(null)} />
           )}
         </div>
       ))}
