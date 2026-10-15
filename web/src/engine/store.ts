@@ -1,3 +1,4 @@
+import type { ActivityTrace } from "./activity";
 import type {
   Action,
   Config,
@@ -62,6 +63,7 @@ export type StoredSearch = {
 export class Store {
   data: StoredSearch;
   jobProgress?: Search["jobProgress"];
+  activity?: ActivityTrace;
   /** Rows already in IndexedDB; nodes changed since then are in `dirty`. */
   saved = { nodes: 0, edges: 0 };
   dirty = new Set<number>();
@@ -213,13 +215,19 @@ export class Store {
       ) {
         const a = aa[Math.floor(n.cursor / bb.length)],
           b = bb[n.cursor % bb.length];
-        this.addOutcomes(
+        this.activity?.visit({ id: `e:${n.id}`, node: n.id, run: n.run, time: n.state.t });
+        const edgeIds = this.addOutcomes(
           n.run,
           n.id,
           a,
           b,
           successors(n.state, a, b, this.c, v),
         );
+        for (const edgeId of edgeIds) {
+          const edge = this.edge(edgeId), dst = this.node(edge.dst);
+          this.activity?.connect({ id: `e:${n.id}`, node: n.id, run: n.run, time: n.state.t },
+            { id: `e:${dst.id}`, node: dst.id, run: dst.run, time: dst.state.t });
+        }
         n.cursor++;
         processed++;
       }

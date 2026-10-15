@@ -1,4 +1,5 @@
 
+import { ActivityTrace } from "./activity";
 import { MODEL, countConfigs, validateConfig } from "./model";
 import { Store } from "./store";
 import { Persistence, exportSearch, importSearch } from "./persistence";
@@ -105,7 +106,9 @@ export class Runtime {
       unitsDone: 0, unitsLimit: kind === "exact" ? budget : null,
       savedAt: null, saveState: "saving", stopReason: null,
     };
+    st.activity = new ActivityTrace(kind);
     if (kind === "evaluation") st.data.evaluationProgress = null;
+    this.emitActivity(st);
     this.emit({ type: "search.changed", search: st.summary() });
 
     try {
@@ -120,6 +123,8 @@ export class Runtime {
       st.jobProgress.phase = "finished";
       st.jobProgress.saveState = "error";
       st.jobProgress.stopReason = "error";
+      this.emitActivity(st);
+      st.activity = undefined;
       this.jobs.delete(st.data.id);
       finishStarting();
       this.emit({ type: "search.changed", search: st.summary() });
@@ -130,6 +135,10 @@ export class Runtime {
     void job.done.then(finishStarting, finishStarting);
     this.emit({ type: "search.changed", search: st.summary() });
     return st.summary();
+  }
+  private emitActivity(st: Store) {
+    if (st.activity && st.jobProgress)
+      this.emit({ type: "job.activity", search: st.data.id, activity: st.activity.snapshot(st.jobProgress, st.jobProgress.kind === "evaluation" ? st.data.evaluationProgress : null) });
   }
   private async work(
     st: Store,
@@ -143,7 +152,12 @@ export class Runtime {
     const start = performance.now();
     const progress = st.jobProgress!;
     progress.phase = "computing";
-    let lastEmit = start;
+    let lastEmit = start, lastActivity = start;
+    const publishActivity = () => {
+      progress.elapsed = (performance.now() - start) / 1000;
+      this.emitActivity(st);
+      lastActivity = performance.now();
+    };
     const publish = () => {
       progress.elapsed = (performance.now() - start) / 1000;
       this.emit({ type: "search.changed", search: st.summary() });
@@ -176,6 +190,7 @@ export class Runtime {
         lastYield = performance.now();
         if (job.cancel) throw new Cancelled();
       }
+      if (now - lastActivity >= 100) publishActivity();
       if (force || now - lastSave >= 1000) {
         updateSession();
         progress.saveState = "saving";
@@ -305,6 +320,7 @@ export class Runtime {
         st.data.error =
           "この端末で扱う探索量の上限に達したため中断しました。条件を絞って新しい探索を作成してください。現在の結果は保存できます。";
       progress.phase = "saving";
+      publishActivity();
       progress.saveState = "saving";
       progress.stopReason = reason;
       publish();
@@ -325,6 +341,8 @@ export class Runtime {
       progress.phase = "finished";
       progress.stopReason = reason;
       progress.elapsed = (performance.now() - start) / 1000;
+      publishActivity();
+      st.activity = undefined;
       this.jobs.delete(st.data.id);
       this.emit({ type: "search.changed", search: st.summary() });
       this.emit({ type: "job.finished", search: st.data.id, kind, reason, ...(target ? {target} : {}) });

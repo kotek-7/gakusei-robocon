@@ -108,6 +108,7 @@ export type Params<M extends Method> = Methods[M]["params"];
 export type Result<M extends Method> = Methods[M]["result"];
 
 export type EngineEvent =
+  | { type: "job.activity"; search: string; activity: import("./types").JobActivity }
   | { type: "search.changed"; search: Search }
   | { type: "search.removed"; id: string }
   | { type: "job.finished"; search: string; kind: JobKind; reason: string; target?: CandidateAnalysisTarget };

@@ -125,6 +125,22 @@ export type JobProgress = {
   saveState: "saving" | "saved" | "unsaved" | "error";
   stopReason: string | null;
 };
+/** Transient, bounded observations of actual work. Never part of a saved search. */
+export type ActivityNode = { id: string; node: number; run: number; time: number };
+export type JobActivity = {
+  kind: JobProgress["kind"];
+  phase: JobProgress["phase"];
+  sequence: number;
+  elapsed: number;
+  unitsDone: number;
+  unitsPerSecond: number;
+  run: number | null;
+  mode: "baseline" | "counter" | "compare" | null;
+  current: string | null;
+  nodes: ActivityNode[];
+  edges: { src: string; dst: string }[];
+  evaluation: EvaluationProgress | null;
+};
 export type Search = {
   id: string;
   name: string;

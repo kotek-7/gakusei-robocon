@@ -444,6 +444,7 @@ export class DiscoveryEngine {
       return null;
     }
     const s = this.st.node(row.node).state;
+    this.st.activity?.visit({ id: `d:${row.id}`, node: row.node, run: job.run, time: s.t }, job.mode);
     if (s.t >= p.c.horizon) {
       row.done = true;
       row.total = 0;
@@ -500,6 +501,10 @@ export class DiscoveryEngine {
         adds,
         row!.hints,
         priority,
+      );
+      this.st.activity?.connect(
+        { id: `d:${row!.id}`, node: row!.node, run: job.run, time: s.t },
+        { id: `d:${child.id}`, node: child.node, run: job.run, time: outs[i].state.t },
       );
       // Keep alternative histories even when continuation states are shared.
       this.d.links.push({
